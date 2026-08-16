@@ -8,7 +8,7 @@ import type {
 import { DEFAULT_COMPLAINT_FILTERS } from "./types";
 // Mocks removed
 
-export const API_BASE_URL = import.meta.env["VITE_API_BASE_URL"] ?? "http://localhost:3001";
+export const API_BASE_URL = import.meta.env["VITE_API_BASE_URL"] ?? "http://localhost:8000";
 
 const LS = {
   officer: "janmind_muni_officer",
@@ -51,8 +51,19 @@ function write<T>(key: string, value: T) {
 export async function muniLogin(input: { email: string; password: string; city: CityId }): Promise<Officer> {
   const res = await api.auth.loginOfficer(input);
   if (typeof window !== "undefined") window.localStorage.setItem(LS.token, res.access_token);
-  write(LS.officer, (res as any).officer);
-  return (res as any).officer;
+  // Normalise the backend user object into the Officer shape expected by the UI
+  const backendUser = res.user;
+  const officer: Officer = {
+    id: backendUser?.id ?? "",
+    name: backendUser?.name ?? "",
+    email: backendUser?.email ?? "",
+    department: (backendUser?.department as any) ?? "General",
+    role: "Officer",
+    city: input.city, // city comes from the login form, not the backend response
+    lastActive: new Date().toISOString(),
+  };
+  write(LS.officer, officer);
+  return officer;
 }
 
 export async function muniLogout(): Promise<void> {
@@ -158,7 +169,17 @@ export async function bulkUpdateComplaints(ids: string[], patch: { status?: Comp
 
 /* ------------------------------------------------------------- procurement & work orders */
 
-export async function listTenders(cityId: string) {
+export async function listTenders(cityIdOrName: string) {
+  let cityId = cityIdOrName;
+  if (!cityIdOrName.includes('-') || cityIdOrName.length !== 36) {
+    try {
+      const cities = await client.get<Array<{ id: string; name: string }>>('/api/v1/cities');
+      const match = cities.find((c) => c.name.toLowerCase() === cityIdOrName.toLowerCase());
+      if (match) cityId = match.id;
+    } catch {
+      // keep original value if lookup fails
+    }
+  }
   return await api.tenders.list(cityId);
 }
 export async function getTender(id: string) {
@@ -180,7 +201,18 @@ export async function inspectWorkOrder(workOrderId: string, result: string, feed
 
 export async function getWorkOrders(params?: any) {
   const officer = await getMuniOfficer();
-  const cityId = params?.cityId || officer?.city || "11111111-1111-1111-1111-111111111111";
+  const rawCity = params?.cityId || officer?.city || "vadodara";
+  // If it's already a UUID, use directly; otherwise resolve via cities API
+  let cityId = rawCity;
+  if (!rawCity.includes('-') || rawCity.length !== 36) {
+    try {
+      const cities = await client.get<Array<{ id: string; name: string }>>('/api/v1/cities');
+      const match = cities.find((c) => c.name.toLowerCase() === rawCity.toLowerCase());
+      if (match) cityId = match.id;
+    } catch {
+      // keep rawCity as-is if lookup fails
+    }
+  }
   return await api.workOrders.list(cityId);
 }
 

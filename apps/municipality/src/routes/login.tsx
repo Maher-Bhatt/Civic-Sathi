@@ -38,7 +38,7 @@ function MuniLoginPage() {
       toast.success("Signed in to Municipal Intelligence");
       void navigate({ to: "/dashboard" as any });
     } catch {
-      setError("Invalid credentials. Enter any non-empty email and password.");
+      setError("Invalid credentials. Please check your email and password.");
     } finally {
       setBusy(false);
     }
@@ -117,7 +117,7 @@ function MuniLoginPage() {
         </form>
 
         <p className="mt-6 text-center text-[0.65rem] text-muted-foreground">
-          Frontend-only mock authentication · Prototype Intelligence Data
+          JANMIND Municipal Intelligence Platform
         </p>
       </GlassCard>
     </div>

@@ -23,6 +23,7 @@ class OfficerInfo(BaseModel):
     email: str
     department: str
     role: str
+    city: str = ""
 
 
 class SeedResponse(BaseModel):

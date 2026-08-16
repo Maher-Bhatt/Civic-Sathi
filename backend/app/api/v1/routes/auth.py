@@ -53,8 +53,9 @@ def officer_login(
             id=str(user.id),
             name=user.name,
             email=user.email,
-            department="General",  # TODO: Add department to User model
+            department=user.department or "General",
             role=user.role.title(),
+            city=user.city or "",
         )
     )
 

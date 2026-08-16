@@ -3,7 +3,7 @@ import type { CityId } from "@/services/cities";
 import type { User } from '@janmind/api-client';
 
 
-export const API_BASE_URL = import.meta.env["VITE_API_BASE_URL"] ?? "http://localhost:3001";
+export const API_BASE_URL = import.meta.env["VITE_API_BASE_URL"] ?? "http://localhost:8000";
 
 const LS = {
   contractor: "janmind_contractor_user",
@@ -44,8 +44,11 @@ function write<T>(key: string, value: T) {
 /* -------------------------------------------------------------- auth */
 export async function contractorLogin(input: { email: string; password: string; city: CityId }): Promise<User> {
   const res = await api.auth.loginCitizen({ email: input.email, password: input.password });
+  if (!res.user) {
+    throw new Error('Login failed: no user returned');
+  }
   if (res.user.role !== 'contractor') {
-    throw new Error('User is not a contractor');
+    throw new Error('Access denied: this account is not registered as a contractor');
   }
   if (typeof window !== "undefined") window.localStorage.setItem(LS.token, res.access_token);
   write(LS.contractor, res.user);
@@ -75,9 +78,33 @@ export const muniLogin = contractorLogin;
 export const muniLogout = contractorLogout;
 export const getMuniOfficer = getContractorUser;
 
+/* -------------------------------------------------------------- city UUID resolution
+   The backend uses UUID primary keys for cities. We resolve the frontend city
+   name slug (e.g. "vadodara") to the backend UUID once and cache it.        */
+
+const cityUuidCache: Map<string, string> = new Map();
+
+export async function resolveCityUuid(cityNameOrSlug: string): Promise<string | null> {
+  const key = cityNameOrSlug.toLowerCase();
+  if (cityUuidCache.has(key)) return cityUuidCache.get(key)!;
+  try {
+    const cities = await api.cities.list();
+    for (const c of cities) {
+      cityUuidCache.set(c.name.toLowerCase(), c.id);
+    }
+    return cityUuidCache.get(key) ?? null;
+  } catch {
+    return null;
+  }
+}
+
 /* -------------------------------------------------------------- tenders & bids */
-export async function getEligibleTenders(cityId: string) {
-  return await api.tenders.list(cityId);
+export async function getEligibleTenders(cityIdOrName: string) {
+  // If it looks like a UUID already, use directly; otherwise resolve
+  const uuid = cityIdOrName.includes('-') && cityIdOrName.length === 36
+    ? cityIdOrName
+    : (await resolveCityUuid(cityIdOrName)) ?? cityIdOrName;
+  return await api.tenders.list(uuid);
 }
 
 export async function getTenderDetails(id: string) {
@@ -88,10 +115,14 @@ export async function submitBid(tenderId: string, quotedAmount: number, technica
   return await api.tenders.submitBid(tenderId, { quoted_amount: quotedAmount, technical_proposal: technicalProposal });
 }
 
-export async function getWorkOrders(cityId?: string) {
+export async function getWorkOrders(cityIdOrName?: string) {
   const user = await getContractorUser();
-  const cid = cityId || user?.city || "11111111-1111-1111-1111-111111111111";
-  return await api.workOrders.list(cid);
+  const raw = cityIdOrName || user?.city || "vadodara";
+  // If it's already a UUID, use directly; otherwise resolve to UUID
+  const uuid = raw.includes('-') && raw.length === 36
+    ? raw
+    : (await resolveCityUuid(raw)) ?? raw;
+  return await api.workOrders.list(uuid);
 }
 
 export async function getWorkOrder(id: string) {

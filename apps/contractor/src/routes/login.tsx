@@ -24,7 +24,7 @@ function ContractorLogin() {
       await signIn(email, password);
       navigate({ to: "/contractor/dashboard" as any });
     } catch (err: any) {
-      setError(err.message || "Failed to sign in");
+      setError(err.message || "Invalid email or password. Please check your credentials and try again.");
     } finally {
       setLoading(false);
     }
@@ -79,8 +79,8 @@ function ContractorLogin() {
         </form>
 
         <div className="mt-8 text-center text-xs text-[var(--muted-foreground)]">
-          <p>Demo: Use any email to sign in.</p>
-          <p>Try suresh.patel@bharatinfra.in</p>
+          <p>Sign in with your registered contractor account.</p>
+          <p>Contact your administrator if you need access.</p>
         </div>
       </GlassCard>
     </div>

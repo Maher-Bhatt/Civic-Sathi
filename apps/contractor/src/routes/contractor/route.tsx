@@ -54,11 +54,11 @@ function ContractorLayout({ children }: { children: React.ReactNode }) {
         <div className="p-4 border-t border-[var(--glass-border)] bg-[var(--surface-elevated)]/50">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-8 h-8 rounded-full bg-[var(--primary)]/20 text-[var(--primary)] flex items-center justify-center font-semibold text-sm border border-[var(--primary)]/30">
-              {contractor?.contactPerson?.substring(0, 2).toUpperCase() || 'CP'}
+              {contractor?.name?.substring(0, 2).toUpperCase() || 'CN'}
             </div>
             <div className="flex-1 min-w-0">
-              <div className="text-sm font-medium truncate">{contractor?.companyName}</div>
-              <div className="text-xs text-[var(--muted-foreground)] truncate">{contractor?.contactPerson}</div>
+              <div className="text-sm font-medium truncate">{contractor?.name}</div>
+              <div className="text-xs text-[var(--muted-foreground)] truncate">{contractor?.email}</div>
             </div>
           </div>
           <button

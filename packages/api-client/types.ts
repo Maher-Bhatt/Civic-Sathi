@@ -29,7 +29,11 @@ export interface Complaint {
 export interface AuthResponse {
   access_token: string;
   token_type: string;
-  user: User;
+  // Backend returns 'citizen' for /auth/login and /auth/register
+  // and 'officer' for /auth/officer-login. We normalise to 'user' here.
+  user?: User;
+  citizen?: User;
+  officer?: User;
 }
 
 export interface APIError {

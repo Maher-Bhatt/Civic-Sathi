@@ -19,7 +19,7 @@ function ContractorDashboard() {
   const cityId = contractor?.city || "11111111-1111-1111-1111-111111111111";
 
   const { data, isLoading: loading, error } = useQuery({
-    queryKey: ["contractor-dashboard", contractor?.contractorId, cityId],
+    queryKey: ["contractor-dashboard", contractor?.id, cityId],
     queryFn: async () => {
       const [woData, tenderData] = await Promise.all([
         getWorkOrders(cityId),
@@ -27,7 +27,7 @@ function ContractorDashboard() {
       ]);
       return { workOrders: woData, tenders: tenderData };
     },
-    enabled: !!contractor?.contractorId,
+    enabled: !!contractor?.id,
   });
 
   const workOrders = data?.workOrders || [];
@@ -49,7 +49,7 @@ function ContractorDashboard() {
         <h1 className="text-2xl font-semibold text-[var(--foreground)] tracking-tight">
           Contractor Operations Center
         </h1>
-        <p className="text-[var(--muted-foreground)] text-sm">{contractor.companyName} | {contractor.contactPerson}</p>
+        <p className="text-[var(--muted-foreground)] text-sm">{contractor.name} | {contractor.email}</p>
       </div>
 
       {/* AI Contractor Brief */}

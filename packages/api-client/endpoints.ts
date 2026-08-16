@@ -1,13 +1,30 @@
 import { APIClient } from './client';
 import { AuthResponse, Complaint, User } from './types';
 
+function normaliseAuthResponse(raw: any): AuthResponse {
+  // Backend sends { access_token, citizen: {...} } for citizen login
+  // and { access_token, officer: {...} } for officer login.
+  // Normalise both into { access_token, user: {...} } for consumers.
+  const user: User | undefined = raw.user ?? raw.citizen ?? raw.officer ?? undefined;
+  return { ...raw, user };
+}
+
 export class Endpoints {
   constructor(private client: APIClient) {}
 
   auth = {
-    loginOfficer: (data: any) => this.client.post<AuthResponse>('/api/v1/auth/officer-login', data),
-    loginCitizen: (data: any) => this.client.post<AuthResponse>('/api/v1/auth/login', data),
-    registerCitizen: (data: any) => this.client.post<AuthResponse>('/api/v1/auth/register', data),
+    loginOfficer: async (data: any): Promise<AuthResponse> => {
+      const raw = await this.client.post<any>('/api/v1/auth/officer-login', data);
+      return normaliseAuthResponse(raw);
+    },
+    loginCitizen: async (data: any): Promise<AuthResponse> => {
+      const raw = await this.client.post<any>('/api/v1/auth/login', data);
+      return normaliseAuthResponse(raw);
+    },
+    registerCitizen: async (data: any): Promise<AuthResponse> => {
+      const raw = await this.client.post<any>('/api/v1/auth/register', data);
+      return normaliseAuthResponse(raw);
+    },
   };
 
   complaints = {
@@ -35,5 +52,9 @@ export class Endpoints {
     updateStatus: (id: string, status: string) => this.client.patch<any>(`/api/v1/procurement/work-orders/${id}/status`, { status }),
     submitEvidence: (id: string, data: any) => this.client.post<any>(`/api/v1/procurement/work-orders/${id}/evidence`, data),
     inspect: (id: string, data: any) => this.client.post<any>(`/api/v1/procurement/work-orders/${id}/inspections`, data),
+  };
+
+  cities = {
+    list: () => this.client.get<Array<{ id: string; name: string; state_code: string }>>('/api/v1/cities'),
   };
 }

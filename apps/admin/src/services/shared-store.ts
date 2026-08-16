@@ -30,7 +30,7 @@ import {
   SEED_SLA_RULES,
 } from "./mockData";
 
-export const API_BASE_URL = import.meta.env["VITE_API_BASE_URL"] ?? "http://localhost:3001";
+export const API_BASE_URL = import.meta.env["VITE_API_BASE_URL"] ?? "http://localhost:8000";
 
 // ---------------------------------------------------------------- Utilities
 
@@ -436,6 +436,11 @@ export async function getAdminUser(): Promise<AdminUser | null> {
   } catch { return null; }
 }
 
+// ---------------------------------------------------------------- Admin auth
+// The admin portal is intentionally localStorage-backed for the MVP.
+// It uses seeded mock data and does NOT call the backend API.
+// This is by design: admin-level operations (contractor registry, SLA config,
+// audit logs) are managed locally until a dedicated admin API is built.
 export async function adminLogin(email: string, _password: string): Promise<AdminUser> {
   if (!email.trim()) throw new Error("Email is required");
   const admin: AdminUser = { ...DEMO_ADMIN_USER, email };

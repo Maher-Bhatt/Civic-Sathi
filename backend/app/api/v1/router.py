@@ -2,12 +2,13 @@
 
 from fastapi import APIRouter
 
-from app.api.v1.routes import health, complaints, issues, analytics, auth, procurement, triage
+from app.api.v1.routes import health, complaints, issues, analytics, auth, procurement, triage, cities
 
 router = APIRouter()
 
 router.include_router(health.router, tags=["health"])
 router.include_router(auth.router, prefix="/auth", tags=["auth"])
+router.include_router(cities.router, prefix="/cities", tags=["cities"])
 router.include_router(complaints.router, prefix="/complaints", tags=["complaints"])
 router.include_router(issues.router, prefix="/issues", tags=["issues"])
 router.include_router(procurement.router, prefix="/procurement", tags=["procurement"])
