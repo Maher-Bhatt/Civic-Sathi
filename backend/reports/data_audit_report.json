@@ -1,0 +1,948 @@
+{
+  "audit_timestamp": "2026-08-11T22:26:13.531350",
+  "file_inventory": [
+    {
+      "filename": "grievances_2020.csv",
+      "exists": true,
+      "size_bytes": 13037238,
+      "size_kb": 12731.68,
+      "size_mb": 12.43,
+      "total_lines": 92339,
+      "rows": 91620,
+      "columns": 8
+    },
+    {
+      "filename": "grievances_2021.csv",
+      "exists": true,
+      "size_bytes": 14323109,
+      "size_kb": 13987.41,
+      "size_mb": 13.66,
+      "total_lines": 103986,
+      "rows": 103504,
+      "columns": 8
+    },
+    {
+      "filename": "grievances_2022.csv",
+      "exists": true,
+      "size_bytes": 16082496,
+      "size_kb": 15705.56,
+      "size_mb": 15.34,
+      "total_lines": 118685,
+      "rows": 118394,
+      "columns": 8
+    },
+    {
+      "filename": "grievances_2023.csv",
+      "exists": true,
+      "size_bytes": 15892656,
+      "size_kb": 15520.17,
+      "size_mb": 15.16,
+      "total_lines": 119614,
+      "rows": 119140,
+      "columns": 8
+    },
+    {
+      "filename": "grievances_2024.csv",
+      "exists": true,
+      "size_bytes": 28098048,
+      "size_kb": 27439.5,
+      "size_mb": 26.8,
+      "total_lines": 209613,
+      "rows": 207016,
+      "columns": 8
+    },
+    {
+      "filename": "grievances_2025.csv",
+      "exists": true,
+      "size_bytes": 18272067,
+      "size_kb": 17843.82,
+      "size_mb": 17.43,
+      "total_lines": 128572,
+      "rows": 126974,
+      "columns": 8
+    }
+  ],
+  "schemas": {
+    "grievances_2020.csv": {
+      "columns": [
+        "Complaint ID",
+        "Category",
+        "Sub Category",
+        "Grievance Date",
+        "Ward Name",
+        "Grievance Status",
+        "Staff Remarks",
+        "Staff Name"
+      ],
+      "column_count": 8,
+      "dtypes": {
+        "Complaint ID": "int64",
+        "Category": "object",
+        "Sub Category": "object",
+        "Grievance Date": "object",
+        "Ward Name": "object",
+        "Grievance Status": "object",
+        "Staff Remarks": "object",
+        "Staff Name": "object"
+      },
+      "sample_row": {
+        "Complaint ID": 20096407,
+        "Category": "Road Maintenance(Engg)",
+        "Sub Category": "Road cutting",
+        "Grievance Date": "2020-12-31 11:33:00.000000000",
+        "Ward Name": "Bagalagunte",
+        "Grievance Status": "Closed",
+        "Staff Remarks": "After tender,it will be attended.",
+        "Staff Name": "Ranganath/AEE"
+      }
+    },
+    "grievances_2021.csv": {
+      "columns": [
+        "Complaint ID",
+        "Category",
+        "Sub Category",
+        "Grievance Date",
+        "Ward Name",
+        "Grievance Status",
+        "Staff Remarks",
+        "Staff Name"
+      ],
+      "column_count": 8,
+      "dtypes": {
+        "Complaint ID": "int64",
+        "Category": "object",
+        "Sub Category": "object",
+        "Grievance Date": "object",
+        "Ward Name": "object",
+        "Grievance Status": "object",
+        "Staff Remarks": "object",
+        "Staff Name": "object"
+      },
+      "sample_row": {
+        "Complaint ID": 20260658,
+        "Category": "Solid Waste (Garbage) Related",
+        "Sub Category": "Garbage vehicle not arrived",
+        "Grievance Date": "2021-12-17 10:24:00.000000000",
+        "Ward Name": "Bellandur",
+        "Grievance Status": "Closed",
+        "Staff Remarks": "As per citizen conformation,so this complaint has been closed",
+        "Staff Name": "SWM AEE Mahadevapura sub division/AEE"
+      }
+    },
+    "grievances_2022.csv": {
+      "columns": [
+        "Complaint ID",
+        "Category",
+        "Sub Category",
+        "Grievance Date",
+        "Ward Name",
+        "Grievance Status",
+        "Staff Remarks",
+        "Staff Name"
+      ],
+      "column_count": 8,
+      "dtypes": {
+        "Complaint ID": "int64",
+        "Category": "object",
+        "Sub Category": "object",
+        "Grievance Date": "object",
+        "Ward Name": "object",
+        "Grievance Status": "object",
+        "Staff Remarks": "object",
+        "Staff Name": "object"
+      },
+      "sample_row": {
+        "Complaint ID": 20318322,
+        "Category": "Solid Waste (Garbage) Related",
+        "Sub Category": "Dead animal(s)",
+        "Grievance Date": "2022-12-31 05:43:00.000000000",
+        "Ward Name": "Agrahara Dasarahalli",
+        "Grievance Status": "Closed",
+        "Staff Remarks": "Problem solved",
+        "Staff Name": "Ranganath/JHI"
+      }
+    },
+    "grievances_2023.csv": {
+      "columns": [
+        "Complaint ID",
+        "Category",
+        "Sub Category",
+        "Grievance Date",
+        "Ward Name",
+        "Grievance Status",
+        "Staff Remarks",
+        "Staff Name"
+      ],
+      "column_count": 8,
+      "dtypes": {
+        "Complaint ID": "int64",
+        "Category": "object",
+        "Sub Category": "object",
+        "Grievance Date": "object",
+        "Ward Name": "object",
+        "Grievance Status": "object",
+        "Staff Remarks": "object",
+        "Staff Name": "object"
+      },
+      "sample_row": {
+        "Complaint ID": 20437520,
+        "Category": "Road Maintenance(Engg)",
+        "Sub Category": "Road cutting",
+        "Grievance Date": "2023-12-31 11:29:00.000000000",
+        "Ward Name": "Chamrajpet",
+        "Grievance Status": "Closed",
+        "Staff Remarks": "Closed",
+        "Staff Name": "Umesh/AEE"
+      }
+    },
+    "grievances_2024.csv": {
+      "columns": [
+        "Complaint ID",
+        "Category",
+        "Sub Category",
+        "Grievance Date",
+        "Ward Name",
+        "Grievance Status",
+        "Staff Remarks",
+        "Staff Name"
+      ],
+      "column_count": 8,
+      "dtypes": {
+        "Complaint ID": "int64",
+        "Category": "object",
+        "Sub Category": "object",
+        "Grievance Date": "object",
+        "Ward Name": "object",
+        "Grievance Status": "object",
+        "Staff Remarks": "object",
+        "Staff Name": "object"
+      },
+      "sample_row": {
+        "Complaint ID": 20644646,
+        "Category": "Solid Waste (Garbage) Related",
+        "Sub Category": "Garbage vehicle not arrived",
+        "Grievance Date": "2024-12-31 05:52:00.000000000",
+        "Ward Name": "Manorayanapalya",
+        "Grievance Status": "Closed",
+        "Staff Remarks": "Clear",
+        "Staff Name": "Nagendra/JHI"
+      }
+    },
+    "grievances_2025.csv": {
+      "columns": [
+        "Complaint ID",
+        "Category",
+        "Sub Category",
+        "Grievance Date",
+        "Ward Name",
+        "Grievance Status",
+        "Staff Remarks",
+        "Staff Name"
+      ],
+      "column_count": 8,
+      "dtypes": {
+        "Complaint ID": "int64",
+        "Category": "object",
+        "Sub Category": "object",
+        "Grievance Date": "object",
+        "Ward Name": "object",
+        "Grievance Status": "object",
+        "Staff Remarks": "object",
+        "Staff Name": "object"
+      },
+      "sample_row": {
+        "Complaint ID": 20771690,
+        "Category": "Electrical",
+        "Sub Category": "Street Light Not Working",
+        "Grievance Date": "2025-06-19 10:39:00.000000000",
+        "Ward Name": "Jagajeevanram Nagar",
+        "Grievance Status": "Registered",
+        "Staff Remarks": "1st Assignment Based on Ward Mapping",
+        "Staff Name": "syed zameer/JE"
+      }
+    }
+  },
+  "data_quality": {
+    "grievances_2020.csv": {
+      "total_rows": 91620,
+      "missing_values": {
+        "Grievance Status": {
+          "count": 3,
+          "percentage": 0.0
+        }
+      },
+      "empty_strings": {},
+      "completely_null_columns": []
+    },
+    "grievances_2021.csv": {
+      "total_rows": 103504,
+      "missing_values": {
+        "Grievance Status": {
+          "count": 17,
+          "percentage": 0.02
+        }
+      },
+      "empty_strings": {},
+      "completely_null_columns": []
+    },
+    "grievances_2022.csv": {
+      "total_rows": 118394,
+      "missing_values": {},
+      "empty_strings": {},
+      "completely_null_columns": []
+    },
+    "grievances_2023.csv": {
+      "total_rows": 119140,
+      "missing_values": {},
+      "empty_strings": {},
+      "completely_null_columns": []
+    },
+    "grievances_2024.csv": {
+      "total_rows": 207016,
+      "missing_values": {},
+      "empty_strings": {},
+      "completely_null_columns": []
+    },
+    "grievances_2025.csv": {
+      "total_rows": 126974,
+      "missing_values": {
+        "Grievance Status": {
+          "count": 54,
+          "percentage": 0.04
+        },
+        "Staff Remarks": {
+          "count": 54,
+          "percentage": 0.04
+        },
+        "Staff Name": {
+          "count": 54,
+          "percentage": 0.04
+        }
+      },
+      "empty_strings": {},
+      "completely_null_columns": []
+    }
+  },
+  "duplicates": {
+    "grievances_2020.csv": {
+      "exact_duplicates": 0,
+      "id_duplicates": {}
+    },
+    "grievances_2021.csv": {
+      "exact_duplicates": 0,
+      "id_duplicates": {}
+    },
+    "grievances_2022.csv": {
+      "exact_duplicates": 0,
+      "id_duplicates": {}
+    },
+    "grievances_2023.csv": {
+      "exact_duplicates": 0,
+      "id_duplicates": {}
+    },
+    "grievances_2024.csv": {
+      "exact_duplicates": 0,
+      "id_duplicates": {}
+    },
+    "grievances_2025.csv": {
+      "exact_duplicates": 0,
+      "id_duplicates": {}
+    }
+  },
+  "distributions": {
+    "grievances_2020.csv": {
+      "Category": {
+        "unique_count": 21,
+        "top_values": {
+          "Electrical": 33822,
+          "Solid Waste (Garbage) Related": 24022,
+          "Road Maintenance(Engg)": 16372,
+          "Forest": 4349,
+          "veterinary": 3876,
+          "Health Dept": 3223,
+          "Revenue Department": 1337,
+          "CORONA COVID19": 1137,
+          "Others": 1113,
+          "Storm  Water Drain(SWD)": 859,
+          "Sanitation": 419,
+          "Parks and Play grounds": 343,
+          "Lakes": 259,
+          "Town Planning": 176,
+          "Advertisement": 118,
+          "Estate": 61,
+          "Optical Fiber Cables (OFC)": 47,
+          "Welfare Schemes": 37,
+          "Markets": 30,
+          "Education": 17
+        }
+      },
+      "Grievance Status": {
+        "unique_count": 7,
+        "top_values": {
+          "Closed": 80265,
+          "Rejected": 6763,
+          "Resolved": 3964,
+          "Registered": 590,
+          "ReOpen": 14,
+          "Non Relevant": 14,
+          "Long Term Solution": 7
+        }
+      }
+    },
+    "grievances_2021.csv": {
+      "Category": {
+        "unique_count": 22,
+        "top_values": {
+          "Electrical": 50229,
+          "Solid Waste (Garbage) Related": 24184,
+          "Road Maintenance(Engg)": 16680,
+          "veterinary": 2785,
+          "Forest": 2640,
+          "Health Dept": 2435,
+          "Storm  Water Drain(SWD)": 940,
+          "Others": 772,
+          "CORONA COVID19": 587,
+          "Revenue Department": 470,
+          "Parks and Play grounds": 406,
+          "Sanitation": 355,
+          "Lakes": 224,
+          "Town Planning": 222,
+          "Advertisement": 201,
+          "Road Infrastructure": 148,
+          "Optical Fiber Cables (OFC)": 102,
+          "Estate": 45,
+          "Markets": 33,
+          "Welfare Schemes": 22
+        }
+      },
+      "Grievance Status": {
+        "unique_count": 8,
+        "top_values": {
+          "Closed": 93373,
+          "Rejected": 6544,
+          "Resolved": 2989,
+          "Registered": 510,
+          "Long Term Solution": 28,
+          "ReOpen": 20,
+          "Non Relevant": 17,
+          "In Progress": 6
+        }
+      }
+    },
+    "grievances_2022.csv": {
+      "Category": {
+        "unique_count": 26,
+        "top_values": {
+          "Electrical": 56892,
+          "Solid Waste (Garbage) Related": 22828,
+          "Road Maintenance(Engg)": 21485,
+          "Forest": 3821,
+          "veterinary": 3019,
+          "Road Infrastructure": 2498,
+          "Health Dept": 2431,
+          "Storm  Water Drain(SWD)": 1225,
+          "Others": 811,
+          "Revenue Department": 557,
+          "Parks and Play grounds": 550,
+          "Town Planning": 513,
+          "Lakes": 471,
+          "Advertisement": 457,
+          "Sanitation": 379,
+          "CORONA COVID19": 166,
+          "Optical Fiber Cables (OFC)": 106,
+          "BBMP Election Branch": 59,
+          "Plastic": 42,
+          "Welfare Schemes": 31
+        }
+      },
+      "Grievance Status": {
+        "unique_count": 7,
+        "top_values": {
+          "Closed": 113229,
+          "Rejected": 3496,
+          "Registered": 1411,
+          "Non Relevant": 128,
+          "Long Term Solution": 73,
+          "ReOpen": 34,
+          "In Progress": 23
+        }
+      }
+    },
+    "grievances_2023.csv": {
+      "Category": {
+        "unique_count": 30,
+        "top_values": {
+          "Electrical": 51892,
+          "Solid Waste (Garbage) Related": 28639,
+          "Road Maintenance(Engg)": 17901,
+          "Forest": 5760,
+          "veterinary": 3396,
+          "Health Dept": 3133,
+          "Road Infrastructure": 2636,
+          "Town Planning": 1326,
+          "Storm  Water Drain(SWD)": 933,
+          "Parks and Play grounds": 643,
+          "Advertisement": 487,
+          "Sanitation": 473,
+          "Others": 472,
+          "Revenue Department": 449,
+          "Lakes": 440,
+          "Optical Fiber Cables (OFC)": 139,
+          "Information Technology": 74,
+          "Markets": 70,
+          "Indira Canteen": 66,
+          "Plastic": 60
+        }
+      },
+      "Grievance Status": {
+        "unique_count": 6,
+        "top_values": {
+          "Closed": 115430,
+          "Non Relevant": 1650,
+          "Registered": 1367,
+          "In Progress": 510,
+          "Long Term Solution": 126,
+          "ReOpen": 57
+        }
+      }
+    },
+    "grievances_2024.csv": {
+      "Category": {
+        "unique_count": 31,
+        "top_values": {
+          "Electrical": 75155,
+          "Solid Waste (Garbage) Related": 57329,
+          "Road Maintenance(Engg)": 24973,
+          "Health Dept": 15324,
+          "Forest": 11723,
+          "Road Infrastructure": 4870,
+          "veterinary": 4771,
+          "Others": 2809,
+          "Town Planning": 1813,
+          "Storm  Water Drain(SWD)": 1677,
+          "Parks and Play grounds": 1130,
+          "Revenue Department": 1062,
+          "Advertisement": 854,
+          "Water Crisis": 700,
+          "Sanitation": 596,
+          "Lakes": 587,
+          "E khata / Khata services": 441,
+          "Traffic Engineer Cell (TEC)": 296,
+          "Markets": 209,
+          "Information Technology": 110
+        }
+      },
+      "Grievance Status": {
+        "unique_count": 6,
+        "top_values": {
+          "Closed": 190171,
+          "Non Relevant": 9123,
+          "Registered": 6269,
+          "ReOpen": 918,
+          "In Progress": 357,
+          "Long Term Solution": 178
+        }
+      }
+    },
+    "grievances_2025.csv": {
+      "Category": {
+        "unique_count": 31,
+        "top_values": {
+          "Electrical": 42138,
+          "Solid Waste (Garbage) Related": 38151,
+          "Road Maintenance(Engg)": 14124,
+          "veterinary": 7677,
+          "Forest": 6325,
+          "E khata / Khata services": 4190,
+          "Health Dept": 3378,
+          "Road Infrastructure": 2662,
+          "Others": 2066,
+          "Revenue Department": 1283,
+          "Storm  Water Drain(SWD)": 987,
+          "Parks and Play grounds": 785,
+          "Advertisement": 699,
+          "Town Planning": 572,
+          "Lakes": 318,
+          "Sanitation": 311,
+          "Water Crisis": 261,
+          "Markets": 196,
+          "Indira Canteen": 175,
+          "Traffic Engineer Cell (TEC)": 153
+        }
+      },
+      "Grievance Status": {
+        "unique_count": 6,
+        "top_values": {
+          "Closed": 109410,
+          "Registered": 10257,
+          "Non Relevant": 5118,
+          "ReOpen": 1656,
+          "In Progress": 359,
+          "Long Term Solution": 120
+        }
+      }
+    }
+  },
+  "temporal": {
+    "grievances_2020.csv": {
+      "Grievance Date": {
+        "min_date": "2020-02-08 01:01:00",
+        "max_date": "2020-12-31 12:57:00",
+        "null_count": 0
+      }
+    },
+    "grievances_2021.csv": {
+      "Grievance Date": {
+        "min_date": "2021-01-01 01:04:00",
+        "max_date": "2021-12-31 12:58:00",
+        "null_count": 0
+      }
+    },
+    "grievances_2022.csv": {
+      "Grievance Date": {
+        "min_date": "2022-01-01 01:07:00",
+        "max_date": "2022-12-31 12:59:00",
+        "null_count": 0
+      }
+    },
+    "grievances_2023.csv": {
+      "Grievance Date": {
+        "min_date": "2023-01-01 01:18:00",
+        "max_date": "2023-12-31 12:03:00",
+        "null_count": 0
+      }
+    },
+    "grievances_2024.csv": {
+      "Grievance Date": {
+        "min_date": "2024-01-01 01:00:00",
+        "max_date": "2024-12-31 12:59:00",
+        "null_count": 0
+      }
+    },
+    "grievances_2025.csv": {
+      "Grievance Date": {
+        "min_date": "2025-01-01 01:00:00",
+        "max_date": "2025-06-19 12:59:00",
+        "null_count": 0
+      }
+    }
+  },
+  "text_fields": {
+    "grievances_2020.csv": {
+      "Category": {
+        "avg_length": 17.26,
+        "max_length": 29,
+        "null_count": 0,
+        "sample": "Road Maintenance(Engg)"
+      },
+      "Sub Category": {
+        "avg_length": 23.66,
+        "max_length": 72,
+        "null_count": 0,
+        "sample": "Road cutting"
+      },
+      "Grievance Date": {
+        "avg_length": 29.0,
+        "max_length": 29,
+        "null_count": 0,
+        "sample": "2020-12-31 11:33:00.000000000"
+      },
+      "Ward Name": {
+        "avg_length": 12.16,
+        "max_length": 31,
+        "null_count": 0,
+        "sample": "Bagalagunte"
+      },
+      "Staff Remarks": {
+        "avg_length": 18.73,
+        "max_length": 1726,
+        "null_count": 0,
+        "sample": "After tender,it will be attended."
+      },
+      "Staff Name": {
+        "avg_length": 17.91,
+        "max_length": 45,
+        "null_count": 0,
+        "sample": "Ranganath/AEE"
+      }
+    },
+    "grievances_2021.csv": {
+      "Category": {
+        "avg_length": 16.52,
+        "max_length": 29,
+        "null_count": 0,
+        "sample": "Solid Waste (Garbage) Related"
+      },
+      "Sub Category": {
+        "avg_length": 23.09,
+        "max_length": 72,
+        "null_count": 0,
+        "sample": "Garbage vehicle not arrived"
+      },
+      "Grievance Date": {
+        "avg_length": 29.0,
+        "max_length": 29,
+        "null_count": 0,
+        "sample": "2021-12-17 10:24:00.000000000"
+      },
+      "Ward Name": {
+        "avg_length": 12.11,
+        "max_length": 31,
+        "null_count": 0,
+        "sample": "Bellandur"
+      },
+      "Staff Remarks": {
+        "avg_length": 16.83,
+        "max_length": 929,
+        "null_count": 0,
+        "sample": "As per citizen conformation,so this complaint has been closed"
+      },
+      "Staff Name": {
+        "avg_length": 17.39,
+        "max_length": 45,
+        "null_count": 0,
+        "sample": "SWM AEE Mahadevapura sub division/AEE"
+      }
+    },
+    "grievances_2022.csv": {
+      "Category": {
+        "avg_length": 16.15,
+        "max_length": 29,
+        "null_count": 0,
+        "sample": "Solid Waste (Garbage) Related"
+      },
+      "Sub Category": {
+        "avg_length": 22.93,
+        "max_length": 72,
+        "null_count": 0,
+        "sample": "Dead animal(s)"
+      },
+      "Grievance Date": {
+        "avg_length": 29.0,
+        "max_length": 29,
+        "null_count": 0,
+        "sample": "2022-12-31 05:43:00.000000000"
+      },
+      "Ward Name": {
+        "avg_length": 12.04,
+        "max_length": 31,
+        "null_count": 0,
+        "sample": "Agrahara Dasarahalli"
+      },
+      "Staff Remarks": {
+        "avg_length": 15.76,
+        "max_length": 2464,
+        "null_count": 0,
+        "sample": "Problem solved"
+      },
+      "Staff Name": {
+        "avg_length": 16.63,
+        "max_length": 45,
+        "null_count": 0,
+        "sample": "Ranganath/JHI"
+      }
+    },
+    "grievances_2023.csv": {
+      "Category": {
+        "avg_length": 16.64,
+        "max_length": 29,
+        "null_count": 0,
+        "sample": "Road Maintenance(Engg)"
+      },
+      "Sub Category": {
+        "avg_length": 23.86,
+        "max_length": 72,
+        "null_count": 0,
+        "sample": "Road cutting"
+      },
+      "Grievance Date": {
+        "avg_length": 29.0,
+        "max_length": 29,
+        "null_count": 0,
+        "sample": "2023-12-31 11:29:00.000000000"
+      },
+      "Ward Name": {
+        "avg_length": 12.05,
+        "max_length": 31,
+        "null_count": 0,
+        "sample": "Chamrajpet"
+      },
+      "Staff Remarks": {
+        "avg_length": 12.02,
+        "max_length": 628,
+        "null_count": 0,
+        "sample": "Closed"
+      },
+      "Staff Name": {
+        "avg_length": 16.59,
+        "max_length": 45,
+        "null_count": 0,
+        "sample": "Umesh/AEE"
+      }
+    },
+    "grievances_2024.csv": {
+      "Category": {
+        "avg_length": 17.03,
+        "max_length": 29,
+        "null_count": 0,
+        "sample": "Solid Waste (Garbage) Related"
+      },
+      "Sub Category": {
+        "avg_length": 23.05,
+        "max_length": 72,
+        "null_count": 0,
+        "sample": "Garbage vehicle not arrived"
+      },
+      "Grievance Date": {
+        "avg_length": 29.0,
+        "max_length": 29,
+        "null_count": 0,
+        "sample": "2024-12-31 05:52:00.000000000"
+      },
+      "Ward Name": {
+        "avg_length": 12.08,
+        "max_length": 31,
+        "null_count": 0,
+        "sample": "Manorayanapalya"
+      },
+      "Staff Remarks": {
+        "avg_length": 13.41,
+        "max_length": 18718,
+        "null_count": 0,
+        "sample": "Clear"
+      },
+      "Staff Name": {
+        "avg_length": 17.48,
+        "max_length": 49,
+        "null_count": 0,
+        "sample": "Nagendra/JHI"
+      }
+    },
+    "grievances_2025.csv": {
+      "Category": {
+        "avg_length": 17.78,
+        "max_length": 29,
+        "null_count": 0,
+        "sample": "Electrical"
+      },
+      "Sub Category": {
+        "avg_length": 23.41,
+        "max_length": 72,
+        "null_count": 0,
+        "sample": "Street Light Not Working"
+      },
+      "Grievance Date": {
+        "avg_length": 29.0,
+        "max_length": 29,
+        "null_count": 0,
+        "sample": "2025-06-19 10:39:00.000000000"
+      },
+      "Ward Name": {
+        "avg_length": 11.94,
+        "max_length": 31,
+        "null_count": 0,
+        "sample": "Jagajeevanram Nagar"
+      },
+      "Staff Remarks": {
+        "avg_length": 19.83,
+        "max_length": 1523,
+        "null_count": 54,
+        "sample": "1st Assignment Based on Ward Mapping"
+      },
+      "Staff Name": {
+        "avg_length": 17.45,
+        "max_length": 49,
+        "null_count": 54,
+        "sample": "syed zameer/JE"
+      }
+    }
+  },
+  "compatibility": {
+    "total_files": 6,
+    "common_columns": [
+      "Complaint ID",
+      "Staff Remarks",
+      "Sub Category",
+      "Ward Name",
+      "Grievance Status",
+      "Category",
+      "Grievance Date",
+      "Staff Name"
+    ],
+    "common_column_count": 8,
+    "all_unique_columns": [
+      "Complaint ID",
+      "Staff Remarks",
+      "Sub Category",
+      "Ward Name",
+      "Grievance Status",
+      "Category",
+      "Grievance Date",
+      "Staff Name"
+    ],
+    "all_unique_column_count": 8,
+    "files_compatible": true,
+    "per_file_columns": {
+      "grievances_2020.csv": [
+        "Complaint ID",
+        "Staff Remarks",
+        "Sub Category",
+        "Ward Name",
+        "Grievance Status",
+        "Category",
+        "Grievance Date",
+        "Staff Name"
+      ],
+      "grievances_2021.csv": [
+        "Complaint ID",
+        "Staff Remarks",
+        "Sub Category",
+        "Ward Name",
+        "Grievance Status",
+        "Category",
+        "Grievance Date",
+        "Staff Name"
+      ],
+      "grievances_2022.csv": [
+        "Complaint ID",
+        "Staff Remarks",
+        "Sub Category",
+        "Ward Name",
+        "Grievance Status",
+        "Category",
+        "Grievance Date",
+        "Staff Name"
+      ],
+      "grievances_2023.csv": [
+        "Complaint ID",
+        "Staff Remarks",
+        "Sub Category",
+        "Ward Name",
+        "Grievance Status",
+        "Category",
+        "Grievance Date",
+        "Staff Name"
+      ],
+      "grievances_2024.csv": [
+        "Complaint ID",
+        "Staff Remarks",
+        "Sub Category",
+        "Ward Name",
+        "Grievance Status",
+        "Category",
+        "Grievance Date",
+        "Staff Name"
+      ],
+      "grievances_2025.csv": [
+        "Complaint ID",
+        "Staff Remarks",
+        "Sub Category",
+        "Ward Name",
+        "Grievance Status",
+        "Category",
+        "Grievance Date",
+        "Staff Name"
+      ]
+    }
+  }
+}

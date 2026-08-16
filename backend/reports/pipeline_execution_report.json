@@ -1,0 +1,129 @@
+{
+  "pipeline_metadata": {
+    "start_time": "2026-08-12 21:33:21.674365",
+    "end_time": "2026-08-12 21:35:37.019705",
+    "duration_seconds": 135.34534,
+    "duration_minutes": 2.26
+  },
+  "data_metrics": {
+    "total_complaints": 766648,
+    "total_clusters": 3079,
+    "systemic_issues_detected": 253,
+    "root_causes_identified": 319,
+    "recommendations_generated": 507
+  },
+  "issue_breakdown": {
+    "by_risk_level": {
+      "MEDIUM": 239,
+      "HIGH": 13,
+      "CRITICAL": 1
+    },
+    "by_type": {
+      "Other": 200,
+      "Emerging Crisis": 52,
+      "Service Gap": 1
+    },
+    "by_category": {
+      "Electrical": 63,
+      "Solid Waste (Garbage) Related": 49,
+      "Health Dept": 29,
+      "CORONA COVID19": 28,
+      "Road Maintenance(Engg)": 21,
+      "Water Crisis": 21,
+      "Sanitation": 20,
+      "veterinary": 8,
+      "Road Infrastructure": 4,
+      "Others": 3
+    },
+    "by_ward": {
+      "Jnanabharathi Ward": 13,
+      "Rajarajeshwari Nagar": 12,
+      "Horamavu": 11,
+      "Hemmigepura": 9,
+      "Thanisandra": 8,
+      "Jakkur": 8,
+      "Begur": 8,
+      "Bellandur": 8,
+      "Someshwara": 7,
+      "Uttarahalli": 7
+    }
+  },
+  "risk_statistics": {
+    "avg_risk_score": 39.063663980501346,
+    "max_risk_score": 69.88815117466802,
+    "critical_issues": 1,
+    "high_risk_issues": 13
+  },
+  "top_10_issues": [
+    {
+      "issue_id": "ISSUE-0232",
+      "issue_title": "Electrical - Street Light Not Working in Jnanabharathi Ward",
+      "risk_level": "CRITICAL",
+      "total_risk_score": 69.88815117466802,
+      "complaint_count": 9779
+    },
+    {
+      "issue_id": "ISSUE-0280",
+      "issue_title": "Electrical - Street Light Not Working in Hemmigepura",
+      "risk_level": "HIGH",
+      "total_risk_score": 61.23876077701667,
+      "complaint_count": 7886
+    },
+    {
+      "issue_id": "ISSUE-0214",
+      "issue_title": "Electrical - Street Light Not Working in Horamavu",
+      "risk_level": "HIGH",
+      "total_risk_score": 60.83681800097611,
+      "complaint_count": 6406
+    },
+    {
+      "issue_id": "ISSUE-0108",
+      "issue_title": "Electrical - Street Light Not Working in Rajarajeshwari Nagar",
+      "risk_level": "HIGH",
+      "total_risk_score": 60.50602487051172,
+      "complaint_count": 6695
+    },
+    {
+      "issue_id": "ISSUE-0031",
+      "issue_title": "Electrical - Street Light Not Working in Begur",
+      "risk_level": "HIGH",
+      "total_risk_score": 58.80628258399429,
+      "complaint_count": 7373
+    },
+    {
+      "issue_id": "ISSUE-0327",
+      "issue_title": "Electrical - Street Light Not Working in Jakkur",
+      "risk_level": "HIGH",
+      "total_risk_score": 56.57182356007363,
+      "complaint_count": 6221
+    },
+    {
+      "issue_id": "ISSUE-0089",
+      "issue_title": "Solid Waste (Garbage) Related - Garbage vehicle not arrived in Thanisandra",
+      "risk_level": "HIGH",
+      "total_risk_score": 55.96845361503981,
+      "complaint_count": 5553
+    },
+    {
+      "issue_id": "ISSUE-0048",
+      "issue_title": "Electrical - Street Light Not Working in Ullalu",
+      "risk_level": "HIGH",
+      "total_risk_score": 55.53564711904602,
+      "complaint_count": 6622
+    },
+    {
+      "issue_id": "ISSUE-0078",
+      "issue_title": "Electrical - Street Light Not Working in Uttarahalli",
+      "risk_level": "HIGH",
+      "total_risk_score": 55.46173644855965,
+      "complaint_count": 6097
+    },
+    {
+      "issue_id": "ISSUE-0259",
+      "issue_title": "Electrical - Street Light Not Working in Thanisandra",
+      "risk_level": "HIGH",
+      "total_risk_score": 54.98194188149743,
+      "complaint_count": 5019
+    }
+  ]
+}

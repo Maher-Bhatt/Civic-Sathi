@@ -1,0 +1,13 @@
+{
+  "total_validated": 50,
+  "valid_systemic": 14,
+  "possibly_systemic": 30,
+  "normal_repetition": 6,
+  "false_positives": 0,
+  "precision_percent": 88.0,
+  "validation_breakdown": {
+    "POSSIBLY_SYSTEMIC": 30,
+    "VALID_SYSTEMIC": 14,
+    "NORMAL_REPETITION": 6
+  }
+}

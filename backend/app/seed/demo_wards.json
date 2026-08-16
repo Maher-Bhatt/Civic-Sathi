@@ -1,0 +1,58 @@
+[
+  {
+    "ward_number": 8,
+    "name": "Ward 8 - Central District",
+    "centroid_lat": 28.6139,
+    "centroid_lng": 77.2090,
+    "boundary_geojson": {"type": "Polygon", "coordinates": [[[77.205, 28.610], [77.213, 28.610], [77.213, 28.618], [77.205, 28.618], [77.205, 28.610]]]}
+  },
+  {
+    "ward_number": 14,
+    "name": "Ward 14 - Market Zone",
+    "centroid_lat": 28.6200,
+    "centroid_lng": 77.2150,
+    "boundary_geojson": {"type": "Polygon", "coordinates": [[[77.211, 28.616], [77.219, 28.616], [77.219, 28.624], [77.211, 28.624], [77.211, 28.616]]]}
+  },
+  {
+    "ward_number": 22,
+    "name": "Ward 22 - Residential Area",
+    "centroid_lat": 28.6300,
+    "centroid_lng": 77.2250,
+    "boundary_geojson": {"type": "Polygon", "coordinates": [[[77.221, 28.626], [77.229, 28.626], [77.229, 28.634], [77.221, 28.634], [77.221, 28.626]]]}
+  },
+  {
+    "ward_number": 5,
+    "name": "Ward 5 - Industrial Zone",
+    "centroid_lat": 28.6050,
+    "centroid_lng": 77.2000,
+    "boundary_geojson": {"type": "Polygon", "coordinates": [[[77.196, 28.601], [77.204, 28.601], [77.204, 28.609], [77.196, 28.609], [77.196, 28.601]]]}
+  },
+  {
+    "ward_number": 11,
+    "name": "Ward 11 - East District",
+    "centroid_lat": 28.6150,
+    "centroid_lng": 77.2300,
+    "boundary_geojson": {"type": "Polygon", "coordinates": [[[77.226, 28.611], [77.234, 28.611], [77.234, 28.619], [77.226, 28.619], [77.226, 28.611]]]}
+  },
+  {
+    "ward_number": 18,
+    "name": "Ward 18 - West District",
+    "centroid_lat": 28.6250,
+    "centroid_lng": 77.1950,
+    "boundary_geojson": {"type": "Polygon", "coordinates": [[[77.191, 28.621], [77.199, 28.621], [77.199, 28.629], [77.191, 28.629], [77.191, 28.621]]]}
+  },
+  {
+    "ward_number": 3,
+    "name": "Ward 3 - North Zone",
+    "centroid_lat": 28.6400,
+    "centroid_lng": 77.2100,
+    "boundary_geojson": {"type": "Polygon", "coordinates": [[[77.206, 28.636], [77.214, 28.636], [77.214, 28.644], [77.206, 28.644], [77.206, 28.636]]]}
+  },
+  {
+    "ward_number": 27,
+    "name": "Ward 27 - South Zone",
+    "centroid_lat": 28.6000,
+    "centroid_lng": 77.2200,
+    "boundary_geojson": {"type": "Polygon", "coordinates": [[[77.216, 28.596], [77.224, 28.596], [77.224, 28.604], [77.216, 28.604], [77.216, 28.596]]]}
+  }
+]

@@ -1,0 +1,56 @@
+[
+  {
+    "name": "Rajesh Kumar",
+    "email": "rajesh.kumar@bengaluru.gov.in",
+    "password": "bangalore123",
+    "role": "officer",
+    "department": "Water Supply",
+    "city": "Bengaluru",
+    "phone": "+91-80-22222001"
+  },
+  {
+    "name": "Priya Sharma",
+    "email": "priya.sharma@bengaluru.gov.in",
+    "password": "bangalore123",
+    "role": "officer",
+    "department": "Roads",
+    "city": "Bengaluru",
+    "phone": "+91-80-22222002"
+  },
+  {
+    "name": "Arjun Reddy",
+    "email": "arjun.reddy@bengaluru.gov.in",
+    "password": "bangalore123",
+    "role": "officer",
+    "department": "Solid Waste Management",
+    "city": "Bengaluru",
+    "phone": "+91-80-22222003"
+  },
+  {
+    "name": "Lakshmi Iyer",
+    "email": "lakshmi.iyer@bengaluru.gov.in",
+    "password": "bangalore123",
+    "role": "supervisor",
+    "department": "Administration",
+    "city": "Bengaluru",
+    "phone": "+91-80-22222004"
+  },
+  {
+    "name": "Deepak Shetty",
+    "email": "admin@bengaluru.gov.in",
+    "password": "bangalore123",
+    "role": "admin",
+    "department": "Administration",
+    "city": "Bengaluru",
+    "phone": "+91-80-22222000"
+  },
+  {
+    "name": "Kavitha Nair",
+    "email": "kavitha.nair@bengaluru.gov.in",
+    "password": "bangalore123",
+    "role": "officer",
+    "department": "Street Lighting",
+    "city": "Bengaluru",
+    "phone": "+91-80-22222005"
+  }
+]

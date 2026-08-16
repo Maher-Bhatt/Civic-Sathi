@@ -1,0 +1,722 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * JANMIND design system — charcoal / grey / muted green.
+ * Never introduce blue, purple, gold, neon or rainbow hues.
+ */
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 16px);
+
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+
+  --color-background: var(--background);
+  --color-background-secondary: var(--background-secondary);
+  --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-surface-elevated: var(--surface-elevated);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-subtle: var(--subtle-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-critical: var(--critical);
+  --color-warning: var(--warning);
+  --color-success: var(--success);
+  --color-border: var(--border);
+  --color-glass-border: var(--glass-border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--primary);
+  --color-chart-2: var(--secondary-accent);
+  --color-chart-3: var(--warning);
+  --color-chart-4: var(--critical);
+  --color-chart-5: var(--muted-foreground);
+
+  --shadow-glass: var(--shadow-soft);
+  --shadow-glass-lg: var(--shadow-lift);
+}
+
+:root {
+  --radius: 0.75rem;
+
+  --background: oklch(0.9531 0.0034 145.55);
+  --background-secondary: oklch(0.9281 0.0042 157.17);
+  --surface: rgb(255 255 255 / 0.72);
+  --surface-elevated: rgb(255 255 255 / 0.84);
+  --glass: rgb(255 255 255 / 0.55);
+  --glass-strong: rgb(255 255 255 / 0.72);
+  --glass-border: rgb(255 255 255 / 0.72);
+
+  --foreground: oklch(0.2188 0.0072 229.22);
+  --card: rgb(255 255 255 / 0.72);
+  --card-foreground: oklch(0.2188 0.0072 229.22);
+  --popover: oklch(0.9731 0.0034 145.55);
+  --popover-foreground: oklch(0.2188 0.0072 229.22);
+
+  --primary: oklch(0.5321 0.079 166.23);
+  --primary-foreground: oklch(0.9731 0.0034 145.55);
+  --secondary-accent: oklch(0.5445 0.0523 166.11);
+  --secondary: oklch(0.9281 0.0042 157.17);
+  --secondary-foreground: oklch(0.2188 0.0072 229.22);
+
+  --muted: oklch(0.9281 0.0042 157.17);
+  --muted-foreground: oklch(0.4901 0.0138 231.89);
+  --subtle-foreground: oklch(0.6038 0.0123 226.1);
+
+  --accent: oklch(0.9281 0.0042 157.17);
+  --accent-foreground: oklch(0.2188 0.0072 229.22);
+
+  --critical: oklch(0.5615 0.138 22.57);
+  --warning: oklch(0.5853 0.0849 73.98);
+  --success: oklch(0.5321 0.079 166.23);
+  --destructive: oklch(0.5615 0.138 22.57);
+  --destructive-foreground: oklch(0.9731 0.0034 145.55);
+
+  --border: rgb(30 38 40 / 0.12);
+  --input: rgb(30 38 40 / 0.14);
+  --ring: oklch(0.5321 0.079 166.23);
+
+  --shadow-soft: 0 1px 2px rgb(24 32 30 / 0.05), 0 8px 24px -12px rgb(24 32 30 / 0.18);
+  --shadow-lift: 0 2px 4px rgb(24 32 30 / 0.06), 0 18px 40px -16px rgb(24 32 30 / 0.26);
+  --ambient-1: rgb(57 123 98 / 0.16);
+  --ambient-2: rgb(120 132 128 / 0.22);
+}
+
+.dark {
+  --background: oklch(0.1433 0.0057 246.44);
+  --background-secondary: oklch(0.1706 0.0064 237);
+  --surface: oklch(0.1973 0.0087 240.37);
+  --surface-elevated: oklch(0.2226 0.0095 234.21);
+  --glass: rgb(255 255 255 / 0.045);
+  --glass-strong: rgb(255 255 255 / 0.065);
+  --glass-border: rgb(255 255 255 / 0.1);
+
+  --foreground: oklch(0.9654 0.0025 165.08);
+  --card: oklch(0.1973 0.0087 240.37);
+  --card-foreground: oklch(0.9654 0.0025 165.08);
+  --popover: oklch(0.1973 0.0087 240.37);
+  --popover-foreground: oklch(0.9654 0.0025 165.08);
+
+  --primary: oklch(0.6052 0.0843 166.93);
+  --primary-foreground: oklch(0.1433 0.0057 246.44);
+  --secondary-accent: oklch(0.5675 0.0485 164.03);
+  --secondary: oklch(0.2226 0.0095 234.21);
+  --secondary-foreground: oklch(0.9654 0.0025 165.08);
+
+  --muted: oklch(0.2226 0.0095 234.21);
+  --muted-foreground: oklch(0.7272 0.0099 232.42);
+  --subtle-foreground: oklch(0.5599 0.0133 231.83);
+
+  --accent: oklch(0.2226 0.0095 234.21);
+  --accent-foreground: oklch(0.9654 0.0025 165.08);
+
+  --critical: oklch(0.6065 0.1397 22.11);
+  --warning: oklch(0.6593 0.0882 74.56);
+  --success: oklch(0.6052 0.0843 166.93);
+  --destructive: oklch(0.6065 0.1397 22.11);
+  --destructive-foreground: oklch(0.9654 0.0025 165.08);
+
+  --border: oklch(0.288 0.0123 232.89);
+  --input: oklch(0.288 0.0123 232.89);
+  --ring: oklch(0.6052 0.0843 166.93);
+
+  --shadow-soft: 0 1px 2px rgb(0 0 0 / 0.4), 0 10px 28px -14px rgb(0 0 0 / 0.7);
+  --shadow-lift: 0 2px 6px rgb(0 0 0 / 0.45), 0 22px 48px -18px rgb(0 0 0 / 0.8);
+  --ambient-1: rgb(74 146 119 / 0.14);
+  --ambient-2: rgb(255 255 255 / 0.05);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    font-feature-settings: "cv11", "ss01";
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background: color-mix(in oklab, var(--primary) 28%, transparent);
+  }
+
+  :focus-visible {
+    outline: 2px solid color-mix(in oklab, var(--primary) 75%, transparent);
+    outline-offset: 2px;
+  }
+
+  h1,
+  h2,
+  h3 {
+    letter-spacing: -0.022em;
+  }
+}
+
+@utility glass {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(18px) saturate(140%);
+  box-shadow: var(--shadow-soft);
+}
+
+@utility glass-strong {
+  background: var(--glass-strong);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(24px) saturate(150%);
+  box-shadow: var(--shadow-soft);
+}
+
+@utility solid-surface {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-soft);
+}
+
+@utility label-xs {
+  font-size: 0.6875rem;
+  line-height: 1rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-weight: 500;
+  color: var(--subtle-foreground);
+}
+
+@utility ambient-field {
+  position: relative;
+  isolation: isolate;
+  overflow-x: clip;
+  &::before {
+    content: "";
+    position: absolute;
+    inset: -20% 0 auto 0;
+    height: 70vh;
+    z-index: -1;
+    pointer-events: none;
+    background:
+      radial-gradient(60% 55% at 18% 12%, var(--ambient-1), transparent 70%),
+      radial-gradient(50% 45% at 82% 0%, var(--ambient-2), transparent 72%);
+    filter: blur(20px);
+  }
+}
+
+@utility press {
+  transition:
+    transform 180ms cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 180ms ease-out,
+    border-color 180ms ease-out,
+    box-shadow 220ms ease-out,
+    filter 180ms ease-out;
+  &:active {
+    transform: translateY(0) scale(0.985);
+  }
+}
+
+@utility lift {
+  transition:
+    transform 220ms cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 220ms ease-out,
+    border-color 220ms ease-out,
+    box-shadow 260ms ease-out;
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lift);
+    border-color: color-mix(in oklab, var(--glass-border) 100%, var(--foreground) 8%);
+  }
+}
+
+@keyframes jm-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes jm-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes jm-pulse-ring {
+  0% {
+    transform: scale(0.7);
+    opacity: 0.55;
+  }
+  70% {
+    transform: scale(2.1);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(2.1);
+    opacity: 0;
+  }
+}
+
+@keyframes jm-drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, -4px, 0);
+  }
+}
+
+@keyframes jm-sweep {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(220%);
+  }
+}
+
+@utility animate-rise {
+  animation: jm-rise 600ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@utility animate-fade {
+  animation: jm-fade 500ms ease-out both;
+}
+
+@utility animate-drift {
+  animation: jm-drift 6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* --------------------------------------------------- Leaflet integration */
+
+.jm-map {
+  position: relative;
+  z-index: 0;
+}
+
+.jm-map .leaflet-container {
+  height: 100%;
+  width: 100%;
+  background: var(--background-secondary);
+  font-family: var(--font-sans);
+  outline: none;
+}
+
+.jm-map .leaflet-tile-pane {
+  filter: saturate(0.72) contrast(1.02);
+}
+
+.jm-map .leaflet-control-attribution {
+  background: var(--glass-strong);
+  color: var(--subtle-foreground);
+  border: 1px solid var(--glass-border);
+  border-radius: 0.5rem;
+  backdrop-filter: blur(12px);
+  font-size: 0.6rem;
+  padding: 2px 6px;
+  margin: 6px;
+}
+
+.jm-map .leaflet-control-attribution a {
+  color: var(--muted-foreground);
+}
+
+.jm-map .leaflet-marker-icon:focus-visible {
+  outline: 2px solid color-mix(in oklab, var(--primary) 75%, transparent);
+  outline-offset: 2px;
+  border-radius: 999px;
+}
+
+/* Ward polygon tooltip — glass, premium styling */
+.jm-map .leaflet-tooltip.jm-ward-tooltip {
+  background: var(--glass-strong) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: 0.75rem !important;
+  color: var(--foreground) !important;
+  box-shadow: var(--shadow-lift) !important;
+  backdrop-filter: blur(24px) saturate(150%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(150%) !important;
+  font-size: 0.75rem !important;
+  line-height: 1.5 !important;
+  padding: 10px 14px !important;
+  font-family: var(--font-sans) !important;
+}
+
+.jm-map .leaflet-tooltip.jm-ward-tooltip::before {
+  display: none !important;
+}
+
+.jm-map .leaflet-interactive {
+  cursor: pointer;
+  transition: fill-opacity 180ms ease-out;
+}
+
+.jm-cluster {
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--jm-c) 28%, transparent);
+  border: 1px solid color-mix(in oklab, var(--jm-c) 62%, transparent);
+  box-shadow: 0 6px 18px -8px rgb(0 0 0 / 0.5);
+  color: var(--foreground);
+  backdrop-filter: blur(6px);
+  transition:
+    transform 200ms cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 200ms ease-out;
+  cursor: pointer;
+}
+
+.jm-cluster:hover {
+  transform: scale(1.08);
+  background: color-mix(in oklab, var(--jm-c) 40%, transparent);
+}
+
+.jm-dot {
+  display: block;
+  height: 12px;
+  width: 12px;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--jm-c) 72%, transparent);
+  border: 1px solid color-mix(in oklab, var(--jm-c) 90%, transparent);
+  box-shadow: 0 4px 12px -6px rgb(0 0 0 / 0.6);
+  transition: transform 180ms cubic-bezier(0.22, 1, 0.36, 1);
+  cursor: pointer;
+}
+
+.jm-dot:hover {
+  transform: scale(1.35);
+}
+
+.jm-tip-sub {
+  color: var(--muted-foreground);
+  font-size: 0.66rem;
+}
+
+.jm-cluster-count {
+  font-size: 0.72rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.01em;
+}
+
+.jm-pin {
+  display: grid;
+  place-items: center;
+  height: 28px;
+  width: 28px;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--primary) 88%, transparent);
+  border: 2px solid color-mix(in oklab, var(--background) 70%, transparent);
+  box-shadow: var(--shadow-lift);
+  transition: transform 200ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.jm-pin:hover {
+  transform: scale(1.1);
+}
+
+.jm-pin-dot {
+  height: 7px;
+  width: 7px;
+  border-radius: 999px;
+  background: var(--primary-foreground);
+}
+
+/* ------------------------------------------------ municipality portal */
+
+.filter-input {
+  width: 100%;
+  border-radius: 0.75rem;
+  border: 1px solid var(--glass-border);
+  background: var(--glass);
+  padding: 0.625rem 0.875rem;
+  font-size: 0.875rem;
+  outline: none;
+  transition: border-color 180ms ease-out;
+}
+
+.filter-input:focus-visible {
+  border-color: color-mix(in oklab, var(--primary) 50%, var(--glass-border));
+}
+
+.action-btn {
+  border-radius: 0.75rem;
+  border: 1px solid var(--glass-border);
+  background: var(--glass);
+  padding: 0.5rem 1rem;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition: transform 180ms ease-out, background-color 180ms ease-out;
+}
+
+.action-btn:hover {
+  background: var(--glass-strong);
+}
+
+.action-btn.primary {
+  background: var(--primary);
+  border-color: transparent;
+  color: var(--primary-foreground);
+}
+
+.action-btn.primary:hover {
+  filter: brightness(1.08);
+}
+
+.muni-page-enter {
+  animation: jm-rise 500ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes jm-drawer-in {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ------------------------------------------------ crazy civic map FX */
+
+@keyframes jm-scan {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.6;
+  }
+  85% {
+    opacity: 0.6;
+  }
+  100% {
+    transform: translateY(200%);
+    opacity: 0;
+  }
+}
+
+@keyframes jm-glow-pulse {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 0 color-mix(in oklab, var(--primary) 0%, transparent),
+      var(--shadow-soft);
+  }
+  50% {
+    box-shadow:
+      0 0 28px 2px color-mix(in oklab, var(--primary) 22%, transparent),
+      var(--shadow-lift);
+  }
+}
+
+@keyframes jm-border-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes jm-stat-pop {
+  0% {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.08);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes jm-hotspot-beat {
+  0%,
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 color-mix(in oklab, var(--jm-c) 40%, transparent);
+  }
+  50% {
+    transform: scale(1.12);
+    box-shadow: 0 0 18px 4px color-mix(in oklab, var(--jm-c) 35%, transparent);
+  }
+}
+
+@keyframes jm-panel-slide {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes jm-mode-flash {
+  0% {
+    filter: brightness(1.4);
+  }
+  100% {
+    filter: brightness(1);
+  }
+}
+
+.jm-map-scan {
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    color-mix(in oklab, var(--primary) 30%, transparent) 50%,
+    transparent 100%
+  );
+  animation: jm-scan 2.4s ease-in-out infinite;
+}
+
+.jm-map-frame {
+  position: relative;
+}
+
+.jm-map-frame::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  z-index: 10;
+  border-radius: inherit;
+  padding: 1px;
+  background: conic-gradient(
+    from 0deg,
+    color-mix(in oklab, var(--primary) 60%, transparent),
+    transparent 30%,
+    color-mix(in oklab, var(--warning) 50%, transparent) 55%,
+    transparent 75%,
+    color-mix(in oklab, var(--primary) 60%, transparent)
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  opacity: 0.55;
+  animation: jm-border-spin 8s linear infinite;
+}
+
+.jm-map-shell.jm-map-loading {
+  min-height: 12rem;
+}
+
+.jm-hero-glow {
+  position: relative;
+}
+
+.jm-glitch-text {
+  text-shadow:
+    0 0 20px color-mix(in oklab, var(--primary) 25%, transparent),
+    0 0 40px color-mix(in oklab, var(--primary) 10%, transparent);
+}
+
+.jm-mode-active {
+  animation: jm-mode-flash 400ms ease-out;
+}
+
+.jm-stat-card {
+  transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.jm-stat-card:hover {
+  transform: translateY(-3px) scale(1.02);
+  animation: jm-glow-pulse 1.8s ease-in-out infinite;
+}
+
+.jm-stat-pop {
+  display: inline-block;
+  animation: jm-stat-pop 600ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.jm-chart-card {
+  overflow: hidden;
+  position: relative;
+}
+
+.jm-chart-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 40%,
+    color-mix(in oklab, var(--primary) 8%, transparent) 50%,
+    transparent 60%
+  );
+  transform: translateX(-100%);
+  animation: jm-sweep 4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.jm-hotspot-pulse {
+  animation: jm-hotspot-beat 1.6s ease-in-out infinite;
+}
+
+.jm-panel-enter {
+  animation: jm-panel-slide 500ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.jm-panel-glow {
+  box-shadow:
+    0 0 0 1px color-mix(in oklab, var(--primary) 20%, transparent),
+    0 20px 50px -20px color-mix(in oklab, var(--primary) 30%, transparent);
+}
+
+.jm-bar-cell {
+  transition: opacity 200ms ease-out;
+}
+
+.jm-bar-cell:hover {
+  opacity: 0.75;
+}

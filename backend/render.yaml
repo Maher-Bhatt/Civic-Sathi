@@ -1,0 +1,33 @@
+services:
+  - type: web
+    name: janmind-backend
+    runtime: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt && python -m spacy download en_core_web_sm
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/v1/health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: ENVIRONMENT
+        value: production
+      - key: API_V1_PREFIX
+        value: /api/v1
+      - key: DATABASE_URL
+        sync: false
+      - key: CORS_ORIGINS
+        sync: false
+      - key: OFFICER_API_KEY
+        sync: false
+      - key: SENTENCE_MODEL_NAME
+        value: sentence-transformers/all-MiniLM-L6-v2
+      - key: SIMILARITY_THRESHOLD
+        value: 0.72
+      - key: MIN_CLUSTER_SIZE
+        value: 5
+      - key: SYSTEMIC_WINDOW_DAYS
+        value: 30
+      - key: ENABLE_SEED_ENDPOINT
+        value: false
+      - key: LOG_LEVEL
+        value: INFO

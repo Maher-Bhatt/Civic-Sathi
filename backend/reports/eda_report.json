@@ -1,0 +1,2724 @@
+{
+  "overview": {
+    "total_complaints": 766648,
+    "date_range": {
+      "start": "2020-02-08 01:01:00",
+      "end": "2025-06-19 12:59:00",
+      "days": 1958
+    },
+    "categories": 32,
+    "subcategories": 181,
+    "wards": 199,
+    "years_covered": [
+      2020,
+      2021,
+      2022,
+      2023,
+      2024,
+      2025
+    ],
+    "avg_complaints_per_day": 391.5464759959142
+  },
+  "temporal": {
+    "complaints_by_year": {
+      "2020": 91620,
+      "2021": 103504,
+      "2022": 118394,
+      "2023": 119140,
+      "2024": 207016,
+      "2025": 126974
+    },
+    "yoy_growth": {
+      "2020-2021": 12.97,
+      "2021-2022": 14.39,
+      "2022-2023": 0.63,
+      "2023-2024": 73.76,
+      "2024-2025": -38.66
+    },
+    "complaints_by_month": [
+      {
+        "year": 2020,
+        "month": 2,
+        "count": 6704
+      },
+      {
+        "year": 2020,
+        "month": 3,
+        "count": 9717
+      },
+      {
+        "year": 2020,
+        "month": 4,
+        "count": 4962
+      },
+      {
+        "year": 2020,
+        "month": 5,
+        "count": 7181
+      },
+      {
+        "year": 2020,
+        "month": 6,
+        "count": 9011
+      },
+      {
+        "year": 2020,
+        "month": 7,
+        "count": 7820
+      },
+      {
+        "year": 2020,
+        "month": 8,
+        "count": 7837
+      },
+      {
+        "year": 2020,
+        "month": 9,
+        "count": 9567
+      },
+      {
+        "year": 2020,
+        "month": 10,
+        "count": 11340
+      },
+      {
+        "year": 2020,
+        "month": 11,
+        "count": 9113
+      },
+      {
+        "year": 2020,
+        "month": 12,
+        "count": 8368
+      },
+      {
+        "year": 2021,
+        "month": 1,
+        "count": 8325
+      },
+      {
+        "year": 2021,
+        "month": 2,
+        "count": 8151
+      },
+      {
+        "year": 2021,
+        "month": 3,
+        "count": 9315
+      },
+      {
+        "year": 2021,
+        "month": 4,
+        "count": 7367
+      },
+      {
+        "year": 2021,
+        "month": 5,
+        "count": 6284
+      },
+      {
+        "year": 2021,
+        "month": 6,
+        "count": 8225
+      },
+      {
+        "year": 2021,
+        "month": 7,
+        "count": 9181
+      },
+      {
+        "year": 2021,
+        "month": 8,
+        "count": 8355
+      },
+      {
+        "year": 2021,
+        "month": 9,
+        "count": 10209
+      },
+      {
+        "year": 2021,
+        "month": 10,
+        "count": 10472
+      },
+      {
+        "year": 2021,
+        "month": 11,
+        "count": 9522
+      },
+      {
+        "year": 2021,
+        "month": 12,
+        "count": 8098
+      },
+      {
+        "year": 2022,
+        "month": 1,
+        "count": 8381
+      },
+      {
+        "year": 2022,
+        "month": 2,
+        "count": 7544
+      },
+      {
+        "year": 2022,
+        "month": 3,
+        "count": 8653
+      },
+      {
+        "year": 2022,
+        "month": 4,
+        "count": 6985
+      },
+      {
+        "year": 2022,
+        "month": 5,
+        "count": 11896
+      },
+      {
+        "year": 2022,
+        "month": 6,
+        "count": 11520
+      },
+      {
+        "year": 2022,
+        "month": 7,
+        "count": 11260
+      },
+      {
+        "year": 2022,
+        "month": 8,
+        "count": 11669
+      },
+      {
+        "year": 2022,
+        "month": 9,
+        "count": 11660
+      },
+      {
+        "year": 2022,
+        "month": 10,
+        "count": 10667
+      },
+      {
+        "year": 2022,
+        "month": 11,
+        "count": 8672
+      },
+      {
+        "year": 2022,
+        "month": 12,
+        "count": 9487
+      },
+      {
+        "year": 2023,
+        "month": 1,
+        "count": 6999
+      },
+      {
+        "year": 2023,
+        "month": 2,
+        "count": 7145
+      },
+      {
+        "year": 2023,
+        "month": 3,
+        "count": 8105
+      },
+      {
+        "year": 2023,
+        "month": 4,
+        "count": 5902
+      },
+      {
+        "year": 2023,
+        "month": 5,
+        "count": 10182
+      },
+      {
+        "year": 2023,
+        "month": 6,
+        "count": 10953
+      },
+      {
+        "year": 2023,
+        "month": 7,
+        "count": 12749
+      },
+      {
+        "year": 2023,
+        "month": 8,
+        "count": 12584
+      },
+      {
+        "year": 2023,
+        "month": 9,
+        "count": 11556
+      },
+      {
+        "year": 2023,
+        "month": 10,
+        "count": 11711
+      },
+      {
+        "year": 2023,
+        "month": 11,
+        "count": 11052
+      },
+      {
+        "year": 2023,
+        "month": 12,
+        "count": 10202
+      },
+      {
+        "year": 2024,
+        "month": 1,
+        "count": 11069
+      },
+      {
+        "year": 2024,
+        "month": 2,
+        "count": 12133
+      },
+      {
+        "year": 2024,
+        "month": 3,
+        "count": 12092
+      },
+      {
+        "year": 2024,
+        "month": 4,
+        "count": 10953
+      },
+      {
+        "year": 2024,
+        "month": 5,
+        "count": 17660
+      },
+      {
+        "year": 2024,
+        "month": 6,
+        "count": 20345
+      },
+      {
+        "year": 2024,
+        "month": 7,
+        "count": 22189
+      },
+      {
+        "year": 2024,
+        "month": 8,
+        "count": 20935
+      },
+      {
+        "year": 2024,
+        "month": 9,
+        "count": 18223
+      },
+      {
+        "year": 2024,
+        "month": 10,
+        "count": 24094
+      },
+      {
+        "year": 2024,
+        "month": 11,
+        "count": 18711
+      },
+      {
+        "year": 2024,
+        "month": 12,
+        "count": 18612
+      },
+      {
+        "year": 2025,
+        "month": 1,
+        "count": 18702
+      },
+      {
+        "year": 2025,
+        "month": 2,
+        "count": 17957
+      },
+      {
+        "year": 2025,
+        "month": 3,
+        "count": 21366
+      },
+      {
+        "year": 2025,
+        "month": 4,
+        "count": 21656
+      },
+      {
+        "year": 2025,
+        "month": 5,
+        "count": 26805
+      },
+      {
+        "year": 2025,
+        "month": 6,
+        "count": 20488
+      }
+    ],
+    "day_of_week_distribution": {
+      "Tuesday": 119904,
+      "Monday": 119836,
+      "Wednesday": 117463,
+      "Thursday": 113086,
+      "Friday": 108646,
+      "Saturday": 104827,
+      "Sunday": 82886
+    },
+    "month_distribution": {
+      "June": 80542,
+      "May": 80008,
+      "March": 69248,
+      "October": 68284,
+      "July": 63199,
+      "August": 61380,
+      "September": 61215,
+      "February": 59634,
+      "April": 57825,
+      "November": 57070,
+      "December": 54767,
+      "January": 53476
+    }
+  },
+  "categories": {
+    "total_categories": 32,
+    "top_10_categories": {
+      "Electrical": 310128,
+      "Solid Waste (Garbage) Related": 195153,
+      "Road Maintenance(Engg)": 111535,
+      "Forest": 34618,
+      "Health Dept": 29924,
+      "veterinary": 25524,
+      "Road Infrastructure": 12817,
+      "Others": 8043,
+      "Storm Water Drain(SWD)": 6621,
+      "Revenue Department": 5158
+    },
+    "category_counts": {
+      "Electrical": 310128,
+      "Solid Waste (Garbage) Related": 195153,
+      "Road Maintenance(Engg)": 111535,
+      "Forest": 34618,
+      "Health Dept": 29924,
+      "veterinary": 25524,
+      "Road Infrastructure": 12817,
+      "Others": 8043,
+      "Storm Water Drain(SWD)": 6621,
+      "Revenue Department": 5158,
+      "E khata / Khata services": 4631,
+      "Town Planning": 4622,
+      "Parks and Play grounds": 3857,
+      "Advertisement": 2816,
+      "Sanitation": 2533,
+      "Lakes": 2299,
+      "CORONA COVID19": 1980,
+      "Water Crisis": 963,
+      "Markets": 545,
+      "Optical Fiber Cables (OFC)": 515,
+      "Traffic Engineer Cell (TEC)": 462,
+      "Indira Canteen": 347,
+      "Information Technology": 250,
+      "Estate": 243,
+      "Plastic": 233,
+      "Welfare Schemes": 174,
+      "Call Center": 169,
+      "Projects Central": 147,
+      "Property Tax services": 143,
+      "BBMP Election Branch": 102,
+      "Education": 94,
+      "Major Roads": 2
+    },
+    "category_by_year": [
+      {
+        "source_year": 2020,
+        "category": "Advertisement",
+        "count": 118
+      },
+      {
+        "source_year": 2020,
+        "category": "CORONA COVID19",
+        "count": 1137
+      },
+      {
+        "source_year": 2020,
+        "category": "Education",
+        "count": 17
+      },
+      {
+        "source_year": 2020,
+        "category": "Electrical",
+        "count": 33822
+      },
+      {
+        "source_year": 2020,
+        "category": "Estate",
+        "count": 61
+      },
+      {
+        "source_year": 2020,
+        "category": "Forest",
+        "count": 4349
+      },
+      {
+        "source_year": 2020,
+        "category": "Health Dept",
+        "count": 3223
+      },
+      {
+        "source_year": 2020,
+        "category": "Lakes",
+        "count": 259
+      },
+      {
+        "source_year": 2020,
+        "category": "Markets",
+        "count": 30
+      },
+      {
+        "source_year": 2020,
+        "category": "Optical Fiber Cables (OFC)",
+        "count": 47
+      },
+      {
+        "source_year": 2020,
+        "category": "Others",
+        "count": 1113
+      },
+      {
+        "source_year": 2020,
+        "category": "Parks and Play grounds",
+        "count": 343
+      },
+      {
+        "source_year": 2020,
+        "category": "Revenue Department",
+        "count": 1337
+      },
+      {
+        "source_year": 2020,
+        "category": "Road Infrastructure",
+        "count": 3
+      },
+      {
+        "source_year": 2020,
+        "category": "Road Maintenance(Engg)",
+        "count": 16372
+      },
+      {
+        "source_year": 2020,
+        "category": "Sanitation",
+        "count": 419
+      },
+      {
+        "source_year": 2020,
+        "category": "Solid Waste (Garbage) Related",
+        "count": 24022
+      },
+      {
+        "source_year": 2020,
+        "category": "Storm Water Drain(SWD)",
+        "count": 859
+      },
+      {
+        "source_year": 2020,
+        "category": "Town Planning",
+        "count": 176
+      },
+      {
+        "source_year": 2020,
+        "category": "Welfare Schemes",
+        "count": 37
+      },
+      {
+        "source_year": 2020,
+        "category": "veterinary",
+        "count": 3876
+      },
+      {
+        "source_year": 2021,
+        "category": "Advertisement",
+        "count": 201
+      },
+      {
+        "source_year": 2021,
+        "category": "CORONA COVID19",
+        "count": 587
+      },
+      {
+        "source_year": 2021,
+        "category": "Education",
+        "count": 17
+      },
+      {
+        "source_year": 2021,
+        "category": "Electrical",
+        "count": 50229
+      },
+      {
+        "source_year": 2021,
+        "category": "Estate",
+        "count": 45
+      },
+      {
+        "source_year": 2021,
+        "category": "Forest",
+        "count": 2640
+      },
+      {
+        "source_year": 2021,
+        "category": "Health Dept",
+        "count": 2435
+      },
+      {
+        "source_year": 2021,
+        "category": "Lakes",
+        "count": 224
+      },
+      {
+        "source_year": 2021,
+        "category": "Markets",
+        "count": 33
+      },
+      {
+        "source_year": 2021,
+        "category": "Optical Fiber Cables (OFC)",
+        "count": 102
+      },
+      {
+        "source_year": 2021,
+        "category": "Others",
+        "count": 772
+      },
+      {
+        "source_year": 2021,
+        "category": "Parks and Play grounds",
+        "count": 406
+      },
+      {
+        "source_year": 2021,
+        "category": "Plastic",
+        "count": 7
+      },
+      {
+        "source_year": 2021,
+        "category": "Revenue Department",
+        "count": 470
+      },
+      {
+        "source_year": 2021,
+        "category": "Road Infrastructure",
+        "count": 148
+      },
+      {
+        "source_year": 2021,
+        "category": "Road Maintenance(Engg)",
+        "count": 16680
+      },
+      {
+        "source_year": 2021,
+        "category": "Sanitation",
+        "count": 355
+      },
+      {
+        "source_year": 2021,
+        "category": "Solid Waste (Garbage) Related",
+        "count": 24184
+      },
+      {
+        "source_year": 2021,
+        "category": "Storm Water Drain(SWD)",
+        "count": 940
+      },
+      {
+        "source_year": 2021,
+        "category": "Town Planning",
+        "count": 222
+      },
+      {
+        "source_year": 2021,
+        "category": "Welfare Schemes",
+        "count": 22
+      },
+      {
+        "source_year": 2021,
+        "category": "veterinary",
+        "count": 2785
+      },
+      {
+        "source_year": 2022,
+        "category": "Advertisement",
+        "count": 457
+      },
+      {
+        "source_year": 2022,
+        "category": "BBMP Election Branch",
+        "count": 59
+      },
+      {
+        "source_year": 2022,
+        "category": "CORONA COVID19",
+        "count": 166
+      },
+      {
+        "source_year": 2022,
+        "category": "Call Center",
+        "count": 1
+      },
+      {
+        "source_year": 2022,
+        "category": "Education",
+        "count": 21
+      },
+      {
+        "source_year": 2022,
+        "category": "Electrical",
+        "count": 56892
+      },
+      {
+        "source_year": 2022,
+        "category": "Estate",
+        "count": 20
+      },
+      {
+        "source_year": 2022,
+        "category": "Forest",
+        "count": 3821
+      },
+      {
+        "source_year": 2022,
+        "category": "Health Dept",
+        "count": 2431
+      },
+      {
+        "source_year": 2022,
+        "category": "Lakes",
+        "count": 471
+      },
+      {
+        "source_year": 2022,
+        "category": "Major Roads",
+        "count": 1
+      },
+      {
+        "source_year": 2022,
+        "category": "Markets",
+        "count": 7
+      },
+      {
+        "source_year": 2022,
+        "category": "Optical Fiber Cables (OFC)",
+        "count": 106
+      },
+      {
+        "source_year": 2022,
+        "category": "Others",
+        "count": 811
+      },
+      {
+        "source_year": 2022,
+        "category": "Parks and Play grounds",
+        "count": 550
+      },
+      {
+        "source_year": 2022,
+        "category": "Plastic",
+        "count": 42
+      },
+      {
+        "source_year": 2022,
+        "category": "Revenue Department",
+        "count": 557
+      },
+      {
+        "source_year": 2022,
+        "category": "Road Infrastructure",
+        "count": 2498
+      },
+      {
+        "source_year": 2022,
+        "category": "Road Maintenance(Engg)",
+        "count": 21485
+      },
+      {
+        "source_year": 2022,
+        "category": "Sanitation",
+        "count": 379
+      },
+      {
+        "source_year": 2022,
+        "category": "Solid Waste (Garbage) Related",
+        "count": 22828
+      },
+      {
+        "source_year": 2022,
+        "category": "Storm Water Drain(SWD)",
+        "count": 1225
+      },
+      {
+        "source_year": 2022,
+        "category": "Town Planning",
+        "count": 513
+      },
+      {
+        "source_year": 2022,
+        "category": "Traffic Engineer Cell (TEC)",
+        "count": 3
+      },
+      {
+        "source_year": 2022,
+        "category": "Welfare Schemes",
+        "count": 31
+      },
+      {
+        "source_year": 2022,
+        "category": "veterinary",
+        "count": 3019
+      },
+      {
+        "source_year": 2023,
+        "category": "Advertisement",
+        "count": 487
+      },
+      {
+        "source_year": 2023,
+        "category": "BBMP Election Branch",
+        "count": 19
+      },
+      {
+        "source_year": 2023,
+        "category": "CORONA COVID19",
+        "count": 22
+      },
+      {
+        "source_year": 2023,
+        "category": "Call Center",
+        "count": 41
+      },
+      {
+        "source_year": 2023,
+        "category": "Education",
+        "count": 6
+      },
+      {
+        "source_year": 2023,
+        "category": "Electrical",
+        "count": 51892
+      },
+      {
+        "source_year": 2023,
+        "category": "Estate",
+        "count": 18
+      },
+      {
+        "source_year": 2023,
+        "category": "Forest",
+        "count": 5760
+      },
+      {
+        "source_year": 2023,
+        "category": "Health Dept",
+        "count": 3133
+      },
+      {
+        "source_year": 2023,
+        "category": "Indira Canteen",
+        "count": 66
+      },
+      {
+        "source_year": 2023,
+        "category": "Information Technology",
+        "count": 74
+      },
+      {
+        "source_year": 2023,
+        "category": "Lakes",
+        "count": 440
+      },
+      {
+        "source_year": 2023,
+        "category": "Major Roads",
+        "count": 1
+      },
+      {
+        "source_year": 2023,
+        "category": "Markets",
+        "count": 70
+      },
+      {
+        "source_year": 2023,
+        "category": "Optical Fiber Cables (OFC)",
+        "count": 139
+      },
+      {
+        "source_year": 2023,
+        "category": "Others",
+        "count": 472
+      },
+      {
+        "source_year": 2023,
+        "category": "Parks and Play grounds",
+        "count": 643
+      },
+      {
+        "source_year": 2023,
+        "category": "Plastic",
+        "count": 60
+      },
+      {
+        "source_year": 2023,
+        "category": "Projects Central",
+        "count": 3
+      },
+      {
+        "source_year": 2023,
+        "category": "Revenue Department",
+        "count": 449
+      },
+      {
+        "source_year": 2023,
+        "category": "Road Infrastructure",
+        "count": 2636
+      },
+      {
+        "source_year": 2023,
+        "category": "Road Maintenance(Engg)",
+        "count": 17901
+      },
+      {
+        "source_year": 2023,
+        "category": "Sanitation",
+        "count": 473
+      },
+      {
+        "source_year": 2023,
+        "category": "Solid Waste (Garbage) Related",
+        "count": 28639
+      },
+      {
+        "source_year": 2023,
+        "category": "Storm Water Drain(SWD)",
+        "count": 933
+      },
+      {
+        "source_year": 2023,
+        "category": "Town Planning",
+        "count": 1326
+      },
+      {
+        "source_year": 2023,
+        "category": "Traffic Engineer Cell (TEC)",
+        "count": 10
+      },
+      {
+        "source_year": 2023,
+        "category": "Water Crisis",
+        "count": 2
+      },
+      {
+        "source_year": 2023,
+        "category": "Welfare Schemes",
+        "count": 29
+      },
+      {
+        "source_year": 2023,
+        "category": "veterinary",
+        "count": 3396
+      },
+      {
+        "source_year": 2024,
+        "category": "Advertisement",
+        "count": 854
+      },
+      {
+        "source_year": 2024,
+        "category": "BBMP Election Branch",
+        "count": 17
+      },
+      {
+        "source_year": 2024,
+        "category": "CORONA COVID19",
+        "count": 50
+      },
+      {
+        "source_year": 2024,
+        "category": "Call Center",
+        "count": 55
+      },
+      {
+        "source_year": 2024,
+        "category": "E khata / Khata services",
+        "count": 441
+      },
+      {
+        "source_year": 2024,
+        "category": "Education",
+        "count": 19
+      },
+      {
+        "source_year": 2024,
+        "category": "Electrical",
+        "count": 75155
+      },
+      {
+        "source_year": 2024,
+        "category": "Estate",
+        "count": 39
+      },
+      {
+        "source_year": 2024,
+        "category": "Forest",
+        "count": 11723
+      },
+      {
+        "source_year": 2024,
+        "category": "Health Dept",
+        "count": 15324
+      },
+      {
+        "source_year": 2024,
+        "category": "Indira Canteen",
+        "count": 106
+      },
+      {
+        "source_year": 2024,
+        "category": "Information Technology",
+        "count": 110
+      },
+      {
+        "source_year": 2024,
+        "category": "Lakes",
+        "count": 587
+      },
+      {
+        "source_year": 2024,
+        "category": "Markets",
+        "count": 209
+      },
+      {
+        "source_year": 2024,
+        "category": "Optical Fiber Cables (OFC)",
+        "count": 81
+      },
+      {
+        "source_year": 2024,
+        "category": "Others",
+        "count": 2809
+      },
+      {
+        "source_year": 2024,
+        "category": "Parks and Play grounds",
+        "count": 1130
+      },
+      {
+        "source_year": 2024,
+        "category": "Plastic",
+        "count": 95
+      },
+      {
+        "source_year": 2024,
+        "category": "Projects Central",
+        "count": 84
+      },
+      {
+        "source_year": 2024,
+        "category": "Property Tax services",
+        "count": 18
+      },
+      {
+        "source_year": 2024,
+        "category": "Revenue Department",
+        "count": 1062
+      },
+      {
+        "source_year": 2024,
+        "category": "Road Infrastructure",
+        "count": 4870
+      },
+      {
+        "source_year": 2024,
+        "category": "Road Maintenance(Engg)",
+        "count": 24973
+      },
+      {
+        "source_year": 2024,
+        "category": "Sanitation",
+        "count": 596
+      },
+      {
+        "source_year": 2024,
+        "category": "Solid Waste (Garbage) Related",
+        "count": 57329
+      },
+      {
+        "source_year": 2024,
+        "category": "Storm Water Drain(SWD)",
+        "count": 1677
+      },
+      {
+        "source_year": 2024,
+        "category": "Town Planning",
+        "count": 1813
+      },
+      {
+        "source_year": 2024,
+        "category": "Traffic Engineer Cell (TEC)",
+        "count": 296
+      },
+      {
+        "source_year": 2024,
+        "category": "Water Crisis",
+        "count": 700
+      },
+      {
+        "source_year": 2024,
+        "category": "Welfare Schemes",
+        "count": 23
+      },
+      {
+        "source_year": 2024,
+        "category": "veterinary",
+        "count": 4771
+      },
+      {
+        "source_year": 2025,
+        "category": "Advertisement",
+        "count": 699
+      },
+      {
+        "source_year": 2025,
+        "category": "BBMP Election Branch",
+        "count": 7
+      },
+      {
+        "source_year": 2025,
+        "category": "CORONA COVID19",
+        "count": 18
+      },
+      {
+        "source_year": 2025,
+        "category": "Call Center",
+        "count": 72
+      },
+      {
+        "source_year": 2025,
+        "category": "E khata / Khata services",
+        "count": 4190
+      },
+      {
+        "source_year": 2025,
+        "category": "Education",
+        "count": 14
+      },
+      {
+        "source_year": 2025,
+        "category": "Electrical",
+        "count": 42138
+      },
+      {
+        "source_year": 2025,
+        "category": "Estate",
+        "count": 60
+      },
+      {
+        "source_year": 2025,
+        "category": "Forest",
+        "count": 6325
+      },
+      {
+        "source_year": 2025,
+        "category": "Health Dept",
+        "count": 3378
+      },
+      {
+        "source_year": 2025,
+        "category": "Indira Canteen",
+        "count": 175
+      },
+      {
+        "source_year": 2025,
+        "category": "Information Technology",
+        "count": 66
+      },
+      {
+        "source_year": 2025,
+        "category": "Lakes",
+        "count": 318
+      },
+      {
+        "source_year": 2025,
+        "category": "Markets",
+        "count": 196
+      },
+      {
+        "source_year": 2025,
+        "category": "Optical Fiber Cables (OFC)",
+        "count": 40
+      },
+      {
+        "source_year": 2025,
+        "category": "Others",
+        "count": 2066
+      },
+      {
+        "source_year": 2025,
+        "category": "Parks and Play grounds",
+        "count": 785
+      },
+      {
+        "source_year": 2025,
+        "category": "Plastic",
+        "count": 29
+      },
+      {
+        "source_year": 2025,
+        "category": "Projects Central",
+        "count": 60
+      },
+      {
+        "source_year": 2025,
+        "category": "Property Tax services",
+        "count": 125
+      },
+      {
+        "source_year": 2025,
+        "category": "Revenue Department",
+        "count": 1283
+      },
+      {
+        "source_year": 2025,
+        "category": "Road Infrastructure",
+        "count": 2662
+      },
+      {
+        "source_year": 2025,
+        "category": "Road Maintenance(Engg)",
+        "count": 14124
+      },
+      {
+        "source_year": 2025,
+        "category": "Sanitation",
+        "count": 311
+      },
+      {
+        "source_year": 2025,
+        "category": "Solid Waste (Garbage) Related",
+        "count": 38151
+      },
+      {
+        "source_year": 2025,
+        "category": "Storm Water Drain(SWD)",
+        "count": 987
+      },
+      {
+        "source_year": 2025,
+        "category": "Town Planning",
+        "count": 572
+      },
+      {
+        "source_year": 2025,
+        "category": "Traffic Engineer Cell (TEC)",
+        "count": 153
+      },
+      {
+        "source_year": 2025,
+        "category": "Water Crisis",
+        "count": 261
+      },
+      {
+        "source_year": 2025,
+        "category": "Welfare Schemes",
+        "count": 32
+      },
+      {
+        "source_year": 2025,
+        "category": "veterinary",
+        "count": 7677
+      }
+    ],
+    "category_growth_2020_2024": {
+      "Road Maintenance(Engg)": 52.53,
+      "Electrical": 122.21,
+      "Forest": 169.56,
+      "Solid Waste (Garbage) Related": 138.65,
+      "veterinary": 23.09,
+      "Lakes": 126.64,
+      "CORONA COVID19": -95.6,
+      "Parks and Play grounds": 229.45,
+      "Storm Water Drain(SWD)": 95.23,
+      "Revenue Department": -20.57,
+      "Health Dept": 375.46,
+      "Advertisement": 623.73,
+      "Sanitation": 42.24,
+      "Others": 152.38,
+      "Town Planning": 930.11,
+      "Optical Fiber Cables (OFC)": 72.34,
+      "Welfare Schemes": -37.84,
+      "Estate": -36.07,
+      "Markets": 596.67,
+      "Education": 11.76,
+      "Road Infrastructure": 162233.33
+    }
+  },
+  "subcategories": {
+    "total_subcategories": 181,
+    "top_20_subcategories": {
+      "Street Light Not Working": 293580,
+      "Garbage vehicle not arrived": 73108,
+      "Garbage dump": 66680,
+      "Potholes": 32655,
+      "Road side drains": 24344,
+      "Sweeping not done": 20775,
+      "obstructions Branches / Trees.": 17011,
+      "Removal of dead/fallen trees": 15604,
+      "Debris Removal / Construction Material": 14810,
+      "Road Infrastructure": 12817,
+      "Dengue positive": 10462,
+      "footpath encroachment": 9631,
+      "Others": 9153,
+      "Stray dog related complaints": 9120,
+      "Road cutting": 8548,
+      "Garbage dumping in vacant sites": 8410,
+      "water stagnation": 8274,
+      "Animal birth control/neutering of stray dogs": 8026,
+      "Dead animal(s)": 7433,
+      "Footpath": 7416
+    },
+    "subcategories_per_category": {
+      "veterinary": 35,
+      "Health Dept": 14,
+      "Road Maintenance(Engg)": 13,
+      "E khata / Khata services": 13,
+      "Solid Waste (Garbage) Related": 13,
+      "Lakes": 11,
+      "Indira Canteen": 9,
+      "Markets": 7,
+      "Parks and Play grounds": 6,
+      "Property Tax services": 6,
+      "Welfare Schemes": 6,
+      "Sanitation": 6,
+      "Electrical": 6,
+      "CORONA COVID19": 6,
+      "Projects Central": 5,
+      "Education": 5,
+      "Revenue Department": 5,
+      "Town Planning": 4,
+      "Estate": 4,
+      "Storm Water Drain(SWD)": 3,
+      "Forest": 3,
+      "Call Center": 2,
+      "Advertisement": 2,
+      "BBMP Election Branch": 2,
+      "Optical Fiber Cables (OFC)": 2,
+      "Major Roads": 2,
+      "Information Technology": 2,
+      "Others": 2,
+      "Road Infrastructure": 2,
+      "Plastic": 1,
+      "Water Crisis": 1,
+      "Traffic Engineer Cell (TEC)": 1
+    }
+  },
+  "wards": {
+    "total_wards": 199,
+    "top_20_wards": {
+      "Jnanabharathi Ward": 18323,
+      "Horamavu": 17437,
+      "Rajarajeshwari Nagar": 17047,
+      "Begur": 16353,
+      "Thanisandra": 14846,
+      "Hemmigepura": 14396,
+      "Bellandur": 13255,
+      "Jakkur": 12700,
+      "Uttarahalli": 12114,
+      "Someshwara": 11376,
+      "Ramamurthy Nagar": 10929,
+      "Ullalu": 10821,
+      "Hoodi": 10628,
+      "HSR Layout": 10050,
+      "Vidyaranyapura": 9949,
+      "Dodda Bidarkallu": 9760,
+      "Vasanthapura": 9584,
+      "Gottigere": 9472,
+      "Banaswadi": 9431,
+      "Singasandra": 9194
+    },
+    "bottom_20_wards": {
+      "Kushal Nagar": 1154,
+      "Azad Nagar": 1153,
+      "Lakkasandra": 1150,
+      "Jagajeevanram Nagar": 993,
+      "S.K.Garden": 928,
+      "Neelasandra": 903,
+      "Kempapura Agrahara": 903,
+      "Binnipet": 872,
+      "Chalavadipalya": 839,
+      "Vrushabhavati Nagar": 831,
+      "Prakash Nagar": 817,
+      "Devarajeevanahalli": 762,
+      "Muneshwara Nagar": 760,
+      "Dayananda Nagar": 749,
+      "Okalipuram": 722,
+      "Rayapuram": 663,
+      "Lakshmidevi Nagar": 661,
+      "Padarayanapura": 465,
+      "Subhash Nagar": 464,
+      "NON Ward": 2
+    },
+    "avg_complaints_per_ward": 3852.502512562814,
+    "median_complaints_per_ward": 2641.0
+  },
+  "status": {
+    "status_distribution": {
+      "closed": 701878,
+      "registered": 20404,
+      "rejected": 16803,
+      "non_relevant": 16050,
+      "resolved": 6953,
+      "reopened": 2699,
+      "in_progress": 1255,
+      "long_term": 532,
+      "unknown": 74
+    },
+    "closure_rate": 91.55,
+    "status_by_category": [
+      {
+        "category": "Advertisement",
+        "status_normalized": "closed",
+        "count": 2121
+      },
+      {
+        "category": "Advertisement",
+        "status_normalized": "non_relevant",
+        "count": 37
+      },
+      {
+        "category": "Advertisement",
+        "status_normalized": "registered",
+        "count": 523
+      },
+      {
+        "category": "Advertisement",
+        "status_normalized": "rejected",
+        "count": 32
+      },
+      {
+        "category": "Advertisement",
+        "status_normalized": "reopened",
+        "count": 10
+      },
+      {
+        "category": "Advertisement",
+        "status_normalized": "resolved",
+        "count": 93
+      },
+      {
+        "category": "BBMP Election Branch",
+        "status_normalized": "closed",
+        "count": 40
+      },
+      {
+        "category": "BBMP Election Branch",
+        "status_normalized": "non_relevant",
+        "count": 1
+      },
+      {
+        "category": "BBMP Election Branch",
+        "status_normalized": "registered",
+        "count": 61
+      },
+      {
+        "category": "CORONA COVID19",
+        "status_normalized": "closed",
+        "count": 1419
+      },
+      {
+        "category": "CORONA COVID19",
+        "status_normalized": "in_progress",
+        "count": 1
+      },
+      {
+        "category": "CORONA COVID19",
+        "status_normalized": "registered",
+        "count": 360
+      },
+      {
+        "category": "CORONA COVID19",
+        "status_normalized": "rejected",
+        "count": 200
+      },
+      {
+        "category": "Call Center",
+        "status_normalized": "closed",
+        "count": 42
+      },
+      {
+        "category": "Call Center",
+        "status_normalized": "non_relevant",
+        "count": 4
+      },
+      {
+        "category": "Call Center",
+        "status_normalized": "registered",
+        "count": 123
+      },
+      {
+        "category": "E khata / Khata services",
+        "status_normalized": "closed",
+        "count": 4260
+      },
+      {
+        "category": "E khata / Khata services",
+        "status_normalized": "non_relevant",
+        "count": 8
+      },
+      {
+        "category": "E khata / Khata services",
+        "status_normalized": "registered",
+        "count": 310
+      },
+      {
+        "category": "E khata / Khata services",
+        "status_normalized": "reopened",
+        "count": 52
+      },
+      {
+        "category": "E khata / Khata services",
+        "status_normalized": "unknown",
+        "count": 1
+      },
+      {
+        "category": "Education",
+        "status_normalized": "closed",
+        "count": 19
+      },
+      {
+        "category": "Education",
+        "status_normalized": "non_relevant",
+        "count": 1
+      },
+      {
+        "category": "Education",
+        "status_normalized": "registered",
+        "count": 49
+      },
+      {
+        "category": "Education",
+        "status_normalized": "resolved",
+        "count": 25
+      },
+      {
+        "category": "Electrical",
+        "status_normalized": "closed",
+        "count": 305744
+      },
+      {
+        "category": "Electrical",
+        "status_normalized": "in_progress",
+        "count": 219
+      },
+      {
+        "category": "Electrical",
+        "status_normalized": "long_term",
+        "count": 54
+      },
+      {
+        "category": "Electrical",
+        "status_normalized": "non_relevant",
+        "count": 211
+      },
+      {
+        "category": "Electrical",
+        "status_normalized": "registered",
+        "count": 1711
+      },
+      {
+        "category": "Electrical",
+        "status_normalized": "rejected",
+        "count": 1618
+      },
+      {
+        "category": "Electrical",
+        "status_normalized": "reopened",
+        "count": 563
+      },
+      {
+        "category": "Electrical",
+        "status_normalized": "resolved",
+        "count": 4
+      },
+      {
+        "category": "Electrical",
+        "status_normalized": "unknown",
+        "count": 4
+      },
+      {
+        "category": "Estate",
+        "status_normalized": "closed",
+        "count": 143
+      },
+      {
+        "category": "Estate",
+        "status_normalized": "non_relevant",
+        "count": 57
+      },
+      {
+        "category": "Estate",
+        "status_normalized": "registered",
+        "count": 30
+      },
+      {
+        "category": "Estate",
+        "status_normalized": "rejected",
+        "count": 13
+      },
+      {
+        "category": "Forest",
+        "status_normalized": "closed",
+        "count": 25675
+      },
+      {
+        "category": "Forest",
+        "status_normalized": "long_term",
+        "count": 1
+      },
+      {
+        "category": "Forest",
+        "status_normalized": "non_relevant",
+        "count": 10
+      },
+      {
+        "category": "Forest",
+        "status_normalized": "registered",
+        "count": 4240
+      },
+      {
+        "category": "Forest",
+        "status_normalized": "rejected",
+        "count": 387
+      },
+      {
+        "category": "Forest",
+        "status_normalized": "reopened",
+        "count": 163
+      },
+      {
+        "category": "Forest",
+        "status_normalized": "resolved",
+        "count": 4137
+      },
+      {
+        "category": "Forest",
+        "status_normalized": "unknown",
+        "count": 5
+      },
+      {
+        "category": "Health Dept",
+        "status_normalized": "closed",
+        "count": 27902
+      },
+      {
+        "category": "Health Dept",
+        "status_normalized": "in_progress",
+        "count": 28
+      },
+      {
+        "category": "Health Dept",
+        "status_normalized": "long_term",
+        "count": 4
+      },
+      {
+        "category": "Health Dept",
+        "status_normalized": "non_relevant",
+        "count": 931
+      },
+      {
+        "category": "Health Dept",
+        "status_normalized": "registered",
+        "count": 276
+      },
+      {
+        "category": "Health Dept",
+        "status_normalized": "rejected",
+        "count": 609
+      },
+      {
+        "category": "Health Dept",
+        "status_normalized": "reopened",
+        "count": 59
+      },
+      {
+        "category": "Health Dept",
+        "status_normalized": "resolved",
+        "count": 109
+      },
+      {
+        "category": "Health Dept",
+        "status_normalized": "unknown",
+        "count": 6
+      },
+      {
+        "category": "Indira Canteen",
+        "status_normalized": "closed",
+        "count": 285
+      },
+      {
+        "category": "Indira Canteen",
+        "status_normalized": "in_progress",
+        "count": 2
+      },
+      {
+        "category": "Indira Canteen",
+        "status_normalized": "non_relevant",
+        "count": 4
+      },
+      {
+        "category": "Indira Canteen",
+        "status_normalized": "registered",
+        "count": 53
+      },
+      {
+        "category": "Indira Canteen",
+        "status_normalized": "reopened",
+        "count": 1
+      },
+      {
+        "category": "Indira Canteen",
+        "status_normalized": "unknown",
+        "count": 2
+      },
+      {
+        "category": "Information Technology",
+        "status_normalized": "closed",
+        "count": 205
+      },
+      {
+        "category": "Information Technology",
+        "status_normalized": "non_relevant",
+        "count": 37
+      },
+      {
+        "category": "Information Technology",
+        "status_normalized": "registered",
+        "count": 5
+      },
+      {
+        "category": "Information Technology",
+        "status_normalized": "reopened",
+        "count": 3
+      },
+      {
+        "category": "Lakes",
+        "status_normalized": "closed",
+        "count": 1701
+      },
+      {
+        "category": "Lakes",
+        "status_normalized": "long_term",
+        "count": 23
+      },
+      {
+        "category": "Lakes",
+        "status_normalized": "non_relevant",
+        "count": 60
+      },
+      {
+        "category": "Lakes",
+        "status_normalized": "registered",
+        "count": 247
+      },
+      {
+        "category": "Lakes",
+        "status_normalized": "rejected",
+        "count": 225
+      },
+      {
+        "category": "Lakes",
+        "status_normalized": "reopened",
+        "count": 4
+      },
+      {
+        "category": "Lakes",
+        "status_normalized": "resolved",
+        "count": 39
+      },
+      {
+        "category": "Major Roads",
+        "status_normalized": "closed",
+        "count": 1
+      },
+      {
+        "category": "Major Roads",
+        "status_normalized": "non_relevant",
+        "count": 1
+      },
+      {
+        "category": "Markets",
+        "status_normalized": "closed",
+        "count": 504
+      },
+      {
+        "category": "Markets",
+        "status_normalized": "non_relevant",
+        "count": 16
+      },
+      {
+        "category": "Markets",
+        "status_normalized": "registered",
+        "count": 17
+      },
+      {
+        "category": "Markets",
+        "status_normalized": "rejected",
+        "count": 7
+      },
+      {
+        "category": "Markets",
+        "status_normalized": "reopened",
+        "count": 1
+      },
+      {
+        "category": "Optical Fiber Cables (OFC)",
+        "status_normalized": "closed",
+        "count": 385
+      },
+      {
+        "category": "Optical Fiber Cables (OFC)",
+        "status_normalized": "long_term",
+        "count": 1
+      },
+      {
+        "category": "Optical Fiber Cables (OFC)",
+        "status_normalized": "non_relevant",
+        "count": 43
+      },
+      {
+        "category": "Optical Fiber Cables (OFC)",
+        "status_normalized": "registered",
+        "count": 30
+      },
+      {
+        "category": "Optical Fiber Cables (OFC)",
+        "status_normalized": "rejected",
+        "count": 36
+      },
+      {
+        "category": "Optical Fiber Cables (OFC)",
+        "status_normalized": "reopened",
+        "count": 1
+      },
+      {
+        "category": "Optical Fiber Cables (OFC)",
+        "status_normalized": "resolved",
+        "count": 19
+      },
+      {
+        "category": "Others",
+        "status_normalized": "closed",
+        "count": 321
+      },
+      {
+        "category": "Others",
+        "status_normalized": "in_progress",
+        "count": 677
+      },
+      {
+        "category": "Others",
+        "status_normalized": "long_term",
+        "count": 23
+      },
+      {
+        "category": "Others",
+        "status_normalized": "registered",
+        "count": 4710
+      },
+      {
+        "category": "Others",
+        "status_normalized": "rejected",
+        "count": 2306
+      },
+      {
+        "category": "Others",
+        "status_normalized": "reopened",
+        "count": 1
+      },
+      {
+        "category": "Others",
+        "status_normalized": "resolved",
+        "count": 4
+      },
+      {
+        "category": "Others",
+        "status_normalized": "unknown",
+        "count": 1
+      },
+      {
+        "category": "Parks and Play grounds",
+        "status_normalized": "closed",
+        "count": 2908
+      },
+      {
+        "category": "Parks and Play grounds",
+        "status_normalized": "long_term",
+        "count": 8
+      },
+      {
+        "category": "Parks and Play grounds",
+        "status_normalized": "non_relevant",
+        "count": 462
+      },
+      {
+        "category": "Parks and Play grounds",
+        "status_normalized": "registered",
+        "count": 195
+      },
+      {
+        "category": "Parks and Play grounds",
+        "status_normalized": "rejected",
+        "count": 269
+      },
+      {
+        "category": "Parks and Play grounds",
+        "status_normalized": "reopened",
+        "count": 1
+      },
+      {
+        "category": "Parks and Play grounds",
+        "status_normalized": "resolved",
+        "count": 11
+      },
+      {
+        "category": "Parks and Play grounds",
+        "status_normalized": "unknown",
+        "count": 3
+      },
+      {
+        "category": "Plastic",
+        "status_normalized": "closed",
+        "count": 203
+      },
+      {
+        "category": "Plastic",
+        "status_normalized": "in_progress",
+        "count": 2
+      },
+      {
+        "category": "Plastic",
+        "status_normalized": "non_relevant",
+        "count": 21
+      },
+      {
+        "category": "Plastic",
+        "status_normalized": "registered",
+        "count": 5
+      },
+      {
+        "category": "Plastic",
+        "status_normalized": "rejected",
+        "count": 1
+      },
+      {
+        "category": "Plastic",
+        "status_normalized": "reopened",
+        "count": 1
+      },
+      {
+        "category": "Projects Central",
+        "status_normalized": "closed",
+        "count": 71
+      },
+      {
+        "category": "Projects Central",
+        "status_normalized": "long_term",
+        "count": 1
+      },
+      {
+        "category": "Projects Central",
+        "status_normalized": "registered",
+        "count": 73
+      },
+      {
+        "category": "Projects Central",
+        "status_normalized": "reopened",
+        "count": 1
+      },
+      {
+        "category": "Projects Central",
+        "status_normalized": "unknown",
+        "count": 1
+      },
+      {
+        "category": "Property Tax services",
+        "status_normalized": "closed",
+        "count": 137
+      },
+      {
+        "category": "Property Tax services",
+        "status_normalized": "registered",
+        "count": 5
+      },
+      {
+        "category": "Property Tax services",
+        "status_normalized": "unknown",
+        "count": 1
+      },
+      {
+        "category": "Revenue Department",
+        "status_normalized": "closed",
+        "count": 4246
+      },
+      {
+        "category": "Revenue Department",
+        "status_normalized": "in_progress",
+        "count": 1
+      },
+      {
+        "category": "Revenue Department",
+        "status_normalized": "non_relevant",
+        "count": 21
+      },
+      {
+        "category": "Revenue Department",
+        "status_normalized": "registered",
+        "count": 194
+      },
+      {
+        "category": "Revenue Department",
+        "status_normalized": "rejected",
+        "count": 45
+      },
+      {
+        "category": "Revenue Department",
+        "status_normalized": "reopened",
+        "count": 34
+      },
+      {
+        "category": "Revenue Department",
+        "status_normalized": "resolved",
+        "count": 617
+      },
+      {
+        "category": "Road Infrastructure",
+        "status_normalized": "closed",
+        "count": 9501
+      },
+      {
+        "category": "Road Infrastructure",
+        "status_normalized": "in_progress",
+        "count": 36
+      },
+      {
+        "category": "Road Infrastructure",
+        "status_normalized": "long_term",
+        "count": 183
+      },
+      {
+        "category": "Road Infrastructure",
+        "status_normalized": "non_relevant",
+        "count": 1251
+      },
+      {
+        "category": "Road Infrastructure",
+        "status_normalized": "registered",
+        "count": 1678
+      },
+      {
+        "category": "Road Infrastructure",
+        "status_normalized": "rejected",
+        "count": 12
+      },
+      {
+        "category": "Road Infrastructure",
+        "status_normalized": "reopened",
+        "count": 156
+      },
+      {
+        "category": "Road Maintenance(Engg)",
+        "status_normalized": "closed",
+        "count": 92887
+      },
+      {
+        "category": "Road Maintenance(Engg)",
+        "status_normalized": "in_progress",
+        "count": 99
+      },
+      {
+        "category": "Road Maintenance(Engg)",
+        "status_normalized": "long_term",
+        "count": 49
+      },
+      {
+        "category": "Road Maintenance(Engg)",
+        "status_normalized": "non_relevant",
+        "count": 8572
+      },
+      {
+        "category": "Road Maintenance(Engg)",
+        "status_normalized": "registered",
+        "count": 1933
+      },
+      {
+        "category": "Road Maintenance(Engg)",
+        "status_normalized": "rejected",
+        "count": 6902
+      },
+      {
+        "category": "Road Maintenance(Engg)",
+        "status_normalized": "reopened",
+        "count": 957
+      },
+      {
+        "category": "Road Maintenance(Engg)",
+        "status_normalized": "resolved",
+        "count": 120
+      },
+      {
+        "category": "Road Maintenance(Engg)",
+        "status_normalized": "unknown",
+        "count": 16
+      },
+      {
+        "category": "Sanitation",
+        "status_normalized": "closed",
+        "count": 1953
+      },
+      {
+        "category": "Sanitation",
+        "status_normalized": "in_progress",
+        "count": 6
+      },
+      {
+        "category": "Sanitation",
+        "status_normalized": "long_term",
+        "count": 6
+      },
+      {
+        "category": "Sanitation",
+        "status_normalized": "non_relevant",
+        "count": 198
+      },
+      {
+        "category": "Sanitation",
+        "status_normalized": "registered",
+        "count": 35
+      },
+      {
+        "category": "Sanitation",
+        "status_normalized": "rejected",
+        "count": 279
+      },
+      {
+        "category": "Sanitation",
+        "status_normalized": "reopened",
+        "count": 12
+      },
+      {
+        "category": "Sanitation",
+        "status_normalized": "resolved",
+        "count": 44
+      },
+      {
+        "category": "Solid Waste (Garbage) Related",
+        "status_normalized": "closed",
+        "count": 187956
+      },
+      {
+        "category": "Solid Waste (Garbage) Related",
+        "status_normalized": "in_progress",
+        "count": 106
+      },
+      {
+        "category": "Solid Waste (Garbage) Related",
+        "status_normalized": "long_term",
+        "count": 12
+      },
+      {
+        "category": "Solid Waste (Garbage) Related",
+        "status_normalized": "non_relevant",
+        "count": 1323
+      },
+      {
+        "category": "Solid Waste (Garbage) Related",
+        "status_normalized": "registered",
+        "count": 1228
+      },
+      {
+        "category": "Solid Waste (Garbage) Related",
+        "status_normalized": "rejected",
+        "count": 2420
+      },
+      {
+        "category": "Solid Waste (Garbage) Related",
+        "status_normalized": "reopened",
+        "count": 475
+      },
+      {
+        "category": "Solid Waste (Garbage) Related",
+        "status_normalized": "resolved",
+        "count": 1620
+      },
+      {
+        "category": "Solid Waste (Garbage) Related",
+        "status_normalized": "unknown",
+        "count": 13
+      },
+      {
+        "category": "Storm Water Drain(SWD)",
+        "status_normalized": "closed",
+        "count": 3333
+      },
+      {
+        "category": "Storm Water Drain(SWD)",
+        "status_normalized": "in_progress",
+        "count": 19
+      },
+      {
+        "category": "Storm Water Drain(SWD)",
+        "status_normalized": "long_term",
+        "count": 161
+      },
+      {
+        "category": "Storm Water Drain(SWD)",
+        "status_normalized": "non_relevant",
+        "count": 1250
+      },
+      {
+        "category": "Storm Water Drain(SWD)",
+        "status_normalized": "registered",
+        "count": 711
+      },
+      {
+        "category": "Storm Water Drain(SWD)",
+        "status_normalized": "rejected",
+        "count": 1026
+      },
+      {
+        "category": "Storm Water Drain(SWD)",
+        "status_normalized": "reopened",
+        "count": 27
+      },
+      {
+        "category": "Storm Water Drain(SWD)",
+        "status_normalized": "resolved",
+        "count": 91
+      },
+      {
+        "category": "Storm Water Drain(SWD)",
+        "status_normalized": "unknown",
+        "count": 3
+      },
+      {
+        "category": "Town Planning",
+        "status_normalized": "closed",
+        "count": 2423
+      },
+      {
+        "category": "Town Planning",
+        "status_normalized": "in_progress",
+        "count": 4
+      },
+      {
+        "category": "Town Planning",
+        "status_normalized": "long_term",
+        "count": 1
+      },
+      {
+        "category": "Town Planning",
+        "status_normalized": "non_relevant",
+        "count": 1023
+      },
+      {
+        "category": "Town Planning",
+        "status_normalized": "registered",
+        "count": 1000
+      },
+      {
+        "category": "Town Planning",
+        "status_normalized": "rejected",
+        "count": 126
+      },
+      {
+        "category": "Town Planning",
+        "status_normalized": "reopened",
+        "count": 18
+      },
+      {
+        "category": "Town Planning",
+        "status_normalized": "resolved",
+        "count": 19
+      },
+      {
+        "category": "Town Planning",
+        "status_normalized": "unknown",
+        "count": 8
+      },
+      {
+        "category": "Traffic Engineer Cell (TEC)",
+        "status_normalized": "closed",
+        "count": 222
+      },
+      {
+        "category": "Traffic Engineer Cell (TEC)",
+        "status_normalized": "long_term",
+        "count": 2
+      },
+      {
+        "category": "Traffic Engineer Cell (TEC)",
+        "status_normalized": "registered",
+        "count": 230
+      },
+      {
+        "category": "Traffic Engineer Cell (TEC)",
+        "status_normalized": "reopened",
+        "count": 8
+      },
+      {
+        "category": "Water Crisis",
+        "status_normalized": "closed",
+        "count": 480
+      },
+      {
+        "category": "Water Crisis",
+        "status_normalized": "in_progress",
+        "count": 2
+      },
+      {
+        "category": "Water Crisis",
+        "status_normalized": "long_term",
+        "count": 3
+      },
+      {
+        "category": "Water Crisis",
+        "status_normalized": "non_relevant",
+        "count": 468
+      },
+      {
+        "category": "Water Crisis",
+        "status_normalized": "registered",
+        "count": 10
+      },
+      {
+        "category": "Welfare Schemes",
+        "status_normalized": "closed",
+        "count": 136
+      },
+      {
+        "category": "Welfare Schemes",
+        "status_normalized": "non_relevant",
+        "count": 6
+      },
+      {
+        "category": "Welfare Schemes",
+        "status_normalized": "registered",
+        "count": 24
+      },
+      {
+        "category": "Welfare Schemes",
+        "status_normalized": "rejected",
+        "count": 6
+      },
+      {
+        "category": "Welfare Schemes",
+        "status_normalized": "reopened",
+        "count": 1
+      },
+      {
+        "category": "Welfare Schemes",
+        "status_normalized": "unknown",
+        "count": 1
+      },
+      {
+        "category": "veterinary",
+        "status_normalized": "closed",
+        "count": 24655
+      },
+      {
+        "category": "veterinary",
+        "status_normalized": "in_progress",
+        "count": 53
+      },
+      {
+        "category": "veterinary",
+        "status_normalized": "non_relevant",
+        "count": 34
+      },
+      {
+        "category": "veterinary",
+        "status_normalized": "registered",
+        "count": 338
+      },
+      {
+        "category": "veterinary",
+        "status_normalized": "rejected",
+        "count": 284
+      },
+      {
+        "category": "veterinary",
+        "status_normalized": "reopened",
+        "count": 150
+      },
+      {
+        "category": "veterinary",
+        "status_normalized": "resolved",
+        "count": 1
+      },
+      {
+        "category": "veterinary",
+        "status_normalized": "unknown",
+        "count": 9
+      }
+    ]
+  },
+  "reopens": {
+    "total_reopens": 2699,
+    "reopen_rate": 0.35,
+    "reopens_by_category": {
+      "Road Maintenance(Engg)": 957,
+      "Electrical": 563,
+      "Solid Waste (Garbage) Related": 475,
+      "Forest": 163,
+      "Road Infrastructure": 156,
+      "veterinary": 150,
+      "Health Dept": 59,
+      "E khata / Khata services": 52,
+      "Revenue Department": 34,
+      "Storm Water Drain(SWD)": 27,
+      "Town Planning": 18,
+      "Sanitation": 12,
+      "Advertisement": 10,
+      "Traffic Engineer Cell (TEC)": 8,
+      "Lakes": 4,
+      "Information Technology": 3,
+      "Others": 1,
+      "Parks and Play grounds": 1,
+      "Projects Central": 1,
+      "Welfare Schemes": 1,
+      "Markets": 1,
+      "Indira Canteen": 1,
+      "Optical Fiber Cables (OFC)": 1,
+      "Plastic": 1
+    },
+    "reopens_by_ward": {
+      "Varthur": 91,
+      "Hoodi": 88,
+      "Hagadooru": 80,
+      "Horamavu": 71,
+      "Bellandur": 68,
+      "Ramamurthy Nagar": 63,
+      "Jnanabharathi Ward": 57,
+      "Gottigere": 53,
+      "Someshwara": 52,
+      "Hemmigepura": 48,
+      "Rajarajeshwari Nagar": 46,
+      "Hebbal": 46,
+      "Shanthala Nagar": 44,
+      "Thanisandra": 44,
+      "Basavanapura": 42,
+      "Banaswadi": 41,
+      "Uttarahalli": 39,
+      "Vasanthapura": 39,
+      "Begur": 39,
+      "Jakkur": 38
+    },
+    "reopens_by_subcategory": {
+      "Street Light Not Working": 495,
+      "Potholes": 278,
+      "Road side drains": 206,
+      "Garbage dump": 202,
+      "Road Infrastructure": 156,
+      "Garbage vehicle not arrived": 116,
+      "footpath encroachment": 106,
+      "Debris Removal / Construction Material": 92,
+      "UnAuthorised Constructions": 91,
+      "obstructions Branches / Trees.": 87,
+      "water stagnation": 70,
+      "Removal of dead/fallen trees": 67,
+      "Sweeping not done": 64,
+      "Stray dog related complaints": 60,
+      "Footpath": 56,
+      "Requirement For New Street Lights": 48,
+      "Road cutting": 42,
+      "Animal birth control/neutering of stray dogs": 42,
+      "Garbage dumping in vacant sites": 40,
+      "Khata Services (Registration, Transfer, Bifurcation and Amalgamation)": 23
+    },
+    "reopen_rate_by_category": {
+      "Road Maintenance(Engg)": 0.86,
+      "Electrical": 0.18,
+      "Forest": 0.47,
+      "Solid Waste (Garbage) Related": 0.24,
+      "veterinary": 0.59,
+      "Lakes": 0.17,
+      "CORONA COVID19": 0.0,
+      "Parks and Play grounds": 0.03,
+      "Storm Water Drain(SWD)": 0.41,
+      "Revenue Department": 0.66,
+      "Health Dept": 0.2,
+      "Advertisement": 0.36,
+      "Sanitation": 0.47,
+      "Others": 0.01,
+      "Town Planning": 0.39,
+      "Optical Fiber Cables (OFC)": 0.19,
+      "Welfare Schemes": 0.57,
+      "Estate": 0.0,
+      "Markets": 0.18,
+      "Education": 0.0,
+      "Road Infrastructure": 1.22,
+      "Plastic": 0.43,
+      "Traffic Engineer Cell (TEC)": 1.73,
+      "BBMP Election Branch": 0.0,
+      "Call Center": 0.0,
+      "Major Roads": 0.0,
+      "Information Technology": 1.2,
+      "Indira Canteen": 0.29,
+      "Water Crisis": 0.0,
+      "Projects Central": 0.68,
+      "E khata / Khata services": 1.12,
+      "Property Tax services": 0.0
+    }
+  },
+  "category_ward": {
+    "total_combinations": 4534,
+    "top_30_combinations": [
+      {
+        "category": "Electrical",
+        "ward_name": "Jnanabharathi Ward",
+        "count": 9779
+      },
+      {
+        "category": "Electrical",
+        "ward_name": "Hemmigepura",
+        "count": 7886
+      },
+      {
+        "category": "Electrical",
+        "ward_name": "Begur",
+        "count": 7373
+      },
+      {
+        "category": "Electrical",
+        "ward_name": "Rajarajeshwari Nagar",
+        "count": 6695
+      },
+      {
+        "category": "Electrical",
+        "ward_name": "Ullalu",
+        "count": 6622
+      },
+      {
+        "category": "Electrical",
+        "ward_name": "Horamavu",
+        "count": 6406
+      },
+      {
+        "category": "Electrical",
+        "ward_name": "Jakkur",
+        "count": 6221
+      },
+      {
+        "category": "Electrical",
+        "ward_name": "Uttarahalli",
+        "count": 6097
+      },
+      {
+        "category": "Electrical",
+        "ward_name": "Dodda Bidarkallu",
+        "count": 5719
+      },
+      {
+        "category": "Solid Waste (Garbage) Related",
+        "ward_name": "Thanisandra",
+        "count": 5553
+      },
+      {
+        "category": "Solid Waste (Garbage) Related",
+        "ward_name": "Rajarajeshwari Nagar",
+        "count": 5143
+      },
+      {
+        "category": "Electrical",
+        "ward_name": "Thanisandra",
+        "count": 5019
+      },
+      {
+        "category": "Solid Waste (Garbage) Related",
+        "ward_name": "Someshwara",
+        "count": 4712
+      },
+      {
+        "category": "Solid Waste (Garbage) Related",
+        "ward_name": "Jnanabharathi Ward",
+        "count": 4679
+      },
+      {
+        "category": "Electrical",
+        "ward_name": "Vasanthapura",
+        "count": 4535
+      },
+      {
+        "category": "Electrical",
+        "ward_name": "Herohalli",
+        "count": 4496
+      },
+      {
+        "category": "Electrical",
+        "ward_name": "Vidyaranyapura",
+        "count": 4291
+      },
+      {
+        "category": "Electrical",
+        "ward_name": "Hoodi",
+        "count": 4197
+      },
+      {
+        "category": "Electrical",
+        "ward_name": "Ramamurthy Nagar",
+        "count": 4169
+      },
+      {
+        "category": "Solid Waste (Garbage) Related",
+        "ward_name": "Horamavu",
+        "count": 4069
+      },
+      {
+        "category": "Electrical",
+        "ward_name": "Kottigepalya",
+        "count": 4039
+      },
+      {
+        "category": "Electrical",
+        "ward_name": "Singasandra",
+        "count": 3825
+      },
+      {
+        "category": "Electrical",
+        "ward_name": "Someshwara",
+        "count": 3789
+      },
+      {
+        "category": "Electrical",
+        "ward_name": "HBR Layout",
+        "count": 3606
+      },
+      {
+        "category": "Road Maintenance(Engg)",
+        "ward_name": "Begur",
+        "count": 3538
+      },
+      {
+        "category": "Solid Waste (Garbage) Related",
+        "ward_name": "Bellandur",
+        "count": 3514
+      },
+      {
+        "category": "Electrical",
+        "ward_name": "Gottigere",
+        "count": 3500
+      },
+      {
+        "category": "Electrical",
+        "ward_name": "Shettyhalli",
+        "count": 3440
+      },
+      {
+        "category": "Road Maintenance(Engg)",
+        "ward_name": "Horamavu",
+        "count": 3435
+      },
+      {
+        "category": "Electrical",
+        "ward_name": "Kavalbyrasandra",
+        "count": 3351
+      }
+    ]
+  },
+  "growth": {
+    "monthly_trend": {
+      "2020-02": 6704,
+      "2020-03": 9717,
+      "2020-04": 4962,
+      "2020-05": 7181,
+      "2020-06": 9011,
+      "2020-07": 7820,
+      "2020-08": 7837,
+      "2020-09": 9567,
+      "2020-10": 11340,
+      "2020-11": 9113,
+      "2020-12": 8368,
+      "2021-01": 8325,
+      "2021-02": 8151,
+      "2021-03": 9315,
+      "2021-04": 7367,
+      "2021-05": 6284,
+      "2021-06": 8225,
+      "2021-07": 9181,
+      "2021-08": 8355,
+      "2021-09": 10209,
+      "2021-10": 10472,
+      "2021-11": 9522,
+      "2021-12": 8098,
+      "2022-01": 8381,
+      "2022-02": 7544,
+      "2022-03": 8653,
+      "2022-04": 6985,
+      "2022-05": 11896,
+      "2022-06": 11520,
+      "2022-07": 11260,
+      "2022-08": 11669,
+      "2022-09": 11660,
+      "2022-10": 10667,
+      "2022-11": 8672,
+      "2022-12": 9487,
+      "2023-01": 6999,
+      "2023-02": 7145,
+      "2023-03": 8105,
+      "2023-04": 5902,
+      "2023-05": 10182,
+      "2023-06": 10953,
+      "2023-07": 12749,
+      "2023-08": 12584,
+      "2023-09": 11556,
+      "2023-10": 11711,
+      "2023-11": 11052,
+      "2023-12": 10202,
+      "2024-01": 11069,
+      "2024-02": 12133,
+      "2024-03": 12092,
+      "2024-04": 10953,
+      "2024-05": 17660,
+      "2024-06": 20345,
+      "2024-07": 22189,
+      "2024-08": 20935,
+      "2024-09": 18223,
+      "2024-10": 24094,
+      "2024-11": 18711,
+      "2024-12": 18612,
+      "2025-01": 18702,
+      "2025-02": 17957,
+      "2025-03": 21366,
+      "2025-04": 21656,
+      "2025-05": 26805,
+      "2025-06": 20488
+    },
+    "spike_months": {
+      "2022-05": 70.30780243378669,
+      "2023-05": 72.51779057946459,
+      "2024-05": 61.23436501415138
+    },
+    "drop_months": {
+      "2020-04": -48.93485643717197
+    }
+  },
+  "text": {
+    "total_with_remarks": 688542,
+    "percentage_with_remarks": 89.81,
+    "avg_remark_length": 15.68,
+    "median_remark_length": 8.0,
+    "max_remark_length": 18402
+  }
+}
