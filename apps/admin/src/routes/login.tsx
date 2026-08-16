@@ -93,10 +93,7 @@ function AdminLogin() {
           </button>
         </form>
 
-        <div className="mt-6 p-4 rounded bg-[var(--surface-elevated)]/50 border border-[var(--glass-border)] text-sm text-[var(--muted-foreground)] text-center">
-          <p>Demo: Use any email.</p>
-          <p className="mt-1 font-medium">Try kavya.reddy@janmind.gov.in</p>
-        </div>
+        {/* Demo hint removed for production */}
       </GlassCard>
     </div>
   );
