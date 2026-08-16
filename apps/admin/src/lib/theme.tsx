@@ -25,7 +25,7 @@ function systemPrefersDark() {
 }
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [mode, setMode] = useState<ThemeMode>("dark");
+  const [mode, setModeState] = useState<ThemeMode>("dark");
   const [resolved, setResolved] = useState<"dark" | "light">("dark");
 
   const apply = useCallback((next: ThemeMode) => {
