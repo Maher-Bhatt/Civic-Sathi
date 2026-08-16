@@ -17,9 +17,10 @@ def get_dashboard_summary(
     db: Session = Depends(get_db),
     current_officer: dict = Depends(get_current_officer),
 ):
-    """Get dashboard summary statistics (officer only)"""
+    """Get dashboard summary statistics (officer only, scoped to their city)"""
+    city_id = current_officer.get("city_id") or current_officer.get("sub")
     service = AnalyticsService(db)
-    return service.get_dashboard_summary(days=days)
+    return service.get_dashboard_summary(days=days, city_id=city_id)
 
 
 @router.get("/map", response_model=MapDataResponse)
@@ -28,16 +29,17 @@ def get_map_data(
     db: Session = Depends(get_db),
     current_officer: dict = Depends(get_current_officer),
 ):
-    """Get map data for Leaflet visualization (officer only)"""
+    """Get map data for Leaflet visualization (officer only, scoped to their city)"""
+    city_id = current_officer.get("city_id") or current_officer.get("sub")
     service = AnalyticsService(db)
-    return service.get_map_data(days=days)
+    return service.get_map_data(days=days, city_id=city_id)
 
 
 @router.post("/hotspots/detect")
 def trigger_hotspot_detection(
     db: Session = Depends(get_db),
-    # current_officer = Depends(get_current_officer)
+    current_officer: dict = Depends(get_current_officer),
 ):
-    """Run hotspot detection logic on civic issues"""
+    """Run hotspot detection logic on civic issues (officer only)"""
     service = AnalyticsService(db)
     return service.detect_hotspots()

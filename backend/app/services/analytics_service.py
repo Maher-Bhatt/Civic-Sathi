@@ -23,7 +23,7 @@ class AnalyticsService:
         self.db = db
         self.repo = AnalyticsRepository(db)
     
-    def get_dashboard_summary(self, days: int = 30) -> DashboardSummary:
+    def get_dashboard_summary(self, days: int = 30, city_id: str | None = None) -> DashboardSummary:
         """
         Get dashboard summary statistics.
         
@@ -34,13 +34,13 @@ class AnalyticsService:
             Dashboard summary data
         """
         # Get basic stats
-        stats = self.repo.get_summary_stats(days)
+        stats = self.repo.get_summary_stats(days, city_id=city_id)
         
         # Get distributions
-        status_dist = self.repo.get_status_distribution()
-        risk_dist = self.repo.get_risk_distribution()
-        dept_dist = self.repo.get_department_distribution()
-        trends = self.repo.get_daily_trends(days=7)
+        status_dist = self.repo.get_status_distribution(city_id=city_id)
+        risk_dist = self.repo.get_risk_distribution(city_id=city_id)
+        dept_dist = self.repo.get_department_distribution(city_id=city_id)
+        trends = self.repo.get_daily_trends(days=7, city_id=city_id)
         
         # Build status distribution
         status_distribution = StatusDistribution(
@@ -82,7 +82,7 @@ class AnalyticsService:
             daily_trends=daily_trends,
         )
     
-    def get_map_data(self, days: int = 30) -> MapDataResponse:
+    def get_map_data(self, days: int = 30, city_id: str | None = None) -> MapDataResponse:
         """
         Get map data for Leaflet visualization.
         
@@ -93,7 +93,7 @@ class AnalyticsService:
             Map data with ward polygons and issue markers
         """
         # Get ward data
-        ward_data = self.repo.get_ward_data()
+        ward_data = self.repo.get_ward_data(city_id=city_id)
         
         # Build ward polygons
         ward_polygons = []
@@ -115,7 +115,7 @@ class AnalyticsService:
             ))
         
         # Get issue markers
-        issues = self.repo.get_issue_markers()
+        issues = self.repo.get_issue_markers(city_id=city_id)
         
         issue_markers = []
         for issue in issues:

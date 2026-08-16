@@ -54,7 +54,27 @@ class WorkOrderResponse(BaseModel):
     status: WorkOrderStatus
     target_completion_date: Optional[datetime]
     created_at: datetime
-    
+
+    # ── Enriched fields joined from Tender ──────────────────────────────
+    title: Optional[str] = None
+    description: Optional[str] = None
+    estimated_budget: Optional[float] = None
+    city_id: Optional[UUID] = None
+    department_id: Optional[UUID] = None
+    published_at: Optional[datetime] = None
+    closed_at: Optional[datetime] = None
+    tender_status: Optional[str] = None  # TenderStatus of the parent tender
+
+    # ── Enriched fields joined from Contractor ──────────────────────────
+    contractor_name: Optional[str] = None  # Contractor.company_name
+    contractor_email: Optional[str] = None
+
+    # ── Progress fields from WorkOrder model ────────────────────────────
+    planned_progress_pct: Optional[float] = None
+    reported_progress_pct: Optional[float] = None
+    verified_progress_pct: Optional[float] = None
+    risk_level: Optional[str] = None
+
     class Config:
         from_attributes = True
 
