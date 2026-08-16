@@ -28,7 +28,7 @@ class ComplaintService:
         
         Args:
             complaint_data: Complaint input data
-            
+        """
         # Get or create department
         # We need to guess department for now, since ML runs later.
         from app.models.user import Department, Ward
