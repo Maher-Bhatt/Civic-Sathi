@@ -3,15 +3,38 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
+from typing import Annotated
 
 from app.core.database import get_db
-from app.core.security import create_access_token, hash_password, verify_password
+from app.core.security import (
+    create_access_token, hash_password, verify_password, verify_officer_key,
+)
 from app.schemas.officer import OfficerLoginRequest, OfficerLoginResponse, OfficerInfo
 from app.schemas.citizen import CitizenRegisterRequest, CitizenLoginRequest, CitizenAuthResponse, CitizenInfo
 from app.models.user import User
 from uuid import uuid4
+from pydantic import BaseModel, EmailStr, Field
 
 router = APIRouter()
+
+
+# ── Admin / Officer setup schema ──────────────────────────────────────────────
+
+class AdminSetupRequest(BaseModel):
+    """Create the first admin or officer user — requires OFFICER_API_KEY header."""
+    name: str = Field(..., min_length=2, max_length=100)
+    email: EmailStr
+    password: str = Field(..., min_length=8, max_length=100)
+    role: str = Field(default="admin", description="admin | officer | supervisor | municipality")
+    city: str | None = None
+    department: str | None = None
+
+
+class AdminSetupResponse(BaseModel):
+    message: str
+    user_id: str
+    email: str
+    role: str
 
 
 @router.post("/officer-login", response_model=OfficerLoginResponse)
@@ -60,6 +83,60 @@ def officer_login(
     )
 
 
+@router.post("/admin-setup", response_model=AdminSetupResponse, dependencies=[Depends(verify_officer_key)])
+def admin_setup(
+    setup_data: AdminSetupRequest,
+    db: Session = Depends(get_db),
+):
+    """
+    Create an admin or officer user. Protected by X-Officer-Key header.
+    Use this endpoint once to bootstrap the first admin account.
+    Call with: X-Officer-Key: <OFFICER_API_KEY from backend .env>
+    """
+    allowed_roles = {"admin", "officer", "supervisor", "municipality"}
+    if setup_data.role not in allowed_roles:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Invalid role. Must be one of: {', '.join(allowed_roles)}",
+        )
+
+    existing = db.query(User).filter(User.email == setup_data.email).first()
+    if existing:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail=f"User with email {setup_data.email} already exists (role: {existing.role})",
+        )
+
+    user = User(
+        id=uuid4(),
+        role=setup_data.role,
+        name=setup_data.name,
+        email=setup_data.email,
+        password_hash=hash_password(setup_data.password),
+        city=setup_data.city,
+        department=setup_data.department,
+        ward="Admin",
+    )
+
+    try:
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="User with this email already exists",
+        )
+
+    return AdminSetupResponse(
+        message=f"User '{setup_data.name}' created with role '{setup_data.role}'",
+        user_id=str(user.id),
+        email=user.email,
+        role=user.role,
+    )
+
+
 @router.post("/register", response_model=CitizenAuthResponse)
 def citizen_register(
     register_data: CitizenRegisterRequest,
@@ -75,7 +152,7 @@ def citizen_register(
     if existing_user:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
-            detail="User with this email already exists"
+            detail="An account with this email already exists. Please sign in instead.",
         )
     
     # Hash the password
@@ -100,7 +177,7 @@ def citizen_register(
         db.rollback()
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
-            detail="User with this email already exists"
+            detail="An account with this email already exists. Please sign in instead.",
         )
     
     # Create access token

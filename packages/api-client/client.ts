@@ -50,7 +50,15 @@ export class APIClient {
       let errorDetail = 'API Request Failed';
       try {
         const errorData = await response.json();
-        errorDetail = errorData.detail || errorData.message || errorDetail;
+        // FastAPI can return detail as a string or as a Pydantic validation array
+        if (typeof errorData.detail === 'string') {
+          errorDetail = errorData.detail;
+        } else if (Array.isArray(errorData.detail)) {
+          // Pydantic 422: pick the first human-readable message
+          errorDetail = errorData.detail.map((e: any) => e.msg || e.message).join('; ');
+        } else {
+          errorDetail = errorData.message || errorDetail;
+        }
       } catch (e) {
         // Failed to parse JSON error
       }

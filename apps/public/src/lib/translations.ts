@@ -9,6 +9,7 @@ export const LANGUAGES: Record<Language, string> = {
 
 export const TRANSLATIONS: Record<Language, Record<string, string>> = {
   en: {
+    // ── Navigation ──────────────────────────────────────────────────────
     "nav.home": "Home",
     "nav.howitworks": "How It Works",
     "nav.map": "Civic Map",
@@ -18,10 +19,56 @@ export const TRANSLATIONS: Record<Language, Record<string, string>> = {
     "nav.profile": "Profile",
     "nav.signin": "Sign In",
     "nav.signout": "Sign Out",
+
+    // ── Home — hero ──────────────────────────────────────────────────────
+    "home.hero.badge": "Citizen portal",
     "home.hero.title": "JANMIND",
     "home.hero.subtitle": "Make your city better, one report at a time.",
     "home.hero.desc":
       "Report civic problems with location and evidence. JANMIND helps connect individual complaints into larger patterns so public-service issues can be identified faster.",
+    "home.hero.howitworks": "How it works",
+    "home.hero.smallprint":
+      "Takes about a minute. You don't need to know the department or the category — JANMIND suggests them for you.",
+
+    // ── Home — How it works ──────────────────────────────────────────────
+    "hiw.label": "How it works",
+    "hiw.heading": "Four steps from a problem on your street to a tracked civic record.",
+    "hiw.step1.title": "Report",
+    "hiw.step1.body": "Tell JANMIND what happened.",
+    "hiw.step2.title": "Location",
+    "hiw.step2.body": "Use your current location or choose a location manually.",
+    "hiw.step3.title": "Evidence",
+    "hiw.step3.body": "Upload a photo if available.",
+    "hiw.step4.title": "Track",
+    "hiw.step4.body": "Follow your complaint and receive updates.",
+
+    // ── Home — Pattern detection ─────────────────────────────────────────
+    "pattern.label": "Pattern detection",
+    "pattern.heading": "One report is a complaint. Many reports are a pattern.",
+    "pattern.desc":
+      "When several citizens describe a similar issue nearby, JANMIND groups them into an aggregated hotspot — without exposing anyone's identity or exact private address.",
+    "pattern.bullet1": "23 similar reports within approximately 500m",
+    "pattern.bullet2": "127 related reports in Ward 14",
+    "pattern.bullet3": "Aggregate view only — no personal details shared",
+    "pattern.issues.label": "Issues you can report",
+    "pattern.startreport": "Start a report",
+
+    // ── Home — Stats ─────────────────────────────────────────────────────
+    "stats.label": "Civic intelligence — sample data",
+    "stats.reports": "Related reports in Ward 14",
+    "stats.types": "Issue types",
+    "stats.update": "Median first update",
+    "stats.cities": "Cities supported",
+
+    // ── Home — Map card ──────────────────────────────────────────────────
+    "map.card.label": "Locality civic activity — sample data",
+    "map.card.open": "Open Civic Map",
+
+    // ── Footer ───────────────────────────────────────────────────────────
+    "footer.brand": "JANMIND — Citizen Portal",
+    "footer.note": "Prototype interface. Data shown is sample data.",
+
+    // ── Report wizard steps ──────────────────────────────────────────────
     "report.step.problem": "Problem",
     "report.step.location": "Location",
     "report.step.evidence": "Evidence",
@@ -29,11 +76,48 @@ export const TRANSLATIONS: Record<Language, Record<string, string>> = {
     "report.btn.continue": "Continue",
     "report.btn.back": "Back",
     "report.btn.submit": "Submit report",
+
+    // ── Register page ────────────────────────────────────────────────────
+    "register.access": "Citizen access",
+    "register.heading": "Create your account",
+    "register.subtext": "Your contact details stay private and are never shown on public maps.",
+    "register.name": "Full name",
+    "register.name.placeholder": "Your name",
+    "register.email": "Email",
+    "register.email.placeholder": "you@example.com",
+    "register.phone": "Phone",
+    "register.phone.placeholder": "+91 00000 00000",
+    "register.password": "Password",
+    "register.password.placeholder": "At least 8 characters",
+    "register.password.error": "Password must be at least 8 characters.",
+    "register.btn": "Create account",
+    "register.btn.busy": "Creating account...",
+    "register.success": "Account created",
+    "register.error": "We couldn't create your account right now.",
+    "register.existing": "Already registered?",
+    "register.signin": "Sign in",
+
+    // ── Login page ────────────────────────────────────────────────────────
+    "login.access": "Citizen access",
+    "login.heading": "Sign in",
+    "login.subtext": "Continue to your reports, notifications and complaint history.",
+    "login.email": "Email",
+    "login.email.placeholder": "you@example.com",
+    "login.password": "Password",
+    "login.btn": "Sign in",
+    "login.btn.busy": "Signing in...",
+    "login.success": "Signed in",
+    "login.error": "We couldn't sign you in. Check your details and try again.",
+    "login.new": "New to JANMIND?",
+    "login.createaccount": "Create an account",
+
+    // ── Profile ───────────────────────────────────────────────────────────
     "profile.title": "Profile settings",
     "profile.language": "Preferred language",
     "profile.theme": "Theme preference",
     "btn.save": "Save changes",
   },
+
   hi: {
     "nav.home": "होम",
     "nav.howitworks": "कैसे काम करता है",
@@ -44,10 +128,49 @@ export const TRANSLATIONS: Record<Language, Record<string, string>> = {
     "nav.profile": "प्रोफ़ाइल",
     "nav.signin": "साइन इन करें",
     "nav.signout": "साइन आउट",
+
+    "home.hero.badge": "नागरिक पोर्टल",
     "home.hero.title": "जनमाइंड",
     "home.hero.subtitle": "अपने शहर को बेहतर बनाएं, एक बार में एक रिपोर्ट।",
     "home.hero.desc":
       "स्थान और साक्ष्य के साथ नागरिक समस्याओं की रिपोर्ट करें। JANMIND व्यक्तिगत शिकायतों को बड़े पैटर्न से जोड़ने में मदद करता है।",
+    "home.hero.howitworks": "यह कैसे काम करता है",
+    "home.hero.smallprint":
+      "लगभग एक मिनट लगता है। आपको विभाग या श्रेणी जानने की ज़रूरत नहीं — JANMIND आपके लिए सुझाव देता है।",
+
+    "hiw.label": "यह कैसे काम करता है",
+    "hiw.heading": "सड़क की समस्या से नागरिक रिकॉर्ड तक — चार आसान कदम।",
+    "hiw.step1.title": "रिपोर्ट",
+    "hiw.step1.body": "JANMIND को बताएं क्या हुआ।",
+    "hiw.step2.title": "स्थान",
+    "hiw.step2.body": "अपना वर्तमान स्थान उपयोग करें या मैन्युअल रूप से चुनें।",
+    "hiw.step3.title": "प्रमाण",
+    "hiw.step3.body": "यदि उपलब्ध हो तो फ़ोटो अपलोड करें।",
+    "hiw.step4.title": "ट्रैक करें",
+    "hiw.step4.body": "अपनी शिकायत की प्रगति देखें और अपडेट पाएं।",
+
+    "pattern.label": "पैटर्न पहचान",
+    "pattern.heading": "एक रिपोर्ट एक शिकायत है। कई रिपोर्ट एक पैटर्न हैं।",
+    "pattern.desc":
+      "जब कई नागरिक पास में एक जैसी समस्या बताते हैं, तो JANMIND उन्हें एक समूह में जोड़ता है — किसी की पहचान या पता उजागर किए बिना।",
+    "pattern.bullet1": "लगभग 500 मीटर में 23 समान रिपोर्ट",
+    "pattern.bullet2": "वार्ड 14 में 127 संबंधित रिपोर्ट",
+    "pattern.bullet3": "केवल समेकित दृश्य — कोई व्यक्तिगत विवरण साझा नहीं",
+    "pattern.issues.label": "जो समस्याएं आप रिपोर्ट कर सकते हैं",
+    "pattern.startreport": "रिपोर्ट शुरू करें",
+
+    "stats.label": "नागरिक जानकारी — नमूना डेटा",
+    "stats.reports": "वार्ड 14 में संबंधित रिपोर्ट",
+    "stats.types": "समस्या प्रकार",
+    "stats.update": "पहला अपडेट औसत समय",
+    "stats.cities": "समर्थित शहर",
+
+    "map.card.label": "स्थानीय नागरिक गतिविधि — नमूना डेटा",
+    "map.card.open": "नागरिक मानचित्र खोलें",
+
+    "footer.brand": "JANMIND — नागरिक पोर्टल",
+    "footer.note": "प्रोटोटाइप इंटरफ़ेस। दिखाया गया डेटा नमूना डेटा है।",
+
     "report.step.problem": "समस्या",
     "report.step.location": "स्थान",
     "report.step.evidence": "प्रमाण",
@@ -55,11 +178,45 @@ export const TRANSLATIONS: Record<Language, Record<string, string>> = {
     "report.btn.continue": "आगे बढ़ें",
     "report.btn.back": "पीछे",
     "report.btn.submit": "रिपोर्ट जमा करें",
+
+    "register.access": "नागरिक पहुंच",
+    "register.heading": "अपना खाता बनाएं",
+    "register.subtext": "आपका संपर्क विवरण निजी रहता है और सार्वजनिक मानचित्रों पर नहीं दिखाया जाता।",
+    "register.name": "पूरा नाम",
+    "register.name.placeholder": "आपका नाम",
+    "register.email": "ईमेल",
+    "register.email.placeholder": "आप@उदाहरण.com",
+    "register.phone": "फ़ोन",
+    "register.phone.placeholder": "+91 00000 00000",
+    "register.password": "पासवर्ड",
+    "register.password.placeholder": "कम से कम 8 अक्षर",
+    "register.password.error": "पासवर्ड कम से कम 8 अक्षरों का होना चाहिए।",
+    "register.btn": "खाता बनाएं",
+    "register.btn.busy": "खाता बन रहा है...",
+    "register.success": "खाता बनाया गया",
+    "register.error": "अभी आपका खाता नहीं बनाया जा सका।",
+    "register.existing": "पहले से पंजीकृत हैं?",
+    "register.signin": "साइन इन करें",
+
+    "login.access": "नागरिक पहुंच",
+    "login.heading": "साइन इन करें",
+    "login.subtext": "अपनी रिपोर्ट, सूचनाओं और शिकायत इतिहास पर वापस जाएं।",
+    "login.email": "ईमेल",
+    "login.email.placeholder": "आप@उदाहरण.com",
+    "login.password": "पासवर्ड",
+    "login.btn": "साइन इन करें",
+    "login.btn.busy": "साइन इन हो रहा है...",
+    "login.success": "साइन इन हो गया",
+    "login.error": "साइन इन नहीं हो सका। अपनी जानकारी जांचें।",
+    "login.new": "JANMIND पर नए हैं?",
+    "login.createaccount": "खाता बनाएं",
+
     "profile.title": "प्रोफ़ाइल सेटिंग्स",
     "profile.language": "पसंदीदा भाषा",
     "profile.theme": "थीम वरीयता",
     "btn.save": "बदलाव सहेजें",
   },
+
   gu: {
     "nav.home": "મુખ્ય પૃષ્ઠ",
     "nav.howitworks": "કેવી રીતે કામ કરે છે",
@@ -70,10 +227,49 @@ export const TRANSLATIONS: Record<Language, Record<string, string>> = {
     "nav.profile": "પ્રોફાઇલ",
     "nav.signin": "સાઇન ઇન",
     "nav.signout": "સાઇન આઉટ",
+
+    "home.hero.badge": "નાગરિક પોર્ટલ",
     "home.hero.title": "જનમાઇન્ડ",
     "home.hero.subtitle": "તમારા શહેરને બહેતર બનાવો, એક સમયે એક રિપોર્ટ.",
     "home.hero.desc":
       "સ્થાન અને પુરાવા સાથે નાગરિક સમસ્યાઓની જાણ કરો. JANMIND વ્યક્તિગત ફરિયાદોને મોટી પેટર્ન સાથે જોડવામાં મદદ કરે છે.",
+    "home.hero.howitworks": "તે કેવી રીતે કામ કરે છે",
+    "home.hero.smallprint":
+      "લગભગ એક મિનિટ લાગે છે. તમારે વિભાગ કે શ્રેણી જાણવાની જરૂર નથી — JANMIND તમારા માટે સૂચવે છે.",
+
+    "hiw.label": "તે કેવી રીતે કામ કરે છે",
+    "hiw.heading": "શેરીની સમસ્યાથી નાગરિક રેકોર્ડ સુધી — ચાર સરળ પગલાં.",
+    "hiw.step1.title": "રિપોર્ટ",
+    "hiw.step1.body": "JANMIND ને જણાવો શું થયું.",
+    "hiw.step2.title": "સ્થાન",
+    "hiw.step2.body": "તમારું વર્તમાન સ્થાન વાપરો અથવા મેન્યુઅલ રીતે પસંદ કરો.",
+    "hiw.step3.title": "પુરાવા",
+    "hiw.step3.body": "ઉપલબ્ધ હોય તો ફોટો અપલોડ કરો.",
+    "hiw.step4.title": "ટ્રૅક",
+    "hiw.step4.body": "તમારી ફરિયાદ ફોલો કરો અને અપડેટ મેળવો.",
+
+    "pattern.label": "પેટર્ન શોધ",
+    "pattern.heading": "એક રિપોર્ટ એ ફરિયાદ છે. ઘણા રિપોર્ટ એ પેટર્ન છે.",
+    "pattern.desc":
+      "જ્યારે ઘણા નાગરિકો નજીકમાં સમાન સમસ્યા વર્ણવે છે, ત્યારે JANMIND તેમને એક જૂથ હૉટસ્પૉટ માં જૂથ કરે છે — કોઈની ઓળખ કે ખાનગી સરનામું જાહેર કર્યા વગર.",
+    "pattern.bullet1": "આશરે 500 મીટરમાં 23 સમાન રિપોર્ટ",
+    "pattern.bullet2": "વૉર્ડ 14 માં 127 સંબંધિત રિપોર્ટ",
+    "pattern.bullet3": "માત્ર એકત્રિત દૃશ્ય — કોઈ અંગત વિગત શેર નહીં",
+    "pattern.issues.label": "તમે જે સમસ્યા નોંધાવી શકો",
+    "pattern.startreport": "રિપોર્ટ શરૂ કરો",
+
+    "stats.label": "નાગરિક બુદ્ધિ — નમૂના ડેટા",
+    "stats.reports": "વૉર્ડ 14 માં સંબંધિત રિપોર્ટ",
+    "stats.types": "સમસ્યાના પ્રકારો",
+    "stats.update": "પ્રથમ અપડેટ સરેરાશ",
+    "stats.cities": "ટેકો આપેલ શહેરો",
+
+    "map.card.label": "સ્થાનિક નાગરિક પ્રવૃત્તિ — નમૂના ડેટા",
+    "map.card.open": "નાગરિક નકશો ખોલો",
+
+    "footer.brand": "JANMIND — નાગરિક પોર્ટલ",
+    "footer.note": "પ્રોટોટાઇપ ઇન્ટરફેસ. બતાવેલ ડેટા નમૂના ડેટા છે.",
+
     "report.step.problem": "સમસ્યા",
     "report.step.location": "સ્થાન",
     "report.step.evidence": "પુરાવા",
@@ -81,11 +277,45 @@ export const TRANSLATIONS: Record<Language, Record<string, string>> = {
     "report.btn.continue": "આગળ વધો",
     "report.btn.back": "પાછા જાઓ",
     "report.btn.submit": "રિપોર્ટ સબમિટ કરો",
+
+    "register.access": "નાગરિક ઍક્સેસ",
+    "register.heading": "તમારું ખાતું બનાવો",
+    "register.subtext": "તમારી સંપર્ક વિગત ખાનગી રહે છે અને સાર્વજનિક નકશા પર ક્યારેય બતાવાતી નથી.",
+    "register.name": "પૂરું નામ",
+    "register.name.placeholder": "તમારું નામ",
+    "register.email": "ઇ-મેઇલ",
+    "register.email.placeholder": "you@example.com",
+    "register.phone": "ફોન",
+    "register.phone.placeholder": "+91 00000 00000",
+    "register.password": "પાસવર્ડ",
+    "register.password.placeholder": "ઓછામાં ઓછા 8 અક્ષર",
+    "register.password.error": "પાસવર્ડ ઓછામાં ઓછા 8 અક્ષરનો હોવો જોઈએ.",
+    "register.btn": "ખાતું બનાવો",
+    "register.btn.busy": "ખાતું બનાવાઈ રહ્યું છે...",
+    "register.success": "ખાતું બનાવ્યું",
+    "register.error": "અત્યારે તમારું ખાતું બનાવી શકાયું નહીં.",
+    "register.existing": "પહેલેથી નોંધાયેલ છો?",
+    "register.signin": "સાઇન ઇન",
+
+    "login.access": "નાગરિક ઍક્સેસ",
+    "login.heading": "સાઇન ઇન",
+    "login.subtext": "તમારા રિપોર્ટ, સૂચનાઓ અને ફરિયાદ ઇતિહાસ પર જાઓ.",
+    "login.email": "ઇ-મેઇલ",
+    "login.email.placeholder": "you@example.com",
+    "login.password": "પાસવર્ડ",
+    "login.btn": "સાઇન ઇન",
+    "login.btn.busy": "સાઇન ઇન થઈ રહ્યું છે...",
+    "login.success": "સાઇન ઇન થઈ ગયું",
+    "login.error": "સાઇન ઇન થઈ શક્યું નહીં. તમારી વિગત તપાસો.",
+    "login.new": "JANMIND માં નવા છો?",
+    "login.createaccount": "ખાતું બનાવો",
+
     "profile.title": "પ્રોફાઇલ સેટિંગ્સ",
     "profile.language": "પસંદીદા ભાષા",
     "profile.theme": "થીમ પસંદગી",
     "btn.save": "ફેરફારો સાચવો",
   },
+
   kn: {
     "nav.home": "ಮುಖಪುಟ",
     "nav.howitworks": "ಹೇಗೆ ಕೆಲಸ ಮಾಡುತ್ತದೆ",
@@ -96,10 +326,49 @@ export const TRANSLATIONS: Record<Language, Record<string, string>> = {
     "nav.profile": "ಪ್ರೊಫೈಲ್",
     "nav.signin": "ಸೈನ್ ಇನ್",
     "nav.signout": "ಸೈನ್ ಔಟ್",
+
+    "home.hero.badge": "ನಾಗರಿಕ ಪೋರ್ಟಲ್",
     "home.hero.title": "ಜನ್‌ಮೈಂಡ್",
     "home.hero.subtitle": "ನಿಮ್ಮ ನಗರವನ್ನು ಉತ್ತಮಗೊಳಿಸಿ, ಒಂದು ಸಮಯದಲ್ಲಿ ಒಂದು ವರದಿ.",
     "home.hero.desc":
       "ಸ್ಥಳ ಮತ್ತು ಪುರಾವೆಯೊಂದಿಗೆ ನಾಗರಿಕ ಸಮಸ್ಯೆಗಳನ್ನು ವರದಿ ಮಾಡಿ. JANMIND ವೈಯಕ್ತಿಕ ದೂರುಗಳನ್ನು ದೊಡ್ಡ ಮಾದರಿಗಳಿಗೆ ಸಂಪರ್ಕಿಸಲು ಸಹಾಯ ಮಾಡುತ್ತದೆ.",
+    "home.hero.howitworks": "ಇದು ಹೇಗೆ ಕೆಲಸ ಮಾಡುತ್ತದೆ",
+    "home.hero.smallprint":
+      "ಸುಮಾರು ಒಂದು ನಿಮಿಷ ತೆಗೆದುಕೊಳ್ಳುತ್ತದೆ. ನೀವು ವಿಭಾಗ ಅಥವಾ ವರ್ಗ ತಿಳಿದಿರಬೇಕಿಲ್ಲ — JANMIND ನಿಮಗೆ ಸೂಚಿಸುತ್ತದೆ.",
+
+    "hiw.label": "ಇದು ಹೇಗೆ ಕೆಲಸ ಮಾಡುತ್ತದೆ",
+    "hiw.heading": "ನಿಮ್ಮ ಬೀದಿಯ ಸಮಸ್ಯೆಯಿಂದ ನಾಗರಿಕ ದಾಖಲೆಯವರೆಗೆ — ನಾಲ್ಕು ಹಂತಗಳು.",
+    "hiw.step1.title": "ವರದಿ",
+    "hiw.step1.body": "JANMIND ಗೆ ಏನಾಯಿತು ಎಂದು ತಿಳಿಸಿ.",
+    "hiw.step2.title": "ಸ್ಥಳ",
+    "hiw.step2.body": "ನಿಮ್ಮ ಪ್ರಸ್ತುತ ಸ್ಥಳ ಬಳಸಿ ಅಥವಾ ಹಸ್ತಚಾಲಿತವಾಗಿ ಆಯ್ಕೆ ಮಾಡಿ.",
+    "hiw.step3.title": "ಪುರಾವೆ",
+    "hiw.step3.body": "ಲಭ್ಯವಿದ್ದರೆ ಫೋಟೋ ಅಪ್‌ಲೋಡ್ ಮಾಡಿ.",
+    "hiw.step4.title": "ಟ್ರ್ಯಾಕ್",
+    "hiw.step4.body": "ನಿಮ್ಮ ದೂರನ್ನು ಅನುಸರಿಸಿ ಮತ್ತು ನವೀಕರಣಗಳನ್ನು ಸ್ವೀಕರಿಸಿ.",
+
+    "pattern.label": "ಮಾದರಿ ಪತ್ತೆ",
+    "pattern.heading": "ಒಂದು ವರದಿ ದೂರು. ಅನೇಕ ವರದಿಗಳು ಒಂದು ಮಾದರಿ.",
+    "pattern.desc":
+      "ಹಲವಾರು ನಾಗರಿಕರು ಹತ್ತಿರದಲ್ಲಿ ಒಂದೇ ರೀತಿಯ ಸಮಸ್ಯೆಯನ್ನು ವಿವರಿಸಿದಾಗ, JANMIND ಅವರನ್ನು ಒಂದು ಹಾಟ್‌ಸ್ಪಾಟ್‌ ಆಗಿ ಗುಂಪು ಮಾಡುತ್ತದೆ — ಯಾರ ಗುರುತು ಅಥವಾ ಖಾಸಗಿ ವಿಳಾಸ ಬಹಿರಂಗಪಡಿಸದೆ.",
+    "pattern.bullet1": "ಸರಿಸುಮಾರು 500 ಮೀ ನಲ್ಲಿ 23 ಒಂದೇ ರೀತಿಯ ವರದಿಗಳು",
+    "pattern.bullet2": "ವಾರ್ಡ್ 14 ರಲ್ಲಿ 127 ಸಂಬಂಧಿತ ವರದಿಗಳು",
+    "pattern.bullet3": "ಸಮಗ್ರ ನೋಟ ಮಾತ್ರ — ಯಾವುದೇ ವೈಯಕ್ತಿಕ ವಿವರ ಹಂಚಿಕೆಯಿಲ್ಲ",
+    "pattern.issues.label": "ನೀವು ವರದಿ ಮಾಡಬಹುದಾದ ಸಮಸ್ಯೆಗಳು",
+    "pattern.startreport": "ವರದಿ ಪ್ರಾರಂಭಿಸಿ",
+
+    "stats.label": "ನಾಗರಿಕ ಬುದ್ಧಿ — ಮಾದರಿ ಡೇಟಾ",
+    "stats.reports": "ವಾರ್ಡ್ 14 ರಲ್ಲಿ ಸಂಬಂಧಿತ ವರದಿಗಳು",
+    "stats.types": "ಸಮಸ್ಯೆ ವಿಧಗಳು",
+    "stats.update": "ಮಧ್ಯ ಮೊದಲ ನವೀಕರಣ",
+    "stats.cities": "ಬೆಂಬಲಿತ ನಗರಗಳು",
+
+    "map.card.label": "ಸ್ಥಳೀಯ ನಾಗರಿಕ ಚಟುವಟಿಕೆ — ಮಾದರಿ ಡೇಟಾ",
+    "map.card.open": "ನಾಗರಿಕ ನಕ್ಷೆ ತೆರೆಯಿರಿ",
+
+    "footer.brand": "JANMIND — ನಾಗರಿಕ ಪೋರ್ಟಲ್",
+    "footer.note": "ಪ್ರೋಟೋಟೈಪ್ ಇಂಟರ್ಫೇಸ್. ತೋರಿಸಿದ ಡೇಟಾ ಮಾದರಿ ಡೇಟಾ.",
+
     "report.step.problem": "ಸಮಸ್ಯೆ",
     "report.step.location": "ಸ್ಥಳ",
     "report.step.evidence": "ಪುರಾವೆ",
@@ -107,6 +376,39 @@ export const TRANSLATIONS: Record<Language, Record<string, string>> = {
     "report.btn.continue": "ಮುಂದುವರಿಸಿ",
     "report.btn.back": "ಹಿಂದೆ",
     "report.btn.submit": "ವರದಿ ಸಲ್ಲಿಸಿ",
+
+    "register.access": "ನಾಗರಿಕ ಪ್ರವೇಶ",
+    "register.heading": "ನಿಮ್ಮ ಖಾತೆ ರಚಿಸಿ",
+    "register.subtext": "ನಿಮ್ಮ ಸಂಪರ್ಕ ವಿವರಗಳು ಖಾಸಗಿಯಾಗಿ ಉಳಿಯುತ್ತವೆ ಮತ್ತು ಸಾರ್ವಜನಿಕ ನಕ್ಷೆಗಳಲ್ಲಿ ತೋರಿಸಲಾಗುವುದಿಲ್ಲ.",
+    "register.name": "ಪೂರ್ಣ ಹೆಸರು",
+    "register.name.placeholder": "ನಿಮ್ಮ ಹೆಸರು",
+    "register.email": "ಇಮೇಲ್",
+    "register.email.placeholder": "you@example.com",
+    "register.phone": "ಫೋನ್",
+    "register.phone.placeholder": "+91 00000 00000",
+    "register.password": "ಪಾಸ್‌ವರ್ಡ್",
+    "register.password.placeholder": "ಕನಿಷ್ಠ 8 ಅಕ್ಷರಗಳು",
+    "register.password.error": "ಪಾಸ್‌ವರ್ಡ್ ಕನಿಷ್ಠ 8 ಅಕ್ಷರಗಳಾಗಿರಬೇಕು.",
+    "register.btn": "ಖಾತೆ ರಚಿಸಿ",
+    "register.btn.busy": "ಖಾತೆ ರಚಿಸಲಾಗುತ್ತಿದೆ...",
+    "register.success": "ಖಾತೆ ರಚಿಸಲಾಗಿದೆ",
+    "register.error": "ಈಗ ನಿಮ್ಮ ಖಾತೆಯನ್ನು ರಚಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ.",
+    "register.existing": "ಈಗಾಗಲೇ ನೋಂದಾಯಿಸಲಾಗಿದೆಯೇ?",
+    "register.signin": "ಸೈನ್ ಇನ್",
+
+    "login.access": "ನಾಗರಿಕ ಪ್ರವೇಶ",
+    "login.heading": "ಸೈನ್ ಇನ್",
+    "login.subtext": "ನಿಮ್ಮ ವರದಿಗಳು, ಅಧಿಸೂಚನೆಗಳು ಮತ್ತು ದೂರು ಇತಿಹಾಸಕ್ಕೆ ಮುಂದುವರಿಸಿ.",
+    "login.email": "ಇಮೇಲ್",
+    "login.email.placeholder": "you@example.com",
+    "login.password": "ಪಾಸ್‌ವರ್ಡ್",
+    "login.btn": "ಸೈನ್ ಇನ್",
+    "login.btn.busy": "ಸೈನ್ ಇನ್ ಆಗುತ್ತಿದೆ...",
+    "login.success": "ಸೈನ್ ಇನ್ ಆಗಿದೆ",
+    "login.error": "ಸೈನ್ ಇನ್ ಆಗಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ. ನಿಮ್ಮ ವಿವರಗಳನ್ನು ಪರಿಶೀಲಿಸಿ.",
+    "login.new": "JANMIND ಗೆ ಹೊಸಬರಾ?",
+    "login.createaccount": "ಖಾತೆ ರಚಿಸಿ",
+
     "profile.title": "ಪ್ರೊಫೈಲ್ ಸೆಟ್ಟಿಂಗ್‌ಗಳು",
     "profile.language": "ಆದ್ಯತೆಯ ಭಾಷೆ",
     "profile.theme": "ಥೀಮ್ ಆದ್ಯತೆ",

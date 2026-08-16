@@ -6,6 +6,7 @@ import { GlassCard, SectionLabel } from "@/components/ui/glass-card";
 import { GlassButton } from "@/components/ui/glass-button";
 import { GlassInput } from "@/components/ui/glass-input";
 import { useAuth } from "@/lib/auth";
+import { useI18n } from "@/lib/i18n";
 import { parseRedirect } from "@/lib/require-auth";
 
 export const Route = createFileRoute("/register")({
@@ -32,6 +33,7 @@ export const Route = createFileRoute("/register")({
 
 function RegisterPage() {
   const { signUp } = useAuth();
+  const { t } = useI18n();
   const navigate = useNavigate();
   const { redirect } = Route.useSearch();
   const [form, setForm] = useState({ name: "", email: "", phone: "", password: "" });
@@ -44,17 +46,30 @@ function RegisterPage() {
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (form.password.length < 8) {
-      setError("Password must be at least 8 characters.");
+      setError(t("register.password.error", "Password must be at least 8 characters."));
       return;
     }
+    // Normalize phone: strip spaces so backend min_length=10 isn't tripped by formatted input
+    const normalizedForm = {
+      ...form,
+      phone: form.phone.replace(/\s+/g, ""),
+    };
     setBusy(true);
     setError(null);
     try {
-      await signUp(form);
-      toast.success("Account created");
+      await signUp(normalizedForm);
+      toast.success(t("register.success", "Account created"));
       void navigate({ to: redirect ?? "/report" });
-    } catch {
-      setError("We couldn't create your account right now.");
+    } catch (err: any) {
+      // Surface the actual backend error message when available
+      const detail = err?.details || err?.message || "";
+      if (detail.toLowerCase().includes("already exists") || detail.includes("409")) {
+        setError("An account with this email already exists. Sign in instead.");
+      } else if (detail.toLowerCase().includes("phone")) {
+        setError("Please enter a valid 10-digit phone number.");
+      } else {
+        setError(t("register.error", "We couldn't create your account right now."));
+      }
     } finally {
       setBusy(false);
     }
@@ -63,63 +78,65 @@ function RegisterPage() {
   return (
     <PageShell className="max-w-md">
       <GlassCard elevation="raised" className="animate-rise p-6 sm:p-8">
-        <SectionLabel>Citizen access</SectionLabel>
-        <h1 className="mt-3 text-2xl font-semibold">Create your account</h1>
+        <SectionLabel>{t("register.access", "Citizen access")}</SectionLabel>
+        <h1 className="mt-3 text-2xl font-semibold">{t("register.heading", "Create your account")}</h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          Your contact details stay private and are never shown on public maps.
+          {t("register.subtext", "Your contact details stay private and are never shown on public maps.")}
         </p>
 
         <form onSubmit={onSubmit} className="mt-7 space-y-4" noValidate>
           <GlassInput
-            label="Full name"
+            label={t("register.name", "Full name")}
             required
             autoComplete="name"
             value={form.name}
             onChange={set("name")}
-            placeholder="Your name"
+            placeholder={t("register.name.placeholder", "Your name")}
           />
           <GlassInput
-            label="Email"
+            label={t("register.email", "Email")}
             type="email"
             required
             autoComplete="email"
             value={form.email}
             onChange={set("email")}
-            placeholder="you@example.com"
+            placeholder={t("register.email.placeholder", "you@example.com")}
           />
           <GlassInput
-            label="Phone"
+            label={t("register.phone", "Phone")}
             type="tel"
             required
             autoComplete="tel"
             value={form.phone}
             onChange={set("phone")}
-            placeholder="+91 00000 00000"
+            placeholder={t("register.phone.placeholder", "+91 00000 00000")}
           />
           <GlassInput
-            label="Password"
+            label={t("register.password", "Password")}
             type="password"
             required
             minLength={8}
             autoComplete="new-password"
             value={form.password}
             onChange={set("password")}
-            placeholder="At least 8 characters"
+            placeholder={t("register.password.placeholder", "At least 8 characters")}
             error={error ?? undefined}
           />
           <GlassButton type="submit" className="w-full" disabled={busy}>
-            {busy ? "Creating account..." : "Create account"}
+            {busy
+              ? t("register.btn.busy", "Creating account...")
+              : t("register.btn", "Create account")}
           </GlassButton>
         </form>
 
         <p className="mt-6 text-sm text-muted-foreground">
-          Already registered?{" "}
+          {t("register.existing", "Already registered?")}{" "}
           <Link
             to="/login"
             search={{ redirect }}
             className="text-primary underline-offset-4 transition-opacity hover:underline hover:opacity-80"
           >
-            Sign in
+            {t("register.signin", "Sign in")}
           </Link>
         </p>
       </GlassCard>

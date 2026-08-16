@@ -6,6 +6,7 @@ import { GlassCard, SectionLabel } from "@/components/ui/glass-card";
 import { GlassButton } from "@/components/ui/glass-button";
 import { GlassInput } from "@/components/ui/glass-input";
 import { useAuth } from "@/lib/auth";
+import { useI18n } from "@/lib/i18n";
 import { parseRedirect } from "@/lib/require-auth";
 
 export const Route = createFileRoute("/login")({
@@ -31,6 +32,7 @@ export const Route = createFileRoute("/login")({
 
 function LoginPage() {
   const { signIn } = useAuth();
+  const { t } = useI18n();
   const navigate = useNavigate();
   const { redirect } = Route.useSearch();
   const [email, setEmail] = useState("");
@@ -44,10 +46,10 @@ function LoginPage() {
     setError(null);
     try {
       await signIn(email, password);
-      toast.success("Signed in");
+      toast.success(t("login.success", "Signed in"));
       void navigate({ to: redirect ?? "/complaints" });
     } catch {
-      setError("We couldn't sign you in. Check your details and try again.");
+      setError(t("login.error", "We couldn't sign you in. Check your details and try again."));
     } finally {
       setBusy(false);
     }
@@ -56,24 +58,24 @@ function LoginPage() {
   return (
     <PageShell className="max-w-md">
       <GlassCard elevation="raised" className="animate-rise p-6 sm:p-8">
-        <SectionLabel>Citizen access</SectionLabel>
-        <h1 className="mt-3 text-2xl font-semibold">Sign in</h1>
+        <SectionLabel>{t("login.access", "Citizen access")}</SectionLabel>
+        <h1 className="mt-3 text-2xl font-semibold">{t("login.heading", "Sign in")}</h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          Continue to your reports, notifications and complaint history.
+          {t("login.subtext", "Continue to your reports, notifications and complaint history.")}
         </p>
 
         <form onSubmit={onSubmit} className="mt-7 space-y-4" noValidate>
           <GlassInput
-            label="Email"
+            label={t("login.email", "Email")}
             type="email"
             autoComplete="email"
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="you@example.com"
+            placeholder={t("login.email.placeholder", "you@example.com")}
           />
           <GlassInput
-            label="Password"
+            label={t("login.password", "Password")}
             type="password"
             autoComplete="current-password"
             required
@@ -83,18 +85,18 @@ function LoginPage() {
             error={error ?? undefined}
           />
           <GlassButton type="submit" className="w-full" disabled={busy}>
-            {busy ? "Signing in..." : "Sign in"}
+            {busy ? t("login.btn.busy", "Signing in...") : t("login.btn", "Sign in")}
           </GlassButton>
         </form>
 
         <p className="mt-6 text-sm text-muted-foreground">
-          New to JANMIND?{" "}
+          {t("login.new", "New to JANMIND?")}{" "}
           <Link
             to="/register"
             search={{ redirect }}
             className="text-primary underline-offset-4 transition-opacity hover:underline hover:opacity-80"
           >
-            Create an account
+            {t("login.createaccount", "Create an account")}
           </Link>
         </p>
       </GlassCard>
