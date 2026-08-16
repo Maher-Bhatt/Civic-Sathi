@@ -14,8 +14,22 @@ from app.core.errors import (
 )
 from app.api.v1.router import router as api_v1_router
 
+from contextlib import asynccontextmanager
+
 # Setup logging
 setup_logging()
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Auto-create tables on startup in PostgreSQL
+    try:
+        from app.core.database import engine
+        from app.models import Base
+        Base.metadata.create_all(bind=engine)
+        print("Database schema initialized successfully.")
+    except Exception as e:
+        print(f"Warning: Auto-migration on startup failed: {e}")
+    yield
 
 # Create FastAPI app
 app = FastAPI(
@@ -23,6 +37,7 @@ app = FastAPI(
     version=settings.app_version,
     docs_url="/docs" if settings.docs_enabled else None,
     redoc_url="/redoc" if settings.docs_enabled else None,
+    lifespan=lifespan,
 )
 
 # CORS middleware
