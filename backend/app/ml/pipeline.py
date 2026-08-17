@@ -12,6 +12,8 @@ from app.schemas.complaint import ComplaintCreate
 from app.ml.deduplication import get_candidate_issues, calculate_similarity_score
 
 
+from app.schemas.common import ComplaintCategory, EntityResult
+
 class ComplaintMLResult(BaseModel):
     """Result of ML analysis for a complaint"""
     category: ComplaintCategory

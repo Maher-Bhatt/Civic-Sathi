@@ -31,6 +31,7 @@ class RegistrationStatus(str, enum.Enum):
     PENDING = "PENDING"
     APPROVED = "APPROVED"
     REVOKED = "REVOKED"
+    REJECTED = "REJECTED"
 
 
 class ContractorCityRegistration(Base, UUIDMixin, TimestampMixin):
@@ -103,6 +104,7 @@ class WorkOrderStatus(str, enum.Enum):
     REWORK = "REWORK"
     COMPLETED = "COMPLETED"
     CLOSED = "CLOSED"
+    CANCELLED = "CANCELLED"
 
 
 class WorkOrder(Base, UUIDMixin, TimestampMixin):

@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """
 Migrate Real Complaint Data to Database
 Replaces demo data with actual historical grievance data from 2020-2025
@@ -281,6 +281,8 @@ def load_real_complaints(batch_size=100, limit=None):
                         
                         # Map to ward
                         ward = map_ward_name_to_ward(ward_name, wards)
+                        if not ward:
+                            continue
                         
                         # Map status
                         status_map = {
@@ -499,7 +501,8 @@ if __name__ == "__main__":
     print("\nPress Enter to continue or Ctrl+C to cancel...")
     
     try:
-        input()
+        pass
+        # input()
     except KeyboardInterrupt:
         print("\n\nCancelled by user.")
         sys.exit(0)
