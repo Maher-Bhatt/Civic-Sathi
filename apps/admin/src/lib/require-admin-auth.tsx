@@ -9,9 +9,9 @@ export function AdminAuthGate({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (ready && !admin) {
-      void navigate({ to: "/login" as any, replace: true });
+      window.location.replace("/login");
     }
-  }, [ready, admin, navigate]);
+  }, [ready, admin]);
 
   if (!ready || !admin) {
     return (
