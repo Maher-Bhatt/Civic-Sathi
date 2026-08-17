@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { MessageSquare, X, Send, Sparkles } from "lucide-react";
 import { GlassCard } from "@/components/ui/glass-card";
+import { useI18n } from "@/lib/i18n";
 
 export function AiCopilotWidget() {
+    const { t } = useI18n();
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<{ role: "user" | "ai"; text: string }[]>([
     { role: "ai", text: "Hello! I am your JANMIND AI Copilot. I can help you analyze project risks, review contractor performance, or summarize systemic issues. How can I help you today?" }
@@ -44,7 +46,7 @@ export function AiCopilotWidget() {
       <div className="flex items-center justify-between border-b border-[var(--glass-border)] bg-[var(--primary)] p-4 text-white">
         <div className="flex items-center gap-2 font-medium">
           <Sparkles className="h-5 w-5" />
-          <span>JANMIND Copilot</span>
+          <span>{t('ui.janmind_copilot')}</span>
         </div>
         <button onClick={() => setIsOpen(false)} className="rounded-full p-1 hover:bg-white/20 transition-colors">
           <X className="h-4 w-4" />
@@ -72,7 +74,7 @@ export function AiCopilotWidget() {
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Ask Copilot..."
+            placeholder={t('ui.ask_copilot')}
             className="flex-1 rounded-full border border-[var(--glass-border)] bg-[var(--surface)] px-4 py-2 text-sm text-[var(--foreground)] focus:outline-none focus:ring-1 focus:ring-[var(--primary)]"
           />
           <button 

@@ -10,6 +10,7 @@ import {
 import { getOfficerNotifications, markNotificationRead } from "@/services/api";
 import type { OfficerNotification } from "@/services/types";
 import { cn } from "@/lib/utils";
+import { useI18n } from "@/lib/i18n";
 
 export function NotificationDrawer({
   open,
@@ -18,6 +19,7 @@ export function NotificationDrawer({
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }) {
+    const { t } = useI18n();
   const [notifications, setNotifications] = useState<OfficerNotification[]>([]);
 
   useEffect(() => {
@@ -35,7 +37,7 @@ export function NotificationDrawer({
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent className="glass-strong w-full border-l border-[var(--glass-border)] sm:max-w-md">
         <SheetHeader>
-          <SheetTitle>Notifications</SheetTitle>
+          <SheetTitle>{t('ui.notifications')}</SheetTitle>
         </SheetHeader>
         <ul className="mt-6 space-y-3">
           {notifications.map((n) => (
@@ -60,8 +62,7 @@ export function NotificationDrawer({
                     onClick={() => handleRead(n.id)}
                     className="shrink-0 text-[0.65rem] text-primary hover:underline"
                   >
-                    Mark read
-                  </button>
+                    {t('ui.mark_read')}</button>
                 )}
               </div>
               {n.link && (
@@ -70,8 +71,7 @@ export function NotificationDrawer({
                   onClick={() => onOpenChange(false)}
                   className="mt-2 inline-block text-xs text-primary hover:underline"
                 >
-                  View details
-                </Link>
+                  {t('ui.view_details')}</Link>
               )}
             </li>
           ))}

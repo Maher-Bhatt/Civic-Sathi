@@ -2,6 +2,7 @@ import { cn } from "@/lib/utils";
 import type { LiveActivity } from "@/services/types";
 import { GlassCard, SectionLabel } from "@/components/ui/glass-card";
 import { formatDistanceToNow } from "date-fns";
+import { useI18n } from "@/lib/i18n";
 
 export function LiveActivityFeed({
   activities,
@@ -10,17 +11,17 @@ export function LiveActivityFeed({
   activities: LiveActivity[];
   className?: string;
 }) {
+    const { t } = useI18n();
   return (
     <GlassCard elevation="raised" className={cn("p-5", className)}>
       <div className="flex items-center justify-between">
-        <SectionLabel>Live Activity</SectionLabel>
+        <SectionLabel>{t('ui.live_activity')}</SectionLabel>
         <span className="flex items-center gap-1.5 text-[0.65rem] text-muted-foreground">
           <span className="relative flex h-2 w-2">
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-40" />
             <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
           </span>
-          Prototype simulation
-        </span>
+          {t('ui.prototype_simulation')}</span>
       </div>
       <ul className="mt-4 space-y-3">
         {activities.slice(0, 6).map((a, i) => (

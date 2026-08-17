@@ -7,6 +7,7 @@ import { GlassCard } from "@/components/ui/glass-card";
 import { LoadingState } from "@/components/ui/states";
 import { Building2, Search, Filter, CheckCircle2, AlertTriangle, ShieldAlert } from "lucide-react";
 import { toast } from "sonner";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/admin/contractors/")({
   head: () => ({ meta: [{ title: "Contractors | Admin | JANMIND" }] }),
@@ -14,6 +15,7 @@ export const Route = createFileRoute("/admin/contractors/")({
 });
 
 function ContractorsList() {
+    const { t } = useI18n();
   const [contractors, setContractors] = useState<Contractor[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<string>("ALL");
@@ -74,8 +76,8 @@ function ContractorsList() {
     <div className="space-y-6 muni-page-enter">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Contractor Registry</h1>
-          <p className="text-[var(--muted-foreground)]">Manage and verify platform contractors</p>
+          <h1 className="text-2xl font-bold tracking-tight">{t('ui.contractor_registry')}</h1>
+          <p className="text-[var(--muted-foreground)]">{t('ui.manage_and_verify_platform_con')}</p>
         </div>
       </div>
 
@@ -85,7 +87,7 @@ function ContractorsList() {
           <input
             type="text"
             className="ambient-field pl-9 w-full"
-            placeholder="Search by name or registration number..."
+            placeholder={t('ui.search_by_name_or_registration')}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
@@ -122,7 +124,7 @@ function ContractorsList() {
                 <StatusBadge status={contractor.status} />
               </div>
               <p className="text-sm text-[var(--muted-foreground)]">
-                Reg: {contractor.registrationNumber}
+                {t('ui.reg')}{contractor.registrationNumber}
               </p>
               <div className="flex flex-wrap gap-2 mt-3">
                 {contractor.specializationCategories.slice(0, 2).map((spec: string) => (
@@ -132,8 +134,7 @@ function ContractorsList() {
                 ))}
                 {contractor.specializationCategories.length > 2 && (
                   <span className="px-2 py-0.5 rounded text-xs bg-[var(--background)] border border-[var(--glass-border)] text-[var(--muted-foreground)]">
-                    +{contractor.specializationCategories.length - 2} more
-                  </span>
+                    +{contractor.specializationCategories.length - 2} {t('ui.more')}</span>
                 )}
               </div>
             </div>
@@ -144,31 +145,27 @@ function ContractorsList() {
                   onClick={() => handleVerify(contractor.id)}
                   className="action-btn w-full sm:w-auto flex items-center gap-2 press bg-[var(--success)]/10 text-[var(--success)] hover:bg-[var(--success)]/20 border-transparent"
                 >
-                  <CheckCircle2 className="w-4 h-4" /> Verify
-                </button>
+                  <CheckCircle2 className="w-4 h-4" /> {t('ui.verify')}</button>
               )}
               {contractor.status === 'VERIFIED' && (
                 <button
                   onClick={() => handleSuspend(contractor.id)}
                   className="action-btn w-full sm:w-auto flex items-center gap-2 press bg-[var(--critical)]/10 text-[var(--critical)] hover:bg-[var(--critical)]/20 border-transparent"
                 >
-                  <ShieldAlert className="w-4 h-4" /> Suspend
-                </button>
+                  <ShieldAlert className="w-4 h-4" /> {t('ui.suspend')}</button>
               )}
               <Link
                 to={"/admin/contractors/$id" as any}
                 params={{ id: contractor.id } as any}
                 className="action-btn w-full sm:w-auto text-center"
               >
-                View Details
-              </Link>
+                {t('ui.view_details')}</Link>
             </div>
           </GlassCard>
         ))}
         {filtered.length === 0 && (
           <div className="py-12 text-center text-[var(--muted-foreground)] border border-dashed border-[var(--glass-border)] rounded-lg">
-            No contractors found matching your criteria.
-          </div>
+            {t('ui.no_contractors_found_matching_')}</div>
         )}
       </div>
     </div>
@@ -176,25 +173,23 @@ function ContractorsList() {
 }
 
 function StatusBadge({ status }: { status: string }) {
+    const { t } = useI18n();
   if (status === 'VERIFIED') {
     return (
       <span className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-[var(--success)]/10 text-[var(--success)] border border-[var(--success)]/20 flex items-center gap-1">
-        <CheckCircle2 className="w-3 h-3" /> Verified
-      </span>
+        <CheckCircle2 className="w-3 h-3" /> {t('ui.verified')}</span>
     );
   }
   if (status === 'PENDING_VERIFICATION') {
     return (
       <span className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-[var(--warning)]/10 text-[var(--warning)] border border-[var(--warning)]/20 flex items-center gap-1">
-        <AlertTriangle className="w-3 h-3" /> Pending
-      </span>
+        <AlertTriangle className="w-3 h-3" /> {t('ui.pending')}</span>
     );
   }
   if (status === 'SUSPENDED') {
     return (
       <span className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-[var(--critical)]/10 text-[var(--critical)] border border-[var(--critical)]/20 flex items-center gap-1">
-        <ShieldAlert className="w-3 h-3" /> Suspended
-      </span>
+        <ShieldAlert className="w-3 h-3" /> {t('ui.suspended')}</span>
     );
   }
   return (

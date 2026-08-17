@@ -19,6 +19,7 @@ import {
 import { GlassCard, SectionLabel } from "@/components/ui/glass-card";
 import { LoadingState } from "@/components/ui/states";
 import { listAllUsers, createUser, updateUser, deleteUser, listAdminCities } from "@/services/shared-store";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/admin/users")({
   head: () => ({ meta: [{ title: "User Management | JANMIND Admin" }] }),
@@ -43,6 +44,7 @@ const ROLE_ICONS: Record<Role, typeof Shield> = {
 };
 
 function RoleBadge({ role }: { role: string }) {
+    const { t } = useI18n();
   const r = (role as Role) || "citizen";
   const cls = ROLE_COLORS[r] ?? "bg-gray-500/20 text-gray-400 border-gray-500/30";
   return (
@@ -79,6 +81,7 @@ const EMPTY_FORM: FormState = {
 };
 
 function UserManagementPage() {
+    const { t } = useI18n();
   const [users, setUsers]         = useState<UserRow[]>([]);
   const [cities, setCities]       = useState<{ id: string; name: string }[]>([]);
   const [loading, setLoading]     = useState(true);
@@ -166,20 +169,17 @@ function UserManagementPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <SectionLabel>Platform Administration</SectionLabel>
+          <SectionLabel>{t('ui.platform_administration')}</SectionLabel>
           <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2">
-            <Users className="w-6 h-6" /> User Management
-          </h1>
+            <Users className="w-6 h-6" /> {t('ui.user_management')}</h1>
           <p className="text-[var(--muted-foreground)] text-sm mt-1">
-            {users.length} total users across all roles
-          </p>
+            {users.length} {t('ui.total_users_across_all_roles')}</p>
         </div>
         <button
           onClick={openCreate}
           className="action-btn primary flex items-center gap-2 press"
         >
-          <Plus className="w-4 h-4" /> Add User
-        </button>
+          <Plus className="w-4 h-4" /> {t('ui.add_user')}</button>
       </div>
 
       {/* Role count cards */}
@@ -206,7 +206,7 @@ function UserManagementPage() {
           <input
             value={search}
             onChange={e => setSearch(e.target.value)}
-            placeholder="Search name, email, city..."
+            placeholder={t('ui.search_name_email_city')}
             className="ambient-field w-full pl-10"
           />
         </div>
@@ -215,7 +215,7 @@ function UserManagementPage() {
           onChange={e => setRoleFilter(e.target.value)}
           className="ambient-field"
         >
-          <option value="all">All Roles</option>
+          <option value="all">{t('ui.all_roles')}</option>
           {ROLES.map(r => <option key={r} value={r}>{r}</option>)}
         </select>
       </div>
@@ -226,18 +226,18 @@ function UserManagementPage() {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-[var(--glass-border)] text-[var(--muted-foreground)] text-xs uppercase tracking-wider">
-                <th className="text-left p-4">Name</th>
-                <th className="text-left p-4">Email</th>
-                <th className="text-left p-4">Role</th>
-                <th className="text-left p-4">City</th>
-                <th className="text-left p-4">Department</th>
-                <th className="text-left p-4">Created</th>
-                <th className="text-right p-4">Actions</th>
+                <th className="text-left p-4">{t('ui.name')}</th>
+                <th className="text-left p-4">{t('ui.email')}</th>
+                <th className="text-left p-4">{t('ui.role')}</th>
+                <th className="text-left p-4">{t('ui.city')}</th>
+                <th className="text-left p-4">{t('ui.department')}</th>
+                <th className="text-left p-4">{t('ui.created')}</th>
+                <th className="text-right p-4">{t('ui.actions')}</th>
               </tr>
             </thead>
             <tbody>
               {filtered.length === 0 && (
-                <tr><td colSpan={7} className="text-center p-8 text-[var(--muted-foreground)]">No users found</td></tr>
+                <tr><td colSpan={7} className="text-center p-8 text-[var(--muted-foreground)]">{t('ui.no_users_found')}</td></tr>
               )}
               {filtered.map(u => (
                 <tr key={u.id} className="border-b border-[var(--glass-border)]/50 hover:bg-[var(--surface-elevated)]/30 transition-colors">
@@ -247,14 +247,14 @@ function UserManagementPage() {
                   <td className="p-4 text-[var(--muted-foreground)] capitalize">{u.city ?? "—"}</td>
                   <td className="p-4 text-[var(--muted-foreground)]">{u.department ?? "—"}</td>
                   <td className="p-4 text-[var(--muted-foreground)] text-xs">
-                    {new Date(u.created_at).toLocaleDateString()}
+                    {new Date(u.created_at).toLocaleDateString('en-IN')}
                   </td>
                   <td className="p-4">
                     <div className="flex justify-end gap-2">
                       <button
                         onClick={() => openEdit(u)}
                         className="p-1.5 rounded hover:bg-[var(--surface-elevated)] text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-colors"
-                        title="Edit user"
+                        title={t('ui.edit_user')}
                       >
                         <Edit2 className="w-4 h-4" />
                       </button>
@@ -262,7 +262,7 @@ function UserManagementPage() {
                         onClick={() => handleDelete(u.id, u.name)}
                         disabled={deleting === u.id}
                         className="p-1.5 rounded hover:bg-red-500/10 text-[var(--muted-foreground)] hover:text-red-400 transition-colors disabled:opacity-50"
-                        title="Delete user"
+                        title={t('ui.delete_user')}
                       >
                         {deleting === u.id
                           ? <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
@@ -291,44 +291,44 @@ function UserManagementPage() {
 
             <div className="grid grid-cols-2 gap-4">
               <div className="col-span-2">
-                <label className="label-xs">Full Name *</label>
-                <input className="ambient-field w-full mt-1" value={form.name} onChange={e => setForm(f => ({...f, name: e.target.value}))} placeholder="e.g. Priya Sharma" />
+                <label className="label-xs">{t('ui.full_name')}</label>
+                <input className="ambient-field w-full mt-1" value={form.name} onChange={e => setForm(f => ({...f, name: e.target.value}))} placeholder={t('ui.e_g_priya_sharma')} />
               </div>
               {!editUser && (
                 <div className="col-span-2">
-                  <label className="label-xs">Email *</label>
-                  <input type="email" className="ambient-field w-full mt-1" value={form.email} onChange={e => setForm(f => ({...f, email: e.target.value}))} placeholder="user@example.com" />
+                  <label className="label-xs">{t('ui.email')}</label>
+                  <input type="email" className="ambient-field w-full mt-1" value={form.email} onChange={e => setForm(f => ({...f, email: e.target.value}))} placeholder={t('ui.user_example_com')} />
                 </div>
               )}
               <div className="col-span-2">
                 <label className="label-xs">{editUser ? "New Password (leave blank to keep)" : "Password *"}</label>
-                <input type="password" className="ambient-field w-full mt-1" value={form.password} onChange={e => setForm(f => ({...f, password: e.target.value}))} placeholder="Min 8 characters" />
+                <input type="password" className="ambient-field w-full mt-1" value={form.password} onChange={e => setForm(f => ({...f, password: e.target.value}))} placeholder={t('ui.min_8_characters')} />
               </div>
               <div>
-                <label className="label-xs">Role *</label>
+                <label className="label-xs">{t('ui.role')}</label>
                 <select className="ambient-field w-full mt-1" value={form.role} onChange={e => setForm(f => ({...f, role: e.target.value as Role}))}>
                   {ROLES.map(r => <option key={r} value={r}>{r}</option>)}
                 </select>
               </div>
               <div>
-                <label className="label-xs">City</label>
+                <label className="label-xs">{t('ui.city')}</label>
                 <select className="ambient-field w-full mt-1" value={form.city} onChange={e => setForm(f => ({...f, city: e.target.value}))}>
-                  <option value="">— None —</option>
+                  <option value="">{t('ui.none')}</option>
                   {cities.map(c => <option key={c.id} value={c.name.toLowerCase()}>{c.name}</option>)}
                 </select>
               </div>
               <div>
-                <label className="label-xs">Department</label>
-                <input className="ambient-field w-full mt-1" value={form.department} onChange={e => setForm(f => ({...f, department: e.target.value}))} placeholder="e.g. Roads" />
+                <label className="label-xs">{t('ui.department')}</label>
+                <input className="ambient-field w-full mt-1" value={form.department} onChange={e => setForm(f => ({...f, department: e.target.value}))} placeholder={t('ui.e_g_roads')} />
               </div>
               <div>
-                <label className="label-xs">Phone</label>
+                <label className="label-xs">{t('ui.phone')}</label>
                 <input className="ambient-field w-full mt-1" value={form.phone} onChange={e => setForm(f => ({...f, phone: e.target.value}))} placeholder="+91 00000 00000" />
               </div>
             </div>
 
             <div className="flex gap-3 pt-2">
-              <button onClick={() => setShowForm(false)} className="action-btn flex-1">Cancel</button>
+              <button onClick={() => setShowForm(false)} className="action-btn flex-1">{t('ui.cancel')}</button>
               <button onClick={handleSave} disabled={saving} className="action-btn primary flex-1 flex items-center justify-center gap-2">
                 {saving
                   ? <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
@@ -342,3 +342,4 @@ function UserManagementPage() {
     </div>
   );
 }
+

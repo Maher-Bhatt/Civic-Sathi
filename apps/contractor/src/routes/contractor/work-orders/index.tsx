@@ -6,6 +6,7 @@ import { GlassCard } from "@/components/ui/glass-card";
 import { LoadingState, ErrorState } from "@/components/ui/states";
 import { MapPin, Calendar, Clock } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/contractor/work-orders/")({
   head: () => ({ meta: [{ title: "Work Orders - Contractor Portal" }] }),
@@ -38,6 +39,7 @@ const STATUS_COLOR: Record<string, string> = {
 };
 
 function ContractorWorkOrders() {
+    const { t } = useI18n();
   const { contractor } = useContractorAuth();
   const [filter, setFilter] = useState<FilterStatus>("ALL");
 
@@ -83,7 +85,7 @@ function ContractorWorkOrders() {
   return (
     <div className="space-y-6 animate-fade">
       <div>
-        <h1 className="text-2xl font-semibold text-[var(--foreground)] tracking-tight mb-4">Work Orders</h1>
+        <h1 className="text-2xl font-semibold text-[var(--foreground)] tracking-tight mb-4">{t('ui.work_orders')}</h1>
 
         {/* Filter Tabs */}
         <div className="flex space-x-2 overflow-x-auto pb-2">
@@ -106,8 +108,7 @@ function ContractorWorkOrders() {
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
         {filtered.length === 0 ? (
           <div className="col-span-full py-12 text-center text-[var(--muted-foreground)] bg-[var(--surface)] rounded-xl border border-[var(--glass-border)]">
-            No work orders found for the selected filter.
-          </div>
+            {t('ui.no_work_orders_found_for_the_s')}</div>
         ) : (
           filtered.map((wo: any) => (
             <Link
@@ -141,8 +142,8 @@ function ContractorWorkOrders() {
                   <div className="flex items-center gap-2">
                     <Calendar size={14} className="shrink-0 opacity-70" />
                     <span>
-                      Issued:{" "}
-                      {wo.created_at ? new Date(wo.created_at).toLocaleDateString() : "—"}
+                      {t('ui.issued')}{" "}
+                      {wo.created_at ? new Date(wo.created_at).toLocaleDateString('en-IN') : "—"}
                     </span>
                   </div>
                   {wo.target_completion_date && (
@@ -158,7 +159,7 @@ function ContractorWorkOrders() {
                             : ""
                         }
                       >
-                        Due: {new Date(wo.target_completion_date).toLocaleDateString()}
+                        {t('ui.due')}{new Date(wo.target_completion_date).toLocaleDateString('en-IN')}
                       </span>
                     </div>
                   )}
@@ -174,8 +175,7 @@ function ContractorWorkOrders() {
                             : "text-[var(--muted-foreground)] bg-[var(--surface-elevated)]"
                         }`}
                       >
-                        {wo.risk_level} risk
-                      </span>
+                        {wo.risk_level} {t('ui.risk')}</span>
                     )}
                   </div>
                 </div>
@@ -187,3 +187,4 @@ function ContractorWorkOrders() {
     </div>
   );
 }
+

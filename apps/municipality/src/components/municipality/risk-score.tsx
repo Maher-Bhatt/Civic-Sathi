@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 import { GlassCard, SectionLabel } from "@/components/ui/glass-card";
 import type { RiskFactors, RiskLevel } from "@/services/types";
 import { riskLevel } from "@/services/types";
+import { useI18n } from "@/lib/i18n";
 
 const LEVEL_COLORS: Record<RiskLevel, string> = {
   Low: "text-primary",
@@ -12,6 +13,7 @@ const LEVEL_COLORS: Record<RiskLevel, string> = {
 };
 
 function FactorBar({ label, value }: { label: string; value: number }) {
+    const { t } = useI18n();
   return (
     <div className="space-y-1.5">
       <div className="flex items-center justify-between text-xs">
@@ -37,6 +39,7 @@ export function RiskScorePanel({
   factors?: RiskFactors;
   className?: string;
 }) {
+    const { t } = useI18n();
   const [animated, setAnimated] = useState(0);
   const level = riskLevel(score);
 
@@ -55,7 +58,7 @@ export function RiskScorePanel({
 
   return (
     <GlassCard elevation="raised" className={cn("p-6", className)}>
-      <SectionLabel>JANMIND Prototype Risk Score</SectionLabel>
+      <SectionLabel>{t('ui.janmind_prototype_risk_score')}</SectionLabel>
       <div className="mt-4 flex flex-col items-center gap-6 sm:flex-row sm:items-start">
         <div className="relative shrink-0">
           <svg width="140" height="140" viewBox="0 0 120 120" aria-hidden>
@@ -88,11 +91,11 @@ export function RiskScorePanel({
         </div>
         {factors && (
           <div className="w-full flex-1 space-y-3">
-            <FactorBar label="Complaint Volume" value={factors.complaintVolume} />
-            <FactorBar label="Geographic Concentration" value={factors.geographicConcentration} />
-            <FactorBar label="Semantic Similarity" value={factors.semanticSimilarity} />
-            <FactorBar label="Recent Growth" value={factors.recentGrowth} />
-            <FactorBar label="Severity" value={factors.severity} />
+            <FactorBar label={t('ui.complaint_volume')} value={factors.complaintVolume} />
+            <FactorBar label={t('ui.geographic_concentration')} value={factors.geographicConcentration} />
+            <FactorBar label={t('ui.semantic_similarity')} value={factors.semanticSimilarity} />
+            <FactorBar label={t('ui.recent_growth')} value={factors.recentGrowth} />
+            <FactorBar label={t('ui.severity')} value={factors.severity} />
           </div>
         )}
       </div>

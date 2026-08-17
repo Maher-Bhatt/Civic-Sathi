@@ -2,11 +2,13 @@ import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { Bell, Menu, Search, User } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { LanguageToggle } from "@/components/language-toggle";
 import { useMuniAuth } from "@/lib/muni-auth";
 import { CITIES, getCity } from "@/services/cities";
 import { cn } from "@/lib/utils";
 import { MuniSearchCommand } from "./muni-search";
 import { NotificationDrawer } from "./notification-drawer";
+import { useI18n } from "@/lib/i18n";
 
 export function MuniHeader({
   onMenuClick,
@@ -15,6 +17,7 @@ export function MuniHeader({
   onMenuClick: () => void;
   sidebarCollapsed: boolean;
 }) {
+    const { t } = useI18n();
   const { officer } = useMuniAuth();
   const [searchOpen, setSearchOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
@@ -43,14 +46,14 @@ export function MuniHeader({
           type="button"
           onClick={onMenuClick}
           className="press rounded-lg p-2 text-muted-foreground hover:bg-[var(--glass)] lg:hidden"
-          aria-label="Open navigation"
+          aria-label={t('ui.open_navigation')}
         >
           <Menu className="h-5 w-5" />
         </button>
 
         <div className="hidden min-w-0 sm:block">
-          <p className="truncate text-sm font-semibold">JANMIND</p>
-          <p className="truncate text-[0.65rem] text-muted-foreground">Municipal Intelligence</p>
+          <p className="truncate text-sm font-semibold">{t('ui.janmind')}</p>
+          <p className="truncate text-[0.65rem] text-muted-foreground">{t('ui.municipal_intelligence')}</p>
         </div>
 
         <div className="ml-auto flex items-center gap-2 sm:gap-3">
@@ -62,10 +65,10 @@ export function MuniHeader({
             type="button"
             onClick={() => setSearchOpen(true)}
             className="press flex items-center gap-2 rounded-xl border border-[var(--glass-border)] bg-[var(--glass)] px-3 py-2 text-xs text-muted-foreground"
-            aria-label="Search (press /)"
+            aria-label={t('ui.search_press')}
           >
             <Search className="h-3.5 w-3.5" />
-            <span className="hidden sm:inline">Search</span>
+            <span className="hidden sm:inline">{t('ui.search')}</span>
             <kbd className="hidden rounded border border-[var(--glass-border)] px-1.5 py-0.5 text-[0.6rem] sm:inline">
               /
             </kbd>
@@ -75,12 +78,13 @@ export function MuniHeader({
             type="button"
             onClick={() => setNotifOpen(true)}
             className="press relative rounded-lg p-2 text-muted-foreground hover:bg-[var(--glass)] hover:text-foreground"
-            aria-label="Notifications"
+            aria-label={t('ui.notifications')}
           >
             <Bell className="h-4 w-4" />
             <span className="absolute right-1.5 top-1.5 h-1.5 w-1.5 rounded-full bg-critical" />
           </button>
 
+          <LanguageToggle />
           <ThemeToggle />
 
           <Link
@@ -103,3 +107,4 @@ export function MuniHeader({
     </>
   );
 }
+

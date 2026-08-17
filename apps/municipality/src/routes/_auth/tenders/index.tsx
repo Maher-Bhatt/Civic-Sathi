@@ -7,6 +7,7 @@ import { useMuniAuth } from "@/lib/muni-auth";
 import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { listTenders } from "@/services/api";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/_auth/tenders/")({
   head: () => ({ meta: [{ title: "Tenders — JANMIND" }] }),
@@ -33,6 +34,7 @@ const STATUS_CHIP: Record<string, string> = {
 };
 
 function TendersPage() {
+    const { t } = useI18n();
   const { officer } = useMuniAuth();
   const city = officer?.city ?? "vadodara";
 
@@ -48,22 +50,21 @@ function TendersPage() {
     <div className="muni-page-enter space-y-6">
       <header className="flex items-center justify-between">
         <div>
-          <SectionLabel>Tenders</SectionLabel>
+          <SectionLabel>{t('ui.tenders')}</SectionLabel>
           <h1 className="mt-2 text-2xl font-semibold tracking-tight">
-            {tenders.length} tender{tenders.length !== 1 ? "s" : ""}
+            {tenders.length} {t('ui.tender')}{tenders.length !== 1 ? "s" : ""}
           </h1>
         </div>
         <Link to={"/tenders/new" as any} className="action-btn primary flex items-center gap-2">
           <Plus className="h-4 w-4" />
-          Publish Tender
-        </Link>
+          {t('ui.publish_tender')}</Link>
       </header>
 
       <div className="grid gap-4">
         {tenders.length === 0 ? (
           <GlassCard elevation="raised" className="p-12 text-center">
             <Package className="mx-auto h-10 w-10 text-muted-foreground opacity-40" />
-            <p className="mt-4 text-sm text-muted-foreground">No tenders published yet.</p>
+            <p className="mt-4 text-sm text-muted-foreground">{t('ui.no_tenders_published_yet')}</p>
           </GlassCard>
         ) : (
           (tenders as any[]).map((t) => (

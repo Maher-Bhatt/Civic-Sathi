@@ -6,6 +6,7 @@ import { CitySelector, ClientCityMap } from "@/components/city-map-panel";
 import { clustersForCity, getCity, nearestCity, type CityId } from "@/services/cities";
 import { WARD_14 } from "@/services/mockData";
 import type { LocationInfo } from "@/services/types";
+import { useI18n } from "@/lib/i18n";
 
 type Phase = "idle" | "asking" | "detecting" | "ready" | "error";
 
@@ -27,6 +28,7 @@ export function LocationPicker({
     city: CityId;
   }) => void;
 }) {
+    const { t } = useI18n();
   const [phase, setPhase] = useState<Phase>(marker ? "ready" : "idle");
   const [mapMode, setMapMode] = useState(!!marker);
 
@@ -74,12 +76,10 @@ export function LocationPicker({
         <GlassCard className="space-y-3 p-4 sm:p-5">
           <span className="flex items-center gap-2">
             <ShieldCheck className="h-4 w-4 text-primary" aria-hidden />
-            <SectionLabel>Why we ask for location</SectionLabel>
+            <SectionLabel>{t('ui.why_we_ask_for_location')}</SectionLabel>
           </span>
           <p className="text-sm leading-relaxed text-muted-foreground">
-            Your location helps us understand where the civic problem is occurring. Nothing is
-            requested until you choose to share it, and your exact address is never shown publicly.
-          </p>
+            {t('ui.your_location_helps_us_underst')}</p>
         </GlassCard>
       )}
 
@@ -95,8 +95,7 @@ export function LocationPicker({
           ) : (
             <Crosshair className="h-4 w-4" aria-hidden />
           )}
-          Use my current location
-        </GlassButton>
+          {t('ui.use_my_current_location')}</GlassButton>
         <GlassButton
           type="button"
           variant="glass"
@@ -111,20 +110,17 @@ export function LocationPicker({
           }}
         >
           <MapPin className="h-4 w-4" aria-hidden />
-          Choose on map
-        </GlassButton>
+          {t('ui.choose_on_map')}</GlassButton>
       </div>
 
       {phase === "detecting" && (
         <p className="text-sm text-muted-foreground" role="status">
-          Waiting for your device location...
-        </p>
+          {t('ui.waiting_for_your_device_locati')}</p>
       )}
 
       {phase === "error" && (
         <p className="text-sm text-muted-foreground" role="status">
-          We couldn't read your device location. Place the marker on the map instead.
-        </p>
+          {t('ui.we_couldn_t_read_your_device_l')}</p>
       )}
 
       {phase === "ready" && location && (
@@ -133,7 +129,7 @@ export function LocationPicker({
             <MapPin className="h-4 w-4" aria-hidden />
           </span>
           <div className="min-w-0">
-            <SectionLabel>Location detected</SectionLabel>
+            <SectionLabel>{t('ui.location_detected')}</SectionLabel>
             <p className="mt-0.5 truncate text-sm font-medium">{location.area}</p>
             <p className="text-xs text-subtle tabular-nums">
               {location.lat.toFixed(5)}, {location.lng.toFixed(5)}
@@ -163,9 +159,7 @@ export function LocationPicker({
             ariaLabel="Map for choosing the location of your report"
           />
           <p className="text-xs leading-relaxed text-subtle">
-            Tap the map or drag the marker to correct the location, then continue. Zoom in for a
-            more precise point.
-          </p>
+            {t('ui.tap_the_map_or_drag_the_marker')}</p>
         </div>
       )}
     </div>

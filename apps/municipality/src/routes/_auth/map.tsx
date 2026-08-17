@@ -35,6 +35,7 @@ import {
 import { getCivicIssues } from "@/services/api";
 import { cn } from "@/lib/utils";
 import { DEFAULT_COMPLAINT_FILTERS } from "@/services/types";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/_auth/map")({
   head: () => ({ meta: [{ title: "Civic Map — Municipal Intelligence" }] }),
@@ -52,6 +53,7 @@ function Chip({
   children,
   ...props
 }: ButtonHTMLAttributes<HTMLButtonElement> & { active: boolean }) {
+    const { t } = useI18n();
   return (
     <button
       type="button"
@@ -70,6 +72,7 @@ function Chip({
 }
 
 function MuniMapPage() {
+    const { t } = useI18n();
   const { officer } = useMuniAuth();
   const city = officer?.city ?? "vadodara";
   const [mode, setMode] = useState<MapMode>("health");
@@ -125,8 +128,8 @@ function MuniMapPage() {
     <div className="muni-page-enter space-y-4">
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <SectionLabel>Civic Map</SectionLabel>
-          <h1 className="jm-glitch-text mt-1 text-2xl font-semibold">City-wide operational view</h1>
+          <SectionLabel>{t('ui.civic_map')}</SectionLabel>
+          <h1 className="jm-glitch-text mt-1 text-2xl font-semibold">{t('ui.city_wide_operational_view')}</h1>
         </div>
         <button
           type="button"
@@ -134,8 +137,7 @@ function MuniMapPage() {
           className="press flex items-center gap-2 rounded-xl border border-[var(--glass-border)] bg-[var(--glass)] px-4 py-2 text-xs"
         >
           <Filter className="h-3.5 w-3.5" />
-          Filters
-        </button>
+          {t('ui.filters')}</button>
       </header>
 
       <div className="flex flex-wrap gap-2">
@@ -190,15 +192,15 @@ function MuniMapPage() {
 
         <div className="space-y-4">
           <GlassCard elevation="raised" className="jm-chart-card p-5">
-            <SectionLabel>7-day pulse</SectionLabel>
+            <SectionLabel>{t('ui.7_day_pulse')}</SectionLabel>
             <ActivityTrendChart data={trendData} className="mt-2 h-[140px]" />
           </GlassCard>
           <GlassCard elevation="raised" className="jm-chart-card p-5">
-            <SectionLabel>Severity mix</SectionLabel>
+            <SectionLabel>{t('ui.severity_mix')}</SectionLabel>
             {healthData.length > 0 ? (
               <HealthPieChart data={healthData} className="h-[160px]" />
             ) : (
-              <p className="mt-4 text-sm text-muted-foreground">No data under filters.</p>
+              <p className="mt-4 text-sm text-muted-foreground">{t('ui.no_data_under_filters')}</p>
             )}
           </GlassCard>
           {selected ? (
@@ -209,14 +211,11 @@ function MuniMapPage() {
             />
           ) : (
             <GlassCard elevation="raised" className="p-5">
-              <SectionLabel>Map Legend</SectionLabel>
+              <SectionLabel>{t('ui.map_legend')}</SectionLabel>
               <p className="mt-3 text-sm text-muted-foreground">
-                Click an area to view operational details, complaint counts, trends and risk scores.
-                Individual complaint locations appear when zoomed in.
-              </p>
+                {t('ui.click_an_area_to_view_operatio')}</p>
               <p className="mt-2 text-xs text-subtle">
-                Prototype area boundaries — not official ward delimitation.
-              </p>
+                {t('ui.prototype_area_boundaries_not_')}</p>
             </GlassCard>
           )}
         </div>
@@ -243,11 +242,12 @@ function AreaDetailPanel({
   trendData: ReturnType<typeof areaDailyTrend>;
   onClose: () => void;
 }) {
+    const { t } = useI18n();
   const { area, total, health, trendPct, topIssue, risk, resolved } = activity;
   return (
     <GlassCard elevation="raised" className="jm-panel-enter jm-panel-glow animate-rise p-5">
       <div className="flex items-start justify-between">
-        <SectionLabel>Area Details</SectionLabel>
+        <SectionLabel>{t('ui.area_details')}</SectionLabel>
         <button type="button" onClick={onClose} className="text-xs text-muted-foreground hover:text-foreground">
           <RotateCcw className="h-3.5 w-3.5" />
         </button>
@@ -257,44 +257,44 @@ function AreaDetailPanel({
         {area.admin.division ?? "—"} · {area.admin.body}
       </p>
       {area.boundarySource === "derived" && (
-        <p className="mt-1 text-xs text-warning">Prototype area boundary</p>
+        <p className="mt-1 text-xs text-warning">{t('ui.prototype_area_boundary')}</p>
       )}
       <dl className="mt-4 grid grid-cols-2 gap-3 text-sm">
         <div>
-          <dt className="label-xs">Complaints</dt>
+          <dt className="label-xs">{t('ui.complaints')}</dt>
           <dd className="font-semibold tabular-nums">
             <AnimatedStat value={total} />
           </dd>
         </div>
         <div>
-          <dt className="label-xs">Critical</dt>
+          <dt className="label-xs">{t('ui.critical')}</dt>
           <dd className="font-semibold tabular-nums">{Math.round(total * 0.08)}</dd>
         </div>
         <div>
-          <dt className="label-xs">7-day trend</dt>
+          <dt className="label-xs">{t('ui.7_day_trend')}</dt>
           <dd className={cn("font-semibold", trendPct >= 0 ? "text-[#a4503f]" : "text-primary")}>
             {trendPct >= 0 ? "+" : ""}
             {trendPct}%
           </dd>
         </div>
         <div>
-          <dt className="label-xs">Risk</dt>
+          <dt className="label-xs">{t('ui.risk')}</dt>
           <dd className="font-semibold tabular-nums">
             <AnimatedStat value={risk} />
           </dd>
         </div>
         <div>
-          <dt className="label-xs">Top category</dt>
+          <dt className="label-xs">{t('ui.top_category')}</dt>
           <dd>{ISSUE_LABEL[topIssue]}</dd>
         </div>
         <div>
-          <dt className="label-xs">Resolved</dt>
+          <dt className="label-xs">{t('ui.resolved')}</dt>
           <dd className="tabular-nums">{resolved}</dd>
         </div>
       </dl>
       {trendData.some((d) => d.reports > 0) && (
         <div className="mt-4 border-t border-border pt-3">
-          <p className="label-xs">Local 7-day trend</p>
+          <p className="label-xs">{t('ui.local_7_day_trend')}</p>
           <ActivityTrendChart data={trendData} className="mt-2 h-[120px]" />
         </div>
       )}
@@ -305,11 +305,9 @@ function AreaDetailPanel({
           search={{ area: area.name } as any}
           className="action-btn text-center"
         >
-          View Reports
-        </Link>
+          {t('ui.view_reports')}</Link>
         <Link to={"/issues" as any} className="action-btn text-center">
-          View Emerging Issues
-        </Link>
+          {t('ui.view_emerging_issues')}</Link>
       </div>
       <span
         className="mt-3 inline-block rounded-full px-2 py-0.5 text-[0.65rem] uppercase"
@@ -318,8 +316,7 @@ function AreaDetailPanel({
           color: AREA_HEALTH_HEX[health],
         }}
       >
-        {AREA_HEALTH_LABEL[health]} activity
-      </span>
+        {AREA_HEALTH_LABEL[health]} {t('ui.activity')}</span>
     </GlassCard>
   );
 }

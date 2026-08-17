@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/table";
 import type { MuniComplaint } from "@/services/types";
 import { SeverityBadge, StatusBadge } from "./status-badge";
+import { useI18n } from "@/lib/i18n";
 
 type SortKey = keyof Pick<
   MuniComplaint,
@@ -32,6 +33,7 @@ export function ComplaintTable({
   sortDir: "asc" | "desc";
   onSort: (key: SortKey) => void;
 }) {
+    const { t } = useI18n();
   function toggleAll() {
     if (selected.size === complaints.length) onSelect(new Set());
     else onSelect(new Set(complaints.map((c) => c.id)));
@@ -60,7 +62,7 @@ export function ComplaintTable({
   if (complaints.length === 0) {
     return (
       <div className="rounded-2xl border border-[var(--glass-border)] bg-[var(--surface)] p-12 text-center">
-        <p className="text-sm text-muted-foreground">No complaints match the selected filters.</p>
+        <p className="text-sm text-muted-foreground">{t('ui.no_complaints_match_the_select')}</p>
       </div>
     );
   }
@@ -75,17 +77,17 @@ export function ComplaintTable({
                 type="checkbox"
                 checked={selected.size === complaints.length && complaints.length > 0}
                 onChange={toggleAll}
-                aria-label="Select all"
+                aria-label={t('ui.select_all')}
               />
             </TableHead>
-            <SortHead k="id">Complaint ID</SortHead>
-            <SortHead k="category">Category</SortHead>
-            <SortHead k="area">Area</SortHead>
-            <SortHead k="ward">Ward</SortHead>
-            <SortHead k="severity">Severity</SortHead>
-            <SortHead k="department">Department</SortHead>
-            <SortHead k="status">Status</SortHead>
-            <SortHead k="createdAt">Created</SortHead>
+            <SortHead k="id">{t('ui.complaint_id')}</SortHead>
+            <SortHead k="category">{t('ui.category')}</SortHead>
+            <SortHead k="area">{t('ui.area')}</SortHead>
+            <SortHead k="ward">{t('ui.ward')}</SortHead>
+            <SortHead k="severity">{t('ui.severity')}</SortHead>
+            <SortHead k="department">{t('ui.department')}</SortHead>
+            <SortHead k="status">{t('ui.status')}</SortHead>
+            <SortHead k="createdAt">{t('ui.created')}</SortHead>
           </TableRow>
         </TableHeader>
         <TableBody>

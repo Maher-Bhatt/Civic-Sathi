@@ -7,6 +7,7 @@ import { GlassCard, SectionLabel } from "@/components/ui/glass-card";
 import { ErrorState, LoadingState } from "@/components/ui/states";
 import { SeverityBadge, StatusBadge } from "@/components/municipality/status-badge";
 import { getCivicIssues } from "@/services/api";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/_auth/civic-issues/$id")({
   head: ({ params }: { params: any }) => ({
@@ -16,6 +17,7 @@ export const Route = createFileRoute("/_auth/civic-issues/$id")({
 });
 
 function CivicIssueDetailPage() {
+    const { t } = useI18n();
   const { id } = Route.useParams() as any;
   const [issue, setIssue] = useState<any>(null);
   const [allIssues, setAllIssues] = useState<any[]>([]);
@@ -55,12 +57,11 @@ function CivicIssueDetailPage() {
         className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
       >
         <ArrowLeft className="h-4 w-4" />
-        All Civic Issues
-      </Link>
+        {t('ui.all_civic_issues')}</Link>
 
       <header>
         <div className="flex flex-wrap items-center gap-3">
-          <SectionLabel>Civic Issue Intelligence</SectionLabel>
+          <SectionLabel>{t('ui.civic_issue_intelligence')}</SectionLabel>
           <StatusBadge status={issue.status} />
           <SeverityBadge severity={issue.severity} />
         </div>
@@ -73,20 +74,20 @@ function CivicIssueDetailPage() {
       <div className="grid gap-6 md:grid-cols-3">
         <div className="space-y-6 md:col-span-2">
           <GlassCard elevation="raised" className="p-6">
-            <SectionLabel>Issue Summary</SectionLabel>
+            <SectionLabel>{t('ui.issue_summary')}</SectionLabel>
             <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{issue.description}</p>
             
             <div className="mt-6 flex flex-wrap gap-x-8 gap-y-4 pt-4 border-t border-[var(--glass-border)]">
               <div>
-                <dt className="label-xs">Total Reports</dt>
+                <dt className="label-xs">{t('ui.total_reports')}</dt>
                 <dd className="mt-1 text-2xl font-semibold tabular-nums">{issue.reportCount}</dd>
               </div>
               <div>
-                <dt className="label-xs">Impact Score</dt>
+                <dt className="label-xs">{t('ui.impact_score')}</dt>
                 <dd className="mt-1 text-2xl font-semibold tabular-nums text-critical">{issue.impactScore}<span className="text-sm font-normal text-muted-foreground">/100</span></dd>
               </div>
               <div>
-                <dt className="label-xs">First Reported</dt>
+                <dt className="label-xs">{t('ui.first_reported')}</dt>
                 <dd className="mt-1 text-sm font-medium">{format(new Date(issue.firstReportedAt), "dd MMM yyyy")}</dd>
               </div>
             </div>
@@ -94,30 +95,28 @@ function CivicIssueDetailPage() {
 
           <GlassCard elevation="raised" className="p-6">
             <div className="flex items-center justify-between mb-4">
-              <SectionLabel>Linked Complaints</SectionLabel>
+              <SectionLabel>{t('ui.linked_complaints')}</SectionLabel>
             </div>
             
             <div className="space-y-3">
               {/* Mocking linked complaints display for the UI requirement */}
               <div className="flex items-center justify-between p-3 rounded-lg border border-[var(--glass-border)] bg-[var(--glass)]">
                 <div>
-                  <Link to="/complaints/$id" params={{ id: "JN-2026-00001" }} className="text-sm font-medium text-primary hover:underline">JN-2026-00001</Link>
-                  <p className="text-xs text-muted-foreground mt-0.5">Primary reporter</p>
+                  <Link to="/complaints/$id" params={{ id: "JN-2026-00001" }} className="text-sm font-medium text-primary hover:underline">{t('ui.jn_2026_00001')}</Link>
+                  <p className="text-xs text-muted-foreground mt-0.5">{t('ui.primary_reporter')}</p>
                 </div>
                 <button onClick={handleSplit} className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1.5 px-2 py-1 rounded bg-[var(--glass-strong)] transition-colors">
-                  <Split className="w-3 h-3" /> Split
-                </button>
+                  <Split className="w-3 h-3" /> {t('ui.split')}</button>
               </div>
               
               {issue.reportCount > 1 && (
                 <div className="flex items-center justify-between p-3 rounded-lg border border-[var(--glass-border)] bg-[var(--glass)]">
                   <div>
-                    <Link to="/complaints/$id" params={{ id: "JN-2026-00002" }} className="text-sm font-medium text-primary hover:underline">JN-2026-00002</Link>
-                    <p className="text-xs text-muted-foreground mt-0.5">Citizen confirmation</p>
+                    <Link to="/complaints/$id" params={{ id: "JN-2026-00002" }} className="text-sm font-medium text-primary hover:underline">{t('ui.jn_2026_00002')}</Link>
+                    <p className="text-xs text-muted-foreground mt-0.5">{t('ui.citizen_confirmation')}</p>
                   </div>
                   <button onClick={handleSplit} className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1.5 px-2 py-1 rounded bg-[var(--glass-strong)] transition-colors">
-                    <Split className="w-3 h-3" /> Split
-                  </button>
+                    <Split className="w-3 h-3" /> {t('ui.split')}</button>
                 </div>
               )}
             </div>
@@ -126,39 +125,35 @@ function CivicIssueDetailPage() {
 
         <div className="space-y-6">
           <GlassCard elevation="raised" className="p-6 border-warning/30 bg-warning/5">
-            <SectionLabel className="text-warning flex items-center gap-2"><Merge className="w-4 h-4" /> Merge Issue</SectionLabel>
+            <SectionLabel className="text-warning flex items-center gap-2"><Merge className="w-4 h-4" /> {t('ui.merge_issue')}</SectionLabel>
             <p className="mt-3 text-sm text-muted-foreground">
-              If this issue is a duplicate of another Civic Issue, you can merge them together to consolidate impact scores and reports.
-            </p>
+              {t('ui.if_this_issue_is_a_duplicate_o')}</p>
             
             {merging ? (
               <div className="mt-4 space-y-3">
                 <select className="w-full bg-[var(--glass-strong)] border border-[var(--glass-border)] rounded-lg px-3 py-2 text-sm text-foreground">
-                  <option value="">Select target issue...</option>
+                  <option value="">{t('ui.select_target_issue')}</option>
                   {allIssues.filter(i => i.id !== issue.id).map(i => (
                     <option key={i.id} value={i.id}>{i.category} - {i.ward}</option>
                   ))}
                 </select>
                 <div className="flex gap-2">
-                  <button onClick={handleMerge} className="action-btn flex-1 bg-warning text-warning-foreground hover:bg-warning/90">Confirm Merge</button>
-                  <button onClick={() => setMerging(false)} className="action-btn flex-1 bg-transparent border border-border">Cancel</button>
+                  <button onClick={handleMerge} className="action-btn flex-1 bg-warning text-warning-foreground hover:bg-warning/90">{t('ui.confirm_merge')}</button>
+                  <button onClick={() => setMerging(false)} className="action-btn flex-1 bg-transparent border border-border">{t('ui.cancel')}</button>
                 </div>
               </div>
             ) : (
               <button onClick={() => setMerging(true)} className="action-btn w-full mt-4 bg-[var(--glass-strong)]">
-                Merge with another issue
-              </button>
+                {t('ui.merge_with_another_issue')}</button>
             )}
           </GlassCard>
 
           <GlassCard elevation="raised" className="p-6 border-primary/20">
-            <SectionLabel className="flex items-center gap-2"><ShieldAlert className="w-4 h-4" /> Work Execution</SectionLabel>
+            <SectionLabel className="flex items-center gap-2"><ShieldAlert className="w-4 h-4" /> {t('ui.work_execution')}</SectionLabel>
             <p className="mt-3 text-sm text-muted-foreground">
-              This Civic Issue is ready to be converted into a Work Package for contractors.
-            </p>
+              {t('ui.this_civic_issue_is_ready_to_b')}</p>
             <button className="action-btn w-full mt-4 bg-primary text-primary-foreground hover:bg-primary/90">
-              Create Work Package
-            </button>
+              {t('ui.create_work_package')}</button>
           </GlassCard>
         </div>
       </div>

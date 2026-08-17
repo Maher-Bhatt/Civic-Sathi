@@ -1,1 +1,0 @@
-import{S as e,T as t}from"./shared-store-Bs7Iv3my.js";var n=t(e(),1),r=n.createContext(null);function i(e){return n.useContext(r)}export{r as n,i as t};

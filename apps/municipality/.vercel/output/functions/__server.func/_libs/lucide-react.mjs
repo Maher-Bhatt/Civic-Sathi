@@ -446,6 +446,28 @@ var Funnel = createLucideIcon("funnel", [["path", {
 * This source code is licensed under the ISC license.
 * See the LICENSE file in the root directory of this source tree.
 */
+var Globe = createLucideIcon("globe", [
+	["circle", {
+		cx: "12",
+		cy: "12",
+		r: "10",
+		key: "1mglay"
+	}],
+	["path", {
+		d: "M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20",
+		key: "13o1zl"
+	}],
+	["path", {
+		d: "M2 12h20",
+		key: "9i4pu4"
+	}]
+]);
+/**
+* @license lucide-react v0.575.0 - ISC
+*
+* This source code is licensed under the ISC license.
+* See the LICENSE file in the root directory of this source tree.
+*/
 var Inbox = createLucideIcon("inbox", [["polyline", {
 	points: "22 12 16 12 14 15 10 15 8 12 2 12",
 	key: "o97t9d"
@@ -924,4 +946,4 @@ var Zap = createLucideIcon("zap", [["path", {
 	key: "1xq2db"
 }]]);
 //#endregion
-export { Crosshair as A, Bell as B, LogOut as C, Funnel as D, Inbox as E, CircleAlert as F, ArrowLeft as H, ChevronLeft as I, Check as L, ClipboardList as M, ClipboardCheck as N, FileText as O, CircleCheck as P, ChartColumn as R, MapPin as S, LayoutDashboard as T, ArrowUpRight as V, Package as _, TriangleAlert as a, Menu as b, Split as c, Settings as d, Send as f, Plus as g, Radar as h, User as i, Clock as j, Download as k, Sparkles as l, RotateCcw as m, X as n, TrendingUp as o, Search as p, Users as r, TrendingDown as s, Zap as t, ShieldAlert as u, Minus as v, LoaderCircle as w, Map as x, Merge as y, Building2 as z };
+export { Download as A, Building2 as B, LogOut as C, Globe as D, Inbox as E, CircleCheck as F, ArrowUpRight as H, CircleAlert as I, ChevronLeft as L, Clock as M, ClipboardList as N, Funnel as O, ClipboardCheck as P, Check as R, MapPin as S, LayoutDashboard as T, ArrowLeft as U, Bell as V, Package as _, TriangleAlert as a, Menu as b, Split as c, Settings as d, Send as f, Plus as g, Radar as h, User as i, Crosshair as j, FileText as k, Sparkles as l, RotateCcw as m, X as n, TrendingUp as o, Search as p, Users as r, TrendingDown as s, Zap as t, ShieldAlert as u, Minus as v, LoaderCircle as w, Map as x, Merge as y, ChartColumn as z };

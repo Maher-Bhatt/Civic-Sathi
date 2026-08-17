@@ -12,6 +12,7 @@ import {
   type CityId,
   type MapCluster,
 } from "@/services/cities";
+import { useI18n } from "@/lib/i18n";
 
 export interface CityMapProps {
   cityId: CityId;
@@ -46,6 +47,7 @@ export function CityMap({
   showLegend = true,
   issueLinkId,
 }: CityMapProps) {
+    const { t } = useI18n();
   const holder = useRef<HTMLDivElement>(null);
   const mapRef = useRef<Leaflet.Map | null>(null);
   const LRef = useRef<typeof Leaflet | null>(null);
@@ -230,7 +232,7 @@ export function CityMap({
       <div className="absolute top-3 right-3 z-[500] flex flex-col gap-1.5">
         <button
           type="button"
-          aria-label="Zoom in"
+          aria-label={t('ui.zoom_in')}
           onClick={() => mapRef.current?.zoomIn()}
           className="press flex h-9 w-9 items-center justify-center rounded-xl border border-[var(--glass-border)] bg-[var(--glass-strong)] text-foreground backdrop-blur-xl hover:bg-[var(--surface-elevated)]"
         >
@@ -238,7 +240,7 @@ export function CityMap({
         </button>
         <button
           type="button"
-          aria-label="Zoom out"
+          aria-label={t('ui.zoom_out')}
           onClick={() => mapRef.current?.zoomOut()}
           className="press flex h-9 w-9 items-center justify-center rounded-xl border border-[var(--glass-border)] bg-[var(--glass-strong)] text-foreground backdrop-blur-xl hover:bg-[var(--surface-elevated)]"
         >
@@ -249,8 +251,7 @@ export function CityMap({
       {showLegend && (
         <div className="pointer-events-none absolute top-3 left-3 z-[500] hidden rounded-xl border border-[var(--glass-border)] bg-[var(--glass-strong)] px-3 py-2 backdrop-blur-xl sm:block">
           <span className="label-xs flex items-center gap-1.5">
-            <Layers className="h-3 w-3" aria-hidden /> Severity
-          </span>
+            <Layers className="h-3 w-3" aria-hidden /> {t('ui.severity')}</span>
           <ul className="mt-1.5 space-y-1">
             {LEGEND.map(([label, hex]) => (
               <li key={label} className="flex items-center gap-2">
@@ -274,7 +275,7 @@ export function CityMap({
               </span>
               <button
                 type="button"
-                aria-label="Close report details"
+                aria-label={t('ui.close_report_details')}
                 onClick={() => setSelected(null)}
                 className="press -mt-1 -mr-1 flex h-7 w-7 items-center justify-center rounded-full text-subtle hover:bg-[var(--glass)] hover:text-foreground"
               >
@@ -283,18 +284,17 @@ export function CityMap({
             </div>
             <h3 className="mt-2 text-base font-semibold">{selected.category}</h3>
             <p className="mt-1 text-sm text-muted-foreground">
-              {selected.count} similar reports within approximately {selected.radiusMeters}m
-            </p>
+              {selected.count} {t('ui.similar_reports_within_approxi')}{selected.radiusMeters}{t('ui.m')}</p>
             {selected.hotspot && (
               <div className="mt-3 grid grid-cols-2 gap-3 border-t border-border pt-3">
                 <div>
-                  <p className="label-xs">Related reports</p>
+                  <p className="label-xs">{t('ui.related_reports')}</p>
                   <p className="mt-0.5 text-lg font-semibold tabular-nums">
                     {selected.relatedCount}
                   </p>
                 </div>
                 <div>
-                  <p className="label-xs">Risk</p>
+                  <p className="label-xs">{t('ui.risk')}</p>
                   <p className="mt-0.5 text-lg font-semibold tabular-nums">{selected.risk}</p>
                 </div>
               </div>
@@ -304,8 +304,7 @@ export function CityMap({
               {selected.ward} · {selected.area}
             </p>
             <p className="mt-2 text-[0.7rem] leading-relaxed text-subtle">
-              Aggregate view only — no citizen names, contacts or private addresses are shown.
-            </p>
+              {t('ui.aggregate_view_only_no_citizen')}</p>
             <div className="mt-3">
               {issueLinkId ? (
                 <Link
@@ -313,15 +312,13 @@ export function CityMap({
                   params={{ id: issueLinkId }}
                   className="press inline-flex h-10 w-full items-center justify-center rounded-xl bg-primary text-[0.7rem] font-medium tracking-[0.06em] text-primary-foreground uppercase hover:brightness-110"
                 >
-                  View issue
-                </Link>
+                  {t('ui.view_issue')}</Link>
               ) : (
                 <Link
                   to="/report"
                   className="press inline-flex h-10 w-full items-center justify-center rounded-xl bg-primary text-[0.7rem] font-medium tracking-[0.06em] text-primary-foreground uppercase hover:brightness-110"
                 >
-                  Report this too
-                </Link>
+                  {t('ui.report_this_too')}</Link>
               )}
             </div>
           </div>

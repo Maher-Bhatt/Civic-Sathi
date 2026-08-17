@@ -1,8 +1,10 @@
 import { Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { TimelineEvent } from "@/services/types";
+import { useI18n } from "@/lib/i18n";
 
 export function ComplaintTimeline({ events }: { events: TimelineEvent[] }) {
+    const { t } = useI18n();
   return (
     <ol className="relative space-y-0">
       {events.map((e, i) => {
@@ -52,8 +54,7 @@ export function ComplaintTimeline({ events }: { events: TimelineEvent[] }) {
                 {e.label}
                 {current && (
                   <span className="ml-2 rounded-full border border-[color-mix(in_oklab,var(--primary)_45%,transparent)] px-2 py-0.5 text-[0.6rem] tracking-[0.12em] text-primary uppercase">
-                    Current
-                  </span>
+                    {t('ui.current')}</span>
                 )}
               </p>
               <p className="mt-0.5 text-xs text-subtle">{e.description}</p>

@@ -39,6 +39,7 @@ import type { DashboardKPIs, LiveActivity, SystemicIssue } from "@/services/type
 import { LoadingState } from "@/components/ui/states";
 import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/_auth/dashboard")({
   head: () => ({ meta: [{ title: "Municipal Intelligence — JANMIND" }] }),
@@ -46,6 +47,7 @@ export const Route = createFileRoute("/_auth/dashboard")({
 });
 
 function MuniDashboardPage() {
+    const { t } = useI18n();
   const { officer } = useMuniAuth();
   const city = officer?.city ?? "vadodara";
   const [live, setLive] = useState<LiveActivity[]>([]);
@@ -123,26 +125,25 @@ function MuniDashboardPage() {
   return (
     <div className="muni-page-enter space-y-6">
       <header>
-        <SectionLabel>Municipal Intelligence</SectionLabel>
+        <SectionLabel>{t('ui.municipal_intelligence')}</SectionLabel>
         <h1 className="jm-glitch-text mt-2 text-2xl font-semibold tracking-tight sm:text-3xl">
-          See what is happening across your city.
-        </h1>
-        <p className="mt-1 text-sm text-muted-foreground">Prototype Intelligence Data</p>
+          {t('ui.see_what_is_happening_across_y')}</h1>
+        <p className="mt-1 text-sm text-muted-foreground">{t('ui.prototype_intelligence_data')}</p>
       </header>
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-6">
-        <KpiCard label="Total Reports" value={kpis.totalReports} delay={0} />
-        <KpiCard label="Critical" value={kpis.critical} accent="critical" delay={60} />
-        <KpiCard label="Active" value={kpis.active} delay={120} />
-        <KpiCard label="Resolved" value={kpis.resolved} accent="success" delay={180} />
-        <KpiCard label="Emerging Issues" value={kpis.emergingIssues} accent="warning" delay={240} />
-        <KpiCard label="Area Hotspots" value={kpis.areaHotspots} delay={300} />
+        <KpiCard label={t('ui.total_reports')} value={kpis.totalReports} delay={0} />
+        <KpiCard label={t('ui.critical')} value={kpis.critical} accent="critical" delay={60} />
+        <KpiCard label={t('ui.active')} value={kpis.active} delay={120} />
+        <KpiCard label={t('ui.resolved')} value={kpis.resolved} accent="success" delay={180} />
+        <KpiCard label={t('ui.emerging_issues')} value={kpis.emergingIssues} accent="warning" delay={240} />
+        <KpiCard label={t('ui.area_hotspots')} value={kpis.areaHotspots} delay={300} />
       </div>
 
       <div className="grid gap-6 xl:grid-cols-3">
         <GlassCard elevation="raised" className="overflow-hidden xl:col-span-2">
           <div className="border-b border-[var(--glass-border)] p-5">
-            <SectionLabel>City Health</SectionLabel>
+            <SectionLabel>{t('ui.city_health')}</SectionLabel>
             <div className="mt-3 flex flex-wrap gap-4">
               {(["low", "moderate", "high", "critical"] as const).map((h) => (
                 <div key={h} className="flex items-center gap-2 text-sm">
@@ -175,23 +176,23 @@ function MuniDashboardPage() {
 
       <div className="grid gap-4 lg:grid-cols-3">
         <GlassCard elevation="raised" className="jm-chart-card p-5">
-          <SectionLabel>7-day activity pulse</SectionLabel>
+          <SectionLabel>{t('ui.7_day_activity_pulse')}</SectionLabel>
           <ActivityTrendChart data={trendData} className="mt-2" />
         </GlassCard>
         <GlassCard elevation="raised" className="jm-chart-card p-5">
-          <SectionLabel>Issue breakdown</SectionLabel>
+          <SectionLabel>{t('ui.issue_breakdown')}</SectionLabel>
           {issueData.length > 0 ? (
             <IssueBreakdownChart data={issueData} className="mt-2" />
           ) : (
-            <p className="mt-6 text-sm text-muted-foreground">No data yet.</p>
+            <p className="mt-6 text-sm text-muted-foreground">{t('ui.no_data_yet')}</p>
           )}
         </GlassCard>
         <GlassCard elevation="raised" className="jm-chart-card p-5">
-          <SectionLabel>Severity distribution</SectionLabel>
+          <SectionLabel>{t('ui.severity_distribution')}</SectionLabel>
           {healthData.length > 0 ? (
             <HealthPieChart data={healthData} />
           ) : (
-            <p className="mt-6 text-sm text-muted-foreground">No data yet.</p>
+            <p className="mt-6 text-sm text-muted-foreground">{t('ui.no_data_yet')}</p>
           )}
         </GlassCard>
       </div>
@@ -199,14 +200,14 @@ function MuniDashboardPage() {
       <section>
         <div className="mb-4 flex items-end justify-between">
           <div>
-            <SectionLabel>Emerging Systemic Issues</SectionLabel>
-            <h2 className="mt-1 text-lg font-semibold">Something is happening in these areas</h2>
+            <SectionLabel>{t('ui.emerging_systemic_issues')}</SectionLabel>
+            <h2 className="mt-1 text-lg font-semibold">{t('ui.something_is_happening_in_thes')}</h2>
           </div>
           <Link
             to={"/issues" as any}
             className="flex items-center gap-1 text-xs text-primary hover:underline"
           >
-            View all <ArrowUpRight className="h-3 w-3" />
+            {t('ui.view_all')}<ArrowUpRight className="h-3 w-3" />
           </Link>
         </div>
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
@@ -217,7 +218,7 @@ function MuniDashboardPage() {
       </section>
 
       <section>
-        <SectionLabel>Hotspot Analysis</SectionLabel>
+        <SectionLabel>{t('ui.hotspot_analysis')}</SectionLabel>
         <div className="mt-4 grid gap-3">
           {hotspots.map((h) => (
             <Link
@@ -234,8 +235,8 @@ function MuniDashboardPage() {
                 <p className="text-sm text-muted-foreground">{h.area}</p>
               </div>
               <div className="text-right text-sm">
-                <p className="font-semibold tabular-nums">{h.reports} reports</p>
-                <p className="text-muted-foreground">Risk {h.risk}</p>
+                <p className="font-semibold tabular-nums">{h.reports} {t('ui.reports')}</p>
+                <p className="text-muted-foreground">{t('ui.risk')}{h.risk}</p>
               </div>
               <span
                 className={cn(

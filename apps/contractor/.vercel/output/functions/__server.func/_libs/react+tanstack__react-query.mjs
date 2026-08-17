@@ -1,6 +1,6 @@
 import { i as __toESM, t as __commonJSMin } from "../_runtime.mjs";
-import { a as environmentManager, i as notifyManager, n as MutationObserver, o as noop, r as QueryObserver, s as shouldThrowError } from "./tanstack__query-core.mjs";
 import { n as require_react } from "./@radix-ui/react-compose-refs+[...].mjs";
+import { a as environmentManager, i as notifyManager, n as MutationObserver, o as noop, r as QueryObserver, s as shouldThrowError } from "./tanstack__query-core.mjs";
 //#region ../../node_modules/react/cjs/react-jsx-runtime.production.js
 /**
 * @license React

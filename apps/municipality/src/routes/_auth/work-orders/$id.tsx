@@ -38,6 +38,7 @@ import {
   type Bill,
 } from "@/services/types";
 import { cn } from "@/lib/utils";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/_auth/work-orders/$id")({
   head: ({ params }: any) => ({ meta: [{ title: `Work Order ${params.id} — JANMIND` }] }),
@@ -62,6 +63,7 @@ const EVENT_ICONS: Record<string, React.ComponentType<{ className?: string }>> =
 };
 
 function WorkOrderDetailPage() {
+    const { t } = useI18n();
   const { id } = Route.useParams();
   const { officer } = useMuniAuth();
   const role = officer?.role === "Department Head" ? "department_head" : "supervisor";
@@ -221,8 +223,7 @@ function WorkOrderDetailPage() {
         to={"/work-orders" as any}
         className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
       >
-        <ArrowLeft className="h-4 w-4" /> All work orders
-      </Link>
+        <ArrowLeft className="h-4 w-4" /> {t('ui.all_work_orders')}</Link>
 
       <div className="flex flex-wrap items-center gap-3">
         <SectionLabel className="tabular-nums">{wo.id}</SectionLabel>
@@ -236,8 +237,7 @@ function WorkOrderDetailPage() {
         </span>
         {isOverdue && (
           <span className="flex items-center gap-1 rounded-full bg-[color-mix(in_oklab,var(--critical)_12%,transparent)] px-2.5 py-0.5 text-xs font-medium text-[var(--critical)]">
-            <AlertTriangle className="h-3 w-3" /> OVERDUE
-          </span>
+            <AlertTriangle className="h-3 w-3" /> {t('ui.overdue')}</span>
         )}
       </div>
 
@@ -246,31 +246,31 @@ function WorkOrderDetailPage() {
         <div className="space-y-6 xl:col-span-2">
           {/* Details */}
           <GlassCard elevation="raised" className="p-6">
-            <SectionLabel>Work Order Details</SectionLabel>
+            <SectionLabel>{t('ui.work_order_details')}</SectionLabel>
             <h1 className="mt-3 text-xl font-semibold">{wo.title}</h1>
             <p className="mt-2 text-sm text-muted-foreground">{wo.description}</p>
             <dl className="mt-6 grid gap-4 sm:grid-cols-2">
               <div>
-                <dt className="label-xs">Contractor</dt>
+                <dt className="label-xs">{t('ui.contractor')}</dt>
                 <dd className="mt-1 text-sm font-medium">{wo.contractorName}</dd>
               </div>
               <div>
-                <dt className="label-xs">Department</dt>
+                <dt className="label-xs">{t('ui.department')}</dt>
                 <dd className="mt-1 text-sm">{wo.department}</dd>
               </div>
               <div>
-                <dt className="label-xs">Assigned Engineer</dt>
+                <dt className="label-xs">{t('ui.assigned_engineer')}</dt>
                 <dd className="mt-1 text-sm">{wo.assignedEngineerName ?? "—"}</dd>
               </div>
               <div>
-                <dt className="label-xs">Location</dt>
+                <dt className="label-xs">{t('ui.location')}</dt>
                 <dd className="mt-1 flex items-center gap-1 text-sm">
                   <MapPin className="h-3 w-3 shrink-0" />
                   {wo.area}, {wo.ward}
                 </dd>
               </div>
               <div>
-                <dt className="label-xs">Start Date</dt>
+                <dt className="label-xs">{t('ui.start_date')}</dt>
                 <dd className="mt-1 text-sm">
                   {wo.actualStartDate
                     ? format(new Date(wo.actualStartDate), "dd MMM yyyy")
@@ -278,7 +278,7 @@ function WorkOrderDetailPage() {
                 </dd>
               </div>
               <div>
-                <dt className="label-xs">SLA Deadline</dt>
+                <dt className="label-xs">{t('ui.sla_deadline')}</dt>
                 <dd className={cn("mt-1 text-sm font-medium", isOverdue && "text-[var(--critical)]")}>
                   {format(new Date(wo.slaDeadline), "dd MMM yyyy")}
                   {" "}
@@ -293,16 +293,16 @@ function WorkOrderDetailPage() {
           {/* BOQ */}
           {wo.boqItems.length > 0 && (
             <GlassCard elevation="raised" className="p-6">
-              <SectionLabel>Bill of Quantities</SectionLabel>
+              <SectionLabel>{t('ui.bill_of_quantities')}</SectionLabel>
               <div className="mt-4 overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b border-[var(--glass-border)] text-left">
-                      <th className="label-xs pb-2 pr-4">Description</th>
-                      <th className="label-xs pb-2 pr-4 text-right">Unit</th>
-                      <th className="label-xs pb-2 pr-4 text-right">Qty</th>
-                      <th className="label-xs pb-2 pr-4 text-right">Rate</th>
-                      <th className="label-xs pb-2 text-right">Amount</th>
+                      <th className="label-xs pb-2 pr-4">{t('ui.description')}</th>
+                      <th className="label-xs pb-2 pr-4 text-right">{t('ui.unit')}</th>
+                      <th className="label-xs pb-2 pr-4 text-right">{t('ui.qty')}</th>
+                      <th className="label-xs pb-2 pr-4 text-right">{t('ui.rate')}</th>
+                      <th className="label-xs pb-2 text-right">{t('ui.amount')}</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-[var(--glass-border)]">
@@ -320,14 +320,14 @@ function WorkOrderDetailPage() {
                   </tbody>
                   <tfoot>
                     <tr className="border-t-2 border-[var(--glass-border)] font-semibold">
-                      <td colSpan={4} className="pt-2 pr-4">Total</td>
+                      <td colSpan={4} className="pt-2 pr-4">{t('ui.total')}</td>
                       <td className="pt-2 text-right tabular-nums">
                         ₹{wo.boqItems.reduce((s, i) => s + i.amount, 0).toLocaleString("en-IN")}
                       </td>
                     </tr>
                     {wo.approvedAmount && (
                       <tr className="text-[var(--success)]">
-                        <td colSpan={4} className="pr-4 text-xs font-medium">Approved Amount</td>
+                        <td colSpan={4} className="pr-4 text-xs font-medium">{t('ui.approved_amount')}</td>
                         <td className="text-right text-sm tabular-nums font-semibold">
                           ₹{wo.approvedAmount.toLocaleString("en-IN")}
                         </td>
@@ -343,7 +343,7 @@ function WorkOrderDetailPage() {
           {/* INSPECTION */}
           {wo.status === "SUBMITTED_FOR_INSPECTION" || wo.status === "RESUBMITTED" ? (
             <GlassCard elevation="raised" className="p-6">
-              <SectionLabel>Record Inspection</SectionLabel>
+              <SectionLabel>{t('ui.record_inspection')}</SectionLabel>
               {!inspPanel ? (
                 <button
                   type="button"
@@ -351,8 +351,7 @@ function WorkOrderDetailPage() {
                   className="action-btn primary mt-4"
                 >
                   <ClipboardCheck className="mr-2 inline h-4 w-4" />
-                  Record Site Inspection
-                </button>
+                  {t('ui.record_site_inspection')}</button>
               ) : (
                 <div className="mt-4 space-y-4">
                   <div className="flex gap-3">
@@ -375,13 +374,13 @@ function WorkOrderDetailPage() {
                     ))}
                   </div>
                   <div className="space-y-1.5">
-                    <label className="label-xs">Inspection Notes</label>
+                    <label className="label-xs">{t('ui.inspection_notes')}</label>
                     <textarea
                       value={inspNotes}
                       onChange={(e) => setInspNotes(e.target.value)}
                       rows={3}
                       className="filter-input"
-                      placeholder="Describe findings, quality observations, deficiencies..."
+                      placeholder={t('ui.describe_findings_quality_obse')}
                     />
                   </div>
                   <div className="flex gap-3">
@@ -394,8 +393,7 @@ function WorkOrderDetailPage() {
                       {acting ? "Saving..." : "Submit Inspection"}
                     </button>
                     <button type="button" onClick={() => setInspPanel(false)} className="action-btn flex-1">
-                      Cancel
-                    </button>
+                      {t('ui.cancel')}</button>
                   </div>
                 </div>
               )}
@@ -405,15 +403,14 @@ function WorkOrderDetailPage() {
           {/* MEASUREMENT */}
           {wo.status === "MEASUREMENT_PENDING" && !measurement ? (
             <GlassCard elevation="raised" className="p-6">
-              <SectionLabel>Verify Measurement</SectionLabel>
+              <SectionLabel>{t('ui.verify_measurement')}</SectionLabel>
               {!measPanel ? (
                 <button type="button" onClick={() => setMeasPanel(true)} className="action-btn primary mt-4">
-                  Verify Measurement & Proceed to Billing
-                </button>
+                  {t('ui.verify_measurement_proceed_to_')}</button>
               ) : (
                 <div className="mt-4 space-y-4">
                   <div className="space-y-1.5">
-                    <label className="label-xs">Verified Total Amount (₹)</label>
+                    <label className="label-xs">{t('ui.verified_total_amount')}</label>
                     <input
                       type="number"
                       value={measTotal}
@@ -426,7 +423,7 @@ function WorkOrderDetailPage() {
                     <button type="button" onClick={() => void handleVerifyMeasurement()} disabled={acting} className="action-btn primary flex-1">
                       {acting ? "Saving..." : "Verify & Proceed"}
                     </button>
-                    <button type="button" onClick={() => setMeasPanel(false)} className="action-btn flex-1">Cancel</button>
+                    <button type="button" onClick={() => setMeasPanel(false)} className="action-btn flex-1">{t('ui.cancel')}</button>
                   </div>
                 </div>
               )}
@@ -436,9 +433,9 @@ function WorkOrderDetailPage() {
           {/* BILL APPROVAL */}
           {bill && bill.status === "SUBMITTED" && wo.status === "BILL_SUBMITTED" ? (
             <GlassCard elevation="raised" className="p-6">
-              <SectionLabel>Bill Approval</SectionLabel>
+              <SectionLabel>{t('ui.bill_approval')}</SectionLabel>
               <p className="mt-2 text-sm text-muted-foreground">
-                Contractor submitted bill for{" "}
+                {t('ui.contractor_submitted_bill_for')}{" "}
                 <span className="font-semibold text-foreground">₹{bill.submittedAmount.toLocaleString("en-IN")}</span>
               </p>
               <button
@@ -455,10 +452,9 @@ function WorkOrderDetailPage() {
           {/* CLOSE */}
           {wo.status === "PAYMENT_APPROVED" && (
             <GlassCard elevation="raised" className="p-6">
-              <SectionLabel>Close Work Order</SectionLabel>
+              <SectionLabel>{t('ui.close_work_order')}</SectionLabel>
               <p className="mt-2 text-sm text-muted-foreground">
-                Payment approved. Close the work order to resolve all linked complaints.
-              </p>
+                {t('ui.payment_approved_close_the_wor')}</p>
               <button
                 type="button"
                 onClick={() => void transition("CLOSED")}
@@ -472,7 +468,7 @@ function WorkOrderDetailPage() {
 
           {/* Timeline */}
           <GlassCard elevation="raised" className="p-6">
-            <SectionLabel>Work Order Timeline</SectionLabel>
+            <SectionLabel>{t('ui.work_order_timeline')}</SectionLabel>
             <ol className="relative mt-6 border-l border-[var(--glass-border)] pl-6 space-y-6">
               {events.map((evt) => {
                 const Icon = EVENT_ICONS[evt.eventType] ?? CheckCircle2;
@@ -501,7 +497,7 @@ function WorkOrderDetailPage() {
           {/* Linked Complaints */}
           {Boolean(wo.civicIssueIds && wo.civicIssueIds.length > 0) && (
             <GlassCard elevation="raised" className="p-6">
-              <SectionLabel>Linked Civic Issues ({(wo.civicIssueIds ?? []).length})</SectionLabel>
+              <SectionLabel>{t('ui.linked_civic_issues')}{(wo.civicIssueIds ?? []).length})</SectionLabel>
               <ul className="mt-4 space-y-2">
                 {(wo.civicIssueIds ?? []).map((cid) => (
                   <li key={cid}>
@@ -519,7 +515,7 @@ function WorkOrderDetailPage() {
           )}
             <GlassCard className="p-0 glass-strong overflow-hidden mt-6">
               <div className="p-5 border-b border-[var(--glass-border)]">
-                <SectionLabel>Evidence & AI Validation</SectionLabel>
+                <SectionLabel>{t('ui.evidence_ai_validation')}</SectionLabel>
               </div>
               <div className="p-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {evidenceList.map((e) => (
@@ -535,7 +531,7 @@ function WorkOrderDetailPage() {
                     )}
                     <div className="p-3 text-sm flex flex-col gap-1">
                        <div className="font-bold">{e.stage}</div>
-                       <div className="text-xs text-[var(--muted-foreground)]">{new Date(e.captureTimestamp).toLocaleString()}</div>
+                       <div className="text-xs text-[var(--muted-foreground)]">{new Date(e.captureTimestamp).toLocaleString('en-IN')}</div>
                        <div className="mt-2 text-xs">
                           <span className={`inline-block px-2 py-1 rounded font-medium ${e.status === 'FLAGGED' ? 'bg-[var(--critical)]/20 text-[var(--critical)]' : 'bg-[var(--success)]/20 text-[var(--success)]'}`}>
                              {e.status}
@@ -543,10 +539,10 @@ function WorkOrderDetailPage() {
                        </div>
                        {e.aiAnalysis && (
                          <div className="mt-2 pt-2 border-t border-[var(--glass-border)] text-xs text-[var(--muted-foreground)] space-y-1">
-                           <div>AI Relevance: <span className="text-[var(--foreground)] font-medium">{e.aiAnalysis.relevanceScore}%</span></div>
-                           <div>Tamper Risk: <span className="text-[var(--foreground)] font-medium">{e.aiAnalysis.tamperRisk}</span></div>
+                           <div>{t('ui.ai_relevance')}<span className="text-[var(--foreground)] font-medium">{e.aiAnalysis.relevanceScore}%</span></div>
+                           <div>{t('ui.tamper_risk')}<span className="text-[var(--foreground)] font-medium">{e.aiAnalysis.tamperRisk}</span></div>
                            {e.distanceFromSite !== undefined && (
-                             <div>GPS Distance: <span className="text-[var(--foreground)] font-medium">{Math.round(e.distanceFromSite)}m</span></div>
+                             <div>{t('ui.gps_distance')}<span className="text-[var(--foreground)] font-medium">{Math.round(e.distanceFromSite)}{t('ui.m')}</span></div>
                            )}
                            {e.aiAnalysis.flags?.length > 0 && (
                              <div className="text-[var(--critical)] mt-1 font-medium">{e.aiAnalysis.flags.join(", ")}</div>
@@ -557,7 +553,7 @@ function WorkOrderDetailPage() {
                   </div>
                 ))}
                 {evidenceList.length === 0 && (
-                  <div className="text-sm text-[var(--muted-foreground)] p-4 col-span-full text-center">No evidence submitted yet.</div>
+                  <div className="text-sm text-[var(--muted-foreground)] p-4 col-span-full text-center">{t('ui.no_evidence_submitted_yet')}</div>
                 )}
               </div>
             </GlassCard>
@@ -567,15 +563,15 @@ function WorkOrderDetailPage() {
           {/* Right Column */}
         <div className="space-y-6">
           <GlassCard elevation="raised" className="p-5">
-            <SectionLabel>Financial Summary</SectionLabel>
+            <SectionLabel>{t('ui.financial_summary')}</SectionLabel>
             <dl className="mt-4 space-y-3">
               <div>
-                <dt className="label-xs">Estimated</dt>
+                <dt className="label-xs">{t('ui.estimated')}</dt>
                 <dd className="mt-1 font-semibold tabular-nums">₹{wo.estimatedCost.toLocaleString("en-IN")}</dd>
               </div>
               {wo.approvedAmount && (
                 <div>
-                  <dt className="label-xs">Approved</dt>
+                  <dt className="label-xs">{t('ui.approved')}</dt>
                   <dd className="mt-1 font-semibold tabular-nums text-[var(--success)]">
                     ₹{wo.approvedAmount.toLocaleString("en-IN")}
                   </dd>
@@ -583,7 +579,7 @@ function WorkOrderDetailPage() {
               )}
               {bill?.approvedAmount && (
                 <div>
-                  <dt className="label-xs">Bill Approved</dt>
+                  <dt className="label-xs">{t('ui.bill_approved')}</dt>
                   <dd className="mt-1 font-semibold tabular-nums">₹{bill.approvedAmount.toLocaleString("en-IN")}</dd>
                 </div>
               )}
@@ -591,7 +587,7 @@ function WorkOrderDetailPage() {
           </GlassCard>
 
           <GlassCard elevation="raised" className="p-5">
-            <SectionLabel>Quick Actions</SectionLabel>
+            <SectionLabel>{t('ui.quick_actions')}</SectionLabel>
             <div className="mt-4 space-y-2">
               <Link
                 to={"/work-packages/$id" as any}
@@ -599,8 +595,7 @@ function WorkOrderDetailPage() {
                 className="action-btn flex w-full items-center gap-2 text-xs"
               >
                 <Building2 className="h-3.5 w-3.5" />
-                View Work Package
-              </Link>
+                {t('ui.view_work_package')}</Link>
             </div>
           </GlassCard>
         </div>
@@ -608,3 +603,4 @@ function WorkOrderDetailPage() {
     </div>
   );
 }
+

@@ -15,12 +15,14 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/admin")({
   component: AdminLayout,
 });
 
 function AdminLayout() {
+    const { t } = useI18n();
   return (
     <AdminAuthGate>
       <AdminDashboard />
@@ -40,6 +42,7 @@ const navItems = [
 ];
 
 function AdminDashboard() {
+    const { t } = useI18n();
   const { admin, signOut } = useAdminAuth();
   const { navigate } = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -61,7 +64,7 @@ function AdminDashboard() {
       `}>
         <div className="h-16 flex items-center px-6 border-b border-[var(--glass-border)]">
           <Shield className="w-6 h-6 mr-3 text-[var(--foreground)]" />
-          <span className="font-bold tracking-wide text-lg">JANMIND Admin</span>
+          <span className="font-bold tracking-wide text-lg">{t('ui.janmind_admin')}</span>
           <button 
             className="ml-auto lg:hidden p-2 text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
             onClick={() => setMobileMenuOpen(false)}
@@ -105,8 +108,7 @@ function AdminDashboard() {
             className="w-full flex items-center gap-2 justify-center px-4 py-2 text-sm text-[var(--critical)] hover:bg-[var(--critical)]/10 rounded-md transition-colors"
           >
             <LogOut className="w-4 h-4" />
-            Sign Out
-          </button>
+            {t('ui.sign_out')}</button>
         </div>
       </aside>
 

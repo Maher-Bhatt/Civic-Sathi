@@ -6,6 +6,7 @@ import { SectionLabel } from "@/components/ui/glass-card";
 import { ComplaintCard } from "@/components/complaint-card";
 import { EmptyState, ErrorState, LoadingState } from "@/components/ui/states";
 import { getMyComplaints } from "@/services/api";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/complaints")({
   head: () => ({
@@ -31,6 +32,7 @@ export const Route = createFileRoute("/complaints")({
 });
 
 function ComplaintsPage() {
+    const { t } = useI18n();
   const navigate = useNavigate();
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["complaints"],
@@ -40,11 +42,10 @@ function ComplaintsPage() {
   return (
     <PageShell className="max-w-3xl">
       <div className="animate-rise space-y-2">
-        <SectionLabel>Your activity</SectionLabel>
-        <h1 className="text-2xl font-semibold sm:text-3xl">My complaints</h1>
+        <SectionLabel>{t('ui.your_activity')}</SectionLabel>
+        <h1 className="text-2xl font-semibold sm:text-3xl">{t('ui.my_complaints')}</h1>
         <p className="text-sm text-muted-foreground">
-          Every report you submit stays here with its live status.
-        </p>
+          {t('ui.every_report_you_submit_stays_')}</p>
       </div>
 
       <div className="mt-7">
@@ -57,7 +58,7 @@ function ComplaintsPage() {
         )}
         {data && data.length === 0 && (
           <EmptyState
-            title="No reports yet"
+            title={t('ui.no_reports_yet')}
             description="You haven't submitted any reports yet."
             actionLabel="Report a problem"
             onAction={() => navigate({ to: "/report" })}

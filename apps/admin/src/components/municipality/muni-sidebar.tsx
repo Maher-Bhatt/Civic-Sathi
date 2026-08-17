@@ -15,6 +15,7 @@ import {
   FileText,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useI18n } from "@/lib/i18n";
 
 const NAV = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -42,6 +43,7 @@ export function MuniSidebar({
   mobileOpen: boolean;
   onMobileClose: () => void;
 }) {
+    const { t } = useI18n();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   return (
@@ -49,7 +51,7 @@ export function MuniSidebar({
       {mobileOpen && (
         <button
           type="button"
-          aria-label="Close navigation"
+          aria-label={t('ui.close_navigation')}
           className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm lg:hidden"
           onClick={onMobileClose}
         />
@@ -64,8 +66,8 @@ export function MuniSidebar({
         <div className="flex h-16 items-center justify-between border-b border-[var(--glass-border)] px-4">
           {!collapsed && (
             <div>
-              <p className="text-sm font-semibold tracking-tight">JANMIND</p>
-              <p className="text-[0.65rem] text-muted-foreground">Municipal Intelligence</p>
+              <p className="text-sm font-semibold tracking-tight">{t('ui.janmind')}</p>
+              <p className="text-[0.65rem] text-muted-foreground">{t('ui.municipal_intelligence')}</p>
             </div>
           )}
           <button
@@ -80,7 +82,7 @@ export function MuniSidebar({
           </button>
         </div>
 
-        <nav className="flex-1 space-y-1 overflow-y-auto p-3" aria-label="Municipality navigation">
+        <nav className="flex-1 space-y-1 overflow-y-auto p-3" aria-label={t('ui.municipality_navigation')}>
           {NAV.map(({ to, label, icon: Icon }) => {
             const active = pathname === to || (to !== "/dashboard" && pathname.startsWith(to));
             return (
@@ -106,7 +108,7 @@ export function MuniSidebar({
 
         {!collapsed && (
           <div className="border-t border-[var(--glass-border)] p-4">
-            <p className="text-[0.65rem] text-muted-foreground">Prototype Intelligence Data</p>
+            <p className="text-[0.65rem] text-muted-foreground">{t('ui.prototype_intelligence_data')}</p>
           </div>
         )}
       </aside>

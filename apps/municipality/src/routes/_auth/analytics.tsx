@@ -29,6 +29,7 @@ import { LoadingState } from "@/components/ui/states";
 import { useMuniAuth } from "@/lib/muni-auth";
 import { getAnalyticsData } from "@/services/api";
 import { AREA_HEALTH_HEX } from "@/services/geography";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/_auth/analytics")({
   head: () => ({ meta: [{ title: "Analytics — Municipal Intelligence" }] }),
@@ -67,6 +68,7 @@ const TOOLTIP_STYLE = {
 };
 
 function AnalyticsPage() {
+    const { t } = useI18n();
   const { officer } = useMuniAuth();
   const city = officer?.city ?? "vadodara";
   const [data, setData] = useState<Awaited<ReturnType<typeof getAnalyticsData>> | null>(null);
@@ -85,16 +87,16 @@ function AnalyticsPage() {
   return (
     <div className="muni-page-enter space-y-6">
       <header>
-        <SectionLabel>City Analytics</SectionLabel>
-        <h1 className="jm-glitch-text mt-2 text-2xl font-semibold">Trends and distribution insights</h1>
-        <p className="mt-1 text-sm text-muted-foreground">Prototype Intelligence Data</p>
+        <SectionLabel>{t('ui.city_analytics')}</SectionLabel>
+        <h1 className="jm-glitch-text mt-2 text-2xl font-semibold">{t('ui.trends_and_distribution_insigh')}</h1>
+        <p className="mt-1 text-sm text-muted-foreground">{t('ui.prototype_intelligence_data')}</p>
       </header>
 
       <div className="grid gap-6 lg:grid-cols-2">
 
         {/* 1 — Complaint Volume Trend */}
         <GlassCard elevation="raised" className="jm-chart-card p-5">
-          <SectionLabel>Complaint Volume Trend</SectionLabel>
+          <SectionLabel>{t('ui.complaint_volume_trend')}</SectionLabel>
           <ChartContainer config={complaintConfig} className="mt-4 h-[260px] w-full">
             <AreaChart data={data.complaintTrend} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
               <defs>
@@ -131,7 +133,7 @@ function AnalyticsPage() {
 
         {/* 2 — Severity Distribution */}
         <GlassCard elevation="raised" className="jm-chart-card p-5">
-          <SectionLabel>Severity Distribution</SectionLabel>
+          <SectionLabel>{t('ui.severity_distribution')}</SectionLabel>
           <ChartContainer config={severityConfig} className="mt-4 h-[260px] w-full">
             <BarChart data={data.severityTrend} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.06)" />
@@ -149,7 +151,7 @@ function AnalyticsPage() {
 
         {/* 3 — Department Workload Pie */}
         <GlassCard elevation="raised" className="jm-chart-card p-5">
-          <SectionLabel>Department Workload</SectionLabel>
+          <SectionLabel>{t('ui.department_workload')}</SectionLabel>
           <ChartContainer config={{ value: { label: "Complaints" } }} className="mt-4 h-[260px] w-full">
             <PieChart>
               <ChartTooltip content={<ChartTooltipContent hideLabel />} contentStyle={TOOLTIP_STYLE} />
@@ -185,7 +187,7 @@ function AnalyticsPage() {
 
         {/* 4 — Category Distribution horizontal bar */}
         <GlassCard elevation="raised" className="jm-chart-card p-5">
-          <SectionLabel>Category Distribution</SectionLabel>
+          <SectionLabel>{t('ui.category_distribution')}</SectionLabel>
           <ChartContainer
             config={{ value: { label: "Reports", color: "#3498db" } }}
             className="mt-4 h-[260px] w-full"
@@ -222,7 +224,7 @@ function AnalyticsPage() {
 
         {/* 5 — Emerging Issues Trend */}
         <GlassCard elevation="raised" className="jm-chart-card p-5">
-          <SectionLabel>Emerging Issues Trend</SectionLabel>
+          <SectionLabel>{t('ui.emerging_issues_trend')}</SectionLabel>
           <ChartContainer
             config={{ count: { label: "Issues", color: "#9b59b6" } }}
             className="mt-4 h-[220px] w-full"
@@ -254,7 +256,7 @@ function AnalyticsPage() {
 
         {/* 6 — Average Response Time */}
         <GlassCard elevation="raised" className="jm-chart-card p-5">
-          <SectionLabel>Average Response Time (days)</SectionLabel>
+          <SectionLabel>{t('ui.average_response_time_days')}</SectionLabel>
           <ChartContainer
             config={{ days: { label: "Days", color: "#f39c12" } }}
             className="mt-4 h-[220px] w-full"

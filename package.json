@@ -8,5 +8,8 @@
   "scripts": {
     "dev": "npm run dev --workspaces --if-present",
     "build": "npm run build --workspaces --if-present"
+  },
+  "dependencies": {
+    "ts-morph": "^28.0.0"
   }
 }

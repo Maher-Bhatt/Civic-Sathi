@@ -4,6 +4,7 @@ import { getEligibleTenders } from "@/services/api";
 import { useQuery } from "@tanstack/react-query";
 import { LoadingState } from "@/components/ui/states";
 import { GlassCard } from "@/components/ui/glass-card";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/contractor/tenders/")({
   component: TendersIndex,
@@ -28,6 +29,7 @@ const TENDER_STATUS_COLOR: Record<string, string> = {
 };
 
 function TendersIndex() {
+    const { t } = useI18n();
   const { contractor } = useContractorAuth();
 
   // contractor.city comes from the backend User.city field (set during login).
@@ -49,21 +51,17 @@ function TendersIndex() {
     <div className="space-y-6 animate-fade">
       <header>
         <h1 className="text-2xl font-semibold text-[var(--foreground)] tracking-tight">
-          Tenders &amp; Bidding
-        </h1>
+          {t('ui.tenders_amp_bidding')}</h1>
         <p className="text-sm text-[var(--muted-foreground)] mt-1">
-          Open procurement opportunities you are eligible for.
-        </p>
+          {t('ui.open_procurement_opportunities')}</p>
       </header>
 
       {tenders.length === 0 ? (
         <GlassCard className="p-12 text-center glass-strong">
           <p className="text-[var(--muted-foreground)]">
-            No open tenders found for your approved categories and cities.
-          </p>
+            {t('ui.no_open_tenders_found_for_your')}</p>
           <p className="text-xs text-[var(--muted-foreground)] mt-2">
-            Your contractor profile must be approved in a city before tenders appear here.
-          </p>
+            {t('ui.your_contractor_profile_must_b')}</p>
         </GlassCard>
       ) : (
         <div className="grid gap-4">
@@ -94,7 +92,7 @@ function TendersIndex() {
                     )}
                     {t.closed_at && (
                       <p className="mt-2 text-xs text-[var(--muted-foreground)]">
-                        Closes:{" "}
+                        {t('ui.closes')}{" "}
                         <span className="font-medium text-[var(--foreground)]">
                           {new Date(t.closed_at).toLocaleDateString("en-IN")}
                         </span>
@@ -102,7 +100,7 @@ function TendersIndex() {
                     )}
                   </div>
                   <div className="shrink-0 text-right">
-                    <div className="text-xs text-[var(--muted-foreground)] mb-1">Est. Budget</div>
+                    <div className="text-xs text-[var(--muted-foreground)] mb-1">{t('ui.est_budget')}</div>
                     <div className="text-lg font-semibold tabular-nums text-[var(--primary)]">
                       ₹{(t.estimated_budget ?? 0).toLocaleString("en-IN")}
                     </div>

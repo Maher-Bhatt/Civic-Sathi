@@ -12,6 +12,7 @@ import { useMuniAuth } from "@/lib/muni-auth";
 import { getMuniComplaint, getCivicIssues } from "@/services/api";
 import { DEPARTMENTS, type MuniComplaint } from "@/services/types";
 import type { ComplaintPoint, IssueKey, AreaHealth } from "@/services/geography";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/_auth/complaints/$id")({
   head: ({ params }: { params: any }) => ({
@@ -21,6 +22,7 @@ export const Route = createFileRoute("/_auth/complaints/$id")({
 });
 
 function ComplaintDetailPage() {
+    const { t } = useI18n();
   const { id } = Route.useParams() as any;
   const { officer } = useMuniAuth();
   const city = officer?.city ?? "vadodara";
@@ -105,8 +107,7 @@ function ComplaintDetailPage() {
         className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
       >
         <ArrowLeft className="h-4 w-4" />
-        All complaints
-      </Link>
+        {t('ui.all_complaints')}</Link>
 
       <header className="flex flex-wrap items-center gap-3">
         <SectionLabel className="tabular-nums">{complaint.id}</SectionLabel>
@@ -117,36 +118,36 @@ function ComplaintDetailPage() {
       <div className="grid gap-6 xl:grid-cols-3">
         <div className="space-y-6 xl:col-span-2">
           <GlassCard elevation="raised" className="p-6">
-            <SectionLabel>Report Details</SectionLabel>
+            <SectionLabel>{t('ui.report_details')}</SectionLabel>
             <h1 className="mt-3 text-xl font-semibold">{complaint.category}</h1>
             <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
               {complaint.description}
             </p>
             <dl className="mt-6 grid gap-4 sm:grid-cols-2">
               <div>
-                <dt className="label-xs">Area</dt>
+                <dt className="label-xs">{t('ui.area')}</dt>
                 <dd className="mt-1 text-sm font-medium">{complaint.area}</dd>
               </div>
               <div>
-                <dt className="label-xs">Ward</dt>
+                <dt className="label-xs">{t('ui.ward')}</dt>
                 <dd className="mt-1 text-sm font-medium">{complaint.ward}</dd>
               </div>
               <div>
-                <dt className="label-xs">Department</dt>
+                <dt className="label-xs">{t('ui.department')}</dt>
                 <dd className="mt-1 text-sm font-medium">{complaint.department}</dd>
               </div>
               <div>
-                <dt className="label-xs">Assigned to</dt>
+                <dt className="label-xs">{t('ui.assigned_to')}</dt>
                 <dd className="mt-1 text-sm font-medium">{complaint.assignedTo ?? "—"}</dd>
               </div>
               <div>
-                <dt className="label-xs">Created</dt>
+                <dt className="label-xs">{t('ui.created')}</dt>
                 <dd className="mt-1 text-sm">
                   {format(new Date(complaint.createdAt), "dd MMM yyyy, HH:mm")}
                 </dd>
               </div>
               <div>
-                <dt className="label-xs">Last updated</dt>
+                <dt className="label-xs">{t('ui.last_updated')}</dt>
                 <dd className="mt-1 text-sm">
                   {format(new Date(complaint.updatedAt), "dd MMM yyyy, HH:mm")}
                 </dd>
@@ -156,23 +157,23 @@ function ComplaintDetailPage() {
 
           {complaint.aiAnalysis && (
             <GlassCard elevation="raised" className="p-6">
-              <SectionLabel>AI Intelligence Analysis</SectionLabel>
+              <SectionLabel>{t('ui.ai_intelligence_analysis')}</SectionLabel>
               <dl className="mt-4 grid gap-3 sm:grid-cols-2">
                 <div>
-                  <dt className="label-xs">Detected category</dt>
+                  <dt className="label-xs">{t('ui.detected_category')}</dt>
                   <dd className="mt-1 text-sm font-medium">{complaint.aiAnalysis.category}</dd>
                 </div>
                 <div>
-                  <dt className="label-xs">Urgency</dt>
+                  <dt className="label-xs">{t('ui.urgency')}</dt>
                   <dd className="text-sm font-medium">{complaint.aiAnalysis?.sentiment}</dd>
                 </div>
                 <div>
-                  <dt className="label-xs">Similarity match</dt>
+                  <dt className="label-xs">{t('ui.similarity_match')}</dt>
                   <dd className="mt-1 text-sm tabular-nums">{complaint.aiAnalysis.similarity}%</dd>
                 </div>
                 {complaint.aiAnalysis.cluster && (
                   <div className="sm:col-span-2">
-                    <dt className="label-xs">Cluster</dt>
+                    <dt className="label-xs">{t('ui.cluster')}</dt>
                     <dd className="mt-1 text-sm text-muted-foreground">
                       {complaint.aiAnalysis.cluster}
                     </dd>
@@ -185,15 +186,14 @@ function ComplaintDetailPage() {
                   params={{ id: complaint.clusterId } as any}
                   className="mt-4 inline-block text-sm text-primary hover:underline"
                 >
-                  View related systemic issue →
-                </Link>
+                  {t('ui.view_related_systemic_issue')}</Link>
               )}
             </GlassCard>
           )}
 
           <GlassCard elevation="raised" className="overflow-hidden">
             <div className="border-b border-[var(--glass-border)] p-4">
-              <SectionLabel>Location</SectionLabel>
+              <SectionLabel>{t('ui.location')}</SectionLabel>
             </div>
             <div className="jm-map h-[240px]">
               <CivicMap
@@ -216,44 +216,39 @@ function ComplaintDetailPage() {
           />
 
           <GlassCard elevation="raised" className="p-6">
-            <SectionLabel>Officer Actions</SectionLabel>
+            <SectionLabel>{t('ui.officer_actions')}</SectionLabel>
             <div className="mt-4 flex flex-col gap-3">
               <button
                 type="button"
                 onClick={() => void handleAssign("Water Supply" as any)} // TODO: Update to actual Verify API
                 className="action-btn text-left bg-green-500/10 text-green-600 hover:bg-green-500/20 border-green-500/20"
               >
-                ✓ Verify & Accept Complaint
-              </button>
+                {t('ui.verify_accept_complaint')}</button>
               <button
                 type="button"
                 onClick={() => toast.success("Rejecting complaint...")} // TODO: Update to actual API
                 className="action-btn text-left bg-red-500/10 text-red-600 hover:bg-red-500/20 border-red-500/20"
               >
-                ✕ Reject as Invalid
-              </button>
+                {t('ui.reject_as_invalid')}</button>
               <hr className="border-[var(--glass-border)] my-2" />
               <button
                 type="button"
                 className="action-btn text-left"
                 onClick={() => toast.success("Opening classification...")}
               >
-                Classify & Route
-              </button>
+                {t('ui.classify_route')}</button>
               <button
                 type="button"
                 className="action-btn text-left"
                 onClick={() => toast.success("Linking to issue...")}
               >
-                Link to Civic Issue
-              </button>
+                {t('ui.link_to_civic_issue')}</button>
               <button
                 type="button"
                 className="action-btn text-left"
                 onClick={() => toast.success("Creating procurement opportunity...")}
               >
-                Create Procurement Opportunity
-              </button>
+                {t('ui.create_procurement_opportunity')}</button>
             </div>
           </GlassCard>
         </div>

@@ -11,6 +11,7 @@ import { LoadingState, ErrorState } from "@/components/ui/states";
 import { toast } from "sonner";
 import { Calendar, Clock, FileText, IndianRupee, CheckCircle2, ArrowLeft } from "lucide-react";
 import { Link } from "@tanstack/react-router";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/contractor/work-orders/$id")({
   head: ({ params }: any) => ({ meta: [{ title: `Work Order – JANMIND` }] }),
@@ -56,6 +57,7 @@ const CONTRACTOR_NEXT_LABEL: Record<string, string> = {
 };
 
 function ContractorWorkOrderDetail() {
+    const { t } = useI18n();
   const { id } = Route.useParams();
   const { contractor } = useContractorAuth();
   const router = useRouter();
@@ -142,8 +144,7 @@ function ContractorWorkOrderDetail() {
         to={"/contractor/work-orders" as any}
         className="inline-flex items-center gap-1.5 text-sm text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-colors"
       >
-        <ArrowLeft size={15} /> Back to Work Orders
-      </Link>
+        <ArrowLeft size={15} /> {t('ui.back_to_work_orders')}</Link>
 
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
@@ -159,7 +160,7 @@ function ContractorWorkOrderDetail() {
               {STATUS_LABEL[wo.status] ?? wo.status}
             </span>
           </div>
-          <p className="text-sm font-mono text-[var(--muted-foreground)]">ID: {wo.id}</p>
+          <p className="text-sm font-mono text-[var(--muted-foreground)]">{t('ui.id')}{wo.id}</p>
         </div>
 
         {/* Primary action button */}
@@ -178,7 +179,7 @@ function ContractorWorkOrderDetail() {
         {/* ── Left — Details ─────────────────────────────────────────── */}
         <div className="lg:col-span-2 space-y-6">
           <GlassCard className="p-5 glass-strong space-y-5">
-            <SectionLabel>Work Order Details</SectionLabel>
+            <SectionLabel>{t('ui.work_order_details')}</SectionLabel>
 
             {wo.description && (
               <p className="text-sm text-[var(--foreground)] leading-relaxed">{wo.description}</p>
@@ -187,19 +188,19 @@ function ContractorWorkOrderDetail() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
               <div className="space-y-3">
                 <div>
-                  <div className="text-[var(--muted-foreground)] text-xs mb-0.5">Contract Value</div>
+                  <div className="text-[var(--muted-foreground)] text-xs mb-0.5">{t('ui.contract_value')}</div>
                   <div className="font-semibold text-[var(--foreground)]">
                     ₹{(wo.award_value ?? 0).toLocaleString("en-IN")}
                   </div>
                 </div>
                 <div>
-                  <div className="text-[var(--muted-foreground)] text-xs mb-0.5">Estimated Budget</div>
+                  <div className="text-[var(--muted-foreground)] text-xs mb-0.5">{t('ui.estimated_budget')}</div>
                   <div className="text-[var(--foreground)]">
                     ₹{(wo.estimated_budget ?? wo.award_value ?? 0).toLocaleString("en-IN")}
                   </div>
                 </div>
                 <div>
-                  <div className="text-[var(--muted-foreground)] text-xs mb-0.5">Risk Level</div>
+                  <div className="text-[var(--muted-foreground)] text-xs mb-0.5">{t('ui.risk_level')}</div>
                   <div
                     className="font-medium uppercase text-xs"
                     style={{
@@ -218,7 +219,7 @@ function ContractorWorkOrderDetail() {
                 <div className="flex items-start gap-2">
                   <Calendar size={15} className="text-[var(--muted-foreground)] mt-0.5 shrink-0" />
                   <div>
-                    <div className="text-[var(--muted-foreground)] text-xs">Issued On</div>
+                    <div className="text-[var(--muted-foreground)] text-xs">{t('ui.issued_on')}</div>
                     <div className="text-[var(--foreground)]">
                       {wo.created_at ? new Date(wo.created_at).toLocaleDateString("en-IN") : "—"}
                     </div>
@@ -234,14 +235,13 @@ function ContractorWorkOrderDetail() {
                       <div
                         className={`text-xs ${isOverdue ? "text-[var(--critical)]" : "text-[var(--muted-foreground)]"}`}
                       >
-                        Target Completion
-                      </div>
+                        {t('ui.target_completion')}</div>
                       <div
                         className={`font-medium ${isOverdue ? "text-[var(--critical)]" : "text-[var(--foreground)]"}`}
                       >
                         {new Date(wo.target_completion_date).toLocaleDateString("en-IN")}
                         {isOverdue && (
-                          <span className="ml-2 text-xs font-normal">(overdue)</span>
+                          <span className="ml-2 text-xs font-normal">{t('ui.overdue')}</span>
                         )}
                       </div>
                     </div>
@@ -253,7 +253,7 @@ function ContractorWorkOrderDetail() {
 
           {/* Progress bar */}
           <GlassCard className="p-5 glass-strong">
-            <SectionLabel>Execution Progress</SectionLabel>
+            <SectionLabel>{t('ui.execution_progress')}</SectionLabel>
             <div className="mt-4 space-y-3">
               {[
                 { label: "Reported by You", pct: wo.reported_progress_pct ?? 0, color: "var(--primary)" },
@@ -285,34 +285,33 @@ function ContractorWorkOrderDetail() {
           {["IN_PROGRESS", "REWORK"].includes(wo.status) && (
             <GlassCard className="p-5 border border-[var(--primary)]/30">
               <SectionLabel className="flex items-center gap-2 text-[var(--primary)]">
-                <FileText size={16} /> Submit Field Evidence
-              </SectionLabel>
+                <FileText size={16} /> {t('ui.submit_field_evidence')}</SectionLabel>
               <form onSubmit={handleEvidenceSubmit} className="mt-4 space-y-4">
                 <div>
-                  <label className="label-xs block mb-1">Stage</label>
+                  <label className="label-xs block mb-1">{t('ui.stage')}</label>
                   <select
                     value={evidenceStage}
                     onChange={(e) => setEvidenceStage(e.target.value)}
                     className="w-full px-3 py-2 rounded-md bg-[var(--surface-elevated)] text-[var(--foreground)] border border-[var(--glass-border)] text-sm focus:outline-none focus:ring-1 focus:ring-[var(--primary)]"
                   >
-                    <option value="BEFORE">Before Repair</option>
-                    <option value="START">Start of Work</option>
-                    <option value="DURING">During Execution</option>
-                    <option value="COMPLETION">Completion</option>
+                    <option value="BEFORE">{t('ui.before_repair')}</option>
+                    <option value="START">{t('ui.start_of_work')}</option>
+                    <option value="DURING">{t('ui.during_execution')}</option>
+                    <option value="COMPLETION">{t('ui.completion')}</option>
                   </select>
                 </div>
                 <div>
-                  <label className="label-xs block mb-1">Description (optional)</label>
+                  <label className="label-xs block mb-1">{t('ui.description_optional')}</label>
                   <input
                     type="text"
                     value={evidenceDesc}
                     onChange={(e) => setEvidenceDesc(e.target.value)}
-                    placeholder="Brief note about the photo…"
+                    placeholder={t('ui.brief_note_about_the_photo')}
                     className="w-full px-3 py-2 rounded-md bg-[var(--surface)] text-[var(--foreground)] border border-[var(--glass-border)] text-sm focus:outline-none focus:ring-1 focus:ring-[var(--primary)]"
                   />
                 </div>
                 <div>
-                  <label className="label-xs block mb-1">Photo</label>
+                  <label className="label-xs block mb-1">{t('ui.photo')}</label>
                   <input
                     type="file"
                     accept="image/*"
@@ -346,12 +345,9 @@ function ContractorWorkOrderDetail() {
                 <Clock size={20} className="text-[var(--warning)] shrink-0 mt-0.5" />
                 <div>
                   <p className="text-sm font-semibold text-[var(--foreground)]">
-                    Awaiting Municipal Inspection
-                  </p>
+                    {t('ui.awaiting_municipal_inspection')}</p>
                   <p className="mt-1 text-xs text-[var(--muted-foreground)]">
-                    Evidence has been submitted. A municipal officer will review and either pass or
-                    request rework.
-                  </p>
+                    {t('ui.evidence_has_been_submitted_a_')}</p>
                 </div>
               </div>
             </GlassCard>
@@ -363,18 +359,15 @@ function ContractorWorkOrderDetail() {
               <div className="flex items-start gap-3">
                 <IndianRupee size={20} className="text-[var(--critical)] shrink-0 mt-0.5" />
                 <div>
-                  <p className="text-sm font-semibold text-[var(--critical)]">Rework Required</p>
+                  <p className="text-sm font-semibold text-[var(--critical)]">{t('ui.rework_required')}</p>
                   <p className="mt-1 text-xs text-[var(--muted-foreground)]">
-                    The municipal inspection did not pass. Please address the issues and resubmit
-                    evidence.
-                  </p>
+                    {t('ui.the_municipal_inspection_did_n')}</p>
                   <button
                     onClick={() => handleStatusChange("INSPECTION_PENDING")}
                     disabled={actionLoading}
                     className="mt-3 px-4 py-1.5 rounded-md text-xs font-medium text-white bg-[var(--critical)] hover:opacity-90 disabled:opacity-50"
                   >
-                    Resubmit for Inspection
-                  </button>
+                    {t('ui.resubmit_for_inspection')}</button>
                 </div>
               </div>
             </GlassCard>
@@ -386,11 +379,9 @@ function ContractorWorkOrderDetail() {
               <div className="flex items-start gap-3">
                 <CheckCircle2 size={20} className="text-[var(--success)] shrink-0 mt-0.5" />
                 <div>
-                  <p className="text-sm font-semibold text-[var(--success)]">Work Completed</p>
+                  <p className="text-sm font-semibold text-[var(--success)]">{t('ui.work_completed')}</p>
                   <p className="mt-1 text-xs text-[var(--muted-foreground)]">
-                    This work order has been inspected and marked complete. The linked civic issue
-                    and citizen complaints have been resolved automatically.
-                  </p>
+                    {t('ui.this_work_order_has_been_inspe')}</p>
                 </div>
               </div>
             </GlassCard>
@@ -398,20 +389,20 @@ function ContractorWorkOrderDetail() {
 
           {/* Quick info card */}
           <GlassCard className="p-5 glass-strong space-y-3 text-sm">
-            <SectionLabel>Quick Info</SectionLabel>
+            <SectionLabel>{t('ui.quick_info')}</SectionLabel>
             <div className="space-y-2">
               <div className="flex justify-between">
-                <span className="text-[var(--muted-foreground)]">Awarded By</span>
+                <span className="text-[var(--muted-foreground)]">{t('ui.awarded_by')}</span>
                 <span className="font-medium truncate max-w-[55%] text-right">
                   {wo.contractor_name ?? "Municipality"}
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-[var(--muted-foreground)]">Award Value</span>
+                <span className="text-[var(--muted-foreground)]">{t('ui.award_value')}</span>
                 <span className="font-medium">₹{(wo.award_value ?? 0).toLocaleString("en-IN")}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-[var(--muted-foreground)]">Tender ID</span>
+                <span className="text-[var(--muted-foreground)]">{t('ui.tender_id')}</span>
                 <span className="font-mono text-xs truncate max-w-[55%] text-right">{wo.tender_id}</span>
               </div>
             </div>

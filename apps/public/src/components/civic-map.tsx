@@ -13,6 +13,7 @@ import {
   type AreaActivity,
   type ComplaintPoint,
 } from "@/services/geography";
+import { useI18n } from "@/lib/i18n";
 
 export type MapMode = "health" | "activity" | "hotspots";
 
@@ -53,6 +54,7 @@ export function CivicMap({
   className,
   compact = false,
 }: CivicMapProps) {
+    const { t } = useI18n();
   const holder = useRef<HTMLDivElement>(null);
   const mapRef = useRef<Leaflet.Map | null>(null);
   const LRef = useRef<typeof Leaflet | null>(null);
@@ -335,12 +337,11 @@ export function CivicMap({
         <div
           className="absolute inset-0 z-[400] flex items-center justify-center bg-[var(--background-secondary)]"
           role="status"
-          aria-label="Loading map"
+          aria-label={t('ui.loading_map')}
         >
           <div className="jm-map-scan absolute inset-0 opacity-50" aria-hidden />
           <span className="relative z-10 text-xs tracking-[0.12em] text-subtle uppercase">
-            Loading tiles…
-          </span>
+            {t('ui.loading_tiles')}</span>
         </div>
       )}
       <div
@@ -353,7 +354,7 @@ export function CivicMap({
       <div className="absolute top-3 right-3 z-[500] flex flex-col gap-1.5">
         <button
           type="button"
-          aria-label="Zoom in"
+          aria-label={t('ui.zoom_in')}
           onClick={() => mapRef.current?.zoomIn()}
           className="press flex h-9 w-9 items-center justify-center rounded-xl border border-[var(--glass-border)] bg-[var(--glass-strong)] text-foreground backdrop-blur-xl hover:bg-[var(--surface-elevated)]"
         >
@@ -361,7 +362,7 @@ export function CivicMap({
         </button>
         <button
           type="button"
-          aria-label="Zoom out"
+          aria-label={t('ui.zoom_out')}
           onClick={() => mapRef.current?.zoomOut()}
           className="press flex h-9 w-9 items-center justify-center rounded-xl border border-[var(--glass-border)] bg-[var(--glass-strong)] text-foreground backdrop-blur-xl hover:bg-[var(--surface-elevated)]"
         >
@@ -371,7 +372,7 @@ export function CivicMap({
           <>
             <button
               type="button"
-              aria-label="Reset map view"
+              aria-label={t('ui.reset_map_view')}
               onClick={resetView}
               className="press flex h-9 w-9 items-center justify-center rounded-xl border border-[var(--glass-border)] bg-[var(--glass-strong)] text-foreground backdrop-blur-xl hover:bg-[var(--surface-elevated)]"
             >
@@ -380,7 +381,7 @@ export function CivicMap({
             {onNearMe && (
               <button
                 type="button"
-                aria-label="Find my area"
+                aria-label={t('ui.find_my_area')}
                 onClick={onNearMe}
                 aria-busy={locating}
                 className="press flex h-9 w-9 items-center justify-center rounded-xl border border-[var(--glass-border)] bg-[var(--glass-strong)] text-foreground backdrop-blur-xl hover:bg-[var(--surface-elevated)]"

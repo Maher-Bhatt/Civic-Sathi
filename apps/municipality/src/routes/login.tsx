@@ -6,6 +6,7 @@ import { GlassButton } from "@/components/ui/glass-button";
 import { GlassInput } from "@/components/ui/glass-input";
 import { useMuniAuth } from "@/lib/muni-auth";
 import { CITIES, type CityId } from "@/services/cities";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/login")({
   head: () => ({
@@ -15,6 +16,7 @@ export const Route = createFileRoute("/login")({
 });
 
 function MuniLoginPage() {
+    const { t } = useI18n();
   const { signIn, officer, ready } = useMuniAuth();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
@@ -48,22 +50,22 @@ function MuniLoginPage() {
     <div className="ambient-field flex min-h-screen items-center justify-center bg-background p-4">
       <GlassCard elevation="raised" className="animate-rise w-full max-w-md p-6 sm:p-8">
         <div className="text-center">
-          <p className="text-2xl font-semibold tracking-tight">JANMIND</p>
-          <p className="mt-1 text-sm text-muted-foreground">Municipal Intelligence</p>
+          <p className="text-2xl font-semibold tracking-tight">{t('ui.janmind')}</p>
+          <p className="mt-1 text-sm text-muted-foreground">{t('ui.municipal_intelligence')}</p>
         </div>
 
         <form onSubmit={onSubmit} className="mt-8 space-y-4" noValidate>
           <GlassInput
-            label="Officer ID / Email"
+            label={t('ui.officer_id_email')}
             type="email"
             autoComplete="username"
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="officer@vmc.gov.in"
+            placeholder={t('ui.officer_vmc_gov_in')}
           />
           <GlassInput
-            label="Password"
+            label={t('ui.password')}
             type="password"
             autoComplete="current-password"
             required
@@ -74,7 +76,7 @@ function MuniLoginPage() {
           />
 
           <div>
-            <label className="label-xs mb-1.5 block">City</label>
+            <label className="label-xs mb-1.5 block">{t('ui.city')}</label>
             <select
               value={city}
               onChange={(e) => setCity(e.target.value as CityId)}
@@ -89,7 +91,7 @@ function MuniLoginPage() {
           </div>
 
           <div>
-            <label className="label-xs mb-1.5 block">Role</label>
+            <label className="label-xs mb-1.5 block">{t('ui.role')}</label>
             <input value="Officer" readOnly className="filter-input opacity-70" />
           </div>
 
@@ -100,16 +102,14 @@ function MuniLoginPage() {
               onChange={(e) => setRemember(e.target.checked)}
               className="rounded border-[var(--glass-border)]"
             />
-            Remember session
-          </label>
+            {t('ui.remember_session')}</label>
 
           <button
             type="button"
             className="text-xs text-primary hover:underline"
             onClick={() => toast.info("Password reset is not available in the prototype.")}
           >
-            Forgot password?
-          </button>
+            {t('ui.forgot_password')}</button>
 
           <GlassButton type="submit" className="w-full" disabled={busy}>
             {busy ? "Signing in..." : "Sign In"}
@@ -117,8 +117,7 @@ function MuniLoginPage() {
         </form>
 
         <p className="mt-6 text-center text-[0.65rem] text-muted-foreground">
-          JANMIND Municipal Intelligence Platform
-        </p>
+          {t('ui.janmind_municipal_intelligence')}</p>
       </GlassCard>
     </div>
   );

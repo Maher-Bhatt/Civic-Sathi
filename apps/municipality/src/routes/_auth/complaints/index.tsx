@@ -15,6 +15,7 @@ import {
   type MuniComplaint,
 } from "@/services/types";
 import { DEPARTMENTS } from "@/services/types";
+import { useI18n } from "@/lib/i18n";
 
 type SortKey = keyof Pick<
   MuniComplaint,
@@ -30,6 +31,7 @@ export const Route = createFileRoute("/_auth/complaints/")({
 });
 
 function ComplaintsPage() {
+    const { t } = useI18n();
   const { officer } = useMuniAuth();
   const { area: areaSearch } = Route.useSearch();
   const [complaints, setComplaints] = useState<MuniComplaint[]>([]);
@@ -91,25 +93,22 @@ function ComplaintsPage() {
     <div className="muni-page-enter space-y-6">
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <SectionLabel>Complaint Management</SectionLabel>
-          <h1 className="mt-2 text-2xl font-semibold">All civic reports</h1>
+          <SectionLabel>{t('ui.complaint_management')}</SectionLabel>
+          <h1 className="mt-2 text-2xl font-semibold">{t('ui.all_civic_reports')}</h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            {sorted.length} complaints · Prototype Intelligence Data
-          </p>
+            {sorted.length} {t('ui.complaints_prototype_intellige')}</p>
         </div>
         <div className="flex flex-wrap gap-2">
           <GlassButton variant="outline" size="sm" onClick={() => setFilterOpen(true)}>
             <Filter className="h-3.5 w-3.5" />
-            Filters
-          </GlassButton>
+            {t('ui.filters')}</GlassButton>
           <GlassButton
             variant="outline"
             size="sm"
             onClick={() => toast.info("Export is not available in the prototype.")}
           >
             <Download className="h-3.5 w-3.5" />
-            Export
-          </GlassButton>
+            {t('ui.export')}</GlassButton>
         </div>
       </header>
 
@@ -137,13 +136,11 @@ function ComplaintsPage() {
 
       {selected.size > 0 && (
         <GlassCard elevation="flat" className="flex flex-wrap items-center gap-3 p-4">
-          <span className="text-sm text-muted-foreground">{selected.size} selected</span>
+          <span className="text-sm text-muted-foreground">{selected.size} {t('ui.selected')}</span>
           <button type="button" onClick={() => void bulkAssign("Water Supply" as any)} className="action-btn bg-green-500/10 text-green-600 hover:bg-green-500/20 border-green-500/20">
-            ✓ Bulk Verify
-          </button>
+            {t('ui.bulk_verify')}</button>
           <button type="button" onClick={() => toast.success("Opening bulk classification...")} className="action-btn">
-            Bulk Classify
-          </button>
+            {t('ui.bulk_classify')}</button>
         </GlassCard>
       )}
 

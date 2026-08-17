@@ -6,6 +6,7 @@ import { GlassCard, SectionLabel } from "@/components/ui/glass-card";
 import { LoadingState } from "@/components/ui/states";
 import { ClipboardList } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, CartesianGrid, Cell } from "recharts";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/admin/work-orders-overview")({
   head: () => ({ meta: [{ title: "Work Orders Overview | Admin | JANMIND" }] }),
@@ -25,6 +26,7 @@ const WO_STATUS_COLORS: Record<string, string> = {
 };
 
 function WorkOrdersOverview() {
+    const { t } = useI18n();
   const [workOrders, setWorkOrders] = useState<WorkOrder[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -58,13 +60,13 @@ function WorkOrdersOverview() {
   return (
     <div className="space-y-6 muni-page-enter">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">Platform Work Orders</h1>
-        <p className="text-[var(--muted-foreground)]">Global view of all municipal work orders</p>
+        <h1 className="text-2xl font-bold tracking-tight">{t('ui.platform_work_orders')}</h1>
+        <p className="text-[var(--muted-foreground)]">{t('ui.global_view_of_all_municipal_w')}</p>
       </div>
 
       <GlassCard className="p-6">
-        <SectionLabel>Global Work Order Distribution</SectionLabel>
-        <p className="text-xs text-[var(--muted-foreground)] mb-4">Status breakdown across all cities</p>
+        <SectionLabel>{t('ui.global_work_order_distribution')}</SectionLabel>
+        <p className="text-xs text-[var(--muted-foreground)] mb-4">{t('ui.status_breakdown_across_all_ci')}</p>
         <div className="h-72 mt-2 w-full">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={chartData} margin={{ top: 10, right: 20, left: -10, bottom: 20 }}>
@@ -119,11 +121,11 @@ function WorkOrdersOverview() {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-[var(--glass-border)] text-left text-[var(--muted-foreground)] bg-[var(--surface-elevated)]/50">
-                <th className="py-3 px-4 font-medium">ID / Title</th>
-                <th className="py-3 px-4 font-medium">Municipality</th>
-                <th className="py-3 px-4 font-medium">Contractor</th>
-                <th className="py-3 px-4 font-medium">Status</th>
-                <th className="py-3 px-4 font-medium">SLA Deadline</th>
+                <th className="py-3 px-4 font-medium">{t('ui.id_title')}</th>
+                <th className="py-3 px-4 font-medium">{t('ui.municipality')}</th>
+                <th className="py-3 px-4 font-medium">{t('ui.contractor')}</th>
+                <th className="py-3 px-4 font-medium">{t('ui.status')}</th>
+                <th className="py-3 px-4 font-medium">{t('ui.sla_deadline')}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[var(--glass-border)]">
@@ -145,15 +147,14 @@ function WorkOrdersOverview() {
                     </span>
                   </td>
                   <td className="py-3 px-4 text-[var(--muted-foreground)] text-xs">
-                    {wo.slaDeadline ? new Date(wo.slaDeadline).toLocaleDateString() : "N/A"}
+                    {wo.slaDeadline ? new Date(wo.slaDeadline).toLocaleDateString('en-IN') : "N/A"}
                   </td>
                 </tr>
               ))}
               {workOrders.length === 0 && (
                 <tr>
                   <td colSpan={5} className="py-12 text-center text-[var(--muted-foreground)]">
-                    No work orders found in the platform.
-                  </td>
+                    {t('ui.no_work_orders_found_in_the_pl')}</td>
                 </tr>
               )}
             </tbody>
@@ -163,3 +164,4 @@ function WorkOrdersOverview() {
     </div>
   );
 }
+

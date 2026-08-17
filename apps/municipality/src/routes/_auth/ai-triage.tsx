@@ -5,12 +5,14 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Check, X, AlertTriangle, Loader2 } from 'lucide-react'
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute('/_auth/ai-triage')({
   component: AITriageDashboard,
 })
 
 function AITriageDashboard() {
+    const { t } = useI18n();
   const [pendingTriage, setPendingTriage] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [processing, setProcessing] = useState<string | null>(null)
@@ -57,22 +59,20 @@ function AITriageDashboard() {
     <div className="p-6">
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">AI Triage Queue</h1>
+          <h1 className="text-3xl font-bold tracking-tight">{t('ui.ai_triage_queue')}</h1>
           <p className="text-muted-foreground">
-            Review incoming complaints flagged by JANMIND AI as potentially related to existing civic issues.
-          </p>
+            {t('ui.review_incoming_complaints_fla')}</p>
         </div>
         <Badge variant="secondary" className="text-lg py-1 px-4">
-          {pendingTriage.length} Pending
-        </Badge>
+          {pendingTriage.length} {t('ui.pending')}</Badge>
       </div>
 
       {pendingTriage.length === 0 ? (
         <Card className="flex h-64 flex-col items-center justify-center border-dashed">
           <CardContent className="flex flex-col items-center text-center">
             <Check className="mb-4 h-12 w-12 text-green-500" />
-            <p className="text-xl font-semibold">All caught up!</p>
-            <p className="text-muted-foreground">No pending complaints require human review.</p>
+            <p className="text-xl font-semibold">{t('ui.all_caught_up')}</p>
+            <p className="text-muted-foreground">{t('ui.no_pending_complaints_require_')}</p>
           </CardContent>
         </Card>
       ) : (
@@ -82,11 +82,9 @@ function AITriageDashboard() {
               <CardHeader className="bg-yellow-500/5 pb-4">
                 <div className="flex items-center justify-between mb-2">
                   <Badge variant="outline" className="bg-background text-yellow-600 border-yellow-600">
-                    <AlertTriangle className="h-3 w-3 mr-1" /> Needs Review
-                  </Badge>
+                    <AlertTriangle className="h-3 w-3 mr-1" /> {t('ui.needs_review')}</Badge>
                   <span className="text-xs font-medium text-muted-foreground">
-                    {(item.duplicate_score * 100).toFixed(0)}% Match
-                  </span>
+                    {(item.duplicate_score * 100).toFixed(0)}{t('ui.match')}</span>
                 </div>
                 <CardTitle className="text-lg leading-tight line-clamp-2">
                   {item.complaint.title}
@@ -98,8 +96,7 @@ function AITriageDashboard() {
               <CardContent className="flex-1 pt-4">
                 <div className="rounded-md bg-muted p-4 border border-border/50">
                   <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">
-                    Candidate Civic Issue
-                  </p>
+                    {t('ui.candidate_civic_issue')}</p>
                   <p className="font-medium text-sm mb-1">{item.candidate_issue.title}</p>
                   <p className="text-xs text-muted-foreground line-clamp-2 mb-3">
                     {item.candidate_issue.summary}
@@ -107,7 +104,7 @@ function AITriageDashboard() {
                   <div className="flex items-center gap-2 text-xs font-medium">
                     <Badge variant="secondary" className="font-mono">{item.candidate_issue.id.split('-')[0]}</Badge>
                     <span className="text-muted-foreground">•</span>
-                    <span>{item.candidate_issue.complaint_count} existing complaints</span>
+                    <span>{item.candidate_issue.complaint_count} {t('ui.existing_complaints')}</span>
                   </div>
                 </div>
               </CardContent>
@@ -118,8 +115,7 @@ function AITriageDashboard() {
                   disabled={processing === item.complaint.id}
                 >
                   {processing === item.complaint.id ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Check className="h-4 w-4 mr-2" />}
-                  Merge (Duplicate)
-                </Button>
+                  {t('ui.merge_duplicate')}</Button>
                 <Button 
                   variant="outline" 
                   className="flex-1 border-destructive text-destructive hover:bg-destructive/10"
@@ -127,8 +123,7 @@ function AITriageDashboard() {
                   disabled={processing === item.complaint.id}
                 >
                   {processing === item.complaint.id ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <X className="h-4 w-4 mr-2" />}
-                  Split (Unique)
-                </Button>
+                  {t('ui.split_unique')}</Button>
               </CardFooter>
             </Card>
           ))}

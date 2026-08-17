@@ -17,6 +17,7 @@ import {
   ReferenceLine,
   Legend,
 } from "recharts";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/contractor/performance")({
   head: () => ({ meta: [{ title: "Performance - Contractor Portal" }] }),
@@ -32,6 +33,7 @@ const TOOLTIP_STYLE = {
 };
 
 function ContractorPerformance() {
+    const { t } = useI18n();
   const { contractor: contractorAuth } = useContractorAuth();
   const [contractor, setContractor] = useState<Contractor | null>(null);
   const [loading, setLoading] = useState(true);
@@ -74,26 +76,26 @@ function ContractorPerformance() {
   return (
     <div className="space-y-6 animate-fade">
       <div>
-        <h1 className="text-2xl font-semibold text-[var(--foreground)] tracking-tight">Performance Metrics</h1>
-        <p className="text-[var(--muted-foreground)] text-sm">Track your company's rating and operational statistics.</p>
+        <h1 className="text-2xl font-semibold text-[var(--foreground)] tracking-tight">{t('ui.performance_metrics')}</h1>
+        <p className="text-[var(--muted-foreground)] text-sm">{t('ui.track_your_company_s_rating_an')}</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
         {/* Main Score Gauge */}
         <GlassCard className="p-8 glass-strong flex flex-col items-center justify-center text-center lift">
-          <SectionLabel className="mb-6">Overall Rating</SectionLabel>
+          <SectionLabel className="mb-6">{t('ui.overall_rating')}</SectionLabel>
           <div
             className="relative w-48 h-48 rounded-full border-8 flex items-center justify-center shadow-lg"
             style={{ borderColor: scoreColor, backgroundColor: "var(--surface)" }}
           >
             <div className="flex flex-col items-center">
               <span className="text-5xl font-bold" style={{ color: scoreColor }}>{score}</span>
-              <span className="text-xs text-[var(--muted-foreground)] uppercase tracking-widest mt-1">out of 100</span>
+              <span className="text-xs text-[var(--muted-foreground)] uppercase tracking-widest mt-1">{t('ui.out_of_100')}</span>
             </div>
           </div>
           <div className="mt-8 px-4 py-2 bg-[var(--surface-elevated)] rounded-md border border-[var(--glass-border)] text-sm">
-            Status: <span className="font-semibold" style={{ color: scoreColor }}>
+            {t('ui.status')}<span className="font-semibold" style={{ color: scoreColor }}>
               {score >= 80 ? "Excellent" : score >= 60 ? "Satisfactory" : "Needs Improvement"}
             </span>
           </div>
@@ -102,11 +104,11 @@ function ContractorPerformance() {
         {/* Breakdown Metrics */}
         <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
           <GlassCard className="p-5 glass-strong flex flex-col justify-between">
-            <div className="text-[var(--muted-foreground)] text-sm mb-2">SLA Compliance</div>
+            <div className="text-[var(--muted-foreground)] text-sm mb-2">{t('ui.sla_compliance')}</div>
             <div className="text-3xl font-light text-[var(--foreground)]">
               {slaValue}%
             </div>
-            <div className="text-xs text-[var(--success)] mt-1">Target: &gt; 90%</div>
+            <div className="text-xs text-[var(--success)] mt-1">{t('ui.target_gt_90')}</div>
             <div className="mt-3 h-1.5 w-full rounded-full bg-[var(--glass-border)]">
               <div
                 className="h-full rounded-full transition-all duration-1000"
@@ -119,11 +121,11 @@ function ContractorPerformance() {
           </GlassCard>
 
           <GlassCard className="p-5 glass-strong flex flex-col justify-between">
-            <div className="text-[var(--muted-foreground)] text-sm mb-2">First-Time Inspection Pass</div>
+            <div className="text-[var(--muted-foreground)] text-sm mb-2">{t('ui.first_time_inspection_pass')}</div>
             <div className="text-3xl font-light text-[var(--foreground)]">
               {ftipValue}%
             </div>
-            <div className="text-xs text-[var(--warning)] mt-1">Target: &gt; 85%</div>
+            <div className="text-xs text-[var(--warning)] mt-1">{t('ui.target_gt_85')}</div>
             <div className="mt-3 h-1.5 w-full rounded-full bg-[var(--glass-border)]">
               <div
                 className="h-full rounded-full transition-all duration-1000"
@@ -136,11 +138,11 @@ function ContractorPerformance() {
           </GlassCard>
 
           <GlassCard className="p-5 glass-strong flex flex-col justify-between">
-            <div className="text-[var(--muted-foreground)] text-sm mb-2">On-Time Completion</div>
+            <div className="text-[var(--muted-foreground)] text-sm mb-2">{t('ui.on_time_completion')}</div>
             <div className="text-3xl font-light text-[var(--foreground)]">
               {otcValue}%
             </div>
-            <div className="text-xs text-[var(--success)] mt-1">Target: &gt; 95%</div>
+            <div className="text-xs text-[var(--success)] mt-1">{t('ui.target_gt_95')}</div>
             <div className="mt-3 h-1.5 w-full rounded-full bg-[var(--glass-border)]">
               <div
                 className="h-full rounded-full transition-all duration-1000"
@@ -153,11 +155,11 @@ function ContractorPerformance() {
           </GlassCard>
 
           <GlassCard className="p-5 glass-strong flex flex-col justify-between bg-[var(--surface-elevated)]/50">
-            <div className="text-[var(--muted-foreground)] text-sm mb-2">Total Historical Work Orders</div>
+            <div className="text-[var(--muted-foreground)] text-sm mb-2">{t('ui.total_historical_work_orders')}</div>
             <div className="text-3xl font-semibold text-[var(--primary)]">
               {Math.floor(Math.random() * 50) + 120}
             </div>
-            <div className="text-xs text-[var(--muted-foreground)] mt-1">Lifetime completed</div>
+            <div className="text-xs text-[var(--muted-foreground)] mt-1">{t('ui.lifetime_completed')}</div>
             <div className="mt-3 h-1.5 w-full rounded-full bg-[var(--glass-border)]">
               <div
                 className="h-full rounded-full transition-all duration-1000"
@@ -173,7 +175,7 @@ function ContractorPerformance() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <GlassCard className="p-6 glass-strong h-80 flex flex-col">
-          <SectionLabel className="mb-4">Score Trend (Last 4 Quarters)</SectionLabel>
+          <SectionLabel className="mb-4">{t('ui.score_trend_last_4_quarters')}</SectionLabel>
           <div className="flex-1 w-full h-full min-h-0">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={mockHistoryData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
@@ -218,10 +220,10 @@ function ContractorPerformance() {
         </GlassCard>
 
         <GlassCard className="p-6 glass-strong">
-          <SectionLabel className="mb-4">Company Profile Data</SectionLabel>
+          <SectionLabel className="mb-4">{t('ui.company_profile_data')}</SectionLabel>
           <div className="space-y-4">
             <div>
-              <div className="text-xs text-[var(--muted-foreground)] mb-1">Specializations</div>
+              <div className="text-xs text-[var(--muted-foreground)] mb-1">{t('ui.specializations')}</div>
               <div className="flex flex-wrap gap-2">
                 {contractor.specializationCategories.map((spec: string) => (
                   <span key={spec} className="px-2.5 py-1 bg-[var(--primary)]/10 text-[var(--primary)] border border-[var(--primary)]/20 rounded-md text-xs font-medium">
@@ -232,11 +234,11 @@ function ContractorPerformance() {
             </div>
 
             <div className="pt-4 border-t border-[var(--glass-border)]">
-              <div className="text-xs text-[var(--muted-foreground)] mb-1">Service Wards</div>
+              <div className="text-xs text-[var(--muted-foreground)] mb-1">{t('ui.service_wards')}</div>
               <div className="flex flex-wrap gap-2">
                 {contractor.serviceAreas.map(area => (
                   <span key={area} className="px-2.5 py-1 bg-[var(--surface-elevated)] text-[var(--foreground)] border border-[var(--glass-border)] rounded-md text-xs">
-                    Ward {area}
+                    {t('ui.ward')}{area}
                   </span>
                 ))}
               </div>

@@ -73,14 +73,13 @@ function ReportPage() {
   return (
     <PageShell className="max-w-3xl">
       <div className="animate-rise space-y-2">
-        <SectionLabel>New report</SectionLabel>
-        <h1 className="text-2xl font-semibold sm:text-3xl">Tell JANMIND what happened</h1>
+        <SectionLabel>{t('ui.new_report')}</SectionLabel>
+        <h1 className="text-2xl font-semibold sm:text-3xl">{t('ui.tell_janmind_what_happened')}</h1>
         <p className="text-sm text-muted-foreground">
-          You don't need to pick a category — JANMIND will suggest one from your description.
-        </p>
+          {t('ui.you_don_t_need_to_pick_a_categ')}</p>
       </div>
 
-      <ol className="mt-7 flex items-center gap-2" aria-label="Report progress">
+      <ol className="mt-7 flex items-center gap-2" aria-label={t('ui.report_progress')}>
         {steps.map((s, i) => (
           <li key={s.label} className="flex flex-1 items-center gap-2">
             <span
@@ -112,14 +111,14 @@ function ReportPage() {
       <GlassCard elevation="raised" className="animate-rise mt-6 p-5 sm:p-7">
         {step === 0 && (
           <div className="space-y-4">
-            <h2 className="text-lg font-semibold">Describe the problem</h2>
+            <h2 className="text-lg font-semibold">{t('ui.describe_the_problem')}</h2>
             <GlassTextarea
               rows={7}
               value={draft.description}
               onChange={(e) => update({ description: e.target.value })}
-              placeholder="Describe the problem in your own words..."
+              placeholder={t('ui.describe_the_problem_in_your_o')}
               hint="Example: There has been no water supply in our area for three days."
-              aria-label="Describe the problem"
+              aria-label={t('ui.describe_the_problem')}
             />
             <div className="flex items-center gap-3 pt-2">
               <VoiceInput
@@ -139,8 +138,7 @@ function ReportPage() {
                     })
                   }
                 >
-                  Use the example
-                </GlassButton>
+                  {t('ui.use_the_example')}</GlassButton>
               )}
             </div>
           </div>
@@ -148,7 +146,7 @@ function ReportPage() {
 
         {step === 1 && (
           <div className="space-y-5">
-            <h2 className="text-lg font-semibold">Where is the problem?</h2>
+            <h2 className="text-lg font-semibold">{t('ui.where_is_the_problem')}</h2>
             <LocationPicker
               location={draft.location}
               marker={draft.marker}
@@ -160,7 +158,7 @@ function ReportPage() {
 
         {step === 2 && (
           <div className="space-y-5">
-            <h2 className="text-lg font-semibold">Add photo or evidence</h2>
+            <h2 className="text-lg font-semibold">{t('ui.add_photo_or_evidence')}</h2>
             <PhotoUploader
               photo={draft.photo}
               onPhoto={(photo) => update({ photo })}
@@ -171,20 +169,20 @@ function ReportPage() {
 
         {step === 3 && (
           <div className="space-y-5">
-            <h2 className="text-lg font-semibold">Your report</h2>
+            <h2 className="text-lg font-semibold">{t('ui.your_report')}</h2>
             <dl className="divide-y divide-border overflow-hidden rounded-2xl border border-border">
-              <ReviewRow label="Description" onEdit={() => setStep(0)}>
+              <ReviewRow label={t('ui.description')} onEdit={() => setStep(0)}>
                 {draft.description || "Not provided"}
               </ReviewRow>
-              <ReviewRow label="Suggested category" onEdit={() => setStep(2)}>
+              <ReviewRow label={t('ui.suggested_category')} onEdit={() => setStep(2)}>
                 {draft.category ?? "JANMIND will suggest one"}
               </ReviewRow>
-              <ReviewRow label="Location" onEdit={() => setStep(1)}>
+              <ReviewRow label={t('ui.location')} onEdit={() => setStep(1)}>
                 {draft.location
                   ? `${draft.location.area} (${draft.location.lat.toFixed(4)}, ${draft.location.lng.toFixed(4)})`
                   : "Not selected"}
               </ReviewRow>
-              <ReviewRow label="Photo" onEdit={() => setStep(2)}>
+              <ReviewRow label={t('ui.photo')} onEdit={() => setStep(2)}>
                 {draft.photo ? (
                   <img
                     src={draft.photo}
@@ -197,9 +195,7 @@ function ReportPage() {
               </ReviewRow>
             </dl>
             <p className="text-xs leading-relaxed text-subtle">
-              JANMIND will analyse your description after you submit and suggest a category and
-              severity. Suggestions are an assessment, not a final decision, and can be corrected.
-            </p>
+              {t('ui.janmind_will_analyse_your_desc')}</p>
           </div>
         )}
 
@@ -245,6 +241,7 @@ function ReviewRow({
   children: React.ReactNode;
   onEdit: () => void;
 }) {
+    const { t } = useI18n();
   return (
     <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3 bg-[var(--glass)] px-4 py-3.5">
       <div className="min-w-0">
@@ -252,8 +249,7 @@ function ReviewRow({
         <dd className="mt-1 text-sm break-words text-foreground">{children}</dd>
       </div>
       <GlassButton type="button" size="sm" variant="ghost" onClick={onEdit}>
-        Edit
-      </GlassButton>
+        {t('ui.edit')}</GlassButton>
     </div>
   );
 }

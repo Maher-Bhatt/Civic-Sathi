@@ -4,6 +4,7 @@ import { useAdminAuth } from "@/lib/admin-auth";
 import { GlassCard } from "@/components/ui/glass-card";
 import { Shield, ArrowRight } from "lucide-react";
 import { toast } from "sonner";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/login")({
   head: () => ({ meta: [{ title: "Admin Login | JANMIND" }] }),
@@ -11,6 +12,7 @@ export const Route = createFileRoute("/login")({
 });
 
 function AdminLogin() {
+    const { t } = useI18n();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -44,19 +46,19 @@ function AdminLogin() {
           <div className="w-16 h-16 rounded-full bg-[var(--surface-elevated)] border border-[var(--glass-border)] flex items-center justify-center mb-4">
             <Shield className="w-8 h-8 text-[var(--foreground)]" />
           </div>
-          <h1 className="text-2xl font-bold tracking-tight mb-2">JANMIND Admin</h1>
-          <p className="text-[var(--muted-foreground)]">Platform Administration</p>
+          <h1 className="text-2xl font-bold tracking-tight mb-2">{t('ui.janmind_admin')}</h1>
+          <p className="text-[var(--muted-foreground)]">{t('ui.platform_administration')}</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
-            <label className="label-xs" htmlFor="email">Email Address</label>
+            <label className="label-xs" htmlFor="email">{t('ui.email_address')}</label>
             <input
               id="email"
               type="email"
               required
               className="ambient-field w-full"
-              placeholder="admin@janmind.gov.in"
+              placeholder={t('ui.admin_janmind_gov_in')}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               disabled={isLoading}
@@ -64,7 +66,7 @@ function AdminLogin() {
           </div>
 
           <div className="space-y-2">
-            <label className="label-xs" htmlFor="password">Password</label>
+            <label className="label-xs" htmlFor="password">{t('ui.password')}</label>
             <input
               id="password"
               type="password"
@@ -86,7 +88,7 @@ function AdminLogin() {
               <div className="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin" />
             ) : (
               <>
-                <span>Sign In to Platform</span>
+                <span>{t('ui.sign_in_to_platform')}</span>
                 <ArrowRight className="w-4 h-4" />
               </>
             )}

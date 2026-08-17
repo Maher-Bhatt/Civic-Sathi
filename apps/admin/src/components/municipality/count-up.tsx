@@ -32,7 +32,8 @@ export function CountUp({
 
   return (
     <span className={cn("tabular-nums", className)}>
-      {display.toLocaleString()}
+      {display.toLocaleString('en-IN')}
     </span>
   );
 }
+

@@ -8,6 +8,7 @@ import {
   CheckCircle2, ShieldAlert, Activity, FileText, MapPin,
 } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, CartesianGrid, Cell } from "recharts";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/admin/dashboard")({
   head: () => ({ meta: [{ title: "Admin Dashboard | JANMIND" }] }),
@@ -27,6 +28,7 @@ const STATUS_COLORS: Record<string, string> = {
 };
 
 function AdminDashboardContent() {
+    const { t } = useI18n();
   const [stats, setStats]       = useState<any>(null);
   const [workOrders, setWOs]    = useState<any[]>([]);
   const [loading, setLoading]   = useState(true);
@@ -53,8 +55,7 @@ function AdminDashboardContent() {
       <AlertCircle className="w-8 h-8 mx-auto mb-3" />
       <p className="font-semibold">{error}</p>
       <p className="text-sm text-[var(--muted-foreground)] mt-2">
-        Make sure you are logged in with an admin account.
-      </p>
+        {t('ui.make_sure_you_are_logged_in_wi')}</p>
     </div>
   );
 
@@ -71,42 +72,42 @@ function AdminDashboardContent() {
     <div className="space-y-8 muni-page-enter">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <SectionLabel>Live Platform Data</SectionLabel>
-          <h1 className="text-2xl font-bold tracking-tight">Platform Dashboard</h1>
-          <p className="text-[var(--muted-foreground)]">Real-time overview from the backend database</p>
+          <SectionLabel>{t('ui.live_platform_data')}</SectionLabel>
+          <h1 className="text-2xl font-bold tracking-tight">{t('ui.platform_dashboard')}</h1>
+          <p className="text-[var(--muted-foreground)]">{t('ui.real_time_overview_from_the_ba')}</p>
         </div>
       </div>
 
       {/* Stats grid */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
-        <StatCard title="Total Users"      value={stats?.total_users ?? 0}         icon={Users} />
-        <StatCard title="Officers"         value={stats?.total_officers ?? 0}      icon={Shield} />
-        <StatCard title="Contractors"      value={stats?.total_contractors ?? 0}   icon={Building2} />
-        <StatCard title="Active Work"      value={stats?.active_work_orders ?? 0}  icon={ClipboardList} accent="warning" />
-        <StatCard title="Open Complaints"  value={stats?.open_complaints ?? 0}     icon={FileText} alert={(stats?.open_complaints ?? 0) > 100} />
-        <StatCard title="Cities"           value={stats?.total_cities ?? 0}        icon={MapPin} accent="success" />
+        <StatCard title={t('ui.total_users')}      value={stats?.total_users ?? 0}         icon={Users} />
+        <StatCard title={t('ui.officers')}         value={stats?.total_officers ?? 0}      icon={Shield} />
+        <StatCard title={t('ui.contractors')}      value={stats?.total_contractors ?? 0}   icon={Building2} />
+        <StatCard title={t('ui.active_work')}      value={stats?.active_work_orders ?? 0}  icon={ClipboardList} accent="warning" />
+        <StatCard title={t('ui.open_complaints')}  value={stats?.open_complaints ?? 0}     icon={FileText} alert={(stats?.open_complaints ?? 0) > 100} />
+        <StatCard title={t('ui.cities')}           value={stats?.total_cities ?? 0}        icon={MapPin} accent="success" />
       </div>
 
       {/* Complaints breakdown */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <GlassCard className="p-5">
-          <p className="text-[var(--muted-foreground)] text-sm">Total Complaints</p>
-          <p className="text-3xl font-bold mt-1">{(stats?.total_complaints ?? 0).toLocaleString()}</p>
+          <p className="text-[var(--muted-foreground)] text-sm">{t('ui.total_complaints')}</p>
+          <p className="text-3xl font-bold mt-1">{(stats?.total_complaints ?? 0).toLocaleString('en-IN')}</p>
         </GlassCard>
         <GlassCard className="p-5">
-          <p className="text-[var(--muted-foreground)] text-sm">Resolved</p>
-          <p className="text-3xl font-bold mt-1" style={{ color: "#27ae60" }}>{(stats?.resolved_complaints ?? 0).toLocaleString()}</p>
+          <p className="text-[var(--muted-foreground)] text-sm">{t('ui.resolved')}</p>
+          <p className="text-3xl font-bold mt-1" style={{ color: "#27ae60" }}>{(stats?.resolved_complaints ?? 0).toLocaleString('en-IN')}</p>
         </GlassCard>
         <GlassCard className="p-5">
-          <p className="text-[var(--muted-foreground)] text-sm">Civic Issues</p>
-          <p className="text-3xl font-bold mt-1">{(stats?.total_issues ?? 0).toLocaleString()}</p>
+          <p className="text-[var(--muted-foreground)] text-sm">{t('ui.civic_issues')}</p>
+          <p className="text-3xl font-bold mt-1">{(stats?.total_issues ?? 0).toLocaleString('en-IN')}</p>
         </GlassCard>
       </div>
 
       {/* Work order status chart + recent list */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <GlassCard className="p-5">
-          <SectionLabel>Work Order Status Distribution</SectionLabel>
+          <SectionLabel>{t('ui.work_order_status_distribution')}</SectionLabel>
           <div className="h-56 mt-4">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={chartData} margin={{ top: 5, right: 20, left: -15, bottom: 5 }}>
@@ -142,10 +143,10 @@ function AdminDashboardContent() {
         </GlassCard>
 
         <GlassCard className="p-5">
-          <SectionLabel>Recent Work Orders</SectionLabel>
+          <SectionLabel>{t('ui.recent_work_orders')}</SectionLabel>
           <div className="mt-3 space-y-2">
             {workOrders.length === 0 && (
-              <p className="text-[var(--muted-foreground)] text-sm py-4 text-center">No work orders yet</p>
+              <p className="text-[var(--muted-foreground)] text-sm py-4 text-center">{t('ui.no_work_orders_yet')}</p>
             )}
             {workOrders.map((wo: any) => (
               <div key={wo.id} className="flex items-center justify-between py-2 border-b border-[var(--glass-border)]/40 last:border-0">
@@ -172,6 +173,7 @@ function AdminDashboardContent() {
 function StatCard({ title, value, icon: Icon, suffix = "", alert = false, accent = "default" }: {
   title: string; value: number; icon: any; suffix?: string; alert?: boolean; accent?: string;
 }) {
+    const { t } = useI18n();
   const accentColor = alert
     ? "var(--critical)"
     : accent === "success"
@@ -190,8 +192,9 @@ function StatCard({ title, value, icon: Icon, suffix = "", alert = false, accent
         </div>
       </div>
       <p className="text-2xl font-bold pl-2" style={{ color: alert ? accentColor : undefined }}>
-        {value.toLocaleString()}{suffix}
+        {value.toLocaleString('en-IN')}{suffix}
       </p>
     </GlassCard>
   );
 }
+

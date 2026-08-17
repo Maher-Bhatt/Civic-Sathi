@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import { useMuniAuth } from "@/lib/muni-auth";
 import { acknowledgeAlert, getAlerts } from "@/services/api";
 import { alertPriority, type MuniAlert } from "@/services/types";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/_auth/alerts")({
   head: () => ({ meta: [{ title: "Alerts — Municipal Intelligence" }] }),
@@ -16,6 +17,7 @@ export const Route = createFileRoute("/_auth/alerts")({
 });
 
 function AlertsPage() {
+    const { t } = useI18n();
   const { officer } = useMuniAuth();
   const [alerts, setAlerts] = useState<MuniAlert[]>([]);
   const [loading, setLoading] = useState(true);
@@ -44,9 +46,9 @@ function AlertsPage() {
   return (
     <div className="muni-page-enter space-y-6">
       <header>
-        <SectionLabel>Operational Alerts</SectionLabel>
-        <h1 className="mt-2 text-2xl font-semibold">City-wide risk notifications</h1>
-        <p className="mt-1 text-sm text-muted-foreground">Prototype Intelligence Data</p>
+        <SectionLabel>{t('ui.operational_alerts')}</SectionLabel>
+        <h1 className="mt-2 text-2xl font-semibold">{t('ui.city_wide_risk_notifications')}</h1>
+        <p className="mt-1 text-sm text-muted-foreground">{t('ui.prototype_intelligence_data')}</p>
       </header>
 
       <div className="flex flex-wrap gap-2">
@@ -68,7 +70,7 @@ function AlertsPage() {
       </div>
 
       {filtered.length === 0 ? (
-        <EmptyState title="No alerts" description="No alerts match the selected filter." />
+        <EmptyState title={t('ui.no_alerts')} description="No alerts match the selected filter." />
       ) : (
         <div className="grid gap-3">
           {filtered.map((alert) => (
@@ -91,15 +93,15 @@ function AlertsPage() {
                   </p>
                   <div className="mt-3 flex flex-wrap gap-4 text-sm">
                     <span>
-                      <span className="text-muted-foreground">Reports </span>
+                      <span className="text-muted-foreground">{t('ui.reports')}</span>
                       <span className="font-semibold tabular-nums">{alert.complaintCount}</span>
                     </span>
                     <span>
-                      <span className="text-muted-foreground">Risk </span>
+                      <span className="text-muted-foreground">{t('ui.risk')}</span>
                       <span className="font-semibold tabular-nums">{alert.riskScore}</span>
                     </span>
                     <span>
-                      <span className="text-muted-foreground">Trend </span>
+                      <span className="text-muted-foreground">{t('ui.trend')}</span>
                       <span className="font-semibold tabular-nums">
                         {alert.trendPct >= 0 ? "+" : ""}
                         {alert.trendPct}%
@@ -117,8 +119,7 @@ function AlertsPage() {
                       params={{ id: alert.issueId } as any}
                       className="action-btn text-center"
                     >
-                      View Issue
-                    </Link>
+                      {t('ui.view_issue')}</Link>
                   )}
                   {!alert.acknowledged && (
                     <button
@@ -126,8 +127,7 @@ function AlertsPage() {
                       onClick={() => void handleAcknowledge(alert.id)}
                       className="action-btn primary"
                     >
-                      Acknowledge
-                    </button>
+                      {t('ui.acknowledge')}</button>
                   )}
                 </div>
               </div>

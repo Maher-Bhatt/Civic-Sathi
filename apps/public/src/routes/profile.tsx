@@ -43,6 +43,7 @@ function Toggle({
   onChange: (v: boolean) => void;
   label: string;
 }) {
+    const { t } = useI18n();
   return (
     <button
       type="button"
@@ -120,24 +121,24 @@ function ProfilePage() {
           }}
         >
           <GlassInput
-            label="Name"
+            label={t('ui.name')}
             value={form.name}
             onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
           />
           <GlassInput
-            label="Email"
+            label={t('ui.email')}
             type="email"
             value={form.email}
             onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
           />
           <GlassInput
-            label="Phone"
+            label={t('ui.phone')}
             type="tel"
             value={form.phone}
             onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))}
           />
           <GlassInput
-            label="Preferred ward"
+            label={t('ui.preferred_ward')}
             value={form.ward}
             hint="Used to surface civic activity near you."
             onChange={(e) => setForm((f) => ({ ...f, ward: e.target.value }))}
@@ -149,14 +150,14 @@ function ProfilePage() {
       </GlassCard>
 
       <GlassCard className="animate-rise mt-5 space-y-3 p-5 sm:p-7">
-        <SectionLabel>Notification settings</SectionLabel>
+        <SectionLabel>{t('ui.notification_settings')}</SectionLabel>
         <Toggle
-          label="Status updates on my complaints"
+          label={t('ui.status_updates_on_my_complaint')}
           checked={user.notifyStatus}
           onChange={(v) => void save({ notifyStatus: v })}
         />
         <Toggle
-          label="Nearby civic patterns in my ward"
+          label={t('ui.nearby_civic_patterns_in_my_wa')}
           checked={user.notifyNearby}
           onChange={(v) => void save({ notifyNearby: v })}
         />
@@ -170,8 +171,7 @@ function ProfilePage() {
             toast.success("Password reset link sent");
           }}
         >
-          Change password
-        </GlassButton>
+          {t('ui.change_password')}</GlassButton>
         <GlassButton
           variant="outline"
           onClick={async () => {
@@ -179,8 +179,7 @@ function ProfilePage() {
             navigate({ to: "/" });
           }}
         >
-          Log out
-        </GlassButton>
+          {t('ui.log_out')}</GlassButton>
       </GlassCard>
     </PageShell>
   );

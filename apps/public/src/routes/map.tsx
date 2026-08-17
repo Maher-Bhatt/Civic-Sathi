@@ -46,6 +46,7 @@ import {
   type MapFilters,
 } from "@/services/geography";
 import { cn } from "@/lib/utils";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/map")({
   head: () => ({
@@ -84,6 +85,7 @@ function Chip({
   children,
   ...props
 }: React.ButtonHTMLAttributes<HTMLButtonElement> & { active: boolean }) {
+    const { t } = useI18n();
   return (
     <button
       type="button"
@@ -102,6 +104,7 @@ function Chip({
 }
 
 function Trend({ pct }: { pct: number }) {
+    const { t } = useI18n();
   const up = pct >= 0;
   const Icon = up ? TrendingUp : TrendingDown;
   return (
@@ -117,6 +120,7 @@ function Trend({ pct }: { pct: number }) {
 }
 
 function CivicMapPage() {
+    const { t } = useI18n();
   const [cityId, setCityId] = useState<CityId>("vadodara");
   const [mode, setMode] = useState<MapMode>("health");
   const [filters, setFilters] = useState<MapFilters>(DEFAULT_FILTERS);
@@ -219,12 +223,10 @@ function CivicMapPage() {
   return (
     <PageShell>
       <div className="animate-rise jm-hero-glow space-y-2">
-        <SectionLabel>Public civic intelligence</SectionLabel>
-        <h1 className="jm-glitch-text text-2xl font-semibold sm:text-3xl">Civic Map</h1>
+        <SectionLabel>{t('ui.public_civic_intelligence')}</SectionLabel>
+        <h1 className="jm-glitch-text text-2xl font-semibold sm:text-3xl">{t('ui.civic_map')}</h1>
         <p className="max-w-2xl text-sm text-muted-foreground">
-          {getCity(cityId).name} by locality, coloured by aggregate civic activity. Open an area to
-          see its health, the issues driving it and recent momentum.
-        </p>
+          {getCity(cityId).name} {t('ui.by_locality_coloured_by_aggreg')}</p>
       </div>
 
       {/* city switcher + modes */}
@@ -247,14 +249,13 @@ function CivicMapPage() {
             </button>
           ))}
           <span className="text-[0.66rem] tracking-[0.08em] text-subtle uppercase">
-            {geography.areas.length} localities
-          </span>
+            {geography.areas.length} {t('ui.localities')}</span>
         </div>
 
         <div className="-mx-4 overflow-x-auto px-4 sm:mx-0 sm:px-0">
           <div
             role="tablist"
-            aria-label="Map mode"
+            aria-label={t('ui.map_mode')}
             className="inline-flex gap-1 rounded-full border border-[var(--glass-border)] bg-[var(--glass)] p-1 backdrop-blur-md"
           >
             {MODES.map((m) => (
@@ -290,7 +291,7 @@ function CivicMapPage() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder={`Search area in ${getCity(cityId).name}`}
-              aria-label="Search area or locality"
+              aria-label={t('ui.search_area_or_locality')}
               className="glass h-11 w-full rounded-xl border border-[var(--glass-border)] pr-3 pl-9 text-sm text-foreground outline-none placeholder:text-subtle focus:border-[color-mix(in_oklab,var(--foreground)_25%,transparent)]"
             />
             {suggestions.length > 0 && (
@@ -321,12 +322,10 @@ function CivicMapPage() {
           <div className="flex gap-2">
             <GlassButton variant="glass" size="sm" onClick={nearMe} aria-busy={locating}>
               <Crosshair className={cn("h-3.5 w-3.5", locating && "animate-pulse")} aria-hidden />
-              Near me
-            </GlassButton>
+              {t('ui.near_me')}</GlassButton>
             <GlassButton variant="ghost" size="sm" onClick={reset}>
               <RotateCcw className="h-3.5 w-3.5" aria-hidden />
-              Reset
-            </GlassButton>
+              {t('ui.reset')}</GlassButton>
           </div>
         </div>
 
@@ -337,8 +336,7 @@ function CivicMapPage() {
               active={filters.issue === "all"}
               onClick={() => setFilters((f) => ({ ...f, issue: "all" }))}
             >
-              All issues
-            </Chip>
+              {t('ui.all_issues')}</Chip>
             {ISSUE_KEYS.map((k) => (
               <Chip
                 key={k}
@@ -353,8 +351,7 @@ function CivicMapPage() {
               active={filters.health === "all"}
               onClick={() => setFilters((f) => ({ ...f, health: "all" }))}
             >
-              Any severity
-            </Chip>
+              {t('ui.any_severity')}</Chip>
             {AREA_HEALTH_ORDER.map((h) => (
               <Chip
                 key={h}
@@ -451,15 +448,15 @@ function CivicMapPage() {
           {/* live charts row */}
           <div className="grid gap-3 sm:grid-cols-2">
             <GlassCard className="jm-chart-card animate-rise p-4" style={{ animationDelay: "120ms" }}>
-              <SectionLabel>7-day activity pulse</SectionLabel>
+              <SectionLabel>{t('ui.7_day_activity_pulse')}</SectionLabel>
               <ActivityTrendChart data={trendData} className="mt-2" />
             </GlassCard>
             <GlassCard className="jm-chart-card animate-rise p-4" style={{ animationDelay: "200ms" }}>
-              <SectionLabel>Issue breakdown</SectionLabel>
+              <SectionLabel>{t('ui.issue_breakdown')}</SectionLabel>
               {issueData.length > 0 ? (
                 <IssueBreakdownChart data={issueData} className="mt-2" />
               ) : (
-                <p className="mt-6 text-sm text-muted-foreground">No data under current filters.</p>
+                <p className="mt-6 text-sm text-muted-foreground">{t('ui.no_data_under_current_filters')}</p>
               )}
             </GlassCard>
           </div>
@@ -467,25 +464,21 @@ function CivicMapPage() {
           <p className="flex items-start gap-2 text-xs text-subtle">
             <Info className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden />
             <span>
-              {geography.dataNote} Shaded polygons are an “Approximate Civic Activity Area”, not an
-              official municipal boundary. Prototype activity data.
-            </span>
+              {geography.dataNote} {t('ui.shaded_polygons_are_an_approxi')}</span>
           </p>
           <p className="flex items-start gap-2 text-xs text-subtle">
             <ShieldCheck className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden />
-            Aggregate view only — no names, contacts, private addresses or exact report locations
-            are published.
-          </p>
+            {t('ui.aggregate_view_only_no_names_c')}</p>
         </div>
 
         {/* ranking — desktop sidebar */}
         <div className="hidden space-y-4 lg:block">
           <GlassCard className="jm-chart-card animate-rise p-4" style={{ animationDelay: "80ms" }}>
-            <SectionLabel>Severity distribution</SectionLabel>
+            <SectionLabel>{t('ui.severity_distribution')}</SectionLabel>
             {healthData.length > 0 ? (
               <HealthPieChart data={healthData} />
             ) : (
-              <p className="mt-4 text-sm text-muted-foreground">No data under current filters.</p>
+              <p className="mt-4 text-sm text-muted-foreground">{t('ui.no_data_under_current_filters')}</p>
             )}
           </GlassCard>
 
@@ -523,8 +516,7 @@ function CivicMapPage() {
               ))}
               {mode === "hotspots" && hotspots.length === 0 && (
                 <li className="px-2.5 py-2 text-sm text-muted-foreground">
-                  No hotspots under the current filters.
-                </li>
+                  {t('ui.no_hotspots_under_the_current_')}</li>
               )}
             </ul>
           </GlassCard>
@@ -552,6 +544,7 @@ function AreaPanel({
   trendData: ReturnType<typeof areaDailyTrend>;
   onClose: () => void;
 }) {
+    const { t } = useI18n();
   const { area } = activity;
   return (
     <div className="animate-rise jm-panel-enter fixed inset-x-0 bottom-14 z-40 px-3 sm:static sm:mt-5 sm:px-0">
@@ -563,8 +556,7 @@ function AreaPanel({
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
             <span className="label-xs" style={{ color: AREA_HEALTH_HEX[activity.health] }}>
-              {AREA_HEALTH_LABEL[activity.health]} civic activity
-            </span>
+              {AREA_HEALTH_LABEL[activity.health]} {t('ui.civic_activity')}</span>
             <h2 className="mt-1 truncate text-lg font-semibold">{area.name}</h2>
             <p className="mt-0.5 text-[0.7rem] text-subtle">
               {area.admin.body}
@@ -576,7 +568,7 @@ function AreaPanel({
           </div>
           <button
             type="button"
-            aria-label="Close area details"
+            aria-label={t('ui.close_area_details')}
             onClick={onClose}
             className="press -mt-1 -mr-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-subtle hover:bg-[var(--glass)] hover:text-foreground"
           >
@@ -586,23 +578,23 @@ function AreaPanel({
 
         <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
           <div>
-            <p className="label-xs">Reports</p>
+            <p className="label-xs">{t('ui.reports')}</p>
             <p className="mt-0.5 text-lg font-semibold tabular-nums">
               <AnimatedStat value={activity.total} />
             </p>
           </div>
           <div>
-            <p className="label-xs">Top issue</p>
+            <p className="label-xs">{t('ui.top_issue')}</p>
             <p className="mt-0.5 truncate text-sm">{ISSUE_LABEL[activity.topIssue]}</p>
           </div>
           <div>
-            <p className="label-xs">7-day trend</p>
+            <p className="label-xs">{t('ui.7_day_trend')}</p>
             <p className="mt-0.5">
               <Trend pct={activity.trendPct} />
             </p>
           </div>
           <div>
-            <p className="label-xs">Risk</p>
+            <p className="label-xs">{t('ui.risk')}</p>
             <p className="mt-0.5 text-lg font-semibold tabular-nums">
               <AnimatedStat value={activity.risk} />
               <span className="text-sm font-normal text-muted-foreground">/100</span>
@@ -612,7 +604,7 @@ function AreaPanel({
 
         {trendData.some((d) => d.reports > 0) && (
           <div className="mt-4 border-t border-border pt-3">
-            <p className="label-xs">Local 7-day trend</p>
+            <p className="label-xs">{t('ui.local_7_day_trend')}</p>
             <ActivityTrendChart data={trendData} className="mt-2 h-[120px]" />
           </div>
         )}
@@ -620,7 +612,7 @@ function AreaPanel({
         <AreaMiniCharts activity={activity} />
 
         <div className="mt-4 border-t border-border pt-3">
-          <p className="label-xs">Recent activity</p>
+          <p className="label-xs">{t('ui.recent_activity')}</p>
           <ul className="mt-2 space-y-1.5">
             {activity.recent.map((r, i) => (
               <li key={i} className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -629,32 +621,29 @@ function AreaPanel({
                   style={{ background: AREA_HEALTH_HEX[r.health] }}
                   aria-hidden
                 />
-                <span className="flex-1 truncate">{ISSUE_LABEL[r.issue]} reported</span>
+                <span className="flex-1 truncate">{ISSUE_LABEL[r.issue]} {t('ui.reported')}</span>
                 <span className="text-xs text-subtle">
                   {r.daysAgo === 0 ? "today" : `${r.daysAgo}d ago`}
                 </span>
               </li>
             ))}
             {activity.recent.length === 0 && (
-              <li className="text-sm text-muted-foreground">No reports under these filters.</li>
+              <li className="text-sm text-muted-foreground">{t('ui.no_reports_under_these_filters')}</li>
             )}
           </ul>
         </div>
 
         <p className="mt-3 text-[0.68rem] leading-relaxed text-subtle">
-          Approximate Civic Activity Area — derived catchment, not an official municipal boundary.
-          Aggregate counts only; no citizen identity or address is shown.
-        </p>
+          {t('ui.approximate_civic_activity_are')}</p>
 
         <div className="mt-4 flex flex-wrap gap-2">
           <GlassButton size="sm" asChild>
             <Link to="/report">
-              Report an issue here
-              <ArrowUpRight className="h-3.5 w-3.5" aria-hidden />
+              {t('ui.report_an_issue_here')}<ArrowUpRight className="h-3.5 w-3.5" aria-hidden />
             </Link>
           </GlassButton>
           <GlassButton variant="glass" size="sm" asChild>
-            <Link to="/complaints">View complaints</Link>
+            <Link to="/complaints">{t('ui.view_complaints')}</Link>
           </GlassButton>
         </div>
       </GlassCard>

@@ -4,12 +4,14 @@ import { getTenderDetails, submitBid } from "@/services/api";
 import { ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/contractor/tenders/$id")({
   component: TenderDetail,
 });
 
 function TenderDetail() {
+    const { t } = useI18n();
   const { id } = Route.useParams() as any;
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -38,8 +40,8 @@ function TenderDetail() {
     submitMutation.mutate();
   }
 
-  if (loading) return <div className="p-8 text-center text-[var(--muted-foreground)]">Loading tender...</div>;
-  if (!tender) return <div className="p-8 text-center text-[var(--critical)]">Tender not found.</div>;
+  if (loading) return <div className="p-8 text-center text-[var(--muted-foreground)]">{t('ui.loading_tender')}</div>;
+  if (!tender) return <div className="p-8 text-center text-[var(--critical)]">{t('ui.tender_not_found')}</div>;
 
   return (
     <div className="space-y-6 max-w-4xl mx-auto">
@@ -48,29 +50,28 @@ function TenderDetail() {
         className="inline-flex items-center gap-2 text-sm text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
       >
         <ArrowLeft className="h-4 w-4" />
-        Back to Tenders
-      </Link>
+        {t('ui.back_to_tenders')}</Link>
 
       <header className="rounded-xl border border-[var(--glass-border)] bg-[var(--surface-elevated)] p-6 md:p-8">
         <div className="flex flex-col md:flex-row justify-between gap-4 items-start">
           <div>
             <h1 className="text-2xl font-bold">{tender.title}</h1>
-            <div className="mt-2 text-sm text-[var(--muted-foreground)]">ID: {tender.id}</div>
+            <div className="mt-2 text-sm text-[var(--muted-foreground)]">{t('ui.id')}{tender.id}</div>
           </div>
           <div className="text-right shrink-0">
-            <div className="text-sm font-semibold text-[var(--primary)]">Est. Budget</div>
-            <div className="text-2xl font-medium tabular-nums">₹{tender.estimated_budget?.toLocaleString()}</div>
+            <div className="text-sm font-semibold text-[var(--primary)]">{t('ui.est_budget')}</div>
+            <div className="text-2xl font-medium tabular-nums">₹{tender.estimated_budget?.toLocaleString('en-IN')}</div>
           </div>
         </div>
         
         <div className="mt-8 space-y-4">
           <div>
-            <h3 className="text-sm font-semibold mb-2">Description</h3>
+            <h3 className="text-sm font-semibold mb-2">{t('ui.description')}</h3>
             <p className="text-[var(--muted-foreground)] text-sm leading-relaxed">{tender.description}</p>
           </div>
           {tender.scope_of_work && (
             <div>
-              <h3 className="text-sm font-semibold mb-2">Scope of Work</h3>
+              <h3 className="text-sm font-semibold mb-2">{t('ui.scope_of_work')}</h3>
               <p className="text-[var(--muted-foreground)] text-sm leading-relaxed whitespace-pre-wrap">{tender.scope_of_work}</p>
             </div>
           )}
@@ -78,10 +79,10 @@ function TenderDetail() {
       </header>
 
       <div className="rounded-xl border border-[var(--glass-border)] bg-[var(--surface)] p-6 md:p-8">
-        <h2 className="text-xl font-semibold mb-6">Submit Sealed Bid</h2>
+        <h2 className="text-xl font-semibold mb-6">{t('ui.submit_sealed_bid')}</h2>
         <form onSubmit={handleBid} className="space-y-5">
           <div>
-            <label className="block text-sm font-medium mb-2">Quoted Amount (₹)</label>
+            <label className="block text-sm font-medium mb-2">{t('ui.quoted_amount')}</label>
             <input
               type="number"
               required
@@ -89,18 +90,18 @@ function TenderDetail() {
               value={bidAmount}
               onChange={e => setBidAmount(e.target.value)}
               className="w-full bg-[var(--surface-elevated)] border border-[var(--glass-border)] rounded-md px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
-              placeholder="e.g. 500000"
+              placeholder={t('ui.e_g_500000')}
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-2">Technical Proposal / Notes</label>
+            <label className="block text-sm font-medium mb-2">{t('ui.technical_proposal_notes')}</label>
             <textarea
               required
               rows={5}
               value={proposal}
               onChange={e => setProposal(e.target.value)}
               className="w-full bg-[var(--surface-elevated)] border border-[var(--glass-border)] rounded-md px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
-              placeholder="Detail your approach, timeline, and resources..."
+              placeholder={t('ui.detail_your_approach_timeline_')}
             />
           </div>
           <button
@@ -115,3 +116,4 @@ function TenderDetail() {
     </div>
   );
 }
+

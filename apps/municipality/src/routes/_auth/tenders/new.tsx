@@ -6,6 +6,7 @@ import { useMuniAuth } from "@/lib/muni-auth";
 import { createTender } from "@/services/api";
 import { DEPARTMENTS, ISSUE_TYPES } from "@/services/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/_auth/tenders/new")({ 
   head: () => ({ meta: [{ title: "Publish Tender — JANMIND" }] }), 
@@ -13,6 +14,7 @@ export const Route = createFileRoute("/_auth/tenders/new")({
 });
 
 function NewTenderPage() {
+    const { t } = useI18n();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { officer } = useMuniAuth();
@@ -54,58 +56,58 @@ function NewTenderPage() {
   return (
     <div className="muni-page-enter mx-auto max-w-2xl space-y-6">
       <header>
-        <SectionLabel>Publish Tender</SectionLabel>
-        <h1 className="mt-2 text-2xl font-semibold">Define public procurement requirements</h1>
+        <SectionLabel>{t('ui.publish_tender')}</SectionLabel>
+        <h1 className="mt-2 text-2xl font-semibold">{t('ui.define_public_procurement_requ')}</h1>
       </header>
       <GlassCard elevation="raised" className="p-6">
         <form onSubmit={e => void handleSubmit(e)} className="space-y-5">
           <div className="space-y-1.5">
-            <label className="label-xs" htmlFor="wp-title">Title</label>
-            <input id="wp-title" value={form.title} onChange={set("title")} required className="filter-input" placeholder="Road Repair — Ward 14, Sarvodaya Nagar" />
+            <label className="label-xs" htmlFor="wp-title">{t('ui.title')}</label>
+            <input id="wp-title" value={form.title} onChange={set("title")} required className="filter-input" placeholder={t('ui.road_repair_ward_14_sarvodaya_')} />
           </div>
           <div className="space-y-1.5">
-            <label className="label-xs" htmlFor="wp-desc">Description</label>
-            <textarea id="wp-desc" value={form.description} onChange={set("description")} rows={3} className="filter-input" placeholder="Describe the civic issue and why work is needed..." />
+            <label className="label-xs" htmlFor="wp-desc">{t('ui.description')}</label>
+            <textarea id="wp-desc" value={form.description} onChange={set("description")} rows={3} className="filter-input" placeholder={t('ui.describe_the_civic_issue_and_w')} />
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-1.5">
-              <label className="label-xs" htmlFor="wp-cat">Category</label>
+              <label className="label-xs" htmlFor="wp-cat">{t('ui.category')}</label>
               <select id="wp-cat" value={form.category} onChange={set("category")} className="filter-input">
                 {ISSUE_TYPES.map(t => <option key={t}>{t}</option>)}
               </select>
             </div>
             <div className="space-y-1.5">
-              <label className="label-xs" htmlFor="wp-dept">Department</label>
+              <label className="label-xs" htmlFor="wp-dept">{t('ui.department')}</label>
               <select id="wp-dept" value={form.department} onChange={set("department")} className="filter-input">
                 {DEPARTMENTS.map(d => <option key={d}>{d}</option>)}
               </select>
             </div>
             <div className="space-y-1.5">
-              <label className="label-xs" htmlFor="wp-ward">Ward</label>
-              <input id="wp-ward" value={form.ward} onChange={set("ward")} className="filter-input" placeholder="Ward 14" />
+              <label className="label-xs" htmlFor="wp-ward">{t('ui.ward')}</label>
+              <input id="wp-ward" value={form.ward} onChange={set("ward")} className="filter-input" placeholder={t('ui.ward_14')} />
             </div>
             <div className="space-y-1.5">
-              <label className="label-xs" htmlFor="wp-area">Area</label>
-              <input id="wp-area" value={form.area} onChange={set("area")} className="filter-input" placeholder="Sarvodaya Nagar" />
+              <label className="label-xs" htmlFor="wp-area">{t('ui.area')}</label>
+              <input id="wp-area" value={form.area} onChange={set("area")} className="filter-input" placeholder={t('ui.sarvodaya_nagar')} />
             </div>
             <div className="space-y-1.5">
-              <label className="label-xs" htmlFor="wp-cost">Estimated Cost (₹)</label>
+              <label className="label-xs" htmlFor="wp-cost">{t('ui.estimated_cost')}</label>
               <input id="wp-cost" type="number" value={form.estimatedCost} onChange={set("estimatedCost")} className="filter-input" placeholder="850000" />
             </div>
             <div className="space-y-1.5">
-              <label className="label-xs" htmlFor="wp-priority">Priority</label>
+              <label className="label-xs" htmlFor="wp-priority">{t('ui.priority')}</label>
               <select id="wp-priority" value={form.priority} onChange={set("priority")} className="filter-input">
                 {["Low", "Moderate", "High", "Critical"].map(p => <option key={p}>{p}</option>)}
               </select>
             </div>
           </div>
           <div className="space-y-1.5">
-            <label className="label-xs" htmlFor="wp-scope">Scope of Work</label>
-            <textarea id="wp-scope" value={form.scope} onChange={set("scope")} rows={5} className="filter-input" placeholder="1. Pothole patching...&#10;2. Road milling..." />
+            <label className="label-xs" htmlFor="wp-scope">{t('ui.scope_of_work')}</label>
+            <textarea id="wp-scope" value={form.scope} onChange={set("scope")} rows={5} className="filter-input" placeholder={t('ui.1_pothole_patching_10_2_road_m')} />
           </div>
           <div className="space-y-1.5">
-            <label className="label-xs" htmlFor="wp-civic-issues">Civic Issue IDs (comma-separated)</label>
-            <input id="wp-civic-issues" value={form.civicIssueIds} onChange={set("civicIssueIds")} className="filter-input" placeholder="CI-171850389, CI-2819030" />
+            <label className="label-xs" htmlFor="wp-civic-issues">{t('ui.civic_issue_ids_comma_separate')}</label>
+            <input id="wp-civic-issues" value={form.civicIssueIds} onChange={set("civicIssueIds")} className="filter-input" placeholder={t('ui.ci_171850389_ci_2819030')} />
           </div>
           <button type="submit" disabled={submitMutation.isPending} className="action-btn primary w-full">
             {submitMutation.isPending ? "Publishing..." : "Publish Tender"}

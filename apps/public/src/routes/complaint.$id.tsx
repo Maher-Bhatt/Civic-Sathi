@@ -14,6 +14,7 @@ import { getComplaint } from "@/services/api";
 import { RELATED_SAMPLES } from "@/services/mockData";
 import { clustersForCity, nearestCity } from "@/services/cities";
 import { cn } from "@/lib/utils";
+import { useI18n } from "@/lib/i18n";
 
 // Read work execution info from the shared store (public-safe fields only)
 function useWorkExecutionStatus(complaintId: string) {
@@ -96,6 +97,7 @@ export const Route = createFileRoute("/complaint/$id")({
 });
 
 function ComplaintDetail() {
+    const { t } = useI18n();
   const { id } = Route.useParams();
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["complaint", id],
@@ -122,8 +124,7 @@ function ComplaintDetail() {
         className="inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
       >
         <ArrowLeft className="h-4 w-4" aria-hidden />
-        My complaints
-      </Link>
+        {t('ui.my_complaints')}</Link>
 
       <div className="mt-5">
         {isLoading && <LoadingState message="Loading complaint..." />}
@@ -157,11 +158,11 @@ function ComplaintDetail() {
               )}
               <dl className="grid gap-4 sm:grid-cols-3">
                 <div>
-                  <dt className="label-xs">Location</dt>
+                  <dt className="label-xs">{t('ui.location')}</dt>
                   <dd className="mt-1.5 text-sm font-medium">{data.location.area}</dd>
                 </div>
                 <div>
-                  <dt className="label-xs">Submitted</dt>
+                  <dt className="label-xs">{t('ui.submitted')}</dt>
                   <dd className="mt-1.5 text-sm font-medium">
                     {new Date(data.createdAt).toLocaleString(undefined, {
                       day: "2-digit",
@@ -173,7 +174,7 @@ function ComplaintDetail() {
                   </dd>
                 </div>
                 <div>
-                  <dt className="label-xs">Related reports</dt>
+                  <dt className="label-xs">{t('ui.related_reports')}</dt>
                   <dd className="mt-1.5 text-sm font-medium tabular-nums text-primary">
                     {data.relatedCount}
                   </dd>
@@ -186,7 +187,7 @@ function ComplaintDetail() {
               <GlassCard elevation="raised" className="animate-rise p-5 sm:p-7">
                 <div className="flex items-center gap-2">
                   <HardHat className="h-4 w-4 text-[var(--primary)]" />
-                  <SectionLabel>Work Execution Status</SectionLabel>
+                  <SectionLabel>{t('ui.work_execution_status')}</SectionLabel>
                 </div>
                 <div className="mt-4 space-y-4">
                   {/* Status */}
@@ -213,7 +214,7 @@ function ComplaintDetail() {
                   {workInfo.contractorCompany && (
                     <div className="flex items-center gap-2 text-sm">
                       <Building2 className="h-4 w-4 text-muted-foreground" />
-                      <span className="text-muted-foreground">Contractor:</span>
+                      <span className="text-muted-foreground">{t('ui.contractor')}</span>
                       <span className="font-medium">{workInfo.contractorCompany}</span>
                     </div>
                   )}
@@ -223,8 +224,7 @@ function ComplaintDetail() {
                     <div className="space-y-1.5">
                       <div className="flex items-center justify-between text-xs text-muted-foreground">
                         <span className="flex items-center gap-1">
-                          <Clock className="h-3 w-3" /> Work progress
-                        </span>
+                          <Clock className="h-3 w-3" /> {t('ui.work_progress')}</span>
                         <span className="font-semibold tabular-nums text-foreground">{workInfo.progressPercent}%</span>
                       </div>
                       <div className="h-2 overflow-hidden rounded-full bg-[var(--glass-border)]">
@@ -239,8 +239,7 @@ function ComplaintDetail() {
                   {workInfo.workOrderStatus === "INSPECTION_PASSED" || workInfo.workOrderStatus === "COMPLETED" || workInfo.workOrderStatus === "CLOSED" ? (
                     <div className="flex items-center gap-2 text-[var(--success)] text-sm font-medium">
                       <CheckCircle2 className="h-4 w-4" />
-                      Inspection passed — work quality verified by municipal engineer
-                    </div>
+                      {t('ui.inspection_passed_work_quality')}</div>
                   ) : null}
                 </div>
               </GlassCard>
@@ -248,10 +247,9 @@ function ComplaintDetail() {
 
             <GlassCard className="animate-rise overflow-hidden p-2.5">
               <div className="flex flex-wrap items-center justify-between gap-2 px-2.5 pt-2 pb-3">
-                <SectionLabel>Nearby civic activity</SectionLabel>
+                <SectionLabel>{t('ui.nearby_civic_activity')}</SectionLabel>
                 <span className="text-xs text-muted-foreground">
-                  {data.nearbyCount} similar reports within ~500m
-                </span>
+                  {data.nearbyCount} {t('ui.similar_reports_within_500m')}</span>
               </div>
               <ClientCityMap
                 cityId={city!.id}
@@ -272,7 +270,7 @@ function ComplaintDetail() {
             </GlassCard>
 
             <GlassCard elevation="raised" className="animate-rise p-5 sm:p-7">
-              <SectionLabel className="mb-5">Timeline</SectionLabel>
+              <SectionLabel className="mb-5">{t('ui.timeline')}</SectionLabel>
               <ComplaintTimeline events={data.timeline} />
             </GlassCard>
           </div>

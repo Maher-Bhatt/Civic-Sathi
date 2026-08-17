@@ -3,10 +3,12 @@ import { MapPin } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { CITIES, clustersForCity, type CityId, type MapCluster } from "@/services/cities";
 import type { CityMapProps } from "@/components/city-map";
+import { useI18n } from "@/lib/i18n";
 
 const CityMap = lazy(() => import("@/components/city-map").then((m) => ({ default: m.CityMap })));
 
 function MapSkeleton({ className }: { className?: string | undefined }) {
+    const { t } = useI18n();
   return (
     <div
       className={cn(
@@ -14,18 +16,18 @@ function MapSkeleton({ className }: { className?: string | undefined }) {
         className,
       )}
       role="status"
-      aria-label="Loading map"
+      aria-label={t('ui.loading_map')}
     >
       <span className="inline-flex items-center gap-2 text-xs tracking-[0.1em] text-subtle uppercase">
         <MapPin className="h-3.5 w-3.5 animate-pulse" aria-hidden />
-        Loading map
-      </span>
+        {t('ui.loading_map')}</span>
     </div>
   );
 }
 
 /** Browser-only wrapper: Leaflet is never imported during SSR. */
 export function ClientCityMap(props: CityMapProps) {
+    const { t } = useI18n();
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
   if (!mounted) return <MapSkeleton className={props.className} />;
@@ -45,12 +47,13 @@ export function CitySelector({
   onChange: (id: CityId) => void;
   className?: string | undefined;
 }) {
+    const { t } = useI18n();
   return (
     <div className={cn("flex items-center gap-2", className)}>
-      <span className="label-xs shrink-0">City</span>
+      <span className="label-xs shrink-0">{t('ui.city')}</span>
       <div
         role="radiogroup"
-        aria-label="City"
+        aria-label={t('ui.city')}
         className="inline-flex items-center gap-0.5 rounded-full border border-[var(--glass-border)] bg-[var(--glass)] p-0.5 backdrop-blur-md"
       >
         {CITIES.map((c) => (
@@ -95,6 +98,7 @@ export function CityMapPanel({
   caption?: string | undefined;
   onCityChange?: ((id: CityId) => void) | undefined;
 } & Omit<CityMapProps, "cityId" | "clusters" | "className">) {
+    const { t } = useI18n();
   const [cityId, setCityId] = useState<CityId>(initialCity);
   const clusters = [...clustersForCity(cityId), ...extraClusters.filter((c) => c.city === cityId)];
 

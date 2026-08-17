@@ -7,6 +7,7 @@ import { LoadingState } from "@/components/ui/states";
 import { useMuniAuth } from "@/lib/muni-auth";
 import { CITIES, type CityId } from "@/services/cities";
 import type { MuniSettings } from "@/services/types";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/_auth/settings")({
   head: () => ({ meta: [{ title: "Settings — Municipal Intelligence" }] }),
@@ -14,6 +15,7 @@ export const Route = createFileRoute("/_auth/settings")({
 });
 
 function SettingsPage() {
+    const { t } = useI18n();
   const { settings, updateSettings, ready } = useMuniAuth();
   const [draft, setDraft] = useState<MuniSettings | null>(null);
   const [saving, setSaving] = useState(false);
@@ -40,29 +42,28 @@ function SettingsPage() {
   return (
     <div className="muni-page-enter mx-auto max-w-2xl space-y-6">
       <header>
-        <SectionLabel>Portal Settings</SectionLabel>
-        <h1 className="mt-2 text-2xl font-semibold">Preferences</h1>
+        <SectionLabel>{t('ui.portal_settings')}</SectionLabel>
+        <h1 className="mt-2 text-2xl font-semibold">{t('ui.preferences')}</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Settings are stored locally in this prototype.
-        </p>
+          {t('ui.settings_are_stored_locally_in')}</p>
       </header>
 
       <GlassCard elevation="raised" className="space-y-6 p-6">
         <div>
-          <label className="label-xs mb-1.5 block">Theme</label>
+          <label className="label-xs mb-1.5 block">{t('ui.theme')}</label>
           <select
             value={current.theme}
             onChange={(e) => patch({ theme: e.target.value as MuniSettings["theme"] })}
             className="filter-input"
           >
-            <option value="system">System</option>
-            <option value="dark">Dark</option>
-            <option value="light">Light</option>
+            <option value="system">{t('ui.system')}</option>
+            <option value="dark">{t('ui.dark')}</option>
+            <option value="light">{t('ui.light')}</option>
           </select>
         </div>
 
         <div>
-          <label className="label-xs mb-1.5 block">Default city</label>
+          <label className="label-xs mb-1.5 block">{t('ui.default_city')}</label>
           <select
             value={current.defaultCity}
             onChange={(e) => patch({ defaultCity: e.target.value as CityId })}
@@ -77,7 +78,7 @@ function SettingsPage() {
         </div>
 
         <div>
-          <label className="label-xs mb-1.5 block">Default map mode</label>
+          <label className="label-xs mb-1.5 block">{t('ui.default_map_mode')}</label>
           <select
             value={current.defaultMapMode}
             onChange={(e) =>
@@ -85,9 +86,9 @@ function SettingsPage() {
             }
             className="filter-input"
           >
-            <option value="health">Area Health</option>
-            <option value="activity">Complaint Activity</option>
-            <option value="hotspots">Hotspots</option>
+            <option value="health">{t('ui.area_health')}</option>
+            <option value="activity">{t('ui.complaint_activity')}</option>
+            <option value="hotspots">{t('ui.hotspots')}</option>
           </select>
         </div>
 
@@ -98,12 +99,11 @@ function SettingsPage() {
             onChange={(e) => patch({ compactMode: e.target.checked })}
             className="rounded border-[var(--glass-border)]"
           />
-          Compact mode
-        </label>
+          {t('ui.compact_mode')}</label>
       </GlassCard>
 
       <GlassCard elevation="raised" className="space-y-4 p-6">
-        <SectionLabel>Notifications</SectionLabel>
+        <SectionLabel>{t('ui.notifications')}</SectionLabel>
         {(
           [
             ["critical", "Critical alerts"],

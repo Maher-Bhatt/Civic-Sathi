@@ -22,6 +22,7 @@ import {
 import { cn } from "@/lib/utils";
 import type { AreaActivity, DailyTrendPoint, IssueChartPoint, IssueKey } from "@/services/geography";
 import { AREA_HEALTH_HEX, ISSUE_LABEL } from "@/services/geography";
+import { useI18n } from "@/lib/i18n";
 
 const trendConfig = {
   reports: { label: "Reports", color: "#1abc9c" },
@@ -40,6 +41,7 @@ export function AnimatedStat({
   className?: string | undefined;
   duration?: number | undefined;
 }) {
+    const { t } = useI18n();
   const [display, setDisplay] = useState(0);
   useEffect(() => {
     let frame = 0;
@@ -63,6 +65,7 @@ export function ActivityTrendChart({
   data: DailyTrendPoint[];
   className?: string | undefined;
 }) {
+    const { t } = useI18n();
   return (
     <ChartContainer config={trendConfig} className={cn("h-[180px] w-full", className)}>
       <AreaChart data={data} margin={{ top: 8, right: 8, left: -18, bottom: 0 }}>
@@ -109,6 +112,7 @@ export function IssueBreakdownChart({
   data: IssueChartPoint[];
   className?: string | undefined;
 }) {
+    const { t } = useI18n();
   return (
     <ChartContainer config={issueConfig} className={cn("h-[220px] w-full", className)}>
       <BarChart data={data} layout="vertical" margin={{ top: 4, right: 48, left: 4, bottom: 0 }}>
@@ -158,6 +162,7 @@ export function HealthPieChart({
   data: Array<{ health: string; label: string; count: number; fill: string }>;
   className?: string | undefined;
 }) {
+    const { t } = useI18n();
   const pieConfig = Object.fromEntries(
     data.map((d) => [d.health, { label: d.label, color: d.fill }]),
   ) satisfies ChartConfig;
@@ -208,6 +213,7 @@ export function HealthPieChart({
 }
 
 export function AreaMiniCharts({ activity }: { activity: AreaActivity }) {
+    const { t } = useI18n();
   const issueData: IssueChartPoint[] = (Object.entries(activity.counts) as [IssueKey, number][])
     .filter(([, n]) => n > 0)
     .map(([issue, count]) => ({
@@ -221,7 +227,7 @@ export function AreaMiniCharts({ activity }: { activity: AreaActivity }) {
 
   return (
     <div className="mt-4 space-y-3 border-t border-border pt-4">
-      <p className="label-xs">Issue mix in this locality</p>
+      <p className="label-xs">{t('ui.issue_mix_in_this_locality')}</p>
       <IssueBreakdownChart data={issueData} className="h-[140px]" />
     </div>
   );

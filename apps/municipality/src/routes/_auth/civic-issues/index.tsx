@@ -6,6 +6,7 @@ import { LoadingState, EmptyState } from "@/components/ui/states";
 import { SeverityBadge, StatusBadge } from "@/components/municipality/status-badge";
 import { format } from "date-fns";
 import { MapPin, Users } from "lucide-react";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/_auth/civic-issues/")({
   head: () => ({ meta: [{ title: "Civic Issues — Municipal Intelligence" }] }),
@@ -13,6 +14,7 @@ export const Route = createFileRoute("/_auth/civic-issues/")({
 });
 
 function CivicIssuesPage() {
+    const { t } = useI18n();
   const [issues, setIssues] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -27,13 +29,13 @@ function CivicIssuesPage() {
   return (
     <div className="muni-page-enter space-y-6">
       <header>
-        <SectionLabel>Civic Issues</SectionLabel>
-        <h1 className="mt-2 text-2xl font-semibold">Clustered Citizen Reports</h1>
-        <p className="mt-1 text-sm text-muted-foreground">Intelligence layer identifying singular problems from multiple citizen reports.</p>
+        <SectionLabel>{t('ui.civic_issues')}</SectionLabel>
+        <h1 className="mt-2 text-2xl font-semibold">{t('ui.clustered_citizen_reports')}</h1>
+        <p className="mt-1 text-sm text-muted-foreground">{t('ui.intelligence_layer_identifying')}</p>
       </header>
 
       {issues.length === 0 ? (
-        <EmptyState title="No civic issues" description="No civic issues have been reported yet." />
+        <EmptyState title={t('ui.no_civic_issues')} description="No civic issues have been reported yet." />
       ) : (
         <div className="grid gap-4 xl:grid-cols-2">
           {issues.map((issue) => (
@@ -46,9 +48,9 @@ function CivicIssuesPage() {
                 <h3 className="text-lg font-semibold">{issue.title}</h3>
                 <p className="text-sm text-subtle line-clamp-2">{issue.description}</p>
                 <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground pt-1">
-                  <span className="flex items-center gap-1.5"><Users className="w-3.5 h-3.5" /> {issue.reportCount} reports</span>
+                  <span className="flex items-center gap-1.5"><Users className="w-3.5 h-3.5" /> {issue.reportCount} {t('ui.reports')}</span>
                   <span className="flex items-center gap-1.5"><MapPin className="w-3.5 h-3.5" /> {issue.ward}</span>
-                  <span>Impact: {issue.impactScore}/100</span>
+                  <span>{t('ui.impact')}{issue.impactScore}/100</span>
                 </div>
               </div>
               <div className="sm:border-l border-border sm:pl-5 flex flex-col justify-between min-w-[120px]">
@@ -63,8 +65,7 @@ function CivicIssuesPage() {
                   params={{ id: String(issue.id) }}
                   className="action-btn text-center mt-4 sm:mt-0"
                 >
-                  Review
-                </Link>
+                  {t('ui.review')}</Link>
               </div>
             </GlassCard>
           ))}

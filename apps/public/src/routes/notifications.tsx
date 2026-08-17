@@ -9,6 +9,7 @@ import { getNotifications, markNotificationsRead } from "@/services/api";
 import { useEffect } from "react";
 import type { AppNotification } from "@/services/types";
 import { cn } from "@/lib/utils";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/notifications")({
   head: () => ({
@@ -41,6 +42,7 @@ const icons = {
 } as const;
 
 function NotificationItem({ item, index }: { item: AppNotification; index: number }) {
+    const { t } = useI18n();
   const Icon = icons[item.kind];
   return (
     <GlassCard
@@ -68,7 +70,7 @@ function NotificationItem({ item, index }: { item: AppNotification; index: numbe
           <div className="flex items-center gap-2">
             <p className="text-sm font-medium">{item.title}</p>
             {!item.read && (
-              <span className="h-1.5 w-1.5 rounded-full bg-primary" aria-label="Unread" />
+              <span className="h-1.5 w-1.5 rounded-full bg-primary" aria-label={t('ui.unread')} />
             )}
           </div>
           <p className="mt-1 text-sm text-muted-foreground">{item.body}</p>
@@ -87,6 +89,7 @@ function NotificationItem({ item, index }: { item: AppNotification; index: numbe
 }
 
 function NotificationsPage() {
+    const { t } = useI18n();
   const navigate = useNavigate();
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["notifications"],
@@ -102,8 +105,8 @@ function NotificationsPage() {
   return (
     <PageShell className="max-w-2xl">
       <div className="animate-rise space-y-2">
-        <SectionLabel>Updates</SectionLabel>
-        <h1 className="text-2xl font-semibold sm:text-3xl">Notifications</h1>
+        <SectionLabel>{t('ui.updates')}</SectionLabel>
+        <h1 className="text-2xl font-semibold sm:text-3xl">{t('ui.notifications')}</h1>
       </div>
 
       <div className="mt-7">
@@ -116,7 +119,7 @@ function NotificationsPage() {
         )}
         {data && data.length === 0 && (
           <EmptyState
-            title="Nothing yet"
+            title={t('ui.nothing_yet')}
             description="Updates about your reports will appear here."
             actionLabel="Report a problem"
             onAction={() => navigate({ to: "/report" })}

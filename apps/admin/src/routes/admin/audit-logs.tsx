@@ -5,6 +5,7 @@ import type { AuditLog, SystemRole } from "@/services/types";
 import { GlassCard } from "@/components/ui/glass-card";
 import { LoadingState } from "@/components/ui/states";
 import { Shield, Search, RefreshCw } from "lucide-react";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/admin/audit-logs")({
   head: () => ({ meta: [{ title: "Audit Logs | Admin | JANMIND" }] }),
@@ -12,6 +13,7 @@ export const Route = createFileRoute("/admin/audit-logs")({
 });
 
 function AuditLogsPage() {
+    const { t } = useI18n();
   const [logs, setLogs] = useState<AuditLog[]>([]);
   const [loading, setLoading] = useState(true);
   const [roleFilter, setRoleFilter] = useState("ALL");
@@ -55,12 +57,12 @@ function AuditLogsPage() {
     <div className="space-y-6 muni-page-enter">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">System Audit Logs</h1>
-          <p className="text-[var(--muted-foreground)]">Immutable record of platform activities</p>
+          <h1 className="text-2xl font-bold tracking-tight">{t('ui.system_audit_logs')}</h1>
+          <p className="text-[var(--muted-foreground)]">{t('ui.immutable_record_of_platform_a')}</p>
         </div>
         <div className="flex items-center gap-3 text-sm text-[var(--muted-foreground)]">
-          <span>Last updated: {lastRefreshed.toLocaleTimeString()}</span>
-          <button onClick={loadData} className="p-2 glass rounded-md hover:bg-[var(--surface-elevated)] transition-colors" title="Refresh">
+          <span>{t('ui.last_updated')}{lastRefreshed.toLocaleTimeString()}</span>
+          <button onClick={loadData} className="p-2 glass rounded-md hover:bg-[var(--surface-elevated)] transition-colors" title={t('ui.refresh')}>
             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
           </button>
         </div>
@@ -73,7 +75,7 @@ function AuditLogsPage() {
             <input
               type="text"
               className="ambient-field pl-9 w-full"
-              placeholder="Search actor or action..."
+              placeholder={t('ui.search_actor_or_action')}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
@@ -83,7 +85,7 @@ function AuditLogsPage() {
             value={roleFilter}
             onChange={(e) => setRoleFilter(e.target.value)}
           >
-            <option value="ALL">All Roles</option>
+            <option value="ALL">{t('ui.all_roles')}</option>
             {uniqueRoles.map(r => <option key={r} value={r}>{r}</option>)}
           </select>
           <select 
@@ -91,7 +93,7 @@ function AuditLogsPage() {
             value={entityFilter}
             onChange={(e) => setEntityFilter(e.target.value)}
           >
-            <option value="ALL">All Entities</option>
+            <option value="ALL">{t('ui.all_entities')}</option>
             {uniqueEntities.map(e => <option key={e} value={e}>{e}</option>)}
           </select>
         </div>
@@ -102,18 +104,18 @@ function AuditLogsPage() {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-[var(--glass-border)] text-left text-[var(--muted-foreground)] bg-[var(--surface-elevated)]/50">
-                <th className="py-3 px-4 font-medium">Timestamp</th>
-                <th className="py-3 px-4 font-medium">Actor</th>
-                <th className="py-3 px-4 font-medium">Action</th>
-                <th className="py-3 px-4 font-medium">Target Entity</th>
-                <th className="py-3 px-4 font-medium">Details</th>
+                <th className="py-3 px-4 font-medium">{t('ui.timestamp')}</th>
+                <th className="py-3 px-4 font-medium">{t('ui.actor')}</th>
+                <th className="py-3 px-4 font-medium">{t('ui.action')}</th>
+                <th className="py-3 px-4 font-medium">{t('ui.target_entity')}</th>
+                <th className="py-3 px-4 font-medium">{t('ui.details')}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[var(--glass-border)]">
               {filteredLogs.map((log) => (
                 <tr key={log.id} className="hover:bg-[var(--surface-elevated)]/30 transition-colors">
                   <td className="py-3 px-4 whitespace-nowrap font-mono text-xs text-[var(--muted-foreground)]">
-                    {new Date(log.at).toLocaleString()}
+                    {new Date(log.at).toLocaleString('en-IN')}
                   </td>
                   <td className="py-3 px-4">
                     <div className="flex items-center gap-2">
@@ -140,7 +142,7 @@ function AuditLogsPage() {
                         {log.reason}
                       </div>
                     ) : (
-                      <span className="text-[var(--muted-foreground)] italic text-xs">No details</span>
+                      <span className="text-[var(--muted-foreground)] italic text-xs">{t('ui.no_details')}</span>
                     )}
                   </td>
                 </tr>
@@ -148,8 +150,7 @@ function AuditLogsPage() {
               {filteredLogs.length === 0 && (
                 <tr>
                   <td colSpan={5} className="py-12 text-center text-[var(--muted-foreground)]">
-                    No audit logs match your criteria.
-                  </td>
+                    {t('ui.no_audit_logs_match_your_crite')}</td>
                 </tr>
               )}
             </tbody>
@@ -159,3 +160,4 @@ function AuditLogsPage() {
     </div>
   );
 }
+

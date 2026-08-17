@@ -7,6 +7,7 @@ import { GlassCard } from "@/components/ui/glass-card";
 import { LoadingState } from "@/components/ui/states";
 import { Timer, Edit2 } from "lucide-react";
 import { toast } from "sonner";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/admin/sla")({
   head: () => ({ meta: [{ title: "SLA Configuration | Admin | JANMIND" }] }),
@@ -14,6 +15,7 @@ export const Route = createFileRoute("/admin/sla")({
 });
 
 function SLAConfig() {
+    const { t } = useI18n();
   const [rules, setRules] = useState<SLARule[]>([]);
   const [loading, setLoading] = useState(true);
   const { admin } = useAdminAuth();
@@ -57,8 +59,8 @@ function SLAConfig() {
   return (
     <div className="space-y-8 muni-page-enter">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">SLA Configuration</h1>
-        <p className="text-[var(--muted-foreground)]">Define response and resolution time limits across categories</p>
+        <h1 className="text-2xl font-bold tracking-tight">{t('ui.sla_configuration')}</h1>
+        <p className="text-[var(--muted-foreground)]">{t('ui.define_response_and_resolution')}</p>
       </div>
 
       <div className="space-y-8">
@@ -75,11 +77,11 @@ function SLAConfig() {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-[var(--glass-border)] text-left text-[var(--muted-foreground)] bg-[var(--background)]/50">
-                    <th className="py-3 px-4 font-medium">Severity</th>
-                    <th className="py-3 px-4 font-medium">Response (Hrs)</th>
-                    <th className="py-3 px-4 font-medium">Resolution (Hrs)</th>
-                    <th className="py-3 px-4 font-medium">Escalation (Hrs)</th>
-                    <th className="py-3 px-4 font-medium">Status</th>
+                    <th className="py-3 px-4 font-medium">{t('ui.severity')}</th>
+                    <th className="py-3 px-4 font-medium">{t('ui.response_hrs')}</th>
+                    <th className="py-3 px-4 font-medium">{t('ui.resolution_hrs')}</th>
+                    <th className="py-3 px-4 font-medium">{t('ui.escalation_hrs')}</th>
+                    <th className="py-3 px-4 font-medium">{t('ui.status')}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[var(--glass-border)]">
@@ -133,6 +135,7 @@ function SLAConfig() {
 }
 
 function EditableNumber({ value, onSave }: { value: number, onSave: (val: number) => void }) {
+    const { t } = useI18n();
   const [isEditing, setIsEditing] = useState(false);
   const [tempValue, setTempValue] = useState(value.toString());
 
@@ -181,6 +184,7 @@ function EditableNumber({ value, onSave }: { value: number, onSave: (val: number
 }
 
 function SeverityBadge({ severity }: { severity: string }) {
+    const { t } = useI18n();
   let colors = "bg-[var(--surface-elevated)] border-[var(--glass-border)] text-[var(--foreground)]";
   if (severity === 'CRITICAL') colors = "bg-[var(--critical)]/10 border-[var(--critical)]/20 text-[var(--critical)]";
   if (severity === 'HIGH') colors = "bg-[var(--warning)]/10 border-[var(--warning)]/20 text-[var(--warning)]";

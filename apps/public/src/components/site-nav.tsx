@@ -43,7 +43,7 @@ export function SiteNav() {
   return (
     <header className="fixed inset-x-0 top-0 z-50 px-3 pt-3 sm:px-5 sm:pt-4">
       <nav
-        aria-label="Primary"
+        aria-label={t('ui.primary')}
         className={cn(
           "mx-auto flex max-w-6xl items-center gap-3 rounded-2xl border border-[var(--glass-border)] px-3 py-2.5 transition-all duration-300 ease-out sm:px-4",
           scrolled
@@ -56,7 +56,7 @@ export function SiteNav() {
             <span className="h-2 w-2 rounded-full bg-primary transition-transform duration-300 group-hover:scale-125" />
             <span className="absolute inset-0 rounded-lg border border-[color-mix(in_oklab,var(--primary)_25%,transparent)] opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
           </span>
-          <span className="text-[0.95rem] font-semibold tracking-[0.18em]">JANMIND</span>
+          <span className="text-[0.95rem] font-semibold tracking-[0.18em]">{t('ui.janmind')}</span>
         </Link>
 
         <ul className="ml-2 hidden items-center gap-1 lg:flex">
@@ -89,7 +89,7 @@ export function SiteNav() {
           <ThemeToggle className="hidden sm:inline-flex" />
           <Link
             to="/notifications"
-            aria-label="Notifications"
+            aria-label={t('ui.notifications')}
             className="press flex h-9 w-9 items-center justify-center rounded-full border border-[var(--glass-border)] bg-[var(--glass)] text-muted-foreground hover:text-foreground"
           >
             <Bell className="h-4 w-4" aria-hidden />
@@ -167,7 +167,7 @@ export function MobileTabBar() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   return (
     <nav
-      aria-label="Mobile"
+      aria-label={t('ui.mobile')}
       className="fixed inset-x-0 bottom-0 z-50 border-t border-[var(--glass-border)] bg-[var(--glass-strong)] pb-[env(safe-area-inset-bottom)] backdrop-blur-2xl sm:hidden"
     >
       <ul className="flex items-stretch">
@@ -200,6 +200,7 @@ export function PageShell({
   children: React.ReactNode;
   className?: string;
 }) {
+    const { t } = useI18n();
   return (
     <div className="ambient-field min-h-screen">
       <SiteNav />

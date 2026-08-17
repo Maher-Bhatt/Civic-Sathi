@@ -2,6 +2,7 @@ import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { GlassCard, SectionLabel } from "@/components/ui/glass-card";
 import { COMPLAINT_STATUSES } from "@/services/types";
+import { useI18n } from "@/lib/i18n";
 
 export function InvestigationTimeline({
   events,
@@ -10,13 +11,14 @@ export function InvestigationTimeline({
   events: Array<{ label: string; at: string; actor?: string }>;
   currentStatus?: string;
 }) {
+    const { t } = useI18n();
   const statusIdx = currentStatus
     ? COMPLAINT_STATUSES.indexOf(currentStatus as (typeof COMPLAINT_STATUSES)[number])
     : -1;
 
   return (
     <GlassCard elevation="raised" className="p-6">
-      <SectionLabel>Officer Activity Timeline</SectionLabel>
+      <SectionLabel>{t('ui.officer_activity_timeline')}</SectionLabel>
       <ol className="mt-5 space-y-0">
         {COMPLAINT_STATUSES.map((step, i) => {
           const event = events.find((e) =>
@@ -81,20 +83,21 @@ export function FieldActionCard({
   onStart?: () => void;
   onComplete?: () => void;
 }) {
+    const { t } = useI18n();
   return (
     <GlassCard elevation="raised" className="p-6">
-      <SectionLabel>Field Action</SectionLabel>
+      <SectionLabel>{t('ui.field_action')}</SectionLabel>
       <div className="mt-4 space-y-3">
         <div className="flex justify-between text-sm">
-          <span className="text-muted-foreground">Area</span>
+          <span className="text-muted-foreground">{t('ui.area')}</span>
           <span className="font-medium">{area}</span>
         </div>
         <div className="flex justify-between text-sm">
-          <span className="text-muted-foreground">Priority</span>
+          <span className="text-muted-foreground">{t('ui.priority')}</span>
           <span className="font-medium text-critical">{priority}</span>
         </div>
         <div>
-          <p className="label-xs mb-2">Recommended</p>
+          <p className="label-xs mb-2">{t('ui.recommended')}</p>
           <ul className="space-y-1">
             {recommendations.map((r) => (
               <li key={r} className="text-sm text-muted-foreground">
@@ -107,23 +110,19 @@ export function FieldActionCard({
       <div className="mt-5 flex flex-wrap gap-2">
         {onAssign && (
           <button type="button" onClick={onAssign} className="action-btn">
-            Assign
-          </button>
+            {t('ui.assign')}</button>
         )}
         {onAcknowledge && (
           <button type="button" onClick={onAcknowledge} className="action-btn">
-            Acknowledge
-          </button>
+            {t('ui.acknowledge')}</button>
         )}
         {onStart && (
           <button type="button" onClick={onStart} className="action-btn primary">
-            Start
-          </button>
+            {t('ui.start')}</button>
         )}
         {onComplete && (
           <button type="button" onClick={onComplete} className="action-btn">
-            Complete
-          </button>
+            {t('ui.complete')}</button>
         )}
       </div>
     </GlassCard>

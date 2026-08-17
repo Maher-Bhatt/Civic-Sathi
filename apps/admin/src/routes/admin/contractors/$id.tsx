@@ -7,6 +7,7 @@ import { GlassCard, SectionLabel } from "@/components/ui/glass-card";
 import { LoadingState, ErrorState } from "@/components/ui/states";
 import { ArrowLeft, CheckCircle2, ShieldAlert } from "lucide-react";
 import { toast } from "sonner";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/admin/contractors/$id")({
   head: () => ({ meta: [{ title: "Contractor Details | Admin | JANMIND" }] }),
@@ -14,6 +15,7 @@ export const Route = createFileRoute("/admin/contractors/$id")({
 });
 
 function ContractorDetail() {
+    const { t } = useI18n();
   const { id } = Route.useParams();
   const [contractor, setContractor] = useState<Contractor | null>(null);
   const [documents, setDocuments] = useState<any[]>([]);
@@ -66,7 +68,7 @@ function ContractorDetail() {
   };
 
   if (loading) return <LoadingState message="Loading contractor..." />;
-  if (!contractor) return <ErrorState title="Not Found" description="Contractor not found" />;
+  if (!contractor) return <ErrorState title={t('ui.not_found')} description="Contractor not found" />;
 
   return (
     <div className="space-y-6 muni-page-enter pb-10">
@@ -76,13 +78,13 @@ function ContractorDetail() {
         </button>
         <div>
           <h1 className="text-2xl font-bold tracking-tight">{contractor.companyName}</h1>
-          <p className="text-[var(--muted-foreground)]">Registration: {contractor.registrationNumber}</p>
+          <p className="text-[var(--muted-foreground)]">{t('ui.registration')}{contractor.registrationNumber}</p>
         </div>
       </div>
 
       <div className="flex flex-wrap gap-4 items-center bg-[var(--surface-elevated)] p-4 rounded-lg border border-[var(--glass-border)]">
         <div className="flex-1 min-w-[200px]">
-          <p className="text-sm text-[var(--muted-foreground)]">Current Status</p>
+          <p className="text-sm text-[var(--muted-foreground)]">{t('ui.current_status')}</p>
           <div className="mt-1">
             <StatusBadge status={contractor.status} />
           </div>
@@ -91,13 +93,11 @@ function ContractorDetail() {
         <div className="flex gap-3">
           {contractor.status === 'PENDING_VERIFICATION' && (
             <button onClick={handleVerify} className="action-btn flex items-center gap-2 press bg-[var(--success)]/10 text-[var(--success)] hover:bg-[var(--success)]/20 border-transparent">
-              <CheckCircle2 className="w-4 h-4" /> Verify Contractor
-            </button>
+              <CheckCircle2 className="w-4 h-4" /> {t('ui.verify_contractor')}</button>
           )}
           {contractor.status === 'VERIFIED' && (
             <button onClick={handleSuspend} className="action-btn flex items-center gap-2 press bg-[var(--critical)]/10 text-[var(--critical)] hover:bg-[var(--critical)]/20 border-transparent">
-              <ShieldAlert className="w-4 h-4" /> Suspend Contractor
-            </button>
+              <ShieldAlert className="w-4 h-4" /> {t('ui.suspend_contractor')}</button>
           )}
         </div>
       </div>
@@ -105,26 +105,26 @@ function ContractorDetail() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
           <GlassCard className="p-6">
-            <SectionLabel>Company Profile</SectionLabel>
+            <SectionLabel>{t('ui.company_profile')}</SectionLabel>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-4">
               <div>
-                <p className="label-xs mb-1">Company Name</p>
+                <p className="label-xs mb-1">{t('ui.company_name')}</p>
                 <p className="font-medium">{contractor.companyName}</p>
               </div>
               <div>
-                <p className="label-xs mb-1">Registration Number</p>
+                <p className="label-xs mb-1">{t('ui.registration_number')}</p>
                 <p className="font-medium">{contractor.registrationNumber}</p>
               </div>
               <div>
-                <p className="label-xs mb-1">Tax ID / PAN</p>
+                <p className="label-xs mb-1">{t('ui.tax_id_pan')}</p>
                 <p className="font-medium">{contractor.pan || contractor.gstin}</p>
               </div>
               <div>
-                <p className="label-xs mb-1">Contractor Tier</p>
-                <p className="font-medium">Class A</p>
+                <p className="label-xs mb-1">{t('ui.contractor_tier')}</p>
+                <p className="font-medium">{t('ui.class_a')}</p>
               </div>
               <div className="sm:col-span-2">
-                <p className="label-xs mb-2">Specializations</p>
+                <p className="label-xs mb-2">{t('ui.specializations')}</p>
                 <div className="flex flex-wrap gap-2">
                   {contractor.specializationCategories.map((spec: string) => (
                     <span key={spec} className="px-3 py-1 rounded bg-[var(--background)] border border-[var(--glass-border)] text-sm">
@@ -137,14 +137,14 @@ function ContractorDetail() {
           </GlassCard>
 
           <GlassCard className="p-6">
-            <SectionLabel>Registration & Compliance</SectionLabel>
+            <SectionLabel>{t('ui.registration_compliance')}</SectionLabel>
             <div className="mt-4 overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-[var(--glass-border)] text-left text-[var(--muted-foreground)]">
-                    <th className="pb-3 px-4 font-medium">Document Type</th>
-                    <th className="pb-3 px-4 font-medium">Status</th>
-                    <th className="pb-3 px-4 font-medium">Uploaded Date</th>
+                    <th className="pb-3 px-4 font-medium">{t('ui.document_type')}</th>
+                    <th className="pb-3 px-4 font-medium">{t('ui.status')}</th>
+                    <th className="pb-3 px-4 font-medium">{t('ui.uploaded_date')}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[var(--glass-border)]">
@@ -157,15 +157,14 @@ function ContractorDetail() {
                         </span>
                       </td>
                       <td className="py-3 px-4 text-[var(--muted-foreground)]">
-                        {new Date(doc.uploadedAt).toLocaleDateString()}
+                        {new Date(doc.uploadedAt).toLocaleDateString('en-IN')}
                       </td>
                     </tr>
                   ))}
                   {documents.length === 0 && (
                     <tr>
                       <td colSpan={3} className="py-6 text-center text-[var(--muted-foreground)] italic">
-                        No documents uploaded
-                      </td>
+                        {t('ui.no_documents_uploaded')}</td>
                     </tr>
                   )}
                 </tbody>
@@ -176,13 +175,13 @@ function ContractorDetail() {
 
         <div className="space-y-6">
           <GlassCard className="p-6">
-            <SectionLabel>System Security Logging</SectionLabel>
+            <SectionLabel>{t('ui.system_security_logging')}</SectionLabel>
             <div className="mt-6 space-y-5">
-              <MetricBar label="Overall Score" value={contractor.performanceScore || 0} max={100} />
+              <MetricBar label={t('ui.overall_score')} value={contractor.performanceScore || 0} max={100} />
               <div className="border-t border-[var(--glass-border)] pt-5 space-y-4">
-                <MetricBar label="Inspection Pass Rate" value={contractor.inspectionPassRate || 0} max={100} />
-                <MetricBar label="On-Time Completion" value={contractor.onTimeCompletionRate || 0} max={100} />
-                <MetricBar label="SLA Compliance" value={contractor.slaScore || 0} max={100} />
+                <MetricBar label={t('ui.inspection_pass_rate')} value={contractor.inspectionPassRate || 0} max={100} />
+                <MetricBar label={t('ui.on_time_completion')} value={contractor.onTimeCompletionRate || 0} max={100} />
+                <MetricBar label={t('ui.sla_compliance')} value={contractor.slaScore || 0} max={100} />
               </div>
             </div>
           </GlassCard>
@@ -193,6 +192,7 @@ function ContractorDetail() {
 }
 
 function MetricBar({ label, value, max, isDecimal = false }: { label: string, value: number, max: number, isDecimal?: boolean }) {
+    const { t } = useI18n();
   const percentage = (value / max) * 100;
   const displayValue = isDecimal ? value.toFixed(1) : Math.round(value).toString();
   
@@ -213,26 +213,25 @@ function MetricBar({ label, value, max, isDecimal = false }: { label: string, va
 }
 
 function StatusBadge({ status }: { status: string }) {
+    const { t } = useI18n();
   if (status === 'VERIFIED') {
     return (
       <span className="px-2.5 py-1 rounded text-sm font-medium bg-[var(--success)]/10 text-[var(--success)] border border-[var(--success)]/20 inline-flex items-center gap-1.5">
-        <CheckCircle2 className="w-4 h-4" /> Verified
-      </span>
+        <CheckCircle2 className="w-4 h-4" /> {t('ui.verified')}</span>
     );
   }
   if (status === 'PENDING_VERIFICATION') {
     return (
       <span className="px-2.5 py-1 rounded text-sm font-medium bg-[var(--warning)]/10 text-[var(--warning)] border border-[var(--warning)]/20 inline-flex items-center gap-1.5">
-        Pending Verification
-      </span>
+        {t('ui.pending_verification')}</span>
     );
   }
   if (status === 'SUSPENDED') {
     return (
       <span className="px-2.5 py-1 rounded text-sm font-medium bg-[var(--critical)]/10 text-[var(--critical)] border border-[var(--critical)]/20 inline-flex items-center gap-1.5">
-        <ShieldAlert className="w-4 h-4" /> Suspended
-      </span>
+        <ShieldAlert className="w-4 h-4" /> {t('ui.suspended')}</span>
     );
   }
   return <span>{status}</span>;
 }
+

@@ -13,6 +13,7 @@ import { clustersForCity, nearestCity } from "@/services/cities";
 import type { AnalysisResult, Complaint } from "@/services/types";
 import { clearDraft, loadDraft } from "@/lib/report-draft";
 import { cn } from "@/lib/utils";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/analyzing")({
   head: () => ({
@@ -37,6 +38,7 @@ const STAGES = [
 ];
 
 function AnalyzingPage() {
+    const { t } = useI18n();
   const navigate = useNavigate();
   const [stage, setStage] = useState(0);
   const [result, setResult] = useState<AnalysisResult | null>(null);
@@ -168,7 +170,7 @@ function AnalyzingPage() {
     return (
       <PageShell className="max-w-2xl">
         <ErrorState
-          title="We couldn't analyze your report right now."
+          title={t('ui.we_couldn_t_analyze_your_repor')}
           description="Your description is safe. Try again in a moment."
           onRetry={() => void run()}
         />
@@ -181,9 +183,9 @@ function AnalyzingPage() {
     return (
       <PageShell className="max-w-3xl">
         <div className="animate-rise space-y-2">
-          <SectionLabel className="text-warning">Wait a moment</SectionLabel>
-          <h1 className="text-2xl font-semibold sm:text-3xl">Similar issues found nearby</h1>
-          <p className="text-muted-foreground">JANMIND has detected existing active reports in this exact location that match your description. Are you reporting the same problem?</p>
+          <SectionLabel className="text-warning">{t('ui.wait_a_moment')}</SectionLabel>
+          <h1 className="text-2xl font-semibold sm:text-3xl">{t('ui.similar_issues_found_nearby')}</h1>
+          <p className="text-muted-foreground">{t('ui.janmind_has_detected_existing_')}</p>
         </div>
         
         <div className="animate-rise mt-8 space-y-4">
@@ -193,27 +195,25 @@ function AnalyzingPage() {
                 <div className="flex items-center gap-2">
                   <SeverityBadge severity={match.issue.severity} />
                   <span className="text-sm font-medium text-foreground">{match.issue.category}</span>
-                  <span className="text-xs text-muted-foreground ml-auto">{match.distance}m away</span>
+                  <span className="text-xs text-muted-foreground ml-auto">{match.distance}{t('ui.m_away')}</span>
                 </div>
                 <p className="text-sm text-subtle line-clamp-2">{match.issue.description}</p>
                 <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground">
-                  <span className="flex items-center gap-1"><AlertCircle className="w-3.5 h-3.5" /> {match.issue.reportCount} other reports</span>
+                  <span className="flex items-center gap-1"><AlertCircle className="w-3.5 h-3.5" /> {match.issue.reportCount} {t('ui.other_reports')}</span>
                   <span className="flex items-center gap-1"><MapPin className="w-3.5 h-3.5" /> {match.issue.ward}</span>
                 </div>
               </div>
               <div className="sm:border-l border-border sm:pl-5 sm:ml-2">
                 <GlassButton variant="primary" className="w-full sm:w-auto" onClick={() => handleLinkExisting(match)}>
-                  Yes, I'm also affected
-                </GlassButton>
+                  {t('ui.yes_i_m_also_affected')}</GlassButton>
               </div>
             </GlassCard>
           ))}
           
           <div className="pt-6 border-t border-border flex flex-col items-center justify-center">
-            <p className="text-sm text-subtle mb-3">Is your issue completely different?</p>
+            <p className="text-sm text-subtle mb-3">{t('ui.is_your_issue_completely_diffe')}</p>
             <GlassButton variant="ghost" onClick={() => proceedWithNewIssue(draftData, result)}>
-              No, report as a new issue
-            </GlassButton>
+              {t('ui.no_report_as_a_new_issue')}</GlassButton>
           </div>
         </div>
       </PageShell>
@@ -225,25 +225,25 @@ function AnalyzingPage() {
     return (
       <PageShell className="max-w-3xl">
         <div className="animate-rise space-y-2">
-          <SectionLabel>Your report</SectionLabel>
-          <h1 className="text-2xl font-semibold sm:text-3xl">Analysis complete</h1>
+          <SectionLabel>{t('ui.your_report')}</SectionLabel>
+          <h1 className="text-2xl font-semibold sm:text-3xl">{t('ui.analysis_complete')}</h1>
         </div>
 
         <GlassCard elevation="raised" className="animate-rise mt-6 space-y-6 p-5 sm:p-7">
           <p className="text-[0.98rem] leading-relaxed">{complaint.description}</p>
           <dl className="grid gap-4 sm:grid-cols-3">
             <div>
-              <dt className="label-xs">AI-suggested category</dt>
+              <dt className="label-xs">{t('ui.ai_suggested_category')}</dt>
               <dd className="mt-1.5 text-sm font-medium">{result.category}</dd>
             </div>
             <div>
-              <dt className="label-xs">Severity</dt>
+              <dt className="label-xs">{t('ui.severity')}</dt>
               <dd className="mt-1.5">
                 <SeverityBadge severity={result.severity} />
               </dd>
             </div>
             <div>
-              <dt className="label-xs">Location</dt>
+              <dt className="label-xs">{t('ui.location')}</dt>
               <dd className="mt-1.5 text-sm font-medium">{result.location.ward}</dd>
             </div>
           </dl>
@@ -255,27 +255,26 @@ function AnalyzingPage() {
               <Check className="h-4 w-4" aria-hidden />
             </span>
             <div>
-              <SectionLabel>Complaint received</SectionLabel>
+              <SectionLabel>{t('ui.complaint_received')}</SectionLabel>
               <p className="mt-0.5 text-sm text-muted-foreground">
-                Your report is now on record and routed for review.
-              </p>
+                {t('ui.your_report_is_now_on_record_a')}</p>
             </div>
           </div>
           <dl className="grid gap-4 sm:grid-cols-4">
             <div>
-              <dt className="label-xs">Complaint ID</dt>
+              <dt className="label-xs">{t('ui.complaint_id')}</dt>
               <dd className="mt-1.5 text-sm font-medium tabular-nums">{complaint.id}</dd>
             </div>
             <div>
-              <dt className="label-xs">Category</dt>
+              <dt className="label-xs">{t('ui.category')}</dt>
               <dd className="mt-1.5 text-sm font-medium">{complaint.category}</dd>
             </div>
             <div>
-              <dt className="label-xs">Location</dt>
+              <dt className="label-xs">{t('ui.location')}</dt>
               <dd className="mt-1.5 text-sm font-medium">{complaint.location.ward}</dd>
             </div>
             <div>
-              <dt className="label-xs">Status</dt>
+              <dt className="label-xs">{t('ui.status')}</dt>
               <dd className="mt-1.5">
                 <StatusBadge status={complaint.status} />
               </dd>
@@ -283,8 +282,7 @@ function AnalyzingPage() {
           </dl>
           <GlassButton asChild>
             <Link to="/complaint/$id" params={{ id: complaint.id }}>
-              Track complaint
-            </Link>
+              {t('ui.track_complaint')}</Link>
           </GlassButton>
         </GlassCard>
       </PageShell>
@@ -297,9 +295,9 @@ function AnalyzingPage() {
       <GlassCard elevation="raised" className="animate-rise p-7 sm:p-9">
         <div className="flex items-center gap-2.5">
           <Sparkles className="h-4 w-4 animate-pulse text-primary" aria-hidden />
-          <SectionLabel>JANMIND Intelligence</SectionLabel>
+          <SectionLabel>{t('ui.janmind_intelligence')}</SectionLabel>
         </div>
-        <h1 className="mt-4 text-xl font-semibold">Analyzing your report...</h1>
+        <h1 className="mt-4 text-xl font-semibold">{t('ui.analyzing_your_report')}</h1>
         <ul className="mt-7 space-y-3.5" aria-live="polite">
           {STAGES.map((s, i) => (
             <li key={s} className="flex items-center gap-3">

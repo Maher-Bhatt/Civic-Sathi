@@ -21,6 +21,7 @@ import {
   updateSystemicIssue,
 } from "@/services/api";
 import { DEPARTMENTS, riskLevel, type MuniComplaint, type SystemicIssue } from "@/services/types";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/_auth/issues/$id")({
   head: ({ params }: { params: any }) => ({
@@ -30,6 +31,7 @@ export const Route = createFileRoute("/_auth/issues/$id")({
 });
 
 function IssueDetailPage() {
+    const { t } = useI18n();
   const { id } = Route.useParams() as any;
   const [issue, setIssue] = useState<SystemicIssue | null>(null);
   const [related, setRelated] = useState<MuniComplaint[]>([]);
@@ -78,12 +80,11 @@ function IssueDetailPage() {
         className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
       >
         <ArrowLeft className="h-4 w-4" />
-        Emerging issues
-      </Link>
+        {t('ui.emerging_issues')}</Link>
 
       <header>
         <div className="flex flex-wrap items-center gap-3">
-          <SectionLabel>Systemic Issue Intelligence</SectionLabel>
+          <SectionLabel>{t('ui.systemic_issue_intelligence')}</SectionLabel>
           <span
             className={cn(
               "rounded-full border px-2.5 py-0.5 text-[0.65rem] font-medium uppercase tracking-wider",
@@ -101,11 +102,11 @@ function IssueDetailPage() {
         </p>
         <div className="mt-4 flex flex-wrap gap-6 text-sm">
           <div>
-            <span className="text-muted-foreground">Reports </span>
+            <span className="text-muted-foreground">{t('ui.reports')}</span>
             <span className="font-semibold tabular-nums">{issue.complaintCount}</span>
           </div>
           <div>
-            <span className="text-muted-foreground">Risk </span>
+            <span className="text-muted-foreground">{t('ui.risk')}</span>
             <span className="font-semibold tabular-nums">{issue.riskScore}/100</span>
           </div>
           <div className={cn("flex items-center gap-1", up ? "text-[#a4503f]" : "text-primary")}>
@@ -114,10 +115,10 @@ function IssueDetailPage() {
               {up ? "+" : ""}
               {issue.trendPct}%
             </span>
-            <span className="text-muted-foreground">7-day trend</span>
+            <span className="text-muted-foreground">{t('ui.7_day_trend')}</span>
           </div>
           <div className="text-muted-foreground">
-            Updated {format(new Date(issue.updatedAt), "dd MMM yyyy, HH:mm")}
+            {t('ui.updated')}{format(new Date(issue.updatedAt), "dd MMM yyyy, HH:mm")}
           </div>
         </div>
       </header>
@@ -174,7 +175,7 @@ function IssueDetailPage() {
 
           {related.length > 0 && (
             <GlassCard elevation="raised" className="p-6">
-              <SectionLabel>Related Complaints</SectionLabel>
+              <SectionLabel>{t('ui.related_complaints')}</SectionLabel>
               <ul className="mt-4 space-y-2">
                 {related.map((c) => (
                   <li key={c.id}>

@@ -5,6 +5,7 @@ import { GlassCard, SectionLabel } from "@/components/ui/glass-card";
 import { ErrorState, LoadingState } from "@/components/ui/states";
 import { getDepartment } from "@/services/api";
 import type { DepartmentStats } from "@/services/types";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/_auth/departments/$id")({
   head: ({ params }: { params: any }) => ({
@@ -14,6 +15,7 @@ export const Route = createFileRoute("/_auth/departments/$id")({
 });
 
 function DepartmentDetailPage() {
+    const { t } = useI18n();
   const { id } = Route.useParams() as any;
   const [dept, setDept] = useState<DepartmentStats | null>(null);
   const [loading, setLoading] = useState(true);
@@ -48,26 +50,24 @@ function DepartmentDetailPage() {
         className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
       >
         <ArrowLeft className="h-4 w-4" />
-        All departments
-      </Link>
+        {t('ui.all_departments')}</Link>
 
       <header>
-        <SectionLabel>Department Detail</SectionLabel>
+        <SectionLabel>{t('ui.department_detail')}</SectionLabel>
         <h1 className="mt-2 text-2xl font-semibold">{dept.name}</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Average response time: {dept.avgResponseDays.toFixed(1)} days
-        </p>
+          {t('ui.average_response_time')}{dept.avgResponseDays.toFixed(1)} {t('ui.days')}</p>
       </header>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard label="Open" value={dept.open} />
-        <StatCard label="Critical" value={dept.critical} accent="critical" />
-        <StatCard label="In progress" value={dept.inProgress} />
-        <StatCard label="Resolved" value={dept.resolved} accent="success" />
+        <StatCard label={t('ui.open')} value={dept.open} />
+        <StatCard label={t('ui.critical')} value={dept.critical} accent="critical" />
+        <StatCard label={t('ui.in_progress')} value={dept.inProgress} />
+        <StatCard label={t('ui.resolved')} value={dept.resolved} accent="success" />
       </div>
 
       <GlassCard elevation="raised" className="p-6">
-        <SectionLabel>Category Breakdown</SectionLabel>
+        <SectionLabel>{t('ui.category_breakdown')}</SectionLabel>
         <div className="mt-4 space-y-3">
           {categories.map(([cat, count]) => {
             const max = categories[0]?.[1] ?? 1;
@@ -96,11 +96,9 @@ function DepartmentDetailPage() {
           search={{ area: "" } as any}
           className="action-btn"
         >
-          View department complaints
-        </Link>
+          {t('ui.view_department_complaints')}</Link>
         <Link to={"/issues" as any} className="action-btn">
-          View emerging issues
-        </Link>
+          {t('ui.view_emerging_issues')}</Link>
       </div>
     </div>
   );
@@ -115,6 +113,7 @@ function StatCard({
   value: number;
   accent?: "critical" | "success";
 }) {
+    const { t } = useI18n();
   return (
     <GlassCard elevation="raised" className="p-5">
       <p className="label-xs">{label}</p>

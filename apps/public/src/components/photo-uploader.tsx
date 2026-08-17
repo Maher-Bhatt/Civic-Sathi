@@ -6,6 +6,7 @@ import { analyzeComplaintPhoto, uploadComplaintPhoto } from "@/services/api";
 import type { ImageAnalysis, IssueCategory } from "@/services/types";
 import { ISSUE_TYPES } from "@/services/types";
 import { cn } from "@/lib/utils";
+import { useI18n } from "@/lib/i18n";
 
 export function PhotoUploader({
   photo,
@@ -16,6 +17,7 @@ export function PhotoUploader({
   onPhoto: (dataUrl: string | null) => void;
   onCategorySuggestion: (category: IssueCategory) => void;
 }) {
+    const { t } = useI18n();
   const inputRef = useRef<HTMLInputElement>(null);
   const cameraRef = useRef<HTMLInputElement>(null);
   const [progress, setProgress] = useState(0);
@@ -84,10 +86,9 @@ export function PhotoUploader({
             <Upload className="h-5 w-5" aria-hidden />
           </div>
           <div>
-            <p className="text-sm font-medium">Add a photo of the problem</p>
+            <p className="text-sm font-medium">{t('ui.add_a_photo_of_the_problem')}</p>
             <p className="mt-1 text-xs text-muted-foreground">
-              Optional — a photo helps the department understand the issue faster.
-            </p>
+              {t('ui.optional_a_photo_helps_the_dep')}</p>
           </div>
           <div className="flex flex-wrap justify-center gap-2">
             <GlassButton
@@ -100,8 +101,7 @@ export function PhotoUploader({
               }}
             >
               <Camera className="h-3.5 w-3.5" aria-hidden />
-              Camera
-            </GlassButton>
+              {t('ui.camera')}</GlassButton>
             <GlassButton
               size="sm"
               variant="glass"
@@ -112,8 +112,7 @@ export function PhotoUploader({
               }}
             >
               <ImageIcon className="h-3.5 w-3.5" aria-hidden />
-              Gallery
-            </GlassButton>
+              {t('ui.gallery')}</GlassButton>
           </div>
         </GlassCard>
       ) : (
@@ -154,8 +153,7 @@ export function PhotoUploader({
               onClick={() => inputRef.current?.click()}
             >
               <RefreshCw className="h-3.5 w-3.5" aria-hidden />
-              Replace
-            </GlassButton>
+              {t('ui.replace')}</GlassButton>
             <GlassButton
               size="sm"
               variant="ghost"
@@ -166,8 +164,7 @@ export function PhotoUploader({
               }}
             >
               <Trash2 className="h-3.5 w-3.5" aria-hidden />
-              Remove
-            </GlassButton>
+              {t('ui.remove')}</GlassButton>
           </div>
         </GlassCard>
       )}
@@ -182,25 +179,24 @@ export function PhotoUploader({
         <GlassCard elevation="raised" className="animate-rise space-y-4 p-5">
           <div className="flex items-center gap-2">
             <Sparkles className="h-4 w-4 text-primary" aria-hidden />
-            <SectionLabel>AI-assisted image reading</SectionLabel>
+            <SectionLabel>{t('ui.ai_assisted_image_reading')}</SectionLabel>
           </div>
           <dl className="grid gap-3 sm:grid-cols-3">
             <div>
-              <dt className="label-xs">Detected</dt>
+              <dt className="label-xs">{t('ui.detected')}</dt>
               <dd className="mt-1 text-sm font-medium">{analysis.detected}</dd>
             </div>
             <div>
-              <dt className="label-xs">Suggested category</dt>
+              <dt className="label-xs">{t('ui.suggested_category')}</dt>
               <dd className="mt-1 text-sm font-medium">{analysis.category}</dd>
             </div>
             <div>
-              <dt className="label-xs">Confidence</dt>
+              <dt className="label-xs">{t('ui.confidence')}</dt>
               <dd className="mt-1 text-sm font-medium">{analysis.confidence}</dd>
             </div>
           </dl>
           <p className="text-xs text-subtle">
-            This is an AI-assisted suggestion, not a certain identification. You can change it.
-          </p>
+            {t('ui.this_is_an_ai_assisted_suggest')}</p>
           <div className="flex flex-wrap gap-2">
             <GlassButton
               size="sm"
@@ -210,16 +206,14 @@ export function PhotoUploader({
                 setChanging(false);
               }}
             >
-              Confirm
-            </GlassButton>
+              {t('ui.confirm')}</GlassButton>
             <GlassButton
               size="sm"
               variant="glass"
               type="button"
               onClick={() => setChanging((v) => !v)}
             >
-              Change category
-            </GlassButton>
+              {t('ui.change_category')}</GlassButton>
           </div>
           {changing && (
             <div className="flex flex-wrap gap-2 pt-1">

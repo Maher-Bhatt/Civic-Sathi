@@ -8,6 +8,7 @@ import { useMuniAuth } from "@/lib/muni-auth";
 import { getWorkOrders } from "@/services/api";
 import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
+import { useI18n } from "@/lib/i18n";
 
 // Backend WorkOrderStatus enum values — kept in sync with models/procurement.py
 const STATUS_LABEL: Record<string, string> = {
@@ -38,6 +39,7 @@ export const Route = createFileRoute("/_auth/work-orders/")({
 });
 
 function WorkOrdersPage() {
+    const { t } = useI18n();
   const { officer } = useMuniAuth();
   const city = officer?.city ?? "vadodara";
   const [filter, setFilter] = useState("all");
@@ -76,15 +78,15 @@ function WorkOrdersPage() {
     <div className="muni-page-enter space-y-6">
       <header className="flex items-center justify-between">
         <div>
-          <SectionLabel>Work Orders</SectionLabel>
+          <SectionLabel>{t('ui.work_orders')}</SectionLabel>
           <h1 className="mt-2 text-2xl font-semibold">
-            {orders.length} work order{orders.length !== 1 ? "s" : ""}
+            {orders.length} {t('ui.work_order')}{orders.length !== 1 ? "s" : ""}
           </h1>
         </div>
         {overdue.length > 0 && (
           <div className="flex items-center gap-2 rounded-xl border border-[color-mix(in_oklab,var(--critical)_30%,transparent)] bg-[color-mix(in_oklab,var(--critical)_8%,transparent)] px-3 py-2 text-sm">
             <AlertCircle className="h-4 w-4 text-[var(--critical)]" />
-            <span className="text-[var(--critical)] font-medium">{overdue.length} overdue</span>
+            <span className="text-[var(--critical)] font-medium">{overdue.length} {t('ui.overdue')}</span>
           </div>
         )}
       </header>
@@ -112,7 +114,7 @@ function WorkOrdersPage() {
         {filtered.length === 0 ? (
           <GlassCard elevation="raised" className="p-12 text-center">
             <ClipboardList className="mx-auto h-10 w-10 text-muted-foreground opacity-40" />
-            <p className="mt-4 text-sm text-muted-foreground">No work orders found.</p>
+            <p className="mt-4 text-sm text-muted-foreground">{t('ui.no_work_orders_found')}</p>
           </GlassCard>
         ) : (
           (filtered as any[]).map((wo) => {
@@ -148,13 +150,11 @@ function WorkOrdersPage() {
                         </span>
                         {isOverdue && (
                           <span className="rounded-full bg-[color-mix(in_oklab,var(--critical)_12%,transparent)] px-2.5 py-0.5 text-xs font-medium text-[var(--critical)]">
-                            OVERDUE
-                          </span>
+                            {t('ui.overdue')}</span>
                         )}
                         {wo.risk_level && wo.risk_level !== "LOW" && (
                           <span className="text-xs text-[var(--muted-foreground)]">
-                            {wo.risk_level} risk
-                          </span>
+                            {wo.risk_level} {t('ui.risk')}</span>
                         )}
                       </div>
 
@@ -173,7 +173,7 @@ function WorkOrdersPage() {
                         </span>
                         {wo.target_completion_date && (
                           <span>
-                            Due:{" "}
+                            {t('ui.due')}{" "}
                             {isOverdue
                               ? "Overdue"
                               : formatDistanceToNow(new Date(wo.target_completion_date), {

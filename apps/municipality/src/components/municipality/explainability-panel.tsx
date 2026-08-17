@@ -1,12 +1,14 @@
 import { GlassCard, SectionLabel } from "@/components/ui/glass-card";
 import type { SystemicIssue } from "@/services/types";
+import { useI18n } from "@/lib/i18n";
 
 export function ExplainabilityPanel({ issue }: { issue: SystemicIssue }) {
+    const { t } = useI18n();
   return (
     <GlassCard elevation="raised" className="p-6">
-      <SectionLabel>Why JANMIND Flagged This</SectionLabel>
+      <SectionLabel>{t('ui.why_janmind_flagged_this')}</SectionLabel>
       <p className="mt-3 text-sm leading-relaxed text-foreground">{issue.whyFlagged}</p>
-      <p className="mt-2 text-xs text-muted-foreground">Prototype Intelligence Data</p>
+      <p className="mt-2 text-xs text-muted-foreground">{t('ui.prototype_intelligence_data')}</p>
 
       <div className="mt-5 grid gap-3 sm:grid-cols-2">
         {issue.evidence.map((e) => (
@@ -22,18 +24,17 @@ export function ExplainabilityPanel({ issue }: { issue: SystemicIssue }) {
 }
 
 export function RootCausePanel({ issue }: { issue: SystemicIssue }) {
+    const { t } = useI18n();
   return (
     <GlassCard elevation="raised" className="p-6">
-      <SectionLabel>Possible Root Cause</SectionLabel>
+      <SectionLabel>{t('ui.possible_root_cause')}</SectionLabel>
       <p className="mt-3 text-sm leading-relaxed">{issue.possibleCause}</p>
       <p className="mt-3 text-sm">
-        <span className="text-muted-foreground">Confidence: </span>
+        <span className="text-muted-foreground">{t('ui.confidence')}</span>
         <span className="font-semibold tabular-nums">{issue.causeConfidence}%</span>
       </p>
       <p className="mt-3 rounded-lg border border-[var(--glass-border)] bg-[var(--glass)] p-3 text-xs leading-relaxed text-muted-foreground">
-        Inferred candidate based on complaint patterns. Not a confirmed physical
-        infrastructure failure.
-      </p>
+        {t('ui.inferred_candidate_based_on_co')}</p>
     </GlassCard>
   );
 }
@@ -51,9 +52,10 @@ export function RecommendedActionsPanel({
   onFieldAction?: () => void;
   onMarkInvestigating?: () => void;
 }) {
+    const { t } = useI18n();
   return (
     <GlassCard elevation="raised" className="p-6">
-      <SectionLabel>Recommended Action</SectionLabel>
+      <SectionLabel>{t('ui.recommended_action')}</SectionLabel>
       <ol className="mt-4 space-y-2">
         {actions.map((a, i) => (
           <li key={a} className="flex gap-3 text-sm">
@@ -71,8 +73,7 @@ export function RecommendedActionsPanel({
             onClick={onStartInvestigation}
             className="press rounded-xl bg-primary px-4 py-2 text-xs font-medium uppercase tracking-wider text-primary-foreground"
           >
-            Start Investigation
-          </button>
+            {t('ui.start_investigation')}</button>
         )}
         {onAssign && (
           <button
@@ -80,8 +81,7 @@ export function RecommendedActionsPanel({
             onClick={onAssign}
             className="press glass rounded-xl px-4 py-2 text-xs font-medium uppercase tracking-wider"
           >
-            Assign Department
-          </button>
+            {t('ui.assign_department')}</button>
         )}
         {onFieldAction && (
           <button
@@ -89,8 +89,7 @@ export function RecommendedActionsPanel({
             onClick={onFieldAction}
             className="press glass rounded-xl px-4 py-2 text-xs font-medium uppercase tracking-wider"
           >
-            Create Field Action
-          </button>
+            {t('ui.create_field_action')}</button>
         )}
         {onMarkInvestigating && (
           <button
@@ -98,8 +97,7 @@ export function RecommendedActionsPanel({
             onClick={onMarkInvestigating}
             className="press glass rounded-xl px-4 py-2 text-xs font-medium uppercase tracking-wider"
           >
-            Mark Investigating
-          </button>
+            {t('ui.mark_investigating')}</button>
         )}
       </div>
     </GlassCard>

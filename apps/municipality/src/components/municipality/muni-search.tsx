@@ -8,6 +8,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { officerSearch } from "@/services/api";
+import { useI18n } from "@/lib/i18n";
 
 export function MuniSearchCommand({
   open,
@@ -16,6 +17,7 @@ export function MuniSearchCommand({
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }) {
+    const { t } = useI18n();
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<Awaited<ReturnType<typeof officerSearch>> | null>(null);
   const [loading, setLoading] = useState(false);
@@ -44,24 +46,23 @@ export function MuniSearchCommand({
         <DialogHeader className="border-b border-[var(--glass-border)] p-4">
           <DialogTitle className="flex items-center gap-2 text-sm font-medium">
             <Search className="h-4 w-4" />
-            Officer Search
-          </DialogTitle>
+            {t('ui.officer_search')}</DialogTitle>
         </DialogHeader>
         <div className="p-4">
           <input
             autoFocus
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Complaint ID, area, ward, issue, department..."
+            placeholder={t('ui.complaint_id_area_ward_issue_d')}
             className="w-full rounded-xl border border-[var(--glass-border)] bg-[var(--glass)] px-4 py-3 text-sm outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
           />
           <div className="mt-4 max-h-72 overflow-y-auto">
-            {loading && <p className="text-sm text-muted-foreground">Searching...</p>}
+            {loading && <p className="text-sm text-muted-foreground">{t('ui.searching')}</p>}
             {!loading && query && results && (
               <div className="space-y-4">
                 {results.complaints.length > 0 && (
                   <div>
-                    <p className="label-xs mb-2">Complaints</p>
+                    <p className="label-xs mb-2">{t('ui.complaints')}</p>
                     <ul className="space-y-1">
                       {results.complaints.map((c) => (
                         <li key={c.id}>
@@ -82,7 +83,7 @@ export function MuniSearchCommand({
                 )}
                 {results.issues.length > 0 && (
                   <div>
-                    <p className="label-xs mb-2">Emerging Issues</p>
+                    <p className="label-xs mb-2">{t('ui.emerging_issues')}</p>
                     <ul className="space-y-1">
                       {results.issues.map((i) => (
                         <li key={i.id}>
@@ -102,7 +103,7 @@ export function MuniSearchCommand({
                   </div>
                 )}
                 {results.complaints.length === 0 && results.issues.length === 0 && (
-                  <p className="text-sm text-muted-foreground">No results found.</p>
+                  <p className="text-sm text-muted-foreground">{t('ui.no_results_found')}</p>
                 )}
               </div>
             )}

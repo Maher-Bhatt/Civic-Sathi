@@ -16,23 +16,23 @@ import { MuniAuthProvider } from "@/lib/muni-auth";
 import { ContractorAuthProvider } from "@/lib/contractor-auth";
 import { AdminAuthProvider } from "@/lib/admin-auth";
 import { Toaster } from "@/components/ui/sonner";
+import { useI18n, I18nProvider } from "@/lib/i18n";
 
 function NotFoundComponent() {
+    const { t } = useI18n();
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
         <h1 className="text-7xl font-bold text-foreground">404</h1>
-        <h2 className="mt-4 text-xl font-semibold text-foreground">Page not found</h2>
+        <h2 className="mt-4 text-xl font-semibold text-foreground">{t('ui.page_not_found')}</h2>
         <p className="mt-2 text-sm text-muted-foreground">
-          The page you're looking for doesn't exist or has been moved.
-        </p>
+          {t('ui.the_page_you_re_looking_for_do')}</p>
         <div className="mt-6">
           <Link
             to={"/admin/dashboard" as any}
             className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
           >
-            Go to dashboard
-          </Link>
+            {t('ui.go_to_dashboard')}</Link>
         </div>
       </div>
     </div>
@@ -40,6 +40,7 @@ function NotFoundComponent() {
 }
 
 function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
+    const { t } = useI18n();
   const router = useRouter();
   useEffect(() => {
     console.error(error);
@@ -49,11 +50,9 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
         <h1 className="text-xl font-semibold tracking-tight text-foreground">
-          This page didn't load
-        </h1>
+          {t('ui.this_page_didn_t_load')}</h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          Something went wrong on our end. You can try refreshing or head back to the dashboard.
-        </p>
+          {t('ui.something_went_wrong_on_our_en')}</p>
         <div className="mt-6 flex flex-wrap justify-center gap-2">
           <button
             onClick={() => {
@@ -62,14 +61,12 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
             }}
             className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
           >
-            Try again
-          </button>
+            {t('ui.try_again')}</button>
           <a
             href="/admin/dashboard"
             className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent"
           >
-            Dashboard
-          </a>
+            {t('ui.dashboard')}</a>
         </div>
       </div>
     </div>
@@ -115,6 +112,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 });
 
 function RootShell({ children }: { children: ReactNode }) {
+    const { t } = useI18n();
   return (
     <html lang="en" className="dark" suppressHydrationWarning>
       <head>
@@ -130,10 +128,12 @@ function RootShell({ children }: { children: ReactNode }) {
 }
 
 function RootComponent() {
+    const { t } = useI18n();
   const { queryClient } = Route.useRouteContext();
 
   return (
     <QueryClientProvider client={queryClient}>
+      <I18nProvider>
       <ThemeProvider>
         <MuniAuthProvider>
           <ContractorAuthProvider>
@@ -144,6 +144,8 @@ function RootComponent() {
           </ContractorAuthProvider>
         </MuniAuthProvider>
       </ThemeProvider>
+      </I18nProvider>
     </QueryClientProvider>
   );
 }
+
