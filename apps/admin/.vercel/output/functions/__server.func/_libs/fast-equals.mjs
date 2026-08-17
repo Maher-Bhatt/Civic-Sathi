@@ -1,4 +1,4 @@
-//#region node_modules/fast-equals/dist/es/index.mjs
+//#region ../../node_modules/fast-equals/dist/es/index.mjs
 var { getOwnPropertyNames, getOwnPropertySymbols } = Object;
 var { hasOwnProperty } = Object.prototype;
 /**

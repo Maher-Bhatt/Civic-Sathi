@@ -101,7 +101,7 @@ function AdminDashboardContent() {
         <GlassCard className="p-6 flex flex-col">
           <SectionLabel>Quick Actions</SectionLabel>
           <div className="mt-4 flex flex-col gap-3">
-            <ActionLink to="/admin/contractors" icon={Building2} label="Manage Contractors" />
+            <ActionLink to="/admin/contractors/" icon={Building2} label="Manage Contractors" />
             <ActionLink to="/admin/sla" icon={Timer} label="Configure SLA Rules" />
             <ActionLink to="/admin/audit-logs" icon={Shield} label="Review Audit Logs" />
             <ActionLink to="/admin/work-orders-overview" icon={ClipboardList} label="Platform Work Orders" />

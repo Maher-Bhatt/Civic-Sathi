@@ -13,7 +13,7 @@ function lazyService(loader) {
 var services = { ["ssr"]: lazyService(() => import("./_ssr/ssr.mjs")) };
 globalThis.__nitro_vite_envs__ = services;
 //#endregion
-//#region node_modules/nitro/dist/runtime/internal/route-rules.mjs
+//#region ../../node_modules/nitro/dist/runtime/internal/route-rules.mjs
 var headers = ((m) => function headersRouteRule(event) {
 	for (const [key, value] of Object.entries(m.options || {})) event.res.headers.set(key, value);
 });
@@ -39,11 +39,11 @@ var findRouteRules = /* @__PURE__ */ (() => {
 		return r;
 	};
 })();
-var _lazy_Zg84vo = defineLazyEventHandler(() => import("./_chunks/ssr-renderer.mjs"));
+var _lazy_ZRgPt0 = defineLazyEventHandler(() => import("./_chunks/ssr-renderer.mjs"));
 var findRoute = /* @__PURE__ */ (() => {
 	const data = {
 		route: "/**",
-		handler: _lazy_Zg84vo
+		handler: _lazy_ZRgPt0
 	};
 	return ((_m, p) => {
 		return {
@@ -54,7 +54,7 @@ var findRoute = /* @__PURE__ */ (() => {
 })();
 [].filter(Boolean);
 //#endregion
-//#region node_modules/nitro/dist/runtime/internal/error/prod.mjs
+//#region ../../node_modules/nitro/dist/runtime/internal/error/prod.mjs
 var errorHandler = (error, event) => {
 	const res = defaultHandler(error, event);
 	return new NodeResponse(typeof res.body === "string" ? res.body : JSON.stringify(res.body, null, 2), res);
@@ -143,7 +143,7 @@ function createH3App(config) {
 	return h3App;
 }
 //#endregion
-//#region node_modules/nitro/dist/runtime/internal/app.mjs
+//#region ../../node_modules/nitro/dist/runtime/internal/app.mjs
 var APP_ID = "default";
 function useNitroApp() {
 	let instance = useNitroApp._instance;
@@ -191,7 +191,7 @@ function getRouteRules(method, pathname) {
 	};
 }
 //#endregion
-//#region node_modules/nitro/dist/presets/vercel/runtime/isr.mjs
+//#region ../../node_modules/nitro/dist/presets/vercel/runtime/isr.mjs
 var ISR_URL_PARAM = "__isr_route";
 function isrRouteRewrite(reqUrl, xNowRouteMatches) {
 	if (xNowRouteMatches) {
@@ -210,7 +210,7 @@ function isrRouteRewrite(reqUrl, xNowRouteMatches) {
 	}
 }
 //#endregion
-//#region node_modules/nitro/dist/presets/vercel/runtime/vercel.web.mjs
+//#region ../../node_modules/nitro/dist/presets/vercel/runtime/vercel.web.mjs
 var nitroApp = useNitroApp();
 var vercel_web_default = { fetch(req, context) {
 	const isrURL = isrRouteRewrite(req.url, req.headers.get("x-now-route-matches"));

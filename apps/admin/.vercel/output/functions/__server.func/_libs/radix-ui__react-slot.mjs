@@ -1,6 +1,6 @@
 import { i as __toESM } from "../_runtime.mjs";
 import { n as require_react, t as useComposedRefs } from "./@radix-ui/react-compose-refs+[...].mjs";
-//#region node_modules/@radix-ui/react-slot/dist/index.mjs
+//#region ../../node_modules/@radix-ui/react-slot/dist/index.mjs
 var import_react = /* @__PURE__ */ __toESM(require_react(), 1);
 var __defProp = Object.defineProperty;
 var __name = (target, value) => __defProp(target, "name", {

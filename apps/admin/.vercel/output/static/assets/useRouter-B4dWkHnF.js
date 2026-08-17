@@ -1,1 +1,0 @@
-import{h as e,v as t}from"./shared-store-DynsiRhS.js";var n=t(e(),1),r=n.createContext(null);function i(e){return n.useContext(r)}export{r as n,i as t};

@@ -1,5 +1,5 @@
 import { t as __commonJSMin } from "../_runtime.mjs";
-//#region node_modules/prop-types/lib/ReactPropTypesSecret.js
+//#region ../../node_modules/prop-types/lib/ReactPropTypesSecret.js
 /**
 * Copyright (c) 2013-present, Facebook, Inc.
 *
@@ -10,7 +10,7 @@ var require_ReactPropTypesSecret = /* @__PURE__ */ __commonJSMin(((exports, modu
 	module.exports = "SECRET_DO_NOT_PASS_THIS_OR_YOU_WILL_BE_FIRED";
 }));
 //#endregion
-//#region node_modules/prop-types/factoryWithThrowingShims.js
+//#region ../../node_modules/prop-types/factoryWithThrowingShims.js
 /**
 * Copyright (c) 2013-present, Facebook, Inc.
 *
@@ -61,7 +61,7 @@ var require_factoryWithThrowingShims = /* @__PURE__ */ __commonJSMin(((exports, 
 	};
 }));
 //#endregion
-//#region node_modules/prop-types/index.js
+//#region ../../node_modules/prop-types/index.js
 var require_prop_types = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	module.exports = require_factoryWithThrowingShims()();
 }));

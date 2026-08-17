@@ -1,7 +1,7 @@
 import { a as tickStep, c as bisector, i as tickIncrement, l as ascending, n as quantile$1, o as ticks, r as quantileSorted, s as bisectRight, t as range } from "./d3-array.mjs";
 import { i as number_default, n as round_default, r as value_default, t as piecewise } from "./d3-interpolate.mjs";
 import { a as formatPrefix, i as format, n as precisionPrefix_default, o as formatSpecifier, r as precisionFixed_default, t as precisionRound_default } from "./d3-format.mjs";
-//#region node_modules/internmap/src/index.js
+//#region ../../node_modules/internmap/src/index.js
 var InternMap = class extends Map {
 	constructor(entries, key = keyof) {
 		super();
@@ -46,7 +46,7 @@ function keyof(value) {
 	return value !== null && typeof value === "object" ? value.valueOf() : value;
 }
 //#endregion
-//#region node_modules/d3-scale/src/init.js
+//#region ../../node_modules/d3-scale/src/init.js
 function initRange(domain, range) {
 	switch (arguments.length) {
 		case 0: break;
@@ -72,7 +72,7 @@ function initInterpolator(domain, interpolator) {
 	return this;
 }
 //#endregion
-//#region node_modules/d3-scale/src/ordinal.js
+//#region ../../node_modules/d3-scale/src/ordinal.js
 var implicit = Symbol("implicit");
 function ordinal() {
 	var index = new InternMap(), domain = [], range = [], unknown = implicit;
@@ -106,7 +106,7 @@ function ordinal() {
 	return scale;
 }
 //#endregion
-//#region node_modules/d3-scale/src/band.js
+//#region ../../node_modules/d3-scale/src/band.js
 function band() {
 	var scale = ordinal().unknown(void 0), domain = scale.domain, ordinalRange = scale.range, r0 = 0, r1 = 1, step, bandwidth, round = false, paddingInner = 0, paddingOuter = 0, align = .5;
 	delete scale.unknown;
@@ -171,19 +171,19 @@ function point() {
 	return pointish(band.apply(null, arguments).paddingInner(1));
 }
 //#endregion
-//#region node_modules/d3-scale/src/constant.js
+//#region ../../node_modules/d3-scale/src/constant.js
 function constants(x) {
 	return function() {
 		return x;
 	};
 }
 //#endregion
-//#region node_modules/d3-scale/src/number.js
+//#region ../../node_modules/d3-scale/src/number.js
 function number$1(x) {
 	return +x;
 }
 //#endregion
-//#region node_modules/d3-scale/src/continuous.js
+//#region ../../node_modules/d3-scale/src/continuous.js
 var unit = [0, 1];
 function identity$1(x) {
 	return x;
@@ -268,7 +268,7 @@ function continuous() {
 	return transformer$2()(identity$1, identity$1);
 }
 //#endregion
-//#region node_modules/d3-scale/src/tickFormat.js
+//#region ../../node_modules/d3-scale/src/tickFormat.js
 function tickFormat(start, stop, count, specifier) {
 	var step = tickStep(start, stop, count), precision;
 	specifier = formatSpecifier(specifier == null ? ",f" : specifier);
@@ -290,7 +290,7 @@ function tickFormat(start, stop, count, specifier) {
 	return format(specifier);
 }
 //#endregion
-//#region node_modules/d3-scale/src/linear.js
+//#region ../../node_modules/d3-scale/src/linear.js
 function linearish(scale) {
 	var domain = scale.domain;
 	scale.ticks = function(count) {
@@ -343,7 +343,7 @@ function linear() {
 	return linearish(scale);
 }
 //#endregion
-//#region node_modules/d3-scale/src/identity.js
+//#region ../../node_modules/d3-scale/src/identity.js
 function identity(domain) {
 	var unknown;
 	function scale(x) {
@@ -363,7 +363,7 @@ function identity(domain) {
 	return linearish(scale);
 }
 //#endregion
-//#region node_modules/d3-scale/src/nice.js
+//#region ../../node_modules/d3-scale/src/nice.js
 function nice(domain, interval) {
 	domain = domain.slice();
 	var i0 = 0, i1 = domain.length - 1, x0 = domain[i0], x1 = domain[i1], t;
@@ -376,7 +376,7 @@ function nice(domain, interval) {
 	return domain;
 }
 //#endregion
-//#region node_modules/d3-scale/src/log.js
+//#region ../../node_modules/d3-scale/src/log.js
 function transformLog(x) {
 	return Math.log(x);
 }
@@ -481,7 +481,7 @@ function log() {
 	return scale;
 }
 //#endregion
-//#region node_modules/d3-scale/src/symlog.js
+//#region ../../node_modules/d3-scale/src/symlog.js
 function transformSymlog(c) {
 	return function(x) {
 		return Math.sign(x) * Math.log1p(Math.abs(x / c));
@@ -507,7 +507,7 @@ function symlog() {
 	return initRange.apply(scale, arguments);
 }
 //#endregion
-//#region node_modules/d3-scale/src/pow.js
+//#region ../../node_modules/d3-scale/src/pow.js
 function transformPow(exponent) {
 	return function(x) {
 		return x < 0 ? -Math.pow(-x, exponent) : Math.pow(x, exponent);
@@ -541,7 +541,7 @@ function sqrt() {
 	return pow.apply(null, arguments).exponent(.5);
 }
 //#endregion
-//#region node_modules/d3-scale/src/radial.js
+//#region ../../node_modules/d3-scale/src/radial.js
 function square(x) {
 	return Math.sign(x) * x * x;
 }
@@ -582,7 +582,7 @@ function radial() {
 	return linearish(scale);
 }
 //#endregion
-//#region node_modules/d3-scale/src/quantile.js
+//#region ../../node_modules/d3-scale/src/quantile.js
 function quantile() {
 	var domain = [], range = [], thresholds = [], unknown;
 	function rescale() {
@@ -620,7 +620,7 @@ function quantile() {
 	return initRange.apply(scale, arguments);
 }
 //#endregion
-//#region node_modules/d3-scale/src/quantize.js
+//#region ../../node_modules/d3-scale/src/quantize.js
 function quantize() {
 	var x0 = 0, x1 = 1, n = 1, domain = [.5], range = [0, 1], unknown;
 	function scale(x) {
@@ -654,7 +654,7 @@ function quantize() {
 	return initRange.apply(linearish(scale), arguments);
 }
 //#endregion
-//#region node_modules/d3-scale/src/threshold.js
+//#region ../../node_modules/d3-scale/src/threshold.js
 function threshold() {
 	var domain = [.5], range = [0, 1], unknown, n = 1;
 	function scale(x) {
@@ -679,7 +679,7 @@ function threshold() {
 	return initRange.apply(scale, arguments);
 }
 //#endregion
-//#region node_modules/d3-time/src/interval.js
+//#region ../../node_modules/d3-time/src/interval.js
 var t0 = /* @__PURE__ */ new Date();
 var t1 = /* @__PURE__ */ new Date();
 function timeInterval(floori, offseti, count, field) {
@@ -734,7 +734,7 @@ function timeInterval(floori, offseti, count, field) {
 	return interval;
 }
 //#endregion
-//#region node_modules/d3-time/src/millisecond.js
+//#region ../../node_modules/d3-time/src/millisecond.js
 var millisecond = timeInterval(() => {}, (date, step) => {
 	date.setTime(+date + step);
 }, (start, end) => {
@@ -754,7 +754,7 @@ millisecond.every = (k) => {
 };
 millisecond.range;
 //#endregion
-//#region node_modules/d3-time/src/duration.js
+//#region ../../node_modules/d3-time/src/duration.js
 var durationSecond = 1e3;
 var durationMinute = durationSecond * 60;
 var durationHour = durationMinute * 60;
@@ -763,7 +763,7 @@ var durationWeek = durationDay * 7;
 var durationMonth = durationDay * 30;
 var durationYear = durationDay * 365;
 //#endregion
-//#region node_modules/d3-time/src/second.js
+//#region ../../node_modules/d3-time/src/second.js
 var second = timeInterval((date) => {
 	date.setTime(date - date.getMilliseconds());
 }, (date, step) => {
@@ -775,7 +775,7 @@ var second = timeInterval((date) => {
 });
 second.range;
 //#endregion
-//#region node_modules/d3-time/src/minute.js
+//#region ../../node_modules/d3-time/src/minute.js
 var timeMinute = timeInterval((date) => {
 	date.setTime(date - date.getMilliseconds() - date.getSeconds() * durationSecond);
 }, (date, step) => {
@@ -797,7 +797,7 @@ var utcMinute = timeInterval((date) => {
 });
 utcMinute.range;
 //#endregion
-//#region node_modules/d3-time/src/hour.js
+//#region ../../node_modules/d3-time/src/hour.js
 var timeHour = timeInterval((date) => {
 	date.setTime(date - date.getMilliseconds() - date.getSeconds() * durationSecond - date.getMinutes() * durationMinute);
 }, (date, step) => {
@@ -819,7 +819,7 @@ var utcHour = timeInterval((date) => {
 });
 utcHour.range;
 //#endregion
-//#region node_modules/d3-time/src/day.js
+//#region ../../node_modules/d3-time/src/day.js
 var timeDay = timeInterval((date) => date.setHours(0, 0, 0, 0), (date, step) => date.setDate(date.getDate() + step), (start, end) => (end - start - (end.getTimezoneOffset() - start.getTimezoneOffset()) * durationMinute) / durationDay, (date) => date.getDate() - 1);
 timeDay.range;
 var utcDay = timeInterval((date) => {
@@ -843,7 +843,7 @@ var unixDay = timeInterval((date) => {
 });
 unixDay.range;
 //#endregion
-//#region node_modules/d3-time/src/week.js
+//#region ../../node_modules/d3-time/src/week.js
 function timeWeekday(i) {
 	return timeInterval((date) => {
 		date.setDate(date.getDate() - (date.getDay() + 7 - i) % 7);
@@ -893,7 +893,7 @@ utcThursday.range;
 utcFriday.range;
 utcSaturday.range;
 //#endregion
-//#region node_modules/d3-time/src/month.js
+//#region ../../node_modules/d3-time/src/month.js
 var timeMonth = timeInterval((date) => {
 	date.setDate(1);
 	date.setHours(0, 0, 0, 0);
@@ -917,7 +917,7 @@ var utcMonth = timeInterval((date) => {
 });
 utcMonth.range;
 //#endregion
-//#region node_modules/d3-time/src/year.js
+//#region ../../node_modules/d3-time/src/year.js
 var timeYear = timeInterval((date) => {
 	date.setMonth(0, 1);
 	date.setHours(0, 0, 0, 0);
@@ -959,7 +959,7 @@ utcYear.every = (k) => {
 };
 utcYear.range;
 //#endregion
-//#region node_modules/d3-time/src/ticks.js
+//#region ../../node_modules/d3-time/src/ticks.js
 function ticker(year, month, week, day, hour, minute) {
 	const tickIntervals = [
 		[
@@ -1073,7 +1073,7 @@ function ticker(year, month, week, day, hour, minute) {
 var [utcTicks, utcTickInterval] = ticker(utcYear, utcMonth, utcSunday, unixDay, utcHour, utcMinute);
 var [timeTicks, timeTickInterval] = ticker(timeYear, timeMonth, timeSunday, timeDay, timeHour, timeMinute);
 //#endregion
-//#region node_modules/d3-time-format/src/locale.js
+//#region ../../node_modules/d3-time-format/src/locale.js
 function localDate(d) {
 	if (0 <= d.y && d.y < 100) {
 		var date = new Date(-1, d.m, d.d, d.H, d.M, d.S, d.L);
@@ -1622,7 +1622,7 @@ function formatUnixTimestampSeconds(d) {
 	return Math.floor(+d / 1e3);
 }
 //#endregion
-//#region node_modules/d3-time-format/src/defaultLocale.js
+//#region ../../node_modules/d3-time-format/src/defaultLocale.js
 var locale;
 var timeFormat;
 var utcFormat;
@@ -1687,7 +1687,7 @@ function defaultLocale(definition) {
 	return locale;
 }
 //#endregion
-//#region node_modules/d3-scale/src/time.js
+//#region ../../node_modules/d3-scale/src/time.js
 function date(t) {
 	return new Date(t);
 }
@@ -1727,12 +1727,12 @@ function time() {
 	return initRange.apply(calendar(timeTicks, timeTickInterval, timeYear, timeMonth, timeSunday, timeDay, timeHour, timeMinute, second, timeFormat).domain([new Date(2e3, 0, 1), new Date(2e3, 0, 2)]), arguments);
 }
 //#endregion
-//#region node_modules/d3-scale/src/utcTime.js
+//#region ../../node_modules/d3-scale/src/utcTime.js
 function utcTime() {
 	return initRange.apply(calendar(utcTicks, utcTickInterval, utcYear, utcMonth, utcSunday, utcDay, utcHour, utcMinute, second, utcFormat).domain([Date.UTC(2e3, 0, 1), Date.UTC(2e3, 0, 2)]), arguments);
 }
 //#endregion
-//#region node_modules/d3-scale/src/sequential.js
+//#region ../../node_modules/d3-scale/src/sequential.js
 function transformer$1() {
 	var x0 = 0, x1 = 1, t0, t1, k10, transform, interpolator = identity$1, clamp = false, unknown;
 	function scale(x) {
@@ -1798,7 +1798,7 @@ function sequentialSqrt() {
 	return sequentialPow.apply(null, arguments).exponent(.5);
 }
 //#endregion
-//#region node_modules/d3-scale/src/sequentialQuantile.js
+//#region ../../node_modules/d3-scale/src/sequentialQuantile.js
 function sequentialQuantile() {
 	var domain = [], interpolator = identity$1;
 	function scale(x) {
@@ -1826,7 +1826,7 @@ function sequentialQuantile() {
 	return initInterpolator.apply(scale, arguments);
 }
 //#endregion
-//#region node_modules/d3-scale/src/diverging.js
+//#region ../../node_modules/d3-scale/src/diverging.js
 function transformer() {
 	var x0 = 0, x1 = .5, x2 = 1, s = 1, t0, t1, t2, k10, k21, interpolator = identity$1, transform, clamp = false, unknown;
 	function scale(x) {

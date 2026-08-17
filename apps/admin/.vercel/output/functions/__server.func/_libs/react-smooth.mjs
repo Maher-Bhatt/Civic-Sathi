@@ -2,7 +2,7 @@ import { i as __toESM } from "../_runtime.mjs";
 import { n as require_react } from "./@radix-ui/react-compose-refs+[...].mjs";
 import { t as require_prop_types } from "./prop-types.mjs";
 import { t as deepEqual } from "./fast-equals.mjs";
-//#region node_modules/react-smooth/es6/setRafTimeout.js
+//#region ../../node_modules/react-smooth/es6/setRafTimeout.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_prop_types = /* @__PURE__ */ __toESM(require_prop_types());
 function safeRequestAnimationFrame(callback) {
@@ -20,7 +20,7 @@ function setRafTimeout(callback) {
 	});
 }
 //#endregion
-//#region node_modules/react-smooth/es6/AnimateManager.js
+//#region ../../node_modules/react-smooth/es6/AnimateManager.js
 function _typeof$3(o) {
 	"@babel/helpers - typeof";
 	return _typeof$3 = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o) {
@@ -98,7 +98,7 @@ function createAnimateManager() {
 	};
 }
 //#endregion
-//#region node_modules/react-smooth/es6/util.js
+//#region ../../node_modules/react-smooth/es6/util.js
 function _typeof$2(o) {
 	"@babel/helpers - typeof";
 	return _typeof$2 = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o) {
@@ -202,7 +202,7 @@ var warn = function warn(condition, format, a, b, c, d, e, f) {
 	}
 };
 //#endregion
-//#region node_modules/react-smooth/es6/easing.js
+//#region ../../node_modules/react-smooth/es6/easing.js
 function _slicedToArray$1(arr, i) {
 	return _arrayWithHoles$1(arr) || _iterableToArrayLimit$1(arr, i) || _unsupportedIterableToArray$2(arr, i) || _nonIterableRest$1();
 }
@@ -395,7 +395,7 @@ var configEasing = function configEasing() {
 	return null;
 };
 //#endregion
-//#region node_modules/react-smooth/es6/configUpdate.js
+//#region ../../node_modules/react-smooth/es6/configUpdate.js
 function _typeof$1(o) {
 	"@babel/helpers - typeof";
 	return _typeof$1 = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o) {
@@ -587,7 +587,7 @@ var configUpdate_default = (function(from, to, easing, duration, render) {
 	};
 });
 //#endregion
-//#region node_modules/react-smooth/es6/Animate.js
+//#region ../../node_modules/react-smooth/es6/Animate.js
 function _typeof(o) {
 	"@babel/helpers - typeof";
 	return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o) {
@@ -1020,7 +1020,7 @@ Animate.propTypes = {
 	onAnimationReStart: import_prop_types.default.func
 };
 //#endregion
-//#region node_modules/react-smooth/es6/index.js
+//#region ../../node_modules/react-smooth/es6/index.js
 var es6_default = Animate;
 //#endregion
 export { es6_default as t };

@@ -1,0 +1,1 @@
+import{g as e,y as t}from"./shared-store-CmMxIKce.js";var n=t(e(),1),r=n.createContext(null);function i(e){return n.useContext(r)}export{r as n,i as t};
