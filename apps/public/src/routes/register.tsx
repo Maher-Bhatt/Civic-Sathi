@@ -49,9 +49,10 @@ function RegisterPage() {
       setError(t("register.password.error", "Password must be at least 8 characters."));
       return;
     }
-    // Normalize phone: strip spaces so backend min_length=10 isn't tripped by formatted input
+    // Normalize phone and email before submission
     const normalizedForm = {
       ...form,
+      email: form.email.trim().toLowerCase(),
       phone: form.phone.replace(/\s+/g, ""),
     };
     setBusy(true);

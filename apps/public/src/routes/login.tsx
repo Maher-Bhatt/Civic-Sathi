@@ -45,7 +45,7 @@ function LoginPage() {
     setBusy(true);
     setError(null);
     try {
-      await signIn(email, password);
+      await signIn(email.trim().toLowerCase(), password);
       toast.success(t("login.success", "Signed in"));
       void navigate({ to: redirect ?? "/complaints" });
     } catch {

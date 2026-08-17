@@ -21,7 +21,7 @@ function AdminLogin() {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const success = await signIn(email, password);
+      const success = await signIn(email.trim().toLowerCase(), password);
       if (success) {
         toast.success("Signed in successfully");
         void navigate({ to: "/admin/dashboard" as any, replace: true });

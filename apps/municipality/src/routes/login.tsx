@@ -34,7 +34,7 @@ function MuniLoginPage() {
     setBusy(true);
     setError(null);
     try {
-      await signIn(email, password, city);
+      await signIn(email.trim().toLowerCase(), password, city);
       toast.success("Signed in to Municipal Intelligence");
       void navigate({ to: "/dashboard" as any });
     } catch {

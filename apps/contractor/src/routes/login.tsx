@@ -21,7 +21,7 @@ function ContractorLogin() {
     setLoading(true);
     setError(null);
     try {
-      await signIn(email, password);
+      await signIn(email.trim().toLowerCase(), password);
       navigate({ to: "/contractor/dashboard" as any });
     } catch (err: any) {
       setError(err.message || "Invalid email or password. Please check your credentials and try again.");
