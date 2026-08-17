@@ -30,7 +30,7 @@ import {
   SEED_SLA_RULES,
 } from "./mockData";
 
-export const API_BASE_URL = import.meta.env["VITE_API_BASE_URL"] ?? "https://janmind-backend.onrender.com";
+export const API_BASE_URL = import.meta.env["VITE_API_BASE_URL"] ?? "https://janmind.onrender.com";
 
 // ---------------------------------------------------------------- Utilities
 
@@ -427,27 +427,159 @@ export async function updateSLARule(id: string, patch: Partial<SLARule>, actorId
   return r;
 }
 
-// ================================================================ Admin Auth
+// ================================================================ Admin Auth — Real JWT backend
+
+const API_BASE_URL = (typeof import.meta !== "undefined" && (import.meta as any).env?.["VITE_API_BASE_URL"])
+  ? (import.meta as any).env["VITE_API_BASE_URL"]
+  : "https://janmind.onrender.com";
+
+const LS_TOKEN = "janmind.admin_token";
+const LS_USER  = "janmind.admin_user";
+
+export function getAdminToken(): string | null {
+  try { return localStorage.getItem(LS_TOKEN); } catch { return null; }
+}
+
+async function adminApiFetch<T>(path: string, options: RequestInit = {}): Promise<T> {
+  const token = getAdminToken();
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    ...(options.headers as Record<string, string> ?? {}),
+  };
+  const res = await fetch(`${API_BASE_URL}${path}`, { ...options, headers });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ detail: res.statusText }));
+    throw new Error((err as any).detail ?? res.statusText);
+  }
+  if (res.status === 204) return undefined as T;
+  return res.json() as Promise<T>;
+}
 
 export async function getAdminUser(): Promise<AdminUser | null> {
+  const token = getAdminToken();
+  if (!token) return null;
   try {
-    const raw = localStorage.getItem("janmind.admin_user");
-    return raw ? JSON.parse(raw) : null;
+    const raw = localStorage.getItem(LS_USER);
+    if (raw) return JSON.parse(raw) as AdminUser;
+    return null;
   } catch { return null; }
 }
 
-// ---------------------------------------------------------------- Admin auth
-// The admin portal is intentionally localStorage-backed for the MVP.
-// It uses seeded mock data and does NOT call the backend API.
-// This is by design: admin-level operations (contractor registry, SLA config,
-// audit logs) are managed locally until a dedicated admin API is built.
-export async function adminLogin(email: string, _password: string): Promise<AdminUser> {
+export async function adminLogin(email: string, password: string): Promise<AdminUser> {
   if (!email.trim()) throw new Error("Email is required");
-  const admin: AdminUser = { ...DEMO_ADMIN_USER, email };
-  localStorage.setItem("janmind.admin_user", JSON.stringify(admin));
+  if (!password.trim()) throw new Error("Password is required");
+
+  const res = await adminApiFetch<{ access_token: string; token_type: string; officer: any }>(
+    "/api/v1/auth/officer-login",
+    {
+      method: "POST",
+      body: JSON.stringify({ email: email.trim(), password }),
+    }
+  );
+
+  const allowedRoles = ["admin", "supervisor", "municipality", "officer"];
+  const role = (res.officer?.role ?? "").toLowerCase();
+  if (!allowedRoles.includes(role)) {
+    throw new Error("Access denied — admin or officer role required");
+  }
+
+  localStorage.setItem(LS_TOKEN, res.access_token);
+
+  const admin: AdminUser = {
+    id: res.officer.id ?? "admin",
+    name: res.officer.name ?? email,
+    email: res.officer.email ?? email,
+    role: res.officer.role ?? "admin",
+    department: res.officer.department ?? "Administration",
+    city: res.officer.city ?? undefined,
+    lastActive: new Date().toISOString(),
+    permissions: ["ALL"],
+  };
+  localStorage.setItem(LS_USER, JSON.stringify(admin));
   return admin;
 }
 
+// ── Real backend admin API helpers ────────────────────────────────────────
+
+/** List all users from the real backend. */
+export async function listAllUsers(filters?: { role?: string; city?: string; limit?: number }): Promise<any[]> {
+  const params = new URLSearchParams();
+  if (filters?.role)  params.set("role", filters.role);
+  if (filters?.city)  params.set("city", filters.city);
+  if (filters?.limit) params.set("limit", String(filters.limit));
+  return adminApiFetch<any[]>(`/api/v1/admin/users?${params.toString()}`);
+}
+
+/** Create any user (officer, municipality, contractor login, admin). */
+export async function createUser(data: {
+  name: string; email: string; password: string;
+  role: string; city?: string; department?: string; phone?: string;
+}): Promise<any> {
+  return adminApiFetch<any>("/api/v1/admin/users", { method: "POST", body: JSON.stringify(data) });
+}
+
+/** Update a user's details. */
+export async function updateUser(userId: string, patch: {
+  name?: string; role?: string; city?: string; department?: string; phone?: string; password?: string;
+}): Promise<any> {
+  return adminApiFetch<any>(`/api/v1/admin/users/${userId}`, { method: "PATCH", body: JSON.stringify(patch) });
+}
+
+/** Delete a user. */
+export async function deleteUser(userId: string): Promise<void> {
+  return adminApiFetch<void>(`/api/v1/admin/users/${userId}`, { method: "DELETE" });
+}
+
+/** Get platform-wide stats. */
+export async function getPlatformStats(): Promise<any> {
+  return adminApiFetch<any>("/api/v1/admin/stats");
+}
+
+/** List all contractors with their city registrations. */
+export async function listRealContractors(): Promise<any[]> {
+  return adminApiFetch<any[]>("/api/v1/admin/contractors");
+}
+
+/** Create a contractor with an optional login user. */
+export async function createRealContractor(data: {
+  company_name: string; contact_person: string; email: string; phone: string;
+  login_email?: string; login_password?: string;
+}): Promise<any> {
+  return adminApiFetch<any>("/api/v1/admin/contractors", { method: "POST", body: JSON.stringify(data) });
+}
+
+/** Approve / reject / revoke a contractor's city registration. */
+export async function updateContractorRegistration(
+  contractorId: string,
+  regId: string,
+  status: "APPROVED" | "REJECTED" | "REVOKED" | "PENDING",
+  categories?: string[],
+): Promise<any> {
+  return adminApiFetch<any>(
+    `/api/v1/admin/contractors/${contractorId}/registrations/${regId}`,
+    { method: "PATCH", body: JSON.stringify({ status, approved_categories: categories }) }
+  );
+}
+
+/** List all work orders across all cities (admin view). */
+export async function listRealWorkOrders(): Promise<any[]> {
+  return adminApiFetch<any[]>("/api/v1/admin/work-orders");
+}
+
+/** List all cities (admin). */
+export async function listAdminCities(): Promise<any[]> {
+  return adminApiFetch<any[]>("/api/v1/admin/cities");
+}
+
+/** Create a new city. */
+export async function createCity(name: string, stateCode: string): Promise<any> {
+  return adminApiFetch<any>("/api/v1/admin/cities", {
+    method: "POST",
+    body: JSON.stringify({ name, state_code: stateCode }),
+  });
+}
 export async function adminLogout(): Promise<void> {
-  localStorage.removeItem("janmind.admin_user");
+  localStorage.removeItem(LS_TOKEN);
+  localStorage.removeItem(LS_USER);
 }

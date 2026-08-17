@@ -16,6 +16,7 @@ import { Route as AdminAuditLogsRouteImport } from './routes/admin/audit-logs'
 import { Route as AdminDashboardRouteImport } from './routes/admin/dashboard'
 import { Route as AdminSettingsRouteImport } from './routes/admin/settings'
 import { Route as AdminSlaRouteImport } from './routes/admin/sla'
+import { Route as AdminUsersRouteImport } from './routes/admin/users'
 import { Route as AdminWorkOrdersOverviewRouteImport } from './routes/admin/work-orders-overview'
 import { Route as AdminContractorsIndexRouteImport } from './routes/admin/contractors/index'
 import { Route as AdminContractorsIdRouteImport } from './routes/admin/contractors/$id'
@@ -70,6 +71,11 @@ const AdminContractorsIdRoute = AdminContractorsIdRouteImport.update({
   path: '/contractors/$id',
   getParentRoute: () => AdminRouteRoute,
 } as any)
+const AdminUsersRoute = AdminUsersRouteImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -79,6 +85,7 @@ export interface FileRoutesByFullPath {
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/sla': typeof AdminSlaRoute
+  '/admin/users': typeof AdminUsersRoute
   '/admin/work-orders-overview': typeof AdminWorkOrdersOverviewRoute
   '/admin/contractors/$id': typeof AdminContractorsIdRoute
   '/admin/contractors/': typeof AdminContractorsIndexRoute
@@ -91,6 +98,7 @@ export interface FileRoutesByTo {
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/sla': typeof AdminSlaRoute
+  '/admin/users': typeof AdminUsersRoute
   '/admin/work-orders-overview': typeof AdminWorkOrdersOverviewRoute
   '/admin/contractors/$id': typeof AdminContractorsIdRoute
   '/admin/contractors': typeof AdminContractorsIndexRoute
@@ -104,6 +112,7 @@ export interface FileRoutesById {
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/sla': typeof AdminSlaRoute
+  '/admin/users': typeof AdminUsersRoute
   '/admin/work-orders-overview': typeof AdminWorkOrdersOverviewRoute
   '/admin/contractors/$id': typeof AdminContractorsIdRoute
   '/admin/contractors/': typeof AdminContractorsIndexRoute
@@ -118,6 +127,7 @@ export interface FileRouteTypes {
     | '/admin/dashboard'
     | '/admin/settings'
     | '/admin/sla'
+    | '/admin/users'
     | '/admin/work-orders-overview'
     | '/admin/contractors/$id'
     | '/admin/contractors/'
@@ -130,6 +140,7 @@ export interface FileRouteTypes {
     | '/admin/dashboard'
     | '/admin/settings'
     | '/admin/sla'
+    | '/admin/users'
     | '/admin/work-orders-overview'
     | '/admin/contractors/$id'
     | '/admin/contractors'
@@ -142,6 +153,7 @@ export interface FileRouteTypes {
     | '/admin/dashboard'
     | '/admin/settings'
     | '/admin/sla'
+    | '/admin/users'
     | '/admin/work-orders-overview'
     | '/admin/contractors/$id'
     | '/admin/contractors/'
@@ -225,6 +237,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminContractorsIdRouteImport
       parentRoute: typeof AdminRouteRoute
     }
+    '/admin/users': {
+      id: '/admin/users'
+      path: '/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AdminUsersRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
   }
 }
 
@@ -233,6 +252,7 @@ interface AdminRouteRouteChildren {
   AdminDashboardRoute: typeof AdminDashboardRoute
   AdminSettingsRoute: typeof AdminSettingsRoute
   AdminSlaRoute: typeof AdminSlaRoute
+  AdminUsersRoute: typeof AdminUsersRoute
   AdminWorkOrdersOverviewRoute: typeof AdminWorkOrdersOverviewRoute
   AdminContractorsIdRoute: typeof AdminContractorsIdRoute
   AdminContractorsIndexRoute: typeof AdminContractorsIndexRoute
@@ -243,6 +263,7 @@ const AdminRouteRouteChildren: AdminRouteRouteChildren = {
   AdminDashboardRoute: AdminDashboardRoute,
   AdminSettingsRoute: AdminSettingsRoute,
   AdminSlaRoute: AdminSlaRoute,
+  AdminUsersRoute: AdminUsersRoute,
   AdminWorkOrdersOverviewRoute: AdminWorkOrdersOverviewRoute,
   AdminContractorsIdRoute: AdminContractorsIdRoute,
   AdminContractorsIndexRoute: AdminContractorsIndexRoute,

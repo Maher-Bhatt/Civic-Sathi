@@ -1,9 +1,10 @@
 """Authentication API endpoints"""
 
 from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
-from typing import Annotated
+from typing import Annotated, Optional
 
 from app.core.database import get_db
 from app.core.security import (
@@ -12,10 +13,50 @@ from app.core.security import (
 from app.schemas.officer import OfficerLoginRequest, OfficerLoginResponse, OfficerInfo
 from app.schemas.citizen import CitizenRegisterRequest, CitizenLoginRequest, CitizenAuthResponse, CitizenInfo
 from app.models.user import User
-from uuid import uuid4
+from uuid import uuid4, UUID
 from pydantic import BaseModel, EmailStr, Field
 
 router = APIRouter()
+
+
+# ── /me — works for ALL authenticated users (citizen, officer, admin, contractor) ──
+
+class MeOut(BaseModel):
+    id: str
+    name: str
+    email: Optional[str] = None
+    phone: Optional[str] = None
+    role: str
+    city: Optional[str] = None
+    department: Optional[str] = None
+    ward: Optional[str] = None
+
+
+@router.get("/me", response_model=MeOut)
+def get_me(
+    credentials: HTTPAuthorizationCredentials = Depends(HTTPBearer()),
+    db: Session = Depends(get_db),
+):
+    """Return the current authenticated user's profile. Works for all roles."""
+    from app.core.security import SECRET_KEY, ALGORITHM
+    import jwt as pyjwt
+    try:
+        payload = pyjwt.decode(credentials.credentials, SECRET_KEY, algorithms=[ALGORITHM])
+    except Exception:
+        raise HTTPException(status_code=401, detail="Invalid or expired token")
+    user = db.get(User, UUID(payload["sub"]))
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    return MeOut(
+        id=str(user.id),
+        name=user.name,
+        email=user.email,
+        phone=user.phone,
+        role=user.role,
+        city=user.city,
+        department=user.department,
+        ward=user.ward,
+    )
 
 
 # ── Admin / Officer setup schema ──────────────────────────────────────────────

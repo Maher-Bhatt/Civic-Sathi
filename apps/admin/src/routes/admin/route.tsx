@@ -10,7 +10,8 @@ import {
   Settings,
   LogOut,
   Menu,
-  X
+  X,
+  Users,
 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -29,12 +30,13 @@ function AdminLayout() {
 
 
 const navItems = [
-  { label: "Dashboard", icon: LayoutDashboard, to: "/admin/dashboard" },
-  { label: "Contractors", icon: Building2, to: "/admin/contractors/" },
-  { label: "Work Orders", icon: ClipboardList, to: "/admin/work-orders-overview" },
-  { label: "SLA Config", icon: Timer, to: "/admin/sla" },
-  { label: "Audit Logs", icon: Shield, to: "/admin/audit-logs" },
-  { label: "Settings", icon: Settings, to: "/admin/settings" },
+  { label: "Dashboard",   icon: LayoutDashboard, to: "/admin/dashboard" },
+  { label: "Users",       icon: Users,           to: "/admin/users" },
+  { label: "Contractors", icon: Building2,        to: "/admin/contractors/" },
+  { label: "Work Orders", icon: ClipboardList,    to: "/admin/work-orders-overview" },
+  { label: "SLA Config",  icon: Timer,            to: "/admin/sla" },
+  { label: "Audit Logs",  icon: Shield,           to: "/admin/audit-logs" },
+  { label: "Settings",    icon: Settings,         to: "/admin/settings" },
 ];
 
 function AdminDashboard() {

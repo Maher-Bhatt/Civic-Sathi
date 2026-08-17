@@ -3,7 +3,7 @@ import type { CityId } from "@/services/cities";
 import type { User } from '@janmind/api-client';
 
 
-export const API_BASE_URL = import.meta.env["VITE_API_BASE_URL"] ?? "https://janmind-backend.onrender.com";
+export const API_BASE_URL = import.meta.env["VITE_API_BASE_URL"] ?? "https://janmind.onrender.com";
 
 const LS = {
   contractor: "janmind_contractor_user",
@@ -137,10 +137,29 @@ export async function updateWorkOrderStatus(id: string, status: string) {
   return await api.workOrders.updateStatus(id, status);
 }
 
-/* -------------------------------------------------------------- mock data for unimplemented */
+/* -------------------------------------------------------------- real contractor dashboard KPIs */
 export async function getDashboardKPIs() {
-  return { openWorkOrders: 12, pendingInspections: 4, recentPayments: 0 };
+  try {
+    const user = await getContractorUser();
+    const rawCity = user?.city || "vadodara";
+    const uuid = rawCity.includes('-') && rawCity.length === 36
+      ? rawCity
+      : (await resolveCityUuid(rawCity)) ?? rawCity;
+
+    const orders = await api.workOrders.list(uuid);
+    const all = Array.isArray(orders) ? orders : (orders as any)?.data ?? [];
+
+    const openWorkOrders      = all.filter((w: any) => !["COMPLETED","CANCELLED","CLOSED"].includes(w.status)).length;
+    const pendingInspections  = all.filter((w: any) => w.status === "INSPECTION_PENDING").length;
+    const completedWorkOrders = all.filter((w: any) => w.status === "COMPLETED").length;
+
+    return { openWorkOrders, pendingInspections, recentPayments: 0, completedWorkOrders };
+  } catch {
+    return { openWorkOrders: 0, pendingInspections: 0, recentPayments: 0, completedWorkOrders: 0 };
+  }
 }
+
+/* -------------------------------------------------------------- stubs for unused municipality-facing functions */
 export async function getLiveActivity() { return []; }
 export async function getSystemicIssues() { return []; }
 export async function getSystemicIssue() { return null; }

@@ -2,13 +2,37 @@
 
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
+from uuid import UUID
 
 from app.core.database import get_db
 from app.core.security import get_current_officer
 from app.schemas.analytics import DashboardSummary, MapDataResponse
 from app.services.analytics_service import AnalyticsService
+from app.models.user import User
 
 router = APIRouter()
+
+
+def _resolve_officer_city(token: dict, db: Session) -> str | None:
+    """
+    Return the city UUID string for the current officer.
+    Looks up the User row to get the city name, then resolves it to a City UUID.
+    Falls back to None (no city filter) for admin/supervisor roles.
+    """
+    role = token.get("role", "")
+    if role in ("admin", "supervisor"):
+        return None  # admins see all data
+
+    user = db.get(User, UUID(token["sub"]))
+    if not user or not user.city:
+        return None
+
+    from app.models.procurement import City
+    from sqlalchemy import select, func
+    city = db.execute(
+        select(City).where(func.lower(City.name) == user.city.lower())
+    ).scalar_one_or_none()
+    return str(city.id) if city else None
 
 
 @router.get("/summary", response_model=DashboardSummary)
@@ -17,8 +41,8 @@ def get_dashboard_summary(
     db: Session = Depends(get_db),
     current_officer: dict = Depends(get_current_officer),
 ):
-    """Get dashboard summary statistics (officer only, scoped to their city)"""
-    city_id = current_officer.get("city_id") or current_officer.get("sub")
+    """Get dashboard summary statistics (officer only, scoped to their city)."""
+    city_id = _resolve_officer_city(current_officer, db)
     service = AnalyticsService(db)
     return service.get_dashboard_summary(days=days, city_id=city_id)
 
@@ -29,8 +53,8 @@ def get_map_data(
     db: Session = Depends(get_db),
     current_officer: dict = Depends(get_current_officer),
 ):
-    """Get map data for Leaflet visualization (officer only, scoped to their city)"""
-    city_id = current_officer.get("city_id") or current_officer.get("sub")
+    """Get map data for Leaflet visualization (officer only, scoped to their city)."""
+    city_id = _resolve_officer_city(current_officer, db)
     service = AnalyticsService(db)
     return service.get_map_data(days=days, city_id=city_id)
 
@@ -40,6 +64,6 @@ def trigger_hotspot_detection(
     db: Session = Depends(get_db),
     current_officer: dict = Depends(get_current_officer),
 ):
-    """Run hotspot detection logic on civic issues (officer only)"""
+    """Run hotspot detection logic on civic issues (officer only)."""
     service = AnalyticsService(db)
     return service.detect_hotspots()

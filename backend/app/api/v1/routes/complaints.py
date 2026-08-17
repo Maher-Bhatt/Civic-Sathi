@@ -60,7 +60,14 @@ def list_complaints(
             if token_data and token_data.get("sub"):
                 officer = db.query(User).filter(User.id == token_data["sub"]).first()
                 if officer and officer.city:
-                    city_filter = officer.city
+                    # Resolve officer's city name → City UUID
+                    from app.models.procurement import City
+                    from sqlalchemy import func as sqlfunc
+                    city_obj = db.execute(
+                        select(City).where(sqlfunc.lower(City.name) == officer.city.lower())
+                    ).scalar_one_or_none()
+                    if city_obj:
+                        city_filter = str(city_obj.id)
     except Exception:
         pass
     

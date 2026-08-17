@@ -128,19 +128,10 @@ def verify_officer_key(
 def get_current_officer(token_data: dict = Depends(verify_token)) -> dict:
     """
     Get current officer from JWT token.
-    Verifies role is officer/supervisor/admin.
-    
-    Args:
-        token_data: Decoded JWT payload
-        
-    Returns:
-        Officer data from token
-        
-    Raises:
-        HTTPException: If role is not authorized
+    Verifies role is officer/supervisor/admin/municipality.
     """
     role = token_data.get("role")
-    if role not in ["officer", "supervisor", "admin"]:
+    if role not in ["officer", "supervisor", "admin", "municipality"]:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Access denied - officer role required"

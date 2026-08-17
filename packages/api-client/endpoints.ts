@@ -25,6 +25,9 @@ export class Endpoints {
       const raw = await this.client.post<any>('/api/v1/auth/register', data);
       return normaliseAuthResponse(raw);
     },
+    me: async (): Promise<User> => {
+      return this.client.get<any>('/api/v1/auth/me');
+    },
   };
 
   complaints = {

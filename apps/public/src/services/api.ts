@@ -2,7 +2,7 @@ import { APIClient, Endpoints } from '@janmind/api-client';
 import type { User, Complaint, IssueCategory, Severity, LocationInfo, AnalysisResult, ImageAnalysis, NearbyReport, AppNotification } from './types';
 import { CATEGORY_KEYWORDS, SEVERITY_KEYWORDS, DEMO_USER, NEARBY_REPORTS, SEED_NOTIFICATIONS, RELATED_SAMPLES, WARD_14 } from './mockData';
 
-export const API_BASE_URL = import.meta.env["VITE_API_BASE_URL"] ?? "https://janmind-backend.onrender.com";
+export const API_BASE_URL = import.meta.env["VITE_API_BASE_URL"] ?? "https://janmind.onrender.com";
 
 const LS = {
   user: "janmind.user",
@@ -79,8 +79,22 @@ export async function getCurrentUser(): Promise<User | null> {
   if (typeof window === "undefined") return null;
   const token = window.localStorage.getItem(LS.token);
   if (!token) return null;
-  // TODO: Add a real /me endpoint, for now return from cache
-  return read<User | null>(LS.user, null);
+  try {
+    const me = await api.auth.me();
+    const user: User = {
+      id: (me as any).id,
+      name: (me as any).name,
+      email: (me as any).email ?? "",
+      phone: (me as any).phone ?? "",
+      ward: (me as any).ward ?? "Unassigned",
+      notifyStatus: true,
+      notifyNearby: true,
+    };
+    write(LS.user, user);
+    return user;
+  } catch {
+    return read<User | null>(LS.user, null);
+  }
 }
 
 export async function logoutUser(): Promise<void> {
