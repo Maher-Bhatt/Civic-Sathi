@@ -49,21 +49,35 @@ function write<T>(key: string, value: T) {
 /* -------------------------------------------------------------- auth */
 
 export async function muniLogin(input: { email: string; password: string; city: CityId }): Promise<Officer> {
-  const res = await api.auth.loginOfficer(input);
-  if (typeof window !== "undefined") window.localStorage.setItem(LS.token, res.access_token);
-  // Normalise the backend user object into the Officer shape expected by the UI
-  const backendUser = res.user;
-  const officer: Officer = {
-    id: backendUser?.id ?? "",
-    name: backendUser?.name ?? "",
-    email: backendUser?.email ?? "",
-    department: (backendUser?.department as any) ?? "General",
-    role: "Officer",
-    city: input.city, // city comes from the login form, not the backend response
-    lastActive: new Date().toISOString(),
-  };
-  write(LS.officer, officer);
-  return officer;
+  try {
+    const res = await api.auth.loginOfficer(input);
+    if (typeof window !== "undefined") window.localStorage.setItem(LS.token, res.access_token);
+
+    // Backend returns { officer: {...} }, api-client normalizes to { user: {...} }
+    const backendUser = res.user || (res as any).officer;
+    if (!backendUser) {
+      throw new Error('Login failed: no user data returned');
+    }
+
+    const role = (backendUser.role || '').toLowerCase();
+    if (!['officer', 'supervisor', 'admin', 'municipality'].includes(role)) {
+      throw new Error('Access denied: this account does not have officer permissions');
+    }
+
+    const officer: Officer = {
+      id: backendUser.id ?? "",
+      name: backendUser.name ?? "",
+      email: backendUser.email ?? "",
+      department: (backendUser.department as any) ?? "General",
+      role: "Officer",
+      city: input.city,
+      lastActive: new Date().toISOString(),
+    };
+    write(LS.officer, officer);
+    return officer;
+  } catch (error: any) {
+    throw error;
+  }
 }
 
 export async function muniLogout(): Promise<void> {
@@ -81,7 +95,39 @@ export async function getMuniOfficer(): Promise<Officer | null> {
   if (typeof window === "undefined") return null;
   const token = window.localStorage.getItem(LS.token);
   if (!token) return null;
-  return read<Officer | null>(LS.officer, null);
+
+  // Return cached officer immediately so auth gate never bounces on slow network.
+  const cached = read<Officer | null>(LS.officer, null);
+
+  const refreshFromServer = async () => {
+    try {
+      const me = await api.auth.me();
+      if (me && ['officer', 'supervisor', 'admin', 'municipality'].includes((me as any).role || '')) {
+        const officer: Officer = {
+          id: (me as any).id,
+          name: (me as any).name,
+          email: (me as any).email ?? "",
+          department: ((me as any).department as any) ?? "General",
+          role: "Officer",
+          city: ((me as any).city as CityId) || "bengaluru",
+          lastActive: new Date().toISOString(),
+        };
+        write(LS.officer, officer);
+        return officer;
+      }
+    } catch {
+      // ignore — use cached
+    }
+    return null;
+  };
+
+  if (cached) {
+    // Refresh in background, don't await
+    refreshFromServer();
+    return cached;
+  }
+
+  return refreshFromServer();
 }
 
 /* ----------------------------------------------------------- dashboard */

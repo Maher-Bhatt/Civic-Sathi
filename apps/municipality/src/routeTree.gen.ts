@@ -28,11 +28,11 @@ import { Route as AuthDepartmentsIndexRouteImport } from './routes/_auth/departm
 import { Route as AuthDepartmentsIdRouteImport } from './routes/_auth/departments/$id'
 import { Route as AuthIssuesIndexRouteImport } from './routes/_auth/issues/index'
 import { Route as AuthIssuesIdRouteImport } from './routes/_auth/issues/$id'
+import { Route as AuthTendersIndexRouteImport } from './routes/_auth/tenders/index'
+import { Route as AuthTendersIdRouteImport } from './routes/_auth/tenders/$id'
+import { Route as AuthTendersNewRouteImport } from './routes/_auth/tenders/new'
 import { Route as AuthWorkOrdersIndexRouteImport } from './routes/_auth/work-orders/index'
 import { Route as AuthWorkOrdersIdRouteImport } from './routes/_auth/work-orders/$id'
-import { Route as AuthWorkPackagesIndexRouteImport } from './routes/_auth/work-packages/index'
-import { Route as AuthWorkPackagesIdRouteImport } from './routes/_auth/work-packages/$id'
-import { Route as AuthWorkPackagesNewRouteImport } from './routes/_auth/work-packages/new'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -128,6 +128,21 @@ const AuthIssuesIdRoute = AuthIssuesIdRouteImport.update({
   path: '/issues/$id',
   getParentRoute: () => AuthRouteRoute,
 } as any)
+const AuthTendersIndexRoute = AuthTendersIndexRouteImport.update({
+  id: '/tenders/',
+  path: '/tenders/',
+  getParentRoute: () => AuthRouteRoute,
+} as any)
+const AuthTendersIdRoute = AuthTendersIdRouteImport.update({
+  id: '/tenders/$id',
+  path: '/tenders/$id',
+  getParentRoute: () => AuthRouteRoute,
+} as any)
+const AuthTendersNewRoute = AuthTendersNewRouteImport.update({
+  id: '/tenders/new',
+  path: '/tenders/new',
+  getParentRoute: () => AuthRouteRoute,
+} as any)
 const AuthWorkOrdersIndexRoute = AuthWorkOrdersIndexRouteImport.update({
   id: '/work-orders/',
   path: '/work-orders/',
@@ -136,21 +151,6 @@ const AuthWorkOrdersIndexRoute = AuthWorkOrdersIndexRouteImport.update({
 const AuthWorkOrdersIdRoute = AuthWorkOrdersIdRouteImport.update({
   id: '/work-orders/$id',
   path: '/work-orders/$id',
-  getParentRoute: () => AuthRouteRoute,
-} as any)
-const AuthWorkPackagesIndexRoute = AuthWorkPackagesIndexRouteImport.update({
-  id: '/work-packages/',
-  path: '/work-packages/',
-  getParentRoute: () => AuthRouteRoute,
-} as any)
-const AuthWorkPackagesIdRoute = AuthWorkPackagesIdRouteImport.update({
-  id: '/work-packages/$id',
-  path: '/work-packages/$id',
-  getParentRoute: () => AuthRouteRoute,
-} as any)
-const AuthWorkPackagesNewRoute = AuthWorkPackagesNewRouteImport.update({
-  id: '/work-packages/new',
-  path: '/work-packages/new',
   getParentRoute: () => AuthRouteRoute,
 } as any)
 
@@ -168,16 +168,16 @@ export interface FileRoutesByFullPath {
   '/complaints/$id': typeof AuthComplaintsIdRoute
   '/departments/$id': typeof AuthDepartmentsIdRoute
   '/issues/$id': typeof AuthIssuesIdRoute
+  '/tenders/$id': typeof AuthTendersIdRoute
+  '/tenders/new': typeof AuthTendersNewRoute
   '/work-orders/$id': typeof AuthWorkOrdersIdRoute
-  '/work-packages/$id': typeof AuthWorkPackagesIdRoute
-  '/work-packages/new': typeof AuthWorkPackagesNewRoute
   '/areas/': typeof AuthAreasIndexRoute
   '/civic-issues/': typeof AuthCivicIssuesIndexRoute
   '/complaints/': typeof AuthComplaintsIndexRoute
   '/departments/': typeof AuthDepartmentsIndexRoute
   '/issues/': typeof AuthIssuesIndexRoute
+  '/tenders/': typeof AuthTendersIndexRoute
   '/work-orders/': typeof AuthWorkOrdersIndexRoute
-  '/work-packages/': typeof AuthWorkPackagesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -193,16 +193,16 @@ export interface FileRoutesByTo {
   '/complaints/$id': typeof AuthComplaintsIdRoute
   '/departments/$id': typeof AuthDepartmentsIdRoute
   '/issues/$id': typeof AuthIssuesIdRoute
+  '/tenders/$id': typeof AuthTendersIdRoute
+  '/tenders/new': typeof AuthTendersNewRoute
   '/work-orders/$id': typeof AuthWorkOrdersIdRoute
-  '/work-packages/$id': typeof AuthWorkPackagesIdRoute
-  '/work-packages/new': typeof AuthWorkPackagesNewRoute
   '/areas': typeof AuthAreasIndexRoute
   '/civic-issues': typeof AuthCivicIssuesIndexRoute
   '/complaints': typeof AuthComplaintsIndexRoute
   '/departments': typeof AuthDepartmentsIndexRoute
   '/issues': typeof AuthIssuesIndexRoute
+  '/tenders': typeof AuthTendersIndexRoute
   '/work-orders': typeof AuthWorkOrdersIndexRoute
-  '/work-packages': typeof AuthWorkPackagesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -220,16 +220,16 @@ export interface FileRoutesById {
   '/_auth/complaints/$id': typeof AuthComplaintsIdRoute
   '/_auth/departments/$id': typeof AuthDepartmentsIdRoute
   '/_auth/issues/$id': typeof AuthIssuesIdRoute
+  '/_auth/tenders/$id': typeof AuthTendersIdRoute
+  '/_auth/tenders/new': typeof AuthTendersNewRoute
   '/_auth/work-orders/$id': typeof AuthWorkOrdersIdRoute
-  '/_auth/work-packages/$id': typeof AuthWorkPackagesIdRoute
-  '/_auth/work-packages/new': typeof AuthWorkPackagesNewRoute
   '/_auth/areas/': typeof AuthAreasIndexRoute
   '/_auth/civic-issues/': typeof AuthCivicIssuesIndexRoute
   '/_auth/complaints/': typeof AuthComplaintsIndexRoute
   '/_auth/departments/': typeof AuthDepartmentsIndexRoute
   '/_auth/issues/': typeof AuthIssuesIndexRoute
+  '/_auth/tenders/': typeof AuthTendersIndexRoute
   '/_auth/work-orders/': typeof AuthWorkOrdersIndexRoute
-  '/_auth/work-packages/': typeof AuthWorkPackagesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -247,16 +247,16 @@ export interface FileRouteTypes {
     | '/complaints/$id'
     | '/departments/$id'
     | '/issues/$id'
+    | '/tenders/$id'
+    | '/tenders/new'
     | '/work-orders/$id'
-    | '/work-packages/$id'
-    | '/work-packages/new'
     | '/areas/'
     | '/civic-issues/'
     | '/complaints/'
     | '/departments/'
     | '/issues/'
+    | '/tenders/'
     | '/work-orders/'
-    | '/work-packages/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -272,16 +272,16 @@ export interface FileRouteTypes {
     | '/complaints/$id'
     | '/departments/$id'
     | '/issues/$id'
+    | '/tenders/$id'
+    | '/tenders/new'
     | '/work-orders/$id'
-    | '/work-packages/$id'
-    | '/work-packages/new'
     | '/areas'
     | '/civic-issues'
     | '/complaints'
     | '/departments'
     | '/issues'
+    | '/tenders'
     | '/work-orders'
-    | '/work-packages'
   id:
     | '__root__'
     | '/'
@@ -298,16 +298,16 @@ export interface FileRouteTypes {
     | '/_auth/complaints/$id'
     | '/_auth/departments/$id'
     | '/_auth/issues/$id'
+    | '/_auth/tenders/$id'
+    | '/_auth/tenders/new'
     | '/_auth/work-orders/$id'
-    | '/_auth/work-packages/$id'
-    | '/_auth/work-packages/new'
     | '/_auth/areas/'
     | '/_auth/civic-issues/'
     | '/_auth/complaints/'
     | '/_auth/departments/'
     | '/_auth/issues/'
+    | '/_auth/tenders/'
     | '/_auth/work-orders/'
-    | '/_auth/work-packages/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -451,6 +451,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthIssuesIdRouteImport
       parentRoute: typeof AuthRouteRoute
     }
+    '/_auth/tenders/': {
+      id: '/_auth/tenders/'
+      path: '/tenders'
+      fullPath: '/tenders/'
+      preLoaderRoute: typeof AuthTendersIndexRouteImport
+      parentRoute: typeof AuthRouteRoute
+    }
+    '/_auth/tenders/$id': {
+      id: '/_auth/tenders/$id'
+      path: '/tenders/$id'
+      fullPath: '/tenders/$id'
+      preLoaderRoute: typeof AuthTendersIdRouteImport
+      parentRoute: typeof AuthRouteRoute
+    }
+    '/_auth/tenders/new': {
+      id: '/_auth/tenders/new'
+      path: '/tenders/new'
+      fullPath: '/tenders/new'
+      preLoaderRoute: typeof AuthTendersNewRouteImport
+      parentRoute: typeof AuthRouteRoute
+    }
     '/_auth/work-orders/': {
       id: '/_auth/work-orders/'
       path: '/work-orders'
@@ -463,27 +484,6 @@ declare module '@tanstack/react-router' {
       path: '/work-orders/$id'
       fullPath: '/work-orders/$id'
       preLoaderRoute: typeof AuthWorkOrdersIdRouteImport
-      parentRoute: typeof AuthRouteRoute
-    }
-    '/_auth/work-packages/': {
-      id: '/_auth/work-packages/'
-      path: '/work-packages'
-      fullPath: '/work-packages/'
-      preLoaderRoute: typeof AuthWorkPackagesIndexRouteImport
-      parentRoute: typeof AuthRouteRoute
-    }
-    '/_auth/work-packages/$id': {
-      id: '/_auth/work-packages/$id'
-      path: '/work-packages/$id'
-      fullPath: '/work-packages/$id'
-      preLoaderRoute: typeof AuthWorkPackagesIdRouteImport
-      parentRoute: typeof AuthRouteRoute
-    }
-    '/_auth/work-packages/new': {
-      id: '/_auth/work-packages/new'
-      path: '/work-packages/new'
-      fullPath: '/work-packages/new'
-      preLoaderRoute: typeof AuthWorkPackagesNewRouteImport
       parentRoute: typeof AuthRouteRoute
     }
   }
@@ -501,16 +501,16 @@ interface AuthRouteRouteChildren {
   AuthComplaintsIdRoute: typeof AuthComplaintsIdRoute
   AuthDepartmentsIdRoute: typeof AuthDepartmentsIdRoute
   AuthIssuesIdRoute: typeof AuthIssuesIdRoute
+  AuthTendersIdRoute: typeof AuthTendersIdRoute
+  AuthTendersNewRoute: typeof AuthTendersNewRoute
   AuthWorkOrdersIdRoute: typeof AuthWorkOrdersIdRoute
-  AuthWorkPackagesIdRoute: typeof AuthWorkPackagesIdRoute
-  AuthWorkPackagesNewRoute: typeof AuthWorkPackagesNewRoute
   AuthAreasIndexRoute: typeof AuthAreasIndexRoute
   AuthCivicIssuesIndexRoute: typeof AuthCivicIssuesIndexRoute
   AuthComplaintsIndexRoute: typeof AuthComplaintsIndexRoute
   AuthDepartmentsIndexRoute: typeof AuthDepartmentsIndexRoute
   AuthIssuesIndexRoute: typeof AuthIssuesIndexRoute
+  AuthTendersIndexRoute: typeof AuthTendersIndexRoute
   AuthWorkOrdersIndexRoute: typeof AuthWorkOrdersIndexRoute
-  AuthWorkPackagesIndexRoute: typeof AuthWorkPackagesIndexRoute
 }
 
 const AuthRouteRouteChildren: AuthRouteRouteChildren = {
@@ -525,16 +525,16 @@ const AuthRouteRouteChildren: AuthRouteRouteChildren = {
   AuthComplaintsIdRoute: AuthComplaintsIdRoute,
   AuthDepartmentsIdRoute: AuthDepartmentsIdRoute,
   AuthIssuesIdRoute: AuthIssuesIdRoute,
+  AuthTendersIdRoute: AuthTendersIdRoute,
+  AuthTendersNewRoute: AuthTendersNewRoute,
   AuthWorkOrdersIdRoute: AuthWorkOrdersIdRoute,
-  AuthWorkPackagesIdRoute: AuthWorkPackagesIdRoute,
-  AuthWorkPackagesNewRoute: AuthWorkPackagesNewRoute,
   AuthAreasIndexRoute: AuthAreasIndexRoute,
   AuthCivicIssuesIndexRoute: AuthCivicIssuesIndexRoute,
   AuthComplaintsIndexRoute: AuthComplaintsIndexRoute,
   AuthDepartmentsIndexRoute: AuthDepartmentsIndexRoute,
   AuthIssuesIndexRoute: AuthIssuesIndexRoute,
+  AuthTendersIndexRoute: AuthTendersIndexRoute,
   AuthWorkOrdersIndexRoute: AuthWorkOrdersIndexRoute,
-  AuthWorkPackagesIndexRoute: AuthWorkPackagesIndexRoute,
 }
 
 const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(

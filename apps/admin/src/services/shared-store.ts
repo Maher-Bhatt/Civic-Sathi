@@ -459,18 +459,30 @@ async function adminApiFetch<T>(path: string, options: RequestInit = {}): Promis
 export async function getAdminUser(): Promise<AdminUser | null> {
   const token = getAdminToken();
   if (!token) return null;
+
+  // Return cached user immediately so auth gate never bounces on slow network.
   try {
     const raw = localStorage.getItem(LS_USER);
-    if (raw) return JSON.parse(raw) as AdminUser;
-    return null;
-  } catch { return null; }
+    if (raw) {
+      const cached = JSON.parse(raw) as AdminUser;
+      // Background refresh — don't await
+      adminApiFetch<any>("/api/v1/auth/me").then((me) => {
+        if (me) {
+          const updated: AdminUser = { ...cached, name: me.name, email: me.email, lastActive: new Date().toISOString() };
+          localStorage.setItem(LS_USER, JSON.stringify(updated));
+        }
+      }).catch(() => {/* ignore */});
+      return cached;
+    }
+  } catch { /* ignore */ }
+  return null;
 }
 
 export async function adminLogin(email: string, password: string): Promise<AdminUser> {
   if (!email.trim()) throw new Error("Email is required");
   if (!password.trim()) throw new Error("Password is required");
 
-  const res = await adminApiFetch<{ access_token: string; token_type: string; officer: any }>(
+  const res = await adminApiFetch<{ access_token: string; token_type: string; officer?: any; user?: any }>(
     "/api/v1/auth/officer-login",
     {
       method: "POST",
@@ -478,8 +490,12 @@ export async function adminLogin(email: string, password: string): Promise<Admin
     }
   );
 
+  // Backend returns { officer: {...} } — normalise
+  const userData = res.officer || res.user;
+  if (!userData) throw new Error("Login failed: no user data returned");
+
   const allowedRoles = ["admin", "supervisor", "municipality", "officer"];
-  const role = (res.officer?.role ?? "").toLowerCase();
+  const role = (userData.role ?? "").toLowerCase();
   if (!allowedRoles.includes(role)) {
     throw new Error("Access denied — admin or officer role required");
   }
@@ -487,12 +503,12 @@ export async function adminLogin(email: string, password: string): Promise<Admin
   localStorage.setItem(LS_TOKEN, res.access_token);
 
   const admin: AdminUser = {
-    id: res.officer.id ?? "admin",
-    name: res.officer.name ?? email,
-    email: res.officer.email ?? email,
-    role: res.officer.role ?? "admin",
-    department: res.officer.department ?? "Administration",
-    city: res.officer.city ?? undefined,
+    id: userData.id ?? "admin",
+    name: userData.name ?? email,
+    email: userData.email ?? email,
+    role: userData.role ?? "admin",
+    department: userData.department ?? "Administration",
+    city: userData.city ?? undefined,
     lastActive: new Date().toISOString(),
     permissions: ["ALL"],
   };

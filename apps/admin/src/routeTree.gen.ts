@@ -56,6 +56,11 @@ const AdminSlaRoute = AdminSlaRouteImport.update({
   path: '/sla',
   getParentRoute: () => AdminRouteRoute,
 } as any)
+const AdminUsersRoute = AdminUsersRouteImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
 const AdminWorkOrdersOverviewRoute = AdminWorkOrdersOverviewRouteImport.update({
   id: '/work-orders-overview',
   path: '/work-orders-overview',
@@ -69,11 +74,6 @@ const AdminContractorsIndexRoute = AdminContractorsIndexRouteImport.update({
 const AdminContractorsIdRoute = AdminContractorsIdRouteImport.update({
   id: '/contractors/$id',
   path: '/contractors/$id',
-  getParentRoute: () => AdminRouteRoute,
-} as any)
-const AdminUsersRoute = AdminUsersRouteImport.update({
-  id: '/users',
-  path: '/users',
   getParentRoute: () => AdminRouteRoute,
 } as any)
 
@@ -216,6 +216,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminSlaRouteImport
       parentRoute: typeof AdminRouteRoute
     }
+    '/admin/users': {
+      id: '/admin/users'
+      path: '/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AdminUsersRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
     '/admin/work-orders-overview': {
       id: '/admin/work-orders-overview'
       path: '/work-orders-overview'
@@ -235,13 +242,6 @@ declare module '@tanstack/react-router' {
       path: '/contractors/$id'
       fullPath: '/admin/contractors/$id'
       preLoaderRoute: typeof AdminContractorsIdRouteImport
-      parentRoute: typeof AdminRouteRoute
-    }
-    '/admin/users': {
-      id: '/admin/users'
-      path: '/users'
-      fullPath: '/admin/users'
-      preLoaderRoute: typeof AdminUsersRouteImport
       parentRoute: typeof AdminRouteRoute
     }
   }

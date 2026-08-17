@@ -43,16 +43,25 @@ function write<T>(key: string, value: T) {
 
 /* -------------------------------------------------------------- auth */
 export async function contractorLogin(input: { email: string; password: string; city: CityId }): Promise<User> {
-  const res = await api.auth.loginCitizen({ email: input.email, password: input.password });
-  if (!res.user) {
-    throw new Error('Login failed: no user returned');
+  try {
+    const res = await api.auth.loginCitizen({ email: input.email, password: input.password });
+
+    // Normalize response - backend sends 'citizen' but api-client normalizes to 'user'
+    const userData = res.user || res.citizen || (res as any).citizen;
+    if (!userData) {
+      throw new Error('Login failed: no user data returned');
+    }
+
+    if (userData.role !== 'contractor') {
+      throw new Error('Access denied: this account is not registered as a contractor');
+    }
+
+    if (typeof window !== "undefined") window.localStorage.setItem(LS.token, res.access_token);
+    write(LS.contractor, userData);
+    return userData;
+  } catch (error: any) {
+    throw error;
   }
-  if (res.user.role !== 'contractor') {
-    throw new Error('Access denied: this account is not registered as a contractor');
-  }
-  if (typeof window !== "undefined") window.localStorage.setItem(LS.token, res.access_token);
-  write(LS.contractor, res.user);
-  return res.user;
 }
 
 export async function contractorLogout(): Promise<void> {
@@ -70,7 +79,29 @@ export async function getContractorUser(): Promise<User | null> {
   if (typeof window === "undefined") return null;
   const token = window.localStorage.getItem(LS.token);
   if (!token) return null;
-  return read<User | null>(LS.contractor, null);
+
+  // Return cached user immediately so auth gate never bounces on slow network.
+  const cached = read<User | null>(LS.contractor, null);
+
+  const refreshFromServer = async () => {
+    try {
+      const me = await api.auth.me();
+      if (me && (me as any).role === 'contractor') {
+        write(LS.contractor, me);
+        return me as User;
+      }
+    } catch {
+      // ignore — use cached
+    }
+    return null;
+  };
+
+  if (cached) {
+    refreshFromServer(); // background refresh, don't await
+    return cached;
+  }
+
+  return refreshFromServer();
 }
 
 // For compatibility with old components

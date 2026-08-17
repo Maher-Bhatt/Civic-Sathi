@@ -62,39 +62,81 @@ export function detectSeverity(text: string): Severity {
 }
 
 export async function registerUser(input: any): Promise<User> {
-  const res = await api.auth.registerCitizen(input);
-  if (typeof window !== "undefined") window.localStorage.setItem(LS.token, res.access_token);
-  write(LS.user, res.user);
-  return res.user as any;
+  try {
+    const res = await api.auth.registerCitizen(input);
+    if (typeof window !== "undefined") window.localStorage.setItem(LS.token, res.access_token);
+    
+    // Normalize response - backend sends 'citizen' but api-client normalizes to 'user'
+    const userData = res.user || res.citizen || (res as any).citizen;
+    if (!userData) {
+      console.error('No user data in registration response:', res);
+      throw new Error('Registration succeeded but no user data returned');
+    }
+    
+    write(LS.user, userData);
+    return userData as any;
+  } catch (error: any) {
+    console.error('Registration error:', error);
+    throw error;
+  }
 }
 
 export async function loginUser(input: { email: string; password: string }): Promise<User> {
-  const res = await api.auth.loginCitizen(input);
-  if (typeof window !== "undefined") window.localStorage.setItem(LS.token, res.access_token);
-  write(LS.user, res.user);
-  return res.user as any;
+  try {
+    const res = await api.auth.loginCitizen(input);
+    if (typeof window !== "undefined") window.localStorage.setItem(LS.token, res.access_token);
+    
+    // Normalize response - backend sends 'citizen' but api-client normalizes to 'user'
+    const userData = res.user || res.citizen || (res as any).citizen;
+    if (!userData) {
+      console.error('No user data in login response:', res);
+      throw new Error('Login succeeded but no user data returned');
+    }
+    
+    write(LS.user, userData);
+    return userData as any;
+  } catch (error: any) {
+    console.error('Login error:', error);
+    throw error;
+  }
 }
 
 export async function getCurrentUser(): Promise<User | null> {
   if (typeof window === "undefined") return null;
   const token = window.localStorage.getItem(LS.token);
   if (!token) return null;
-  try {
-    const me = await api.auth.me();
-    const user: User = {
-      id: (me as any).id,
-      name: (me as any).name,
-      email: (me as any).email ?? "",
-      phone: (me as any).phone ?? "",
-      ward: (me as any).ward ?? "Unassigned",
-      notifyStatus: true,
-      notifyNearby: true,
-    };
-    write(LS.user, user);
-    return user;
-  } catch {
-    return read<User | null>(LS.user, null);
+
+  // Return cached user immediately so auth gate never bounces on slow network.
+  // Then refresh from /me in background and update the cache.
+  const cached = read<User | null>(LS.user, null);
+
+  const refreshFromServer = async () => {
+    try {
+      const me = await api.auth.me();
+      const user: User = {
+        id: (me as any).id,
+        name: (me as any).name,
+        email: (me as any).email ?? "",
+        phone: (me as any).phone ?? "",
+        ward: (me as any).ward ?? "Unassigned",
+        notifyStatus: true,
+        notifyNearby: true,
+      };
+      write(LS.user, user);
+      return user;
+    } catch {
+      return null;
+    }
+  };
+
+  if (cached) {
+    // Refresh in background, don't await
+    refreshFromServer();
+    return cached;
   }
+
+  // No cache — must wait for server
+  return refreshFromServer();
 }
 
 export async function logoutUser(): Promise<void> {
