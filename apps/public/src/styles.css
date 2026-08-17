@@ -5,8 +5,9 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
- * JANMIND design system — charcoal / grey / muted green.
- * Never introduce blue, purple, gold, neon or rainbow hues.
+ * JANMIND Indian Civic Design System
+ * Palette: Saffron (#FF9933) + India Green (#138808) + Ashoka Navy
+ * Fonts: Inter (Latin) + Noto Sans Devanagari (Hindi/Gujarati)
  */
 
 @theme inline {
@@ -18,7 +19,7 @@
   --radius-3xl: calc(var(--radius) + 12px);
   --radius-4xl: calc(var(--radius) + 16px);
 
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Inter", "Noto Sans Devanagari", ui-sans-serif, system-ui, sans-serif;
 
   --color-background: var(--background);
   --color-background-secondary: var(--background-secondary);
@@ -48,7 +49,7 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
   --color-chart-1: var(--primary);
-  --color-chart-2: var(--secondary-accent);
+  --color-chart-2: var(--saffron);
   --color-chart-3: var(--warning);
   --color-chart-4: var(--critical);
   --color-chart-5: var(--muted-foreground);
@@ -57,96 +58,106 @@
   --shadow-glass-lg: var(--shadow-lift);
 }
 
+/* -- LIGHT MODE ? Ivory + India Green primary -- */
 :root {
   --radius: 0.75rem;
 
-  --background: oklch(0.9531 0.0034 145.55);
-  --background-secondary: oklch(0.9281 0.0042 157.17);
-  --surface: rgb(255 255 255 / 0.72);
-  --surface-elevated: rgb(255 255 255 / 0.84);
-  --glass: rgb(255 255 255 / 0.55);
-  --glass-strong: rgb(255 255 255 / 0.72);
-  --glass-border: rgb(255 255 255 / 0.72);
+  /* India flag inspired palette */
+  --saffron:       #FF9933;   /* Indian saffron */
+  --india-green:   #138808;   /* Indian flag green */
+  --ashoka-blue:   #0047AB;   /* Ashoka Chakra blue */
+  --ivory:         #FFF8F0;   /* warm ivory ? feels like parchment */
 
-  --foreground: oklch(0.2188 0.0072 229.22);
-  --card: rgb(255 255 255 / 0.72);
-  --card-foreground: oklch(0.2188 0.0072 229.22);
-  --popover: oklch(0.9731 0.0034 145.55);
-  --popover-foreground: oklch(0.2188 0.0072 229.22);
+  --background:           #FFF8F0;   /* warm ivory */
+  --background-secondary: #FFF1E0;
+  --surface:              rgb(255 248 240 / 0.85);
+  --surface-elevated:     rgb(255 255 255 / 0.95);
+  --glass:                rgb(255 248 240 / 0.65);
+  --glass-strong:         rgb(255 255 255 / 0.82);
+  --glass-border:         rgb(255 153 51 / 0.22);  /* saffron tinted border */
 
-  --primary: oklch(0.55 0.15 142); /* India Green */
-  --primary-foreground: oklch(0.9731 0.0034 145.55);
-  --secondary-accent: oklch(0.65 0.18 45); /* Saffron */
-  --secondary: oklch(0.9281 0.0042 157.17);
-  --secondary-foreground: oklch(0.2188 0.0072 229.22);
+  --foreground:           #1A0A00;  /* deep warm black */
+  --card:                 rgb(255 255 255 / 0.82);
+  --card-foreground:      #1A0A00;
+  --popover:              #FFF8F0;
+  --popover-foreground:   #1A0A00;
 
-  --muted: oklch(0.9281 0.0042 157.17);
-  --muted-foreground: oklch(0.4901 0.0138 231.89);
-  --subtle-foreground: oklch(0.6038 0.0123 226.1);
+  /* India Green as primary */
+  --primary:              #138808;
+  --primary-foreground:   #FFFFFF;
+  /* Saffron as accent */
+  --secondary-accent:     #FF9933;
+  --secondary:            #FFF1E0;
+  --secondary-foreground: #1A0A00;
 
-  --accent: oklch(0.9281 0.0042 157.17);
-  --accent-foreground: oklch(0.2188 0.0072 229.22);
+  --muted:                #FFF1E0;
+  --muted-foreground:     #6B4A2A;
+  --subtle-foreground:    #9B7050;
 
-  --critical: oklch(0.5615 0.138 22.57);
-  --warning: oklch(0.5853 0.0849 73.98);
-  --success: oklch(0.5321 0.079 166.23);
-  --destructive: oklch(0.5615 0.138 22.57);
-  --destructive-foreground: oklch(0.9731 0.0034 145.55);
+  --accent:               #FFF1E0;
+  --accent-foreground:    #1A0A00;
 
-  --border: rgb(30 38 40 / 0.12);
-  --input: rgb(30 38 40 / 0.14);
-  --ring: oklch(0.55 0.15 142);
+  --critical:  #D32F2F;   /* red alert */
+  --warning:   #F57C00;   /* orange warning */
+  --success:   #2E7D32;   /* deep green success */
+  --destructive:             #D32F2F;
+  --destructive-foreground:  #FFFFFF;
 
-  --shadow-soft: 0 1px 2px rgb(24 32 30 / 0.05), 0 8px 24px -12px rgb(24 32 30 / 0.18);
-  --shadow-lift: 0 2px 4px rgb(24 32 30 / 0.06), 0 18px 40px -16px rgb(24 32 30 / 0.26);
-  --ambient-1: rgb(57 123 98 / 0.16);
-  --ambient-2: rgb(120 132 128 / 0.22);
+  --border:       rgb(26 10 0 / 0.14);
+  --input:        rgb(26 10 0 / 0.16);
+  --ring:         #138808;
+
+  --shadow-soft: 0 1px 3px rgb(26 10 0 / 0.08), 0 8px 24px -12px rgb(26 10 0 / 0.18);
+  --shadow-lift: 0 2px 6px rgb(26 10 0 / 0.10), 0 18px 40px -16px rgb(26 10 0 / 0.26);
+  --ambient-1: rgb(19 136 8 / 0.12);   /* green glow */
+  --ambient-2: rgb(255 153 51 / 0.14); /* saffron glow */
 }
 
+/* -- DARK MODE ? Deep Navy + Saffron/Green accents -- */
 .dark {
-  --background: oklch(0.18 0.05 260); /* Deep Navy */
-  --background-secondary: oklch(0.20 0.05 260);
-  --surface: oklch(0.1973 0.0087 240.37);
-  --surface-elevated: oklch(0.2226 0.0095 234.21);
-  --glass: rgb(255 255 255 / 0.045);
-  --glass-strong: rgb(255 255 255 / 0.065);
-  --glass-border: rgb(255 255 255 / 0.1);
+  --background:           #0D1117;  /* deep navy-charcoal */
+  --background-secondary: #111827;
+  --surface:              #161D2B;
+  --surface-elevated:     #1E2738;
+  --glass:                rgb(255 255 255 / 0.04);
+  --glass-strong:         rgb(255 255 255 / 0.07);
+  --glass-border:         rgb(255 153 51 / 0.18);  /* saffron border in dark */
 
-  --foreground: oklch(0.9654 0.0025 165.08);
-  --card: oklch(0.1973 0.0087 240.37);
-  --card-foreground: oklch(0.9654 0.0025 165.08);
-  --popover: oklch(0.1973 0.0087 240.37);
-  --popover-foreground: oklch(0.9654 0.0025 165.08);
+  --foreground:           #F5E6D0;  /* warm cream text */
+  --card:                 #161D2B;
+  --card-foreground:      #F5E6D0;
+  --popover:              #161D2B;
+  --popover-foreground:   #F5E6D0;
 
-  --primary: oklch(0.55 0.15 142);
-  --primary-foreground: oklch(0.1433 0.0057 246.44);
-  --secondary-accent: oklch(0.65 0.18 45);
-  --secondary: oklch(0.2226 0.0095 234.21);
-  --secondary-foreground: oklch(0.9654 0.0025 165.08);
+  /* Brighter India Green for dark mode */
+  --primary:              #22C55E;  /* vivid green ? visible on dark */
+  --primary-foreground:   #0D1117;
+  --secondary-accent:     #FFAA44;  /* warm saffron for dark */
+  --secondary:            #1E2738;
+  --secondary-foreground: #F5E6D0;
 
-  --muted: oklch(0.2226 0.0095 234.21);
-  --muted-foreground: oklch(0.7272 0.0099 232.42);
-  --subtle-foreground: oklch(0.5599 0.0133 231.83);
+  --muted:                #1E2738;
+  --muted-foreground:     #A08060;
+  --subtle-foreground:    #705840;
 
-  --accent: oklch(0.2226 0.0095 234.21);
-  --accent-foreground: oklch(0.9654 0.0025 165.08);
+  --accent:               #1E2738;
+  --accent-foreground:    #F5E6D0;
 
-  --critical: oklch(0.6065 0.1397 22.11);
-  --warning: oklch(0.6593 0.0882 74.56);
-  --success: oklch(0.6052 0.0843 166.93);
-  --destructive: oklch(0.6065 0.1397 22.11);
-  --destructive-foreground: oklch(0.9654 0.0025 165.08);
+  --critical:  #FF5252;  /* bright red on dark */
+  --warning:   #FFB300;  /* amber warning */
+  --success:   #4CAF50;  /* medium green */
+  --destructive:             #FF5252;
+  --destructive-foreground:  #0D1117;
 
-  --border: oklch(0.288 0.0123 232.89);
-  --input: oklch(0.288 0.0123 232.89);
-  --ring: oklch(0.6052 0.0843 166.93);
+  --border:  rgb(255 153 51 / 0.12);
+  --input:   rgb(255 153 51 / 0.14);
+  --ring:    #22C55E;
 
-  --shadow-soft: 0 1px 2px rgb(0 0 0 / 0.4), 0 10px 28px -14px rgb(0 0 0 / 0.7);
-  --shadow-lift: 0 2px 6px rgb(0 0 0 / 0.45), 0 22px 48px -18px rgb(0 0 0 / 0.8);
-  --ambient-1: rgb(74 146 119 / 0.14);
-  --ambient-2: rgb(255 255 255 / 0.05);
+  --shadow-soft: 0 1px 2px rgb(0 0 0 / 0.5), 0 10px 28px -14px rgb(0 0 0 / 0.7);
+  --shadow-lift: 0 2px 6px rgb(0 0 0 / 0.5), 0 22px 48px -18px rgb(0 0 0 / 0.8);
+  --ambient-1: rgb(34 197 94 / 0.10);   /* green glow */
+  --ambient-2: rgb(255 170 68 / 0.10);  /* saffron glow */
 }
-
 @layer base {
   * {
     border-color: var(--color-border);
@@ -370,7 +381,7 @@
   border-radius: 999px;
 }
 
-/* Ward polygon tooltip — glass, premium styling */
+/* Ward polygon tooltip - glass, premium styling */
 .jm-map .leaflet-tooltip.jm-ward-tooltip {
   background: var(--glass-strong) !important;
   border: 1px solid var(--glass-border) !important;
@@ -649,10 +660,6 @@
 
 .jm-map-shell.jm-map-loading {
   min-height: 12rem;
-}
-
-.jm-hero-glow {
-  position: relative;
 }
 
 .jm-glitch-text {

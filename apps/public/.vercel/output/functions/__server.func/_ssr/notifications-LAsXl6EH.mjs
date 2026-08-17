@@ -3,7 +3,7 @@ import { n as require_react } from "../_libs/@radix-ui/react-compose-refs+[...].
 import { r as require_jsx_runtime, t as useQuery } from "../_libs/react+tanstack__react-query.mjs";
 import { F as CircleCheck, H as Bell, T as Info, r as UserCheck } from "../_libs/lucide-react.mjs";
 import { g as Link, v as useNavigate } from "../_libs/@tanstack/react-router+[...].mjs";
-import { C as markNotificationsRead, D as cn, O as useI18n, a as LoadingState, d as SectionLabel, i as ErrorState, l as GlassCard, n as AuthGate, r as EmptyState, u as PageShell, x as getNotifications } from "./router-DtTrPgUG.mjs";
+import { C as markNotificationsRead, D as cn, O as useI18n, a as LoadingState, d as SectionLabel, i as ErrorState, l as GlassCard, n as AuthGate, r as EmptyState, u as PageShell, x as getNotifications } from "./router-CQgd20Vz.mjs";
 //#region node_modules/.nitro/vite/services/ssr/assets/notifications-LAsXl6EH.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();

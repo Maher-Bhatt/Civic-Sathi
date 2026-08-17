@@ -2,7 +2,7 @@ import { i as __toESM } from "../_runtime.mjs";
 import { n as require_react } from "../_libs/@radix-ui/react-compose-refs+[...].mjs";
 import { n as require_jsx_runtime } from "../_libs/react+tanstack__react-query.mjs";
 import { C as Building2, m as MapPin, n as Users, o as Shield, v as FileText, x as CircleAlert, y as ClipboardList } from "../_libs/lucide-react.mjs";
-import { h as listRealWorkOrders, u as getPlatformStats, y as useI18n } from "./router-16xjq5MR.mjs";
+import { h as listRealWorkOrders, u as getPlatformStats, y as useI18n } from "./router-CQ5svONI.mjs";
 import { n as SectionLabel, t as GlassCard } from "./glass-card-CoNgXAty.mjs";
 import { n as LoadingState } from "./states-BSypa5q_.mjs";
 import { a as Bar, c as Tooltip, i as CartesianGrid, n as YAxis, o as Cell, r as XAxis, s as ResponsiveContainer, t as BarChart } from "../_libs/recharts+[...].mjs";
