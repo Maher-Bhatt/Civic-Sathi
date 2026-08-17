@@ -14878,4 +14878,4 @@ var AreaChart = generateCategoricalChart({
 	formatAxisMap
 });
 //#endregion
-export { YAxis as a, Line as c, Pie as d, Cell as f, LineChart as i, CartesianGrid as l, Tooltip as m, PieChart as n, XAxis as o, ResponsiveContainer as p, BarChart as r, Area as s, AreaChart as t, Bar as u };
+export { Tooltip as _, YAxis as a, Line as c, Bar as d, Pie as f, ResponsiveContainer as g, Cell as h, LineChart as i, CartesianGrid as l, Label as m, PieChart as n, XAxis as o, LabelList as p, BarChart as r, Area as s, AreaChart as t, ReferenceLine as u, Legend as v };

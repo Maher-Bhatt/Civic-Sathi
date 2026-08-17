@@ -5,12 +5,24 @@ import type { WorkOrder } from "@/services/types";
 import { GlassCard, SectionLabel } from "@/components/ui/glass-card";
 import { LoadingState } from "@/components/ui/states";
 import { ClipboardList } from "lucide-react";
-import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, CartesianGrid, Cell } from "recharts";
 
 export const Route = createFileRoute("/admin/work-orders-overview")({
   head: () => ({ meta: [{ title: "Work Orders Overview | Admin | JANMIND" }] }),
   component: WorkOrdersOverview,
 });
+
+const WO_STATUS_COLORS: Record<string, string> = {
+  "DRAFT":              "#74b9ff",
+  "PUBLISHED":          "#0984e3",
+  "IN_PROGRESS":        "#fdcb6e",
+  "COMPLETED":          "#00b894",
+  "INSPECTION_PENDING": "#a29bfe",
+  "INSPECTION_FAILED":  "#d63031",
+  "REWORK":             "#e17055",
+  "CANCELLED":          "#636e72",
+  "CLOSED":             "#55efc4",
+};
 
 function WorkOrdersOverview() {
   const [workOrders, setWorkOrders] = useState<WorkOrder[]>([]);
@@ -52,16 +64,51 @@ function WorkOrdersOverview() {
 
       <GlassCard className="p-6">
         <SectionLabel>Global Work Order Distribution</SectionLabel>
-        <div className="h-64 mt-4 w-full">
+        <p className="text-xs text-[var(--muted-foreground)] mb-4">Status breakdown across all cities</p>
+        <div className="h-72 mt-2 w-full">
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 20 }}>
-              <XAxis dataKey="name" stroke="var(--muted-foreground)" fontSize={12} tickLine={false} axisLine={false} />
-              <YAxis stroke="var(--muted-foreground)" fontSize={12} tickLine={false} axisLine={false} />
-              <Tooltip
-                cursor={{ fill: 'var(--surface-elevated)' }}
-                contentStyle={{ backgroundColor: 'var(--background)', border: '1px solid var(--glass-border)', borderRadius: '8px' }}
+            <BarChart data={chartData} margin={{ top: 10, right: 20, left: -10, bottom: 20 }}>
+              <defs>
+                {chartData.map((entry, i) => (
+                  <linearGradient key={entry.name} id={`woGrad${i}`} x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor={WO_STATUS_COLORS[entry.name] ?? "#3d9970"} stopOpacity={0.95} />
+                    <stop offset="100%" stopColor={WO_STATUS_COLORS[entry.name] ?? "#3d9970"} stopOpacity={0.55} />
+                  </linearGradient>
+                ))}
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.07)" />
+              <XAxis
+                dataKey="name"
+                stroke="var(--muted-foreground)"
+                fontSize={11}
+                tickLine={false}
+                axisLine={false}
+                tick={{ fill: "var(--muted-foreground)" }}
               />
-              <Bar dataKey="count" fill="var(--foreground)" radius={[4, 4, 0, 0]} />
+              <YAxis
+                stroke="var(--muted-foreground)"
+                fontSize={11}
+                tickLine={false}
+                axisLine={false}
+                tick={{ fill: "var(--muted-foreground)" }}
+              />
+              <Tooltip
+                cursor={{ fill: "rgba(255,255,255,0.04)" }}
+                contentStyle={{
+                  backgroundColor: "var(--surface-elevated)",
+                  border: "1px solid var(--glass-border)",
+                  borderRadius: "10px",
+                  fontSize: "12px",
+                  boxShadow: "0 8px 32px rgba(0,0,0,0.4)",
+                }}
+                formatter={(value: any) => [value, "Work Orders"]}
+                labelStyle={{ color: "var(--foreground)", fontWeight: 600 }}
+              />
+              <Bar dataKey="count" radius={[6, 6, 0, 0]} maxBarSize={60}>
+                {chartData.map((entry, i) => (
+                  <Cell key={entry.name} fill={`url(#woGrad${i})`} />
+                ))}
+              </Bar>
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -89,12 +136,16 @@ function WorkOrdersOverview() {
                   <td className="py-3 px-4">{wo.cityId} - {wo.department}</td>
                   <td className="py-3 px-4 text-xs">{wo.contractorName || wo.contractorId}</td>
                   <td className="py-3 px-4">
-                    <span className="px-2.5 py-1 rounded text-xs font-medium border border-[var(--glass-border)] bg-[var(--surface-elevated)]">
-                      {wo.status}
+                    <span className="px-2.5 py-1 rounded-full text-xs font-semibold" style={{
+                      background: `${WO_STATUS_COLORS[wo.status] ?? "#3d9970"}20`,
+                      color: WO_STATUS_COLORS[wo.status] ?? "#3d9970",
+                      border: `1px solid ${WO_STATUS_COLORS[wo.status] ?? "#3d9970"}40`,
+                    }}>
+                      {wo.status.replace(/_/g, " ")}
                     </span>
                   </td>
                   <td className="py-3 px-4 text-[var(--muted-foreground)] text-xs">
-                    {wo.slaDeadline ? new Date(wo.slaDeadline).toLocaleDateString() : 'N/A'}
+                    {wo.slaDeadline ? new Date(wo.slaDeadline).toLocaleDateString() : "N/A"}
                   </td>
                 </tr>
               ))}

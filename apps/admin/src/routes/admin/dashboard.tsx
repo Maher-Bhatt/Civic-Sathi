@@ -7,12 +7,24 @@ import {
   Building2, ClipboardList, Shield, Timer, Users, AlertCircle,
   CheckCircle2, ShieldAlert, Activity, FileText, MapPin,
 } from "lucide-react";
-import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, CartesianGrid, Cell } from "recharts";
 
 export const Route = createFileRoute("/admin/dashboard")({
   head: () => ({ meta: [{ title: "Admin Dashboard | JANMIND" }] }),
   component: AdminDashboardContent,
 });
+
+const STATUS_COLORS: Record<string, string> = {
+  "DRAFT":              "#6c757d",
+  "PUBLISHED":          "#3498db",
+  "IN PROGRESS":        "#f39c12",
+  "COMPLETED":          "#27ae60",
+  "INSPECTION PENDING": "#9b59b6",
+  "INSPECTION FAILED":  "#e74c3c",
+  "REWORK":             "#e67e22",
+  "CANCELLED":          "#95a5a6",
+  "CLOSED":             "#1abc9c",
+};
 
 function AdminDashboardContent() {
   const [stats, setStats]       = useState<any>(null);
@@ -70,9 +82,9 @@ function AdminDashboardContent() {
         <StatCard title="Total Users"      value={stats?.total_users ?? 0}         icon={Users} />
         <StatCard title="Officers"         value={stats?.total_officers ?? 0}      icon={Shield} />
         <StatCard title="Contractors"      value={stats?.total_contractors ?? 0}   icon={Building2} />
-        <StatCard title="Active Work"      value={stats?.active_work_orders ?? 0}  icon={ClipboardList} />
+        <StatCard title="Active Work"      value={stats?.active_work_orders ?? 0}  icon={ClipboardList} accent="warning" />
         <StatCard title="Open Complaints"  value={stats?.open_complaints ?? 0}     icon={FileText} alert={(stats?.open_complaints ?? 0) > 100} />
-        <StatCard title="Cities"           value={stats?.total_cities ?? 0}        icon={MapPin} />
+        <StatCard title="Cities"           value={stats?.total_cities ?? 0}        icon={MapPin} accent="success" />
       </div>
 
       {/* Complaints breakdown */}
@@ -83,7 +95,7 @@ function AdminDashboardContent() {
         </GlassCard>
         <GlassCard className="p-5">
           <p className="text-[var(--muted-foreground)] text-sm">Resolved</p>
-          <p className="text-3xl font-bold mt-1 text-green-400">{(stats?.resolved_complaints ?? 0).toLocaleString()}</p>
+          <p className="text-3xl font-bold mt-1" style={{ color: "#27ae60" }}>{(stats?.resolved_complaints ?? 0).toLocaleString()}</p>
         </GlassCard>
         <GlassCard className="p-5">
           <p className="text-[var(--muted-foreground)] text-sm">Civic Issues</p>
@@ -95,13 +107,35 @@ function AdminDashboardContent() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <GlassCard className="p-5">
           <SectionLabel>Work Order Status Distribution</SectionLabel>
-          <div className="h-48 mt-4">
+          <div className="h-56 mt-4">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={chartData}>
-                <XAxis dataKey="name" tick={{ fontSize: 10 }} />
-                <YAxis tick={{ fontSize: 10 }} />
-                <Tooltip />
-                <Bar dataKey="count" fill="var(--primary)" radius={[4,4,0,0]} />
+              <BarChart data={chartData} margin={{ top: 5, right: 20, left: -15, bottom: 5 }}>
+                <defs>
+                  {chartData.map((entry, i) => (
+                    <linearGradient key={entry.name} id={`barGrad${i}`} x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor={STATUS_COLORS[entry.name] ?? "#3d9970"} stopOpacity={1} />
+                      <stop offset="100%" stopColor={STATUS_COLORS[entry.name] ?? "#3d9970"} stopOpacity={0.6} />
+                    </linearGradient>
+                  ))}
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.08)" />
+                <XAxis dataKey="name" tick={{ fontSize: 10, fill: "var(--muted-foreground)" }} tickLine={false} axisLine={false} />
+                <YAxis tick={{ fontSize: 10, fill: "var(--muted-foreground)" }} tickLine={false} axisLine={false} />
+                <Tooltip
+                  cursor={{ fill: "rgba(255,255,255,0.05)" }}
+                  contentStyle={{
+                    backgroundColor: "var(--surface-elevated)",
+                    border: "1px solid var(--glass-border)",
+                    borderRadius: "10px",
+                    fontSize: "12px",
+                    boxShadow: "0 8px 32px rgba(0,0,0,0.3)",
+                  }}
+                />
+                <Bar dataKey="count" radius={[6, 6, 0, 0]} maxBarSize={56}>
+                  {chartData.map((entry, i) => (
+                    <Cell key={entry.name} fill={`url(#barGrad${i})`} />
+                  ))}
+                </Bar>
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -119,11 +153,11 @@ function AdminDashboardContent() {
                   <p className="font-medium text-sm truncate">{wo.title}</p>
                   <p className="text-xs text-[var(--muted-foreground)] truncate">{wo.contractor_name} · {wo.city}</p>
                 </div>
-                <span className={`ml-3 flex-shrink-0 text-[10px] font-semibold px-2 py-0.5 rounded uppercase border ${
-                  wo.status === "COMPLETED" ? "bg-green-500/20 text-green-400 border-green-500/30" :
-                  wo.status === "IN_PROGRESS" ? "bg-blue-500/20 text-blue-400 border-blue-500/30" :
-                  "bg-[var(--surface-elevated)] text-[var(--muted-foreground)] border-[var(--glass-border)]"
-                }`}>
+                <span className="ml-3 flex-shrink-0 text-[10px] font-semibold px-2.5 py-0.5 rounded-full" style={{
+                  background: `${STATUS_COLORS[wo.status.replace(/_/g, " ")] ?? "#3d9970"}20`,
+                  color: STATUS_COLORS[wo.status.replace(/_/g, " ")] ?? "#3d9970",
+                  border: `1px solid ${STATUS_COLORS[wo.status.replace(/_/g, " ")] ?? "#3d9970"}40`,
+                }}>
                   {wo.status.replace(/_/g, " ")}
                 </span>
               </div>
@@ -135,20 +169,29 @@ function AdminDashboardContent() {
   );
 }
 
-function StatCard({ title, value, icon: Icon, suffix = "", alert = false }: {
-  title: string; value: number; icon: any; suffix?: string; alert?: boolean;
+function StatCard({ title, value, icon: Icon, suffix = "", alert = false, accent = "default" }: {
+  title: string; value: number; icon: any; suffix?: string; alert?: boolean; accent?: string;
 }) {
+  const accentColor = alert
+    ? "var(--critical)"
+    : accent === "success"
+    ? "#27ae60"
+    : accent === "warning"
+    ? "#f39c12"
+    : "var(--primary)";
+
   return (
-    <GlassCard className="p-4">
-      <div className="flex items-center justify-between mb-2">
+    <GlassCard className="p-4 relative overflow-hidden">
+      <div className="absolute top-0 left-0 w-1 h-full rounded-l-xl" style={{ background: accentColor }} />
+      <div className="flex items-center justify-between mb-2 pl-2">
         <p className="text-[10px] uppercase tracking-wider text-[var(--muted-foreground)]">{title}</p>
-        <Icon className={`w-4 h-4 ${alert ? "text-[var(--critical)]" : "text-[var(--muted-foreground)]"}`} />
+        <div className="p-1.5 rounded-lg" style={{ background: `${accentColor}20` }}>
+          <Icon className="w-3.5 h-3.5" style={{ color: accentColor }} />
+        </div>
       </div>
-      <p className={`text-2xl font-bold ${alert ? "text-[var(--critical)]" : ""}`}>
+      <p className="text-2xl font-bold pl-2" style={{ color: alert ? accentColor : undefined }}>
         {value.toLocaleString()}{suffix}
       </p>
     </GlassCard>
   );
 }
-
-

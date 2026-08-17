@@ -5,12 +5,31 @@ import { getContractor } from "@/services/api";
 import { Contractor } from "@/services/types";
 import { GlassCard, SectionLabel } from "@/components/ui/glass-card";
 import { LoadingState, ErrorState } from "@/components/ui/states";
-import { BarChart, Bar, XAxis, YAxis, Tooltip as RechartsTooltip, ResponsiveContainer, Cell } from "recharts";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip as RechartsTooltip,
+  ResponsiveContainer,
+  Cell,
+  CartesianGrid,
+  ReferenceLine,
+  Legend,
+} from "recharts";
 
 export const Route = createFileRoute("/contractor/performance")({
   head: () => ({ meta: [{ title: "Performance - Contractor Portal" }] }),
   component: ContractorPerformance,
 });
+
+const TOOLTIP_STYLE = {
+  backgroundColor: "var(--surface-elevated)",
+  border: "1px solid var(--glass-border)",
+  borderRadius: "10px",
+  fontSize: "12px",
+  boxShadow: "0 8px 32px rgba(0,0,0,0.3)",
+};
 
 function ContractorPerformance() {
   const { contractor: contractorAuth } = useContractorAuth();
@@ -39,7 +58,7 @@ function ContractorPerformance() {
 
   const score = contractor.performanceScore;
   const scoreColor = score >= 80 ? "var(--success)" : score >= 60 ? "var(--warning)" : "var(--critical)";
-  
+
   // Mock history data for charts based on score
   const mockHistoryData = [
     { name: "Q1", score: Math.max(0, score - 15) },
@@ -47,6 +66,10 @@ function ContractorPerformance() {
     { name: "Q3", score: Math.min(100, score + 5) },
     { name: "Q4", score: score },
   ];
+
+  const slaValue = Math.min(100, score + 12);
+  const ftipValue = Math.min(100, score + 5);
+  const otcValue = Math.min(100, score + 8);
 
   return (
     <div className="space-y-6 animate-fade">
@@ -56,11 +79,11 @@ function ContractorPerformance() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        
+
         {/* Main Score Gauge */}
         <GlassCard className="p-8 glass-strong flex flex-col items-center justify-center text-center lift">
           <SectionLabel className="mb-6">Overall Rating</SectionLabel>
-          <div 
+          <div
             className="relative w-48 h-48 rounded-full border-8 flex items-center justify-center shadow-lg"
             style={{ borderColor: scoreColor, backgroundColor: "var(--surface)" }}
           >
@@ -81,25 +104,52 @@ function ContractorPerformance() {
           <GlassCard className="p-5 glass-strong flex flex-col justify-between">
             <div className="text-[var(--muted-foreground)] text-sm mb-2">SLA Compliance</div>
             <div className="text-3xl font-light text-[var(--foreground)]">
-              {Math.min(100, score + 12)}%
+              {slaValue}%
             </div>
-            <div className="text-xs text-[var(--success)] mt-2">Target: &gt; 90%</div>
+            <div className="text-xs text-[var(--success)] mt-1">Target: &gt; 90%</div>
+            <div className="mt-3 h-1.5 w-full rounded-full bg-[var(--glass-border)]">
+              <div
+                className="h-full rounded-full transition-all duration-1000"
+                style={{
+                  width: `${slaValue}%`,
+                  background: "linear-gradient(90deg, #1abc9c, #27ae60)",
+                }}
+              />
+            </div>
           </GlassCard>
-          
+
           <GlassCard className="p-5 glass-strong flex flex-col justify-between">
             <div className="text-[var(--muted-foreground)] text-sm mb-2">First-Time Inspection Pass</div>
             <div className="text-3xl font-light text-[var(--foreground)]">
-              {Math.min(100, score + 5)}%
+              {ftipValue}%
             </div>
-            <div className="text-xs text-[var(--warning)] mt-2">Target: &gt; 85%</div>
+            <div className="text-xs text-[var(--warning)] mt-1">Target: &gt; 85%</div>
+            <div className="mt-3 h-1.5 w-full rounded-full bg-[var(--glass-border)]">
+              <div
+                className="h-full rounded-full transition-all duration-1000"
+                style={{
+                  width: `${ftipValue}%`,
+                  background: "linear-gradient(90deg, #f39c12, #e67e22)",
+                }}
+              />
+            </div>
           </GlassCard>
-          
+
           <GlassCard className="p-5 glass-strong flex flex-col justify-between">
             <div className="text-[var(--muted-foreground)] text-sm mb-2">On-Time Completion</div>
             <div className="text-3xl font-light text-[var(--foreground)]">
-              {Math.min(100, score + 8)}%
+              {otcValue}%
             </div>
-            <div className="text-xs text-[var(--success)] mt-2">Target: &gt; 95%</div>
+            <div className="text-xs text-[var(--success)] mt-1">Target: &gt; 95%</div>
+            <div className="mt-3 h-1.5 w-full rounded-full bg-[var(--glass-border)]">
+              <div
+                className="h-full rounded-full transition-all duration-1000"
+                style={{
+                  width: `${otcValue}%`,
+                  background: "linear-gradient(90deg, #1abc9c, #27ae60)",
+                }}
+              />
+            </div>
           </GlassCard>
 
           <GlassCard className="p-5 glass-strong flex flex-col justify-between bg-[var(--surface-elevated)]/50">
@@ -107,7 +157,16 @@ function ContractorPerformance() {
             <div className="text-3xl font-semibold text-[var(--primary)]">
               {Math.floor(Math.random() * 50) + 120}
             </div>
-            <div className="text-xs text-[var(--muted-foreground)] mt-2">Lifetime completed</div>
+            <div className="text-xs text-[var(--muted-foreground)] mt-1">Lifetime completed</div>
+            <div className="mt-3 h-1.5 w-full rounded-full bg-[var(--glass-border)]">
+              <div
+                className="h-full rounded-full transition-all duration-1000"
+                style={{
+                  width: "78%",
+                  background: "linear-gradient(90deg, #3498db, #1abc9c)",
+                }}
+              />
+            </div>
           </GlassCard>
         </div>
       </div>
@@ -118,15 +177,39 @@ function ContractorPerformance() {
           <div className="flex-1 w-full h-full min-h-0">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={mockHistoryData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="scoreGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#1abc9c" stopOpacity={1} />
+                    <stop offset="100%" stopColor="#1abc9c" stopOpacity={0.5} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.08)" />
                 <XAxis dataKey="name" stroke="var(--muted-foreground)" fontSize={12} tickLine={false} axisLine={false} />
                 <YAxis stroke="var(--muted-foreground)" fontSize={12} tickLine={false} axisLine={false} domain={[0, 100]} />
-                <RechartsTooltip 
-                  cursor={{ fill: 'var(--surface-elevated)' }}
-                  contentStyle={{ backgroundColor: 'var(--surface)', borderColor: 'var(--glass-border)', borderRadius: '8px' }} 
+                <RechartsTooltip
+                  cursor={{ fill: "rgba(255,255,255,0.05)" }}
+                  contentStyle={TOOLTIP_STYLE}
                 />
-                <Bar dataKey="score" radius={[4, 4, 0, 0]}>
+                <Legend />
+                <ReferenceLine
+                  y={80}
+                  stroke="#27ae60"
+                  strokeDasharray="4 4"
+                  label={{ value: "Target: 80", fill: "#27ae60", fontSize: 10, position: "insideTopRight" }}
+                />
+                <Bar dataKey="score" radius={[6, 6, 0, 0]} animationDuration={1200} animationEasing="ease-out">
                   {mockHistoryData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill="var(--primary)" fillOpacity={0.7 + (index * 0.1)} />
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={
+                        entry.score >= 80
+                          ? "#27ae60"
+                          : entry.score >= 60
+                          ? "#f39c12"
+                          : "#e74c3c"
+                      }
+                      fillOpacity={0.85}
+                    />
                   ))}
                 </Bar>
               </BarChart>
@@ -147,7 +230,7 @@ function ContractorPerformance() {
                 ))}
               </div>
             </div>
-            
+
             <div className="pt-4 border-t border-[var(--glass-border)]">
               <div className="text-xs text-[var(--muted-foreground)] mb-1">Service Wards</div>
               <div className="flex flex-wrap gap-2">

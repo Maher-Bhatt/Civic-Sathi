@@ -6,6 +6,8 @@ import {
   BarChart,
   CartesianGrid,
   Cell,
+  LabelList,
+  Legend,
   Pie,
   PieChart,
   XAxis,
@@ -22,7 +24,7 @@ import type { AreaActivity, DailyTrendPoint, IssueChartPoint, IssueKey } from "@
 import { AREA_HEALTH_HEX, ISSUE_LABEL } from "@/services/geography";
 
 const trendConfig = {
-  reports: { label: "Reports", color: "var(--color-chart-1)" },
+  reports: { label: "Reports", color: "#1abc9c" },
 } satisfies ChartConfig;
 
 const issueConfig = {
@@ -65,25 +67,35 @@ export function ActivityTrendChart({
     <ChartContainer config={trendConfig} className={cn("h-[180px] w-full", className)}>
       <AreaChart data={data} margin={{ top: 8, right: 8, left: -18, bottom: 0 }}>
         <defs>
-          <linearGradient id="muniTrendFill" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="var(--color-chart-1)" stopOpacity={0.45} />
-            <stop offset="100%" stopColor="var(--color-chart-1)" stopOpacity={0.02} />
+          <linearGradient id="adminTrendFill" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#1abc9c" stopOpacity={0.45} />
+            <stop offset="50%" stopColor="#1abc9c" stopOpacity={0.2} />
+            <stop offset="100%" stopColor="#1abc9c" stopOpacity={0.02} />
           </linearGradient>
         </defs>
         <CartesianGrid vertical={false} strokeDasharray="3 3" />
         <XAxis dataKey="day" tickLine={false} axisLine={false} tickMargin={8} />
         <YAxis tickLine={false} axisLine={false} tickMargin={4} width={28} />
-        <ChartTooltip content={<ChartTooltipContent />} />
+        <ChartTooltip
+          content={<ChartTooltipContent />}
+          contentStyle={{
+            backgroundColor: "var(--surface-elevated)",
+            border: "1px solid var(--glass-border)",
+            borderRadius: "10px",
+            boxShadow: "0 8px 32px rgba(0,0,0,0.3)",
+          }}
+        />
+        <Legend />
         <Area
           type="monotone"
           dataKey="reports"
-          stroke="var(--color-chart-1)"
-          strokeWidth={2.5}
-          fill="url(#muniTrendFill)"
+          stroke="#1abc9c"
+          strokeWidth={3}
+          fill="url(#adminTrendFill)"
           animationDuration={1400}
           animationEasing="ease-out"
-          dot={{ r: 3, fill: "var(--color-chart-1)", strokeWidth: 0 }}
-          activeDot={{ r: 6, strokeWidth: 2, stroke: "var(--background)" }}
+          dot={{ r: 4, fill: "#1abc9c", stroke: "#fff", strokeWidth: 2 }}
+          activeDot={{ r: 8, fill: "#1abc9c", stroke: "#fff", strokeWidth: 2 }}
         />
       </AreaChart>
     </ChartContainer>
@@ -98,8 +110,8 @@ export function IssueBreakdownChart({
   className?: string | undefined;
 }) {
   return (
-    <ChartContainer config={issueConfig} className={cn("h-[200px] w-full", className)}>
-      <BarChart data={data} layout="vertical" margin={{ top: 4, right: 8, left: 4, bottom: 0 }}>
+    <ChartContainer config={issueConfig} className={cn("h-[220px] w-full", className)}>
+      <BarChart data={data} layout="vertical" margin={{ top: 4, right: 48, left: 4, bottom: 0 }}>
         <CartesianGrid horizontal={false} strokeDasharray="3 3" />
         <XAxis type="number" hide />
         <YAxis
@@ -110,8 +122,26 @@ export function IssueBreakdownChart({
           width={88}
           tick={{ fontSize: 10 }}
         />
-        <ChartTooltip content={<ChartTooltipContent hideLabel />} />
-        <Bar dataKey="count" radius={[0, 6, 6, 0]} animationDuration={1200} animationEasing="ease-out">
+        <ChartTooltip
+          content={<ChartTooltipContent hideLabel />}
+          contentStyle={{
+            backgroundColor: "var(--surface-elevated)",
+            border: "1px solid var(--glass-border)",
+            borderRadius: "10px",
+            boxShadow: "0 8px 32px rgba(0,0,0,0.3)",
+          }}
+        />
+        <Bar
+          dataKey="count"
+          radius={[0, 6, 6, 0]}
+          animationDuration={1200}
+          animationEasing="ease-out"
+        >
+          <LabelList
+            dataKey="count"
+            position="right"
+            style={{ fill: "var(--muted-foreground)", fontSize: 10 }}
+          />
           {data.map((d) => (
             <Cell key={d.issue} fill={d.fill} className="jm-bar-cell" />
           ))}
@@ -133,21 +163,43 @@ export function HealthPieChart({
   ) satisfies ChartConfig;
 
   return (
-    <ChartContainer config={pieConfig} className={cn("mx-auto h-[200px] w-full max-w-[220px]", className)}>
+    <ChartContainer config={pieConfig} className={cn("mx-auto h-[200px] w-full max-w-[280px]", className)}>
       <PieChart>
-        <ChartTooltip content={<ChartTooltipContent hideLabel />} />
+        <ChartTooltip
+          content={<ChartTooltipContent hideLabel />}
+          contentStyle={{
+            backgroundColor: "var(--surface-elevated)",
+            border: "1px solid var(--glass-border)",
+            borderRadius: "10px",
+            boxShadow: "0 8px 32px rgba(0,0,0,0.3)",
+          }}
+        />
+        <Legend
+          formatter={(value) => {
+            const entry = data.find((d) => d.health === value);
+            return entry ? `${entry.label} (${entry.count})` : value;
+          }}
+          iconType="circle"
+          iconSize={8}
+          wrapperStyle={{ fontSize: 10 }}
+        />
         <Pie
           data={data}
           dataKey="count"
-          nameKey="label"
-          innerRadius={52}
-          outerRadius={78}
+          nameKey="health"
+          innerRadius={60}
+          outerRadius={90}
           paddingAngle={3}
           animationDuration={1500}
           animationEasing="ease-out"
         >
           {data.map((d) => (
-            <Cell key={d.health} fill={d.fill} stroke="transparent" />
+            <Cell
+              key={d.health}
+              fill={d.fill}
+              stroke="var(--background)"
+              strokeWidth={2}
+            />
           ))}
         </Pie>
       </PieChart>
