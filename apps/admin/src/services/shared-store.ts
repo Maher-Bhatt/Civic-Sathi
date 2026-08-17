@@ -429,10 +429,6 @@ export async function updateSLARule(id: string, patch: Partial<SLARule>, actorId
 
 // ================================================================ Admin Auth — Real JWT backend
 
-const API_BASE_URL = (typeof import.meta !== "undefined" && (import.meta as any).env?.["VITE_API_BASE_URL"])
-  ? (import.meta as any).env["VITE_API_BASE_URL"]
-  : "https://janmind.onrender.com";
-
 const LS_TOKEN = "janmind.admin_token";
 const LS_USER  = "janmind.admin_user";
 
