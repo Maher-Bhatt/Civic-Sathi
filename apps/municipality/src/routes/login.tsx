@@ -57,7 +57,7 @@ function MuniLoginPage() {
         <form onSubmit={onSubmit} className="mt-8 space-y-4" noValidate>
           <GlassInput
             label={t('ui.officer_id_email')}
-            type="email"
+            type="text" inputMode="email" autoComplete="email"
             autoComplete="username"
             required
             value={email}

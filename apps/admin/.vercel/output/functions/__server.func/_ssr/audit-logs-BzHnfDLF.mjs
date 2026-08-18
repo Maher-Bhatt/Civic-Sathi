@@ -2,7 +2,7 @@ import { i as __toESM } from "../_runtime.mjs";
 import { n as require_react } from "../_libs/@radix-ui/react-compose-refs+[...].mjs";
 import { n as require_jsx_runtime } from "../_libs/react+tanstack__react-query.mjs";
 import { l as Search, u as RefreshCw } from "../_libs/lucide-react.mjs";
-import { S as useI18n, s as getAuditLogs } from "./router-Y89kYKHN.mjs";
+import { S as useI18n, s as getAuditLogs } from "./router-C4z6CDkp.mjs";
 import { t as GlassCard } from "./glass-card-CoNgXAty.mjs";
 import { n as LoadingState } from "./states-BSypa5q_.mjs";
 //#region node_modules/.nitro/vite/services/ssr/assets/audit-logs-BzHnfDLF.js

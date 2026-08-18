@@ -55,7 +55,7 @@ function AdminLogin() {
             <label className="label-xs" htmlFor="email">{t('ui.email_address')}</label>
             <input
               id="email"
-              type="email"
+              type="text" inputMode="email" autoComplete="email"
               required
               className="ambient-field w-full"
               placeholder={t('ui.admin_janmind_gov_in')}

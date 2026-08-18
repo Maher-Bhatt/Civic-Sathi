@@ -96,7 +96,7 @@ function RegisterPage() {
           />
           <GlassInput
             label={t("register.email", "Email")}
-            type="email"
+            type="text" inputMode="email" autoComplete="email"
             required
             autoComplete="email"
             value={form.email}

@@ -67,7 +67,7 @@ function LoginPage() {
         <form onSubmit={onSubmit} className="mt-7 space-y-4" noValidate>
           <GlassInput
             label={t("login.email", "Email")}
-            type="email"
+            type="text" inputMode="email" autoComplete="email"
             autoComplete="email"
             required
             value={email}

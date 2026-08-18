@@ -50,11 +50,13 @@ function ContractorLogin() {
           <div>
             <label className="label-xs block mb-2 text-[var(--foreground)]">{t('ui.email_address')}</label>
             <input
-              type="email"
+              type="text"
+              inputMode="email"
+              autoComplete="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="filter-input w-full ambient-field px-4 py-2 rounded-md bg-[var(--surface)] text-[var(--foreground)] border border-[var(--glass-border)] focus:outline-none focus:ring-1 focus:ring-[var(--primary)]"
-              placeholder={t('ui.suresh_patel_bharatinfra_in')}
+              placeholder="Enter your email address"
               required
             />
           </div>
@@ -98,7 +100,7 @@ function ContractorLogin() {
                 <span className="font-semibold text-[var(--foreground)]">Bharat Infra Field Operations</span>
                 <span className="block text-[11px] text-[var(--muted-foreground)] font-mono">contractor@bharat.in</span>
               </div>
-              <span className="text-[11px] px-2 py-0.5 rounded bg-amber-500/15 text-amber-400 font-medium">Click to Fill</span>
+              <span className="text-[11px] px-2 py-0.5 rounded bg-amber-500/15 text-amber-700 dark:text-amber-400 font-medium">Click to Fill</span>
             </button>
           </div>
         </div>
