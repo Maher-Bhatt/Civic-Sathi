@@ -22,6 +22,7 @@ class OfficerInfo(BaseModel):
     name: str
     email: str
     department: str
+    designation: str | None = None
     role: str
     city: str = ""
 

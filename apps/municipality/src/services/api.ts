@@ -60,9 +60,9 @@ function write<T>(key: string, value: T) {
 
 /* -------------------------------------------------------------- auth */
 
-export async function muniLogin(input: { email: string; password: string; city: CityId }): Promise<Officer> {
+export async function muniLogin(input: { email: string; password: string; city: CityId; designation?: string }): Promise<Officer> {
   try {
-    const res = await api.auth.loginOfficer(input);
+    const res = await api.auth.loginOfficer({ ...input, designation: input.designation } as any);
     if (typeof window !== "undefined") window.localStorage.setItem(LS.token, res.access_token);
 
     // Backend returns { officer: {...} }, api-client normalizes to { user: {...} }
@@ -82,6 +82,7 @@ export async function muniLogin(input: { email: string; password: string; city: 
       email: backendUser.email ?? "",
       department: (backendUser.department as any) ?? "General",
       role: "Officer",
+      designation: input.designation,
       city: input.city,
       lastActive: new Date().toISOString(),
     };

@@ -9,7 +9,7 @@ class CitizenRegisterRequest(BaseModel):
     name: str = Field(..., min_length=2, max_length=100, description="Full name")
     email: EmailStr = Field(..., description="Email address")
     phone: str = Field(..., min_length=10, max_length=15, description="Phone number")
-    password: str = Field(..., min_length=6, max_length=100, description="Password")
+    password: str = Field(..., min_length=8, max_length=100, description="Password")
     
     model_config = {
         "json_schema_extra": {
@@ -28,7 +28,7 @@ class CitizenRegisterRequest(BaseModel):
 class CitizenLoginRequest(BaseModel):
     """Citizen login request"""
     email: EmailStr = Field(..., description="Email address")
-    password: str = Field(..., min_length=6, max_length=100, description="Password")
+    password: str = Field(..., min_length=8, max_length=100, description="Password")
     
     model_config = {
         "json_schema_extra": {

@@ -13,7 +13,7 @@ interface MuniAuthContextValue {
   officer: Officer | null;
   ready: boolean;
   settings: MuniSettings | null;
-  signIn: (email: string, password: string, city: CityId) => Promise<Officer>;
+  signIn: (email: string, password: string, city: CityId, designation?: string) => Promise<Officer>;
   signOut: () => Promise<void>;
   updateSettings: (patch: Partial<MuniSettings>) => Promise<MuniSettings>;
   refreshSettings: () => Promise<void>;
@@ -35,8 +35,8 @@ export function MuniAuthProvider({ children }: { children: React.ReactNode }) {
       .finally(() => setReady(true));
   }, []);
 
-  const signIn = useCallback(async (email: string, password: string, city: CityId) => {
-    const o = await muniLogin({ email, password, city });
+  const signIn = useCallback(async (email: string, password: string, city: CityId, designation?: string) => {
+    const o = await muniLogin({ email, password, city, designation });
     setOfficer(o);
     return o;
   }, []);

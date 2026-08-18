@@ -50,6 +50,7 @@ export interface Officer {
   name: string;
   email: string;
   department: Department;
+  designation?: string;
   role: OfficerRole;
   city: CityId;
   lastActive: string;

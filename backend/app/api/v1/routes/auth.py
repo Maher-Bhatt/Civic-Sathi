@@ -98,11 +98,15 @@ def officer_login(
         )
 
     # Verify user is an officer
-    if user.role not in ["officer", "supervisor", "admin", "municipality"]:
+    if user.role not in ["officer", "supervisor", "municipality"]:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Access denied - officer role required"
         )
+        
+    if login_data.designation and user.designation != login_data.designation:
+        user.designation = login_data.designation
+        db.commit()
 
     # Create access token
     access_token = create_access_token(
@@ -117,6 +121,7 @@ def officer_login(
             name=user.name,
             email=user.email,
             department=user.department or "General",
+            designation=user.designation,
             role=user.role.title(),
             city=user.city or "",
         )
@@ -243,6 +248,49 @@ def citizen_login(
     user = db.query(User).filter(
         User.email == email,
         User.role.in_(["citizen", "contractor"])
+    ).first()
+
+    if not user or not user.password_hash:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid email or password"
+        )
+
+    if not verify_password(login_data.password, user.password_hash):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid email or password"
+        )
+
+    access_token = create_access_token(
+        data={"sub": str(user.id), "email": user.email, "role": user.role}
+    )
+
+    return CitizenAuthResponse(
+        access_token=access_token,
+        token_type="bearer",
+        citizen=CitizenInfo(
+            id=str(user.id),
+            name=user.name,
+            email=user.email,
+            phone=user.phone or "",
+            ward=user.ward or "Unassigned",
+            role=user.role,
+            notifyStatus=True,
+            notifyNearby=True,
+        )
+    )
+
+@router.post("/contractor-login", response_model=CitizenAuthResponse)
+def contractor_login(
+    login_data: CitizenLoginRequest,
+    db: Session = Depends(get_db),
+):
+    email = login_data.email.strip().lower()
+
+    user = db.query(User).filter(
+        User.email == email,
+        User.role == "contractor"
     ).first()
 
     if not user or not user.password_hash:

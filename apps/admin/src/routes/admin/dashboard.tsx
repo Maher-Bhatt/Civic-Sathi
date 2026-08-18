@@ -429,8 +429,6 @@ function AdminDashboardContent() {
                   >
                     <option value="vadodara">Vadodara</option>
                     <option value="bengaluru">Bengaluru</option>
-                    <option value="mumbai">Mumbai</option>
-                    <option value="delhi">Delhi</option>
                   </select>
                 </div>
                 <div>

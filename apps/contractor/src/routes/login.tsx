@@ -107,6 +107,9 @@ function ContractorLogin() {
 
         <div className="mt-6 text-center text-xs text-[var(--muted-foreground)]">
           <p>{t('ui.sign_in_with_your_registered_c')}</p>
+          <p className="mt-2 text-[10px] uppercase font-semibold text-primary/80">
+            Want to bid on Civic Projects? Contact your local municipality admin to register your company.
+          </p>
         </div>
       </GlassCard>
     </div>

@@ -227,6 +227,33 @@ function Landing() {
         </div>
       </section>
 
+      {/* About Municipal Governance */}
+      <section className="pt-20 sm:pt-28">
+        <GlassCard elevation="raised" className="p-6 sm:p-9 border-amber-500/30 bg-gradient-to-br from-amber-50/40 via-white/80 to-orange-50/40 dark:from-slate-900/90 dark:via-slate-900/70 dark:to-slate-800/70">
+          <SectionLabel>Indian Local Governance</SectionLabel>
+          <h2 className="mt-3 text-2xl font-bold sm:text-3xl text-[var(--foreground)]">
+            Empowered by the 74th Amendment
+          </h2>
+          <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
+            The 74th Constitutional Amendment Act of 1992 recognized Urban Local Bodies (ULBs) as the third tier of government. JANMIND empowers this democratic structure by directly connecting citizens with their local Ward Corporators, Municipal Engineers, and Civic Departments.
+          </p>
+          <div className="mt-8 grid gap-4 sm:grid-cols-3">
+            <div className="space-y-2 p-4 rounded-xl bg-white/50 dark:bg-black/20 border border-[var(--glass-border)]">
+              <h3 className="font-semibold text-amber-800 dark:text-amber-300">Wards</h3>
+              <p className="text-xs text-muted-foreground">Cities are divided into administrative and electoral units called Wards, each representing a localized neighborhood.</p>
+            </div>
+            <div className="space-y-2 p-4 rounded-xl bg-white/50 dark:bg-black/20 border border-[var(--glass-border)]">
+              <h3 className="font-semibold text-emerald-800 dark:text-emerald-300">Corporators</h3>
+              <p className="text-xs text-muted-foreground">Elected representatives of the ward who oversee local civic issues, budget allocation, and development projects.</p>
+            </div>
+            <div className="space-y-2 p-4 rounded-xl bg-white/50 dark:bg-black/20 border border-[var(--glass-border)]">
+              <h3 className="font-semibold text-blue-800 dark:text-blue-300">Municipal Engineers</h3>
+              <p className="text-xs text-muted-foreground">Executive officers responsible for executing public works, managing contractors, and ensuring quality SLAs.</p>
+            </div>
+          </div>
+        </GlassCard>
+      </section>
+
       {/* Pattern Detection Section */}
       <section className="pt-20 sm:pt-28">
         <GlassCard

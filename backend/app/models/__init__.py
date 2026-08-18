@@ -8,7 +8,7 @@ from app.models.recommendation import Recommendation
 from app.models.alert import Alert
 from app.models.audit import ModelRun
 from app.models.procurement import (
-    City, Contractor, ContractorCityRegistration, Tender, Bid, WorkOrder, FieldEvidence, Inspection
+    City, Contractor, ContractorCityRegistration, Tender, Bid, WorkOrder, FieldEvidence, Inspection, ContractorReview
 )
 from app.models.job import AnalysisJob
 
@@ -33,5 +33,6 @@ __all__ = [
     "WorkOrder",
     "FieldEvidence",
     "Inspection",
-    "AnalysisJob"
+    "AnalysisJob",
+    "ContractorReview"
 ]

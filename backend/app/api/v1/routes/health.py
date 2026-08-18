@@ -16,11 +16,14 @@ def health_check(db: Session = Depends(get_db)):
     Returns app version and database connectivity status.
     """
     db_healthy = check_db_connection()
-    
+    if not db_healthy:
+        from fastapi import HTTPException
+        raise HTTPException(status_code=503, detail="Database is unreachable")
+        
     return {
-        "status": "healthy" if db_healthy else "unhealthy",
+        "status": "healthy",
         "app_name": settings.app_name,
         "version": settings.app_version,
         "environment": settings.environment,
-        "database": "connected" if db_healthy else "disconnected",
+        "database": "connected",
     }

@@ -20,6 +20,7 @@ class User(Base, UUIDMixin, TimestampMixin):
     ward: Mapped[str | None] = mapped_column(String(100))
     city: Mapped[str | None] = mapped_column(String(100), index=True)
     department: Mapped[str | None] = mapped_column(String(100))
+    designation: Mapped[str | None] = mapped_column(String(100))
 
 
 class Ward(Base, UUIDMixin, TimestampMixin):

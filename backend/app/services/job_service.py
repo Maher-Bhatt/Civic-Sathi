@@ -68,8 +68,8 @@ class JobService:
             
         # 1. Basic Analysis
         # Create a mock ComplaintCreate for the pipeline
-        from app.schemas.user import UserBase
-        user_info = UserBase(name=complaint.submitted_by_name or "Unknown", phone=complaint.submitted_by_phone, email=None, role="citizen")
+        from app.schemas.complaint import SubmittedBy
+        user_info = SubmittedBy(name=complaint.submitted_by_name or "Unknown", phone=complaint.submitted_by_phone)
         
         complaint_data = ComplaintCreate(
             title=complaint.title,

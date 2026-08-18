@@ -62,7 +62,7 @@ function TenderDetailPage() {
             <p className="mt-2 text-sm text-[var(--muted-foreground)]">{tender.description}</p>
             <dl className="mt-6 grid gap-4 sm:grid-cols-2">
               <div><dt className="label-xs">{t('ui.department')}</dt><dd className="mt-1 text-sm font-medium">{tender.department_id || "N/A"}</dd></div>
-              <div><dt className="label-xs">{t('ui.estimated_cost')}</dt><dd className="mt-1 text-sm font-semibold text-[var(--foreground)]">₹{tender.estimated_budget?.toLocaleString("en-IN")}</dd></div>
+              <div><dt className="label-xs">{t('ui.estimated_cost')}</dt><dd className="mt-1 text-sm font-semibold text-[var(--foreground)]">₹{(tender.estimated_budget ?? 0).toLocaleString("en-IN")}</dd></div>
               <div><dt className="label-xs">{t('ui.civic_issue_id')}</dt><dd className="mt-1 text-sm">{tender.civic_issue_id || "N/A"}</dd></div>
             </dl>
             {tender.scope_of_work && (
@@ -75,7 +75,7 @@ function TenderDetailPage() {
 
           {/* Sealed Bids */}
           <GlassCard elevation="raised" className="p-6">
-            <SectionLabel>{t('ui.submitted_bids')}{bids.length})</SectionLabel>
+            <SectionLabel>{t('ui.submitted_bids')} ({bids.length})</SectionLabel>
             {loadingBids ? (
               <p className="mt-4 text-sm text-[var(--muted-foreground)]">{t('ui.loading_bids')}</p>
             ) : bids.length === 0 ? (
@@ -91,7 +91,7 @@ function TenderDetailPage() {
                       </div>
                       <div className="text-right">
                         <p className="text-lg font-bold tabular-nums text-[var(--primary)]">
-                          ₹{bid.quoted_amount.toLocaleString("en-IN")}
+                          ₹{(bid.quoted_amount ?? 0).toLocaleString("en-IN")}
                         </p>
                         <span className="text-xs font-semibold px-2 py-0.5 rounded border border-[var(--glass-border)]">{bid.status}</span>
                       </div>

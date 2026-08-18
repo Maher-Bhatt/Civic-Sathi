@@ -22,6 +22,7 @@ function MuniLoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [city, setCity] = useState<CityId>("vadodara");
+  const [designation, setDesignation] = useState("Ward Officer");
   const [remember, setRemember] = useState(true);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -36,7 +37,7 @@ function MuniLoginPage() {
     setBusy(true);
     setError(null);
     try {
-      await signIn(email.trim().toLowerCase(), password, city);
+      await signIn(email.trim().toLowerCase(), password, city, designation);
       toast.success("Signed in to Municipal Intelligence");
       void navigate({ to: "/dashboard" as any });
     } catch (err: any) {
@@ -93,8 +94,19 @@ function MuniLoginPage() {
           </div>
 
           <div>
-            <label className="label-xs mb-1.5 block">{t('ui.role')}</label>
-            <input value="Officer" readOnly className="filter-input opacity-70" />
+            <label className="label-xs mb-1.5 block">{t('ui.designation') || 'Designation'}</label>
+            <select
+              value={designation}
+              onChange={(e) => setDesignation(e.target.value)}
+              className="filter-input"
+            >
+              <option value="Ward Officer">Ward Officer</option>
+              <option value="Field Inspector">Field Inspector</option>
+              <option value="Municipal Supervisor">Municipal Supervisor</option>
+              <option value="Triage Officer">Triage Officer</option>
+              <option value="Chief Engineer">Chief Engineer</option>
+              <option value="Commissioner">Commissioner</option>
+            </select>
           </div>
 
           <label className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -130,6 +142,7 @@ function MuniLoginPage() {
                 setEmail("officer@vmc.gov.in");
                 setPassword("Janmind@2026");
                 setCity("vadodara");
+                setDesignation("Ward Officer");
               }}
               className="w-full flex items-center justify-between p-2 rounded-lg bg-[var(--surface)] hover:bg-[var(--surface-elevated)] border border-[var(--glass-border)] text-xs transition text-left"
             >
@@ -146,6 +159,7 @@ function MuniLoginPage() {
                 setEmail("officer@bbmp.gov.in");
                 setPassword("Janmind@2026");
                 setCity("bengaluru");
+                setDesignation("Ward Officer");
               }}
               className="w-full flex items-center justify-between p-2 rounded-lg bg-[var(--surface)] hover:bg-[var(--surface-elevated)] border border-[var(--glass-border)] text-xs transition text-left"
             >
@@ -162,6 +176,7 @@ function MuniLoginPage() {
                 setEmail("supervisor@vmc.gov.in");
                 setPassword("Janmind@2026");
                 setCity("vadodara");
+                setDesignation("Municipal Supervisor");
               }}
               className="w-full flex items-center justify-between p-2 rounded-lg bg-[var(--surface)] hover:bg-[var(--surface-elevated)] border border-[var(--glass-border)] text-xs transition text-left"
             >
@@ -170,6 +185,23 @@ function MuniLoginPage() {
                 <span className="block text-[11px] text-[var(--muted-foreground)] font-mono">supervisor@vmc.gov.in</span>
               </div>
               <span className="text-[11px] px-2 py-0.5 rounded bg-amber-500/15 text-amber-400 font-medium">Click to Fill</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                setEmail("municipality@vmc.gov.in");
+                setPassword("Janmind@2026");
+                setCity("vadodara");
+                setDesignation("Commissioner");
+              }}
+              className="w-full flex items-center justify-between p-2 rounded-lg bg-[var(--surface)] hover:bg-[var(--surface-elevated)] border border-[var(--glass-border)] text-xs transition text-left"
+            >
+              <div>
+                <span className="font-semibold text-[var(--foreground)]">Department Head (VMC)</span>
+                <span className="block text-[11px] text-[var(--muted-foreground)] font-mono">municipality@vmc.gov.in</span>
+              </div>
+              <span className="text-[11px] px-2 py-0.5 rounded bg-purple-500/15 text-purple-400 font-medium">Click to Fill</span>
             </button>
           </div>
         </div>

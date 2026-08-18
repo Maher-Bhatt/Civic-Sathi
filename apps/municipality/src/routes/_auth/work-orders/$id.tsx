@@ -165,7 +165,7 @@ function WorkOrderDetailPage() {
       const meas = await submitMeasurement(
         {
           workOrderId: id,
-          items: wo.boqItems.map((b, i) => ({
+          items: (wo.boqItems || []).map((b, i) => ({
             id: `mi_${i}`,
             description: b.description,
             unit: b.unit,
@@ -216,7 +216,7 @@ function WorkOrderDetailPage() {
   if (error || !wo) return <ErrorState description="Work order not found." onRetry={() => window.location.reload()} />;
 
   const colorKey = workOrderStatusColor(wo.status);
-  const isOverdue = isPast(new Date(wo.slaDeadline)) && wo.status !== "CLOSED";
+  const isOverdue = wo.slaDeadline && !isNaN(new Date(wo.slaDeadline).getTime()) ? isPast(new Date(wo.slaDeadline)) && wo.status !== "CLOSED" : false;
 
   return (
     <div className="muni-page-enter space-y-6">
@@ -284,7 +284,7 @@ function WorkOrderDetailPage() {
                   {safeFormat(wo.slaDeadline, "dd MMM yyyy")}
                   {" "}
                   <span className="font-normal text-muted-foreground">
-                    ({formatDistanceToNow(new Date(wo.slaDeadline), { addSuffix: true })})
+                    ({wo.slaDeadline && !isNaN(new Date(wo.slaDeadline).getTime()) ? formatDistanceToNow(new Date(wo.slaDeadline), { addSuffix: true }) : "N/A"})
                   </span>
                 </dd>
               </div>
@@ -292,7 +292,7 @@ function WorkOrderDetailPage() {
           </GlassCard>
 
           {/* BOQ */}
-          {wo.boqItems.length > 0 && (
+          {(wo.boqItems || []).length > 0 && (
             <GlassCard elevation="raised" className="p-6">
               <SectionLabel>{t('ui.bill_of_quantities')}</SectionLabel>
               <div className="mt-4 overflow-x-auto">
@@ -307,7 +307,7 @@ function WorkOrderDetailPage() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-[var(--glass-border)]">
-                    {wo.boqItems.map((item) => (
+                    {(wo.boqItems || []).map((item) => (
                       <tr key={item.id}>
                         <td className="py-2 pr-4 text-sm">{item.description}</td>
                         <td className="py-2 pr-4 text-right text-xs text-muted-foreground">{item.unit}</td>
@@ -323,7 +323,7 @@ function WorkOrderDetailPage() {
                     <tr className="border-t-2 border-[var(--glass-border)] font-semibold">
                       <td colSpan={4} className="pt-2 pr-4">{t('ui.total')}</td>
                       <td className="pt-2 text-right tabular-nums">
-                        ₹{wo.boqItems.reduce((s, i) => s + i.amount, 0).toLocaleString("en-IN")}
+                        ₹{(wo.boqItems || []).reduce((s, i) => s + i.amount, 0).toLocaleString("en-IN")}
                       </td>
                     </tr>
                     {wo.approvedAmount && (
@@ -498,7 +498,7 @@ function WorkOrderDetailPage() {
           {/* Linked Complaints */}
           {Boolean(wo.civicIssueIds && wo.civicIssueIds.length > 0) && (
             <GlassCard elevation="raised" className="p-6">
-              <SectionLabel>{t('ui.linked_civic_issues')}{(wo.civicIssueIds ?? []).length})</SectionLabel>
+              <SectionLabel>{t('ui.linked_civic_issues')} ({(wo.civicIssueIds ?? []).length})</SectionLabel>
               <ul className="mt-4 space-y-2">
                 {(wo.civicIssueIds ?? []).map((cid) => (
                   <li key={cid}>
@@ -532,7 +532,7 @@ function WorkOrderDetailPage() {
                     )}
                     <div className="p-3 text-sm flex flex-col gap-1">
                        <div className="font-bold">{e.stage}</div>
-                       <div className="text-xs text-[var(--muted-foreground)]">{new Date(e.captureTimestamp).toLocaleString('en-IN')}</div>
+                       <div className="text-xs text-[var(--muted-foreground)]">{e.captureTimestamp ? safeFormat(e.captureTimestamp, "dd MMM yyyy, HH:mm") : "N/A"}</div>
                        <div className="mt-2 text-xs">
                           <span className={`inline-block px-2 py-1 rounded font-medium ${e.status === 'FLAGGED' ? 'bg-[var(--critical)]/20 text-[var(--critical)]' : 'bg-[var(--success)]/20 text-[var(--success)]'}`}>
                              {e.status}
@@ -591,7 +591,7 @@ function WorkOrderDetailPage() {
             <SectionLabel>{t('ui.quick_actions')}</SectionLabel>
             <div className="mt-4 space-y-2">
               <Link
-                to={"/work-packages/$id" as any}
+                to={"/tenders/$id" as any}
                 params={{ id: wo.workPackageId } as any}
                 className="action-btn flex w-full items-center gap-2 text-xs"
               >

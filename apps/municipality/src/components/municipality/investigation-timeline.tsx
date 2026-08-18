@@ -21,7 +21,7 @@ export function InvestigationTimeline({
       <SectionLabel>{t('ui.officer_activity_timeline')}</SectionLabel>
       <ol className="mt-5 space-y-0">
         {COMPLAINT_STATUSES.map((step, i) => {
-          const event = events.find((e) =>
+          const event = (events || []).find((e) =>
             e.label.toLowerCase().includes(step.toLowerCase().split(" ")[0] ?? ""),
           );
           const done = statusIdx >= i;
@@ -99,7 +99,7 @@ export function FieldActionCard({
         <div>
           <p className="label-xs mb-2">{t('ui.recommended')}</p>
           <ul className="space-y-1">
-            {recommendations.map((r) => (
+            {(recommendations || []).map((r) => (
               <li key={r} className="text-sm text-muted-foreground">
                 · {r}
               </li>

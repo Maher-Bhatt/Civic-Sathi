@@ -235,7 +235,8 @@ export function CivicMap({
     layer.clearLayers();
     if (mode !== "activity") return;
 
-    for (const c of clusterPoints(points, zoom)) {
+    const validPoints = points.filter(p => p.lat !== 0 && p.lng !== 0);
+    for (const c of clusterPoints(validPoints, zoom)) {
       const hex = AREA_HEALTH_HEX[c.health];
       const size = c.count === 1 ? 14 : Math.max(28, Math.min(52, 24 + c.count * 0.7));
       const icon = L.divIcon({
