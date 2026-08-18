@@ -934,32 +934,6 @@ var Trash2 = createLucideIcon("trash-2", [
 * This source code is licensed under the ISC license.
 * See the LICENSE file in the root directory of this source tree.
 */
-var TrendingDown = createLucideIcon("trending-down", [["path", {
-	d: "M16 17h6v-6",
-	key: "t6n2it"
-}], ["path", {
-	d: "m22 17-8.5-8.5-5 5L2 7",
-	key: "x473p"
-}]]);
-/**
-* @license lucide-react v0.575.0 - ISC
-*
-* This source code is licensed under the ISC license.
-* See the LICENSE file in the root directory of this source tree.
-*/
-var TrendingUp = createLucideIcon("trending-up", [["path", {
-	d: "M16 7h6v6",
-	key: "box55l"
-}], ["path", {
-	d: "m22 7-8.5 8.5-5-5L2 17",
-	key: "1t1m79"
-}]]);
-/**
-* @license lucide-react v0.575.0 - ISC
-*
-* This source code is licensed under the ISC license.
-* See the LICENSE file in the root directory of this source tree.
-*/
 var TriangleAlert = createLucideIcon("triangle-alert", [
 	["path", {
 		d: "m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3",
@@ -1045,4 +1019,4 @@ var X = createLucideIcon("x", [["path", {
 	key: "d8bk6v"
 }]]);
 //#endregion
-export { HardHat as A, Camera as B, MapPin as C, Inbox as D, Info as E, CirclePlus as F, ArrowRight as G, Building2 as H, CircleCheck as I, ArrowLeft as K, CircleAlert as L, FileText as M, Crosshair as N, Image as O, Clock as P, ChevronRight as R, Map as S, Layers as T, Bell as U, CalendarDays as V, ArrowUpRight as W, Minus as _, TriangleAlert as a, MessageSquareText as b, Trash2 as c, ShieldCheck as d, Search as f, Plus as g, Radar as h, Upload as i, Globe as j, House as k, Sparkles as l, RefreshCw as m, User as n, TrendingUp as o, RotateCcw as p, Activity as q, UserCheck as r, TrendingDown as s, X as t, Smartphone as u, Mic as v, LoaderCircle as w, Menu as x, MicOff as y, Check as z };
+export { FileText as A, Building2 as B, Layers as C, House as D, Image as E, CircleAlert as F, Activity as G, ArrowUpRight as H, ChevronRight as I, Check as L, Clock as M, CirclePlus as N, HardHat as O, CircleCheck as P, Camera as R, LoaderCircle as S, Inbox as T, ArrowRight as U, Bell as V, ArrowLeft as W, MicOff as _, TriangleAlert as a, Map as b, Smartphone as c, RotateCcw as d, RefreshCw as f, Mic as g, Minus as h, Upload as i, Crosshair as j, Globe as k, ShieldCheck as l, Plus as m, User as n, Trash2 as o, Radar as p, UserCheck as r, Sparkles as s, X as t, Search as u, MessageSquareText as v, Info as w, MapPin as x, Menu as y, CalendarDays as z };

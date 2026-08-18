@@ -1,13 +1,13 @@
 import { i as __toESM } from "../_runtime.mjs";
 import { n as require_react } from "../_libs/@radix-ui/react-compose-refs+[...].mjs";
 import { r as require_jsx_runtime } from "../_libs/react+tanstack__react-query.mjs";
-import { C as MapPin } from "../_libs/lucide-react.mjs";
+import { x as MapPin } from "../_libs/lucide-react.mjs";
 import { n as CITIES } from "./cities-J8wcazPB.mjs";
-import { D as useI18n, E as cn } from "./router-DPF58oFj.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/city-map-panel-Bai4e8PB.js
+import { D as useI18n, E as cn } from "./router-CoFm48X4.mjs";
+//#region node_modules/.nitro/vite/services/ssr/assets/city-map-panel-DDJyD_Z1.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
-var CityMap = (0, import_react.lazy)(() => import("./city-map-BiE_kHi5.mjs").then((m) => ({ default: m.CityMap })));
+var CityMap = (0, import_react.lazy)(() => import("./city-map-CP4fepDR.mjs").then((m) => ({ default: m.CityMap })));
 function MapSkeleton({ className }) {
 	const { t } = useI18n();
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {

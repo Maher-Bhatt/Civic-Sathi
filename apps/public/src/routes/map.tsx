@@ -183,6 +183,7 @@ function CivicMapPage() {
       reports: activities.reduce((n, a) => n + a.total, 0),
       last7: activities.reduce((n, a) => n + a.last7, 0),
       areas: activities.length,
+      affectedPeople: activities.reduce((n, a) => n + (a.affectedPopulation || 0), 0),
     }),
     [activities],
   );
@@ -246,7 +247,7 @@ function CivicMapPage() {
   };
 
   return (
-    <PageShell>
+    <PageShell className="pt-24 sm:pt-32">
       <div className="animate-rise jm-hero-glow space-y-2">
         <SectionLabel>{t('ui.public_civic_intelligence')}</SectionLabel>
         <h1 className="jm-glitch-text text-2xl font-semibold sm:text-3xl">{t('ui.civic_map')}</h1>
@@ -371,9 +372,10 @@ function CivicMapPage() {
           </div>
         </div>
 
-        {/* filters — horizontal scroll strip on mobile */}
-        <div className="-mx-4 overflow-x-auto px-4 pb-1 sm:mx-0 sm:overflow-visible sm:px-0">
-          <div className="flex w-max items-center gap-2 sm:w-auto sm:flex-wrap">
+        {/* chip filter groups */}
+        <div className="space-y-2 pt-1">
+          {/* issue categories */}
+          <div className="-mx-4 flex items-center gap-1.5 overflow-x-auto px-4 sm:mx-0 sm:px-0">
             <Chip
               active={filters.issue === "all"}
               onClick={() => setFilters((f) => ({ ...f, issue: "all" }))}
@@ -388,42 +390,52 @@ function CivicMapPage() {
                 {ISSUE_LABEL[k]}
               </Chip>
             ))}
-            <span className="mx-1 h-5 w-px shrink-0 bg-[var(--glass-border)]" aria-hidden />
-            <Chip
-              active={filters.health === "all"}
-              onClick={() => setFilters((f) => ({ ...f, health: "all" }))}
-            >
-              {t('ui.any_severity')}</Chip>
-            {AREA_HEALTH_ORDER.map((h) => (
+          </div>
+
+          {/* health / severity + time */}
+          <div className="-mx-4 flex flex-wrap items-center gap-2 overflow-x-auto px-4 sm:mx-0 sm:px-0">
+            <div className="flex items-center gap-1">
               <Chip
-                key={h}
-                active={filters.health === h}
-                onClick={() => setFilters((f) => ({ ...f, health: h }))}
+                active={filters.health === "all"}
+                onClick={() => setFilters((f) => ({ ...f, health: "all" }))}
               >
-                <span
-                  className="mr-1.5 inline-block h-2 w-2 rounded-[3px] align-middle"
-                  style={{ background: AREA_HEALTH_HEX[h] }}
-                  aria-hidden
-                />
-                {AREA_HEALTH_LABEL[h]}
-              </Chip>
-            ))}
-            <span className="mx-1 h-5 w-px shrink-0 bg-[var(--glass-border)]" aria-hidden />
-            {TIME_WINDOWS.map((w) => (
-              <Chip
-                key={w.key}
-                active={filters.time === w.key}
-                onClick={() => setFilters((f) => ({ ...f, time: w.key }))}
-              >
-                {w.label}
-              </Chip>
-            ))}
+                {t('ui.any_severity')}</Chip>
+              {AREA_HEALTH_ORDER.map((h) => (
+                <Chip
+                  key={h}
+                  active={filters.health === h}
+                  onClick={() => setFilters((f) => ({ ...f, health: h }))}
+                >
+                  <span
+                    className="mr-1.5 inline-block h-1.5 w-1.5 rounded-full"
+                    style={{ background: AREA_HEALTH_HEX[h] }}
+                    aria-hidden
+                  />
+                  {AREA_HEALTH_LABEL[h]}
+                </Chip>
+              ))}
+            </div>
+
+            <div className="h-4 w-px bg-[var(--glass-border)]" aria-hidden />
+
+            <div className="flex items-center gap-1">
+              {TIME_WINDOWS.map((w) => (
+                <Chip
+                  key={w.key}
+                  active={filters.time === w.key}
+                  onClick={() => setFilters((f) => ({ ...f, time: w.key }))}
+                >
+                  {w.label}
+                </Chip>
+              ))}
+            </div>
           </div>
         </div>
       </div>
 
-      <div className="mt-5 grid gap-4 lg:grid-cols-[1fr_20rem]">
-        <div className="space-y-3">
+      {/* map + stats split */}
+      <div className="mt-5 grid items-start gap-5 lg:grid-cols-[1fr_320px]">
+        <div className="space-y-4">
           <div className="relative">
             <ClientCivicMap
               cityId={cityId}
@@ -431,60 +443,51 @@ function CivicMapPage() {
               activities={activities}
               points={points}
               selectedAreaId={selected}
-              onSelectArea={setSelected}
+              onSelectArea={(id) => setSelected(id)}
               focus={focus}
-              onNearMe={nearMe}
-              locating={locating}
-              className="jm-map-frame h-[24rem] sm:h-[32rem]"
+              className="h-[480px] sm:h-[580px]"
             />
-
-            {/* legend */}
-            <div className="pointer-events-none absolute top-3 left-3 z-[500] rounded-xl border border-[var(--glass-border)] bg-[var(--glass-strong)] px-3 py-2 backdrop-blur-xl">
-              <span className="label-xs">
-                {mode === "hotspots"
-                  ? "Hotspot severity"
-                  : mode === "activity"
-                    ? "Report severity"
-                    : "Area health"}
-              </span>
-              <ul className="mt-1.5 flex flex-wrap gap-x-3 gap-y-1 sm:block sm:space-y-1">
-                {AREA_HEALTH_ORDER.map((h) => (
-                  <li key={h} className="flex items-center gap-1.5">
-                    <span
-                      className="h-2 w-2 rounded-[3px]"
-                      style={{ background: AREA_HEALTH_HEX[h] }}
-                      aria-hidden
-                    />
-                    <span className="text-[0.62rem] tracking-[0.08em] text-muted-foreground uppercase">
-                      {AREA_HEALTH_LABEL[h]}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </div>
           </div>
 
           {locationNote && <p className="text-xs text-muted-foreground">{locationNote}</p>}
 
-          <div className="grid grid-cols-3 gap-2">
-            {[
-              [totals.reports, "Reports in view"],
-              [totals.last7, "Last 7 days"],
-              [totals.areas, "Localities mapped"],
-            ].map(([value, label], i) => (
-              <GlassCard
-                key={String(label)}
-                className="jm-stat-card animate-rise p-3"
-                style={{ animationDelay: `${i * 80}ms` }}
-              >
-                <p className="text-lg font-semibold">
-                  <AnimatedStat value={value as number} />
-                </p>
-                <p className="text-[0.66rem] tracking-[0.08em] text-muted-foreground uppercase">
-                  {label as string}
-                </p>
-              </GlassCard>
-            ))}
+          {/* 4-stat metrics grid including Affected Population */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+            <GlassCard className="jm-stat-card animate-rise p-3">
+              <p className="text-lg font-semibold tabular-nums text-[var(--foreground)]">
+                <AnimatedStat value={totals.reports} />
+              </p>
+              <p className="text-[0.66rem] tracking-[0.08em] text-muted-foreground uppercase">
+                Reports in view
+              </p>
+            </GlassCard>
+
+            <GlassCard className="jm-stat-card animate-rise p-3">
+              <p className="text-lg font-semibold tabular-nums text-[var(--foreground)]">
+                <AnimatedStat value={totals.last7} />
+              </p>
+              <p className="text-[0.66rem] tracking-[0.08em] text-muted-foreground uppercase">
+                Last 7 days
+              </p>
+            </GlassCard>
+
+            <GlassCard className="jm-stat-card animate-rise p-3">
+              <p className="text-lg font-semibold tabular-nums text-[var(--foreground)]">
+                <AnimatedStat value={totals.areas} />
+              </p>
+              <p className="text-[0.66rem] tracking-[0.08em] text-muted-foreground uppercase">
+                Localities mapped
+              </p>
+            </GlassCard>
+
+            <GlassCard className="jm-stat-card animate-rise p-3 border-blue-500/30 bg-blue-500/5">
+              <p className="text-lg font-bold tabular-nums text-blue-400">
+                ~<AnimatedStat value={totals.affectedPeople} />
+              </p>
+              <p className="text-[0.66rem] tracking-[0.08em] text-blue-300 font-medium uppercase">
+                Citizens Affected
+              </p>
+            </GlassCard>
           </div>
 
           {/* live charts row */}
@@ -549,7 +552,7 @@ function CivicMapPage() {
                     <span className="min-w-0 flex-1">
                       <span className="block truncate text-sm">{a.area.name}</span>
                       <span className="block text-[0.66rem] tracking-[0.08em] text-subtle uppercase">
-                        {AREA_HEALTH_LABEL[a.health]} · {ISSUE_LABEL[a.topIssue]}
+                        {AREA_HEALTH_LABEL[a.health]} · ~{(a.affectedPopulation || 0).toLocaleString('en-IN')} affected
                       </span>
                     </span>
                     <span className="text-sm text-muted-foreground">{a.total}</span>
@@ -586,7 +589,7 @@ function AreaPanel({
   trendData: ReturnType<typeof areaDailyTrend>;
   onClose: () => void;
 }) {
-    const { t } = useI18n();
+  const { t } = useI18n();
   const { area } = activity;
   return (
     <div className="animate-rise jm-panel-enter fixed inset-x-0 bottom-14 z-40 px-3 sm:static sm:mt-5 sm:px-0">
@@ -618,28 +621,31 @@ function AreaPanel({
           </button>
         </div>
 
-        <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
-          <div>
-            <p className="label-xs">{t('ui.reports')}</p>
-            <p className="mt-0.5 text-lg font-semibold tabular-nums">
+        {/* Demographic & Population Impact Metrics */}
+        <div className="mt-4 grid grid-cols-2 gap-2.5 sm:grid-cols-4">
+          <div className="p-2.5 rounded-xl bg-[var(--surface)] border border-[var(--glass-border)]">
+            <p className="label-xs text-muted-foreground">{t('ui.reports')}</p>
+            <p className="mt-0.5 text-base font-semibold tabular-nums">
               <AnimatedStat value={activity.total} />
             </p>
           </div>
-          <div>
-            <p className="label-xs">{t('ui.top_issue')}</p>
-            <p className="mt-0.5 truncate text-sm">{ISSUE_LABEL[activity.topIssue]}</p>
-          </div>
-          <div>
-            <p className="label-xs">{t('ui.7_day_trend')}</p>
-            <p className="mt-0.5">
-              <Trend pct={activity.trendPct} />
+          <div className="p-2.5 rounded-xl bg-[var(--surface)] border border-[var(--glass-border)]">
+            <p className="label-xs text-muted-foreground">Ward Population</p>
+            <p className="mt-0.5 text-base font-semibold tabular-nums text-[var(--foreground)]">
+              ~{(area.population || 80000).toLocaleString('en-IN')}
             </p>
           </div>
-          <div>
-            <p className="label-xs">{t('ui.risk')}</p>
-            <p className="mt-0.5 text-lg font-semibold tabular-nums">
-              <AnimatedStat value={activity.risk} />
-              <span className="text-sm font-normal text-muted-foreground">/100</span>
+          <div className="p-2.5 rounded-xl bg-blue-500/10 border border-blue-500/30">
+            <p className="label-xs text-blue-300 font-medium">Citizens Affected</p>
+            <p className="mt-0.5 text-base font-bold text-blue-400 tabular-nums">
+              ~{(activity.affectedPopulation || 0).toLocaleString('en-IN')}
+              <span className="text-xs font-normal opacity-80 ml-1">({activity.affectedPercent}%)</span>
+            </p>
+          </div>
+          <div className="p-2.5 rounded-xl bg-[var(--surface)] border border-[var(--glass-border)]">
+            <p className="label-xs text-muted-foreground">Impact Rating</p>
+            <p className="mt-0.5 text-xs font-bold" style={{ color: AREA_HEALTH_HEX[activity.health] }}>
+              {activity.impactLevel}
             </p>
           </div>
         </div>

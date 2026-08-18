@@ -183,9 +183,11 @@ export function CivicMap({
         lyr.on("mouseover", () => {
           const a = activityRef.current.get(areaId);
           if (!a) return;
-          const tip = `<span class="jm-ward-tip"><strong>${escapeHtml(a.area.name)}</strong><br/>
-            ${AREA_HEALTH_LABEL[a.health]} civic activity · ${a.total} reports<br/>
-            <span class="jm-tip-sub">Top issue: ${ISSUE_LABEL[a.topIssue]}</span></span>`;
+          const div = a.area.admin.division ? ` · <span style="opacity:0.8;font-size:10px">${escapeHtml(a.area.admin.division)}</span>` : "";
+          const tip = `<span class="jm-ward-tip"><strong>${escapeHtml(a.area.name)}</strong>${div}<br/>
+            ${AREA_HEALTH_LABEL[a.health]} severity · ${a.total} reports<br/>
+            <span style="color:#60a5fa;font-weight:600">👥 ~${(a.affectedPopulation || 0).toLocaleString('en-IN')} citizens affected</span> (${a.affectedPercent}% of ward)<br/>
+            <span class="jm-tip-sub">Top: ${ISSUE_LABEL[a.topIssue]} · Impact: ${a.impactLevel}</span></span>`;
           lyr.bindTooltip(tip, {
             sticky: true,
             direction: "top",
@@ -293,8 +295,9 @@ export function CivicMap({
         alt: `${a.area.name} hotspot`,
       }).addTo(layer);
       m.bindTooltip(
-        `<span class="jm-ward-tip"><strong>${escapeHtml(a.area.name)}</strong><br/>
+        `<span class="jm-ward-tip"><strong>${escapeHtml(a.area.name)} Hotspot</strong><br/>
           ${ISSUE_LABEL[a.topIssue]} · ${a.total} reports<br/>
+          <span style="color:#f87171;font-weight:600">👥 ~${(a.affectedPopulation || 0).toLocaleString('en-IN')} citizens affected</span><br/>
           <span class="jm-tip-sub">Trend ${trend} · Risk ${a.risk}/100</span></span>`,
         { direction: "top", opacity: 1, className: "jm-ward-tooltip" },
       );

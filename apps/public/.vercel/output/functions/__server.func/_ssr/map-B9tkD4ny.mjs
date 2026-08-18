@@ -1,13 +1,13 @@
 import { i as __toESM } from "../_runtime.mjs";
 import { n as require_react } from "../_libs/@radix-ui/react-compose-refs+[...].mjs";
 import { r as require_jsx_runtime } from "../_libs/react+tanstack__react-query.mjs";
-import { E as Info, N as Crosshair, W as ArrowUpRight, d as ShieldCheck, f as Search, o as TrendingUp, p as RotateCcw, s as TrendingDown, t as X } from "../_libs/lucide-react.mjs";
+import { H as ArrowUpRight, d as RotateCcw, j as Crosshair, l as ShieldCheck, t as X, u as Search, w as Info } from "../_libs/lucide-react.mjs";
 import { g as Link } from "../_libs/@tanstack/react-router+[...].mjs";
 import { c as nearestCity, o as getCity, s as getDefaultCity, u as setPreferredCity } from "./cities-J8wcazPB.mjs";
-import { D as useI18n, E as cn, c as GlassButton, d as SectionLabel, l as GlassCard, u as PageShell } from "./router-DPF58oFj.mjs";
-import { _ as complaintPoints, a as DEFAULT_FILTERS, b as searchAreas, c as TIME_WINDOWS, f as cityDailyTrend, h as cityIssueBreakdown, i as ClientCivicMap, l as areaActivity, m as cityHealthDistribution, n as AREA_HEALTH_LABEL, o as ISSUE_KEYS, p as cityGeography, r as AREA_HEALTH_ORDER, s as ISSUE_LABEL, t as AREA_HEALTH_HEX, u as areaDailyTrend, v as filterPoints, y as nearestArea } from "./civic-map-panel-4x-T0_tb.mjs";
+import { D as useI18n, E as cn, c as GlassButton, d as SectionLabel, l as GlassCard, u as PageShell } from "./router-CoFm48X4.mjs";
+import { _ as complaintPoints, a as DEFAULT_FILTERS, b as searchAreas, c as TIME_WINDOWS, f as cityDailyTrend, h as cityIssueBreakdown, i as ClientCivicMap, l as areaActivity, m as cityHealthDistribution, n as AREA_HEALTH_LABEL, o as ISSUE_KEYS, p as cityGeography, r as AREA_HEALTH_ORDER, s as ISSUE_LABEL, t as AREA_HEALTH_HEX, u as areaDailyTrend, v as filterPoints, y as nearestArea } from "./civic-map-panel-46tf-Nj7.mjs";
 import { a as XAxis, c as Bar, d as Cell, f as ResponsiveContainer, i as YAxis, l as Pie, m as Legend, n as PieChart, o as Area, p as Tooltip, r as BarChart, s as CartesianGrid, t as AreaChart, u as LabelList } from "../_libs/recharts+[...].mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/map-CUyLQ01_.js
+//#region node_modules/.nitro/vite/services/ssr/assets/map-B9tkD4ny.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
 var THEMES = {
@@ -424,24 +424,6 @@ function Chip({ active, children, ...props }) {
 		children
 	});
 }
-function Trend({ pct }) {
-	const { t } = useI18n();
-	const up = pct >= 0;
-	const Icon = up ? TrendingUp : TrendingDown;
-	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
-		className: "inline-flex items-center gap-1 text-sm",
-		style: { color: up ? AREA_HEALTH_HEX.high : AREA_HEALTH_HEX.low },
-		children: [
-			/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Icon, {
-				className: "h-3.5 w-3.5",
-				"aria-hidden": true
-			}),
-			up ? "+" : "",
-			pct,
-			"%"
-		]
-	});
-}
 function CivicMapPage() {
 	const { t } = useI18n();
 	const [cityId, setCityId] = (0, import_react.useState)(() => getDefaultCity());
@@ -488,7 +470,8 @@ function CivicMapPage() {
 	const totals = (0, import_react.useMemo)(() => ({
 		reports: activities.reduce((n, a) => n + a.total, 0),
 		last7: activities.reduce((n, a) => n + a.last7, 0),
-		areas: activities.length
+		areas: activities.length,
+		affectedPeople: activities.reduce((n, a) => n + (a.affectedPopulation || 0), 0)
 	}), [activities]);
 	const trendData = (0, import_react.useMemo)(() => cityDailyTrend(cityId, filters), [cityId, filters]);
 	const issueData = (0, import_react.useMemo)(() => cityIssueBreakdown(cityId, filters), [cityId, filters]);
@@ -547,361 +530,373 @@ function CivicMapPage() {
 		setFocus(null);
 		setLocationNote(null);
 	};
-	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(PageShell, { children: [
-		/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-			className: "animate-rise jm-hero-glow space-y-2",
-			children: [
-				/* @__PURE__ */ (0, import_jsx_runtime.jsx)(SectionLabel, { children: t("ui.public_civic_intelligence") }),
-				/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h1", {
-					className: "jm-glitch-text text-2xl font-semibold sm:text-3xl",
-					children: t("ui.civic_map")
-				}),
-				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
-					className: "max-w-2xl text-sm text-muted-foreground",
-					children: [
-						getCity(cityId).name,
-						" ",
-						t("ui.by_locality_coloured_by_aggreg")
-					]
-				})
-			]
-		}),
-		/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-			className: "mt-6 space-y-3",
-			children: [
-				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-					className: "flex flex-wrap items-center gap-2.5",
-					children: [
-						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-							type: "button",
-							onClick: () => handleCityChange("vadodara"),
-							"aria-pressed": cityId === "vadodara",
-							className: cn("press flex items-center gap-2 rounded-xl border px-4 py-2 text-xs font-semibold tracking-wide transition-all duration-200 shadow-sm", cityId === "vadodara" ? "border-emerald-500/50 bg-emerald-500/15 text-emerald-300 shadow-[0_0_15px_rgba(16,185,129,0.15)]" : "border-[var(--glass-border)] bg-[var(--glass)] text-muted-foreground hover:text-foreground"),
-							children: [
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "h-2 w-2 rounded-full bg-emerald-400" }),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Vadodara (VMC)" }),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-									className: "text-[10px] font-normal opacity-75",
-									children: "· 24 Areas (5 Zones)"
-								})
-							]
-						}),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-							type: "button",
-							onClick: () => handleCityChange("bengaluru"),
-							"aria-pressed": cityId === "bengaluru",
-							className: cn("press flex items-center gap-2 rounded-xl border px-4 py-2 text-xs font-semibold tracking-wide transition-all duration-200 shadow-sm", cityId === "bengaluru" ? "border-blue-500/50 bg-blue-500/15 text-blue-300 shadow-[0_0_15px_rgba(59,130,246,0.15)]" : "border-[var(--glass-border)] bg-[var(--glass)] text-muted-foreground hover:text-foreground"),
-							children: [
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "h-2 w-2 rounded-full bg-blue-400" }),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Bengaluru (BBMP)" }),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-									className: "text-[10px] font-normal opacity-75",
-									children: "· 35 Areas (8 Zones)"
-								})
-							]
-						}),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-							className: "ml-auto text-[0.7rem] text-muted-foreground hidden sm:inline-block",
-							children: cityId === "vadodara" ? "Vadodara Municipal Scale (Normalized)" : "Bengaluru Metropolitan Scale"
-						})
-					]
-				}),
-				/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-					className: "-mx-4 overflow-x-auto px-4 sm:mx-0 sm:px-0",
-					children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-						role: "tablist",
-						"aria-label": t("ui.map_mode"),
-						className: "inline-flex gap-1 rounded-full border border-[var(--glass-border)] bg-[var(--glass)] p-1 backdrop-blur-md",
-						children: MODES.map((m) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-							type: "button",
-							role: "tab",
-							"aria-selected": mode === m.key,
-							title: m.hint,
-							onClick: () => setMode(m.key),
-							className: cn("press rounded-full px-3.5 py-1.5 text-xs whitespace-nowrap transition-all duration-200", mode === m.key ? "jm-mode-active bg-[var(--surface-elevated)] text-foreground shadow-[var(--shadow-soft)]" : "text-muted-foreground hover:text-foreground"),
-							children: m.label
-						}, m.key))
-					})
-				}),
-				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-					className: "flex flex-col gap-2 sm:flex-row sm:items-center",
-					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-						ref: searchRef,
-						className: "relative w-full sm:max-w-xs",
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(PageShell, {
+		className: "pt-24 sm:pt-32",
+		children: [
+			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+				className: "animate-rise jm-hero-glow space-y-2",
+				children: [
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)(SectionLabel, { children: t("ui.public_civic_intelligence") }),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h1", {
+						className: "jm-glitch-text text-2xl font-semibold sm:text-3xl",
+						children: t("ui.civic_map")
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
+						className: "max-w-2xl text-sm text-muted-foreground",
 						children: [
-							/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Search, {
-								className: "pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-subtle",
-								"aria-hidden": true
+							getCity(cityId).name,
+							" ",
+							t("ui.by_locality_coloured_by_aggreg")
+						]
+					})
+				]
+			}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+				className: "mt-6 space-y-3",
+				children: [
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "flex flex-wrap items-center gap-2.5",
+						children: [
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+								type: "button",
+								onClick: () => handleCityChange("vadodara"),
+								"aria-pressed": cityId === "vadodara",
+								className: cn("press flex items-center gap-2 rounded-xl border px-4 py-2 text-xs font-semibold tracking-wide transition-all duration-200 shadow-sm", cityId === "vadodara" ? "border-emerald-500/50 bg-emerald-500/15 text-emerald-300 shadow-[0_0_15px_rgba(16,185,129,0.15)]" : "border-[var(--glass-border)] bg-[var(--glass)] text-muted-foreground hover:text-foreground"),
+								children: [
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "h-2 w-2 rounded-full bg-emerald-400" }),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Vadodara (VMC)" }),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+										className: "text-[10px] font-normal opacity-75",
+										children: "· 24 Areas (5 Zones)"
+									})
+								]
 							}),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-								type: "search",
-								value: query,
-								onChange: (e) => setQuery(e.target.value),
-								placeholder: `Search area in ${getCity(cityId).name}`,
-								"aria-label": t("ui.search_area_or_locality"),
-								className: "glass h-11 w-full rounded-xl border border-[var(--glass-border)] pr-3 pl-9 text-sm text-foreground outline-none placeholder:text-subtle focus:border-[color-mix(in_oklab,var(--foreground)_25%,transparent)]"
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+								type: "button",
+								onClick: () => handleCityChange("bengaluru"),
+								"aria-pressed": cityId === "bengaluru",
+								className: cn("press flex items-center gap-2 rounded-xl border px-4 py-2 text-xs font-semibold tracking-wide transition-all duration-200 shadow-sm", cityId === "bengaluru" ? "border-blue-500/50 bg-blue-500/15 text-blue-300 shadow-[0_0_15px_rgba(59,130,246,0.15)]" : "border-[var(--glass-border)] bg-[var(--glass)] text-muted-foreground hover:text-foreground"),
+								children: [
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "h-2 w-2 rounded-full bg-blue-400" }),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Bengaluru (BBMP)" }),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+										className: "text-[10px] font-normal opacity-75",
+										children: "· 35 Areas (8 Zones)"
+									})
+								]
 							}),
-							suggestions.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("ul", {
-								className: "absolute z-30 mt-1.5 w-full overflow-hidden rounded-xl border border-[var(--glass-border)] bg-[var(--surface-elevated)] shadow-[var(--shadow-lift)] backdrop-blur-2xl",
-								children: suggestions.map((a) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("li", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-									type: "button",
-									onClick: () => {
-										goToArea(a.id);
-										setQuery("");
-									},
-									className: "press flex w-full flex-col items-start px-3 py-2 text-left hover:bg-[var(--glass)]",
-									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-										className: "text-sm",
-										children: a.name
-									}), a.admin.division && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-										className: "text-[0.64rem] tracking-[0.08em] text-subtle uppercase",
-										children: a.admin.division
-									})]
-								}) }, a.id))
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+								className: "ml-auto text-[0.7rem] text-muted-foreground hidden sm:inline-block",
+								children: cityId === "vadodara" ? "Vadodara Municipal Scale (Normalized)" : "Bengaluru Metropolitan Scale"
 							})
 						]
-					}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-						className: "flex gap-2",
-						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)(GlassButton, {
-							variant: "glass",
-							size: "sm",
-							onClick: nearMe,
-							"aria-busy": locating,
-							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Crosshair, {
-								className: cn("h-3.5 w-3.5", locating && "animate-pulse"),
-								"aria-hidden": true
-							}), t("ui.near_me")]
-						}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(GlassButton, {
-							variant: "ghost",
-							size: "sm",
-							onClick: reset,
-							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(RotateCcw, {
-								className: "h-3.5 w-3.5",
-								"aria-hidden": true
-							}), t("ui.reset")]
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+						className: "-mx-4 overflow-x-auto px-4 sm:mx-0 sm:px-0",
+						children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+							role: "tablist",
+							"aria-label": t("ui.map_mode"),
+							className: "inline-flex gap-1 rounded-full border border-[var(--glass-border)] bg-[var(--glass)] p-1 backdrop-blur-md",
+							children: MODES.map((m) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+								type: "button",
+								role: "tab",
+								"aria-selected": mode === m.key,
+								title: m.hint,
+								onClick: () => setMode(m.key),
+								className: cn("press rounded-full px-3.5 py-1.5 text-xs whitespace-nowrap transition-all duration-200", mode === m.key ? "jm-mode-active bg-[var(--surface-elevated)] text-foreground shadow-[var(--shadow-soft)]" : "text-muted-foreground hover:text-foreground"),
+								children: m.label
+							}, m.key))
+						})
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "flex flex-col gap-2 sm:flex-row sm:items-center",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							ref: searchRef,
+							className: "relative w-full sm:max-w-xs",
+							children: [
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Search, {
+									className: "pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-subtle",
+									"aria-hidden": true
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+									type: "search",
+									value: query,
+									onChange: (e) => setQuery(e.target.value),
+									placeholder: `Search area in ${getCity(cityId).name}`,
+									"aria-label": t("ui.search_area_or_locality"),
+									className: "glass h-11 w-full rounded-xl border border-[var(--glass-border)] pr-3 pl-9 text-sm text-foreground outline-none placeholder:text-subtle focus:border-[color-mix(in_oklab,var(--foreground)_25%,transparent)]"
+								}),
+								suggestions.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("ul", {
+									className: "absolute z-30 mt-1.5 w-full overflow-hidden rounded-xl border border-[var(--glass-border)] bg-[var(--surface-elevated)] shadow-[var(--shadow-lift)] backdrop-blur-2xl",
+									children: suggestions.map((a) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("li", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+										type: "button",
+										onClick: () => {
+											goToArea(a.id);
+											setQuery("");
+										},
+										className: "press flex w-full flex-col items-start px-3 py-2 text-left hover:bg-[var(--glass)]",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+											className: "text-sm",
+											children: a.name
+										}), a.admin.division && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+											className: "text-[0.64rem] tracking-[0.08em] text-subtle uppercase",
+											children: a.admin.division
+										})]
+									}) }, a.id))
+								})
+							]
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "flex gap-2",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)(GlassButton, {
+								variant: "glass",
+								size: "sm",
+								onClick: nearMe,
+								"aria-busy": locating,
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Crosshair, {
+									className: cn("h-3.5 w-3.5", locating && "animate-pulse"),
+									"aria-hidden": true
+								}), t("ui.near_me")]
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(GlassButton, {
+								variant: "ghost",
+								size: "sm",
+								onClick: reset,
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(RotateCcw, {
+									className: "h-3.5 w-3.5",
+									"aria-hidden": true
+								}), t("ui.reset")]
+							})]
 						})]
-					})]
-				}),
-				/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-					className: "-mx-4 overflow-x-auto px-4 pb-1 sm:mx-0 sm:overflow-visible sm:px-0",
-					children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-						className: "flex w-max items-center gap-2 sm:w-auto sm:flex-wrap",
-						children: [
-							/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Chip, {
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "space-y-2 pt-1",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "-mx-4 flex items-center gap-1.5 overflow-x-auto px-4 sm:mx-0 sm:px-0",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Chip, {
 								active: filters.issue === "all",
 								onClick: () => setFilters((f) => ({
 									...f,
 									issue: "all"
 								})),
 								children: t("ui.all_issues")
-							}),
-							ISSUE_KEYS.map((k) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Chip, {
+							}), ISSUE_KEYS.map((k) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Chip, {
 								active: filters.issue === k,
 								onClick: () => setFilters((f) => ({
 									...f,
 									issue: k
 								})),
 								children: ISSUE_LABEL[k]
-							}, k)),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-								className: "mx-1 h-5 w-px shrink-0 bg-[var(--glass-border)]",
-								"aria-hidden": true
-							}),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Chip, {
-								active: filters.health === "all",
-								onClick: () => setFilters((f) => ({
-									...f,
-									health: "all"
-								})),
-								children: t("ui.any_severity")
-							}),
-							AREA_HEALTH_ORDER.map((h) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Chip, {
-								active: filters.health === h,
-								onClick: () => setFilters((f) => ({
-									...f,
-									health: h
-								})),
-								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-									className: "mr-1.5 inline-block h-2 w-2 rounded-[3px] align-middle",
-									style: { background: AREA_HEALTH_HEX[h] },
-									"aria-hidden": true
-								}), AREA_HEALTH_LABEL[h]]
-							}, h)),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-								className: "mx-1 h-5 w-px shrink-0 bg-[var(--glass-border)]",
-								"aria-hidden": true
-							}),
-							TIME_WINDOWS.map((w) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Chip, {
-								active: filters.time === w.key,
-								onClick: () => setFilters((f) => ({
-									...f,
-									time: w.key
-								})),
-								children: w.label
-							}, w.key))
-						]
-					})
-				})
-			]
-		}),
-		/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-			className: "mt-5 grid gap-4 lg:grid-cols-[1fr_20rem]",
-			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-				className: "space-y-3",
-				children: [
-					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-						className: "relative",
-						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(ClientCivicMap, {
-							cityId,
-							mode,
-							activities,
-							points,
-							selectedAreaId: selected,
-							onSelectArea: setSelected,
-							focus,
-							onNearMe: nearMe,
-							locating,
-							className: "jm-map-frame h-[24rem] sm:h-[32rem]"
+							}, k))]
 						}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-							className: "pointer-events-none absolute top-3 left-3 z-[500] rounded-xl border border-[var(--glass-border)] bg-[var(--glass-strong)] px-3 py-2 backdrop-blur-xl",
-							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-								className: "label-xs",
-								children: mode === "hotspots" ? "Hotspot severity" : mode === "activity" ? "Report severity" : "Area health"
-							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("ul", {
-								className: "mt-1.5 flex flex-wrap gap-x-3 gap-y-1 sm:block sm:space-y-1",
-								children: AREA_HEALTH_ORDER.map((h) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("li", {
-									className: "flex items-center gap-1.5",
-									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-										className: "h-2 w-2 rounded-[3px]",
-										style: { background: AREA_HEALTH_HEX[h] },
-										"aria-hidden": true
-									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-										className: "text-[0.62rem] tracking-[0.08em] text-muted-foreground uppercase",
-										children: AREA_HEALTH_LABEL[h]
-									})]
-								}, h))
-							})]
-						})]
-					}),
-					locationNote && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-						className: "text-xs text-muted-foreground",
-						children: locationNote
-					}),
-					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-						className: "grid grid-cols-3 gap-2",
-						children: [
-							[totals.reports, "Reports in view"],
-							[totals.last7, "Last 7 days"],
-							[totals.areas, "Localities mapped"]
-						].map(([value, label], i) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(GlassCard, {
-							className: "jm-stat-card animate-rise p-3",
-							style: { animationDelay: `${i * 80}ms` },
-							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-								className: "text-lg font-semibold",
-								children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(AnimatedStat, { value })
-							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-								className: "text-[0.66rem] tracking-[0.08em] text-muted-foreground uppercase",
-								children: label
-							})]
-						}, String(label)))
-					}),
-					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-						className: "grid gap-3 sm:grid-cols-2",
-						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)(GlassCard, {
-							className: "jm-chart-card animate-rise p-4",
-							style: { animationDelay: "120ms" },
-							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(SectionLabel, { children: t("ui.7_day_activity_pulse") }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ActivityTrendChart, {
-								data: trendData,
-								className: "mt-2"
-							})]
-						}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(GlassCard, {
-							className: "jm-chart-card animate-rise p-4",
-							style: { animationDelay: "200ms" },
-							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(SectionLabel, { children: t("ui.issue_breakdown") }), issueData.length > 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(IssueBreakdownChart, {
-								data: issueData,
-								className: "mt-2"
-							}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-								className: "mt-6 text-sm text-muted-foreground",
-								children: t("ui.no_data_under_current_filters")
-							})]
-						})]
-					}),
-					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
-						className: "flex items-start gap-2 text-xs text-subtle",
-						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Info, {
-							className: "mt-0.5 h-3.5 w-3.5 shrink-0",
-							"aria-hidden": true
-						}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { children: [
-							geography.dataNote,
-							" ",
-							t("ui.shaded_polygons_are_an_approxi")
-						] })]
-					}),
-					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
-						className: "flex items-start gap-2 text-xs text-subtle",
-						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(ShieldCheck, {
-							className: "mt-0.5 h-3.5 w-3.5 shrink-0",
-							"aria-hidden": true
-						}), t("ui.aggregate_view_only_no_names_c")]
-					})
-				]
-			}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-				className: "hidden space-y-4 lg:block",
-				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)(GlassCard, {
-					className: "jm-chart-card animate-rise p-4",
-					style: { animationDelay: "80ms" },
-					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(SectionLabel, { children: t("ui.severity_distribution") }), healthData.length > 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(HealthPieChart, { data: healthData }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-						className: "mt-4 text-sm text-muted-foreground",
-						children: t("ui.no_data_under_current_filters")
-					})]
-				}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(GlassCard, {
-					className: "animate-rise p-4",
-					style: { animationDelay: "160ms" },
-					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(SectionLabel, { children: mode === "hotspots" ? "Active hotspots" : "Most active areas" }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("ul", {
-						className: "mt-3 space-y-1",
-						children: [(mode === "hotspots" ? hotspots : ranked.slice(0, 10)).map((a) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("li", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-							type: "button",
-							onClick: () => goToArea(a.area.id),
-							className: cn("press flex w-full items-center gap-2.5 rounded-xl px-2.5 py-2 text-left transition-colors", selected === a.area.id ? "bg-[var(--surface-elevated)]" : "hover:bg-[var(--glass)]"),
+							className: "-mx-4 flex flex-wrap items-center gap-2 overflow-x-auto px-4 sm:mx-0 sm:px-0",
 							children: [
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-									className: "h-2.5 w-2.5 shrink-0 rounded-[3px]",
-									style: { background: AREA_HEALTH_HEX[a.health] },
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "flex items-center gap-1",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Chip, {
+										active: filters.health === "all",
+										onClick: () => setFilters((f) => ({
+											...f,
+											health: "all"
+										})),
+										children: t("ui.any_severity")
+									}), AREA_HEALTH_ORDER.map((h) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Chip, {
+										active: filters.health === h,
+										onClick: () => setFilters((f) => ({
+											...f,
+											health: h
+										})),
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+											className: "mr-1.5 inline-block h-1.5 w-1.5 rounded-full",
+											style: { background: AREA_HEALTH_HEX[h] },
+											"aria-hidden": true
+										}), AREA_HEALTH_LABEL[h]]
+									}, h))]
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+									className: "h-4 w-px bg-[var(--glass-border)]",
 									"aria-hidden": true
 								}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
-									className: "min-w-0 flex-1",
-									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-										className: "block truncate text-sm",
-										children: a.area.name
-									}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
-										className: "block text-[0.66rem] tracking-[0.08em] text-subtle uppercase",
-										children: [
-											AREA_HEALTH_LABEL[a.health],
-											" · ",
-											ISSUE_LABEL[a.topIssue]
-										]
-									})]
-								}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-									className: "text-sm text-muted-foreground",
-									children: a.total
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+									className: "flex items-center gap-1",
+									children: TIME_WINDOWS.map((w) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Chip, {
+										active: filters.time === w.key,
+										onClick: () => setFilters((f) => ({
+											...f,
+											time: w.key
+										})),
+										children: w.label
+									}, w.key))
 								})
 							]
-						}) }, a.area.id)), mode === "hotspots" && hotspots.length === 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("li", {
-							className: "px-2.5 py-2 text-sm text-muted-foreground",
-							children: t("ui.no_hotspots_under_the_current_")
+						})]
+					})
+				]
+			}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+				className: "mt-5 grid items-start gap-5 lg:grid-cols-[1fr_320px]",
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "space-y-4",
+					children: [
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+							className: "relative",
+							children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ClientCivicMap, {
+								cityId,
+								mode,
+								activities,
+								points,
+								selectedAreaId: selected,
+								onSelectArea: (id) => setSelected(id),
+								focus,
+								className: "h-[480px] sm:h-[580px]"
+							})
+						}),
+						locationNote && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+							className: "text-xs text-muted-foreground",
+							children: locationNote
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "grid grid-cols-2 sm:grid-cols-4 gap-2.5",
+							children: [
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)(GlassCard, {
+									className: "jm-stat-card animate-rise p-3",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+										className: "text-lg font-semibold tabular-nums text-[var(--foreground)]",
+										children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(AnimatedStat, { value: totals.reports })
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+										className: "text-[0.66rem] tracking-[0.08em] text-muted-foreground uppercase",
+										children: "Reports in view"
+									})]
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)(GlassCard, {
+									className: "jm-stat-card animate-rise p-3",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+										className: "text-lg font-semibold tabular-nums text-[var(--foreground)]",
+										children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(AnimatedStat, { value: totals.last7 })
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+										className: "text-[0.66rem] tracking-[0.08em] text-muted-foreground uppercase",
+										children: "Last 7 days"
+									})]
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)(GlassCard, {
+									className: "jm-stat-card animate-rise p-3",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+										className: "text-lg font-semibold tabular-nums text-[var(--foreground)]",
+										children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(AnimatedStat, { value: totals.areas })
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+										className: "text-[0.66rem] tracking-[0.08em] text-muted-foreground uppercase",
+										children: "Localities mapped"
+									})]
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)(GlassCard, {
+									className: "jm-stat-card animate-rise p-3 border-blue-500/30 bg-blue-500/5",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
+										className: "text-lg font-bold tabular-nums text-blue-400",
+										children: ["~", /* @__PURE__ */ (0, import_jsx_runtime.jsx)(AnimatedStat, { value: totals.affectedPeople })]
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+										className: "text-[0.66rem] tracking-[0.08em] text-blue-300 font-medium uppercase",
+										children: "Citizens Affected"
+									})]
+								})
+							]
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "grid gap-3 sm:grid-cols-2",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)(GlassCard, {
+								className: "jm-chart-card animate-rise p-4",
+								style: { animationDelay: "120ms" },
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(SectionLabel, { children: t("ui.7_day_activity_pulse") }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ActivityTrendChart, {
+									data: trendData,
+									className: "mt-2"
+								})]
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(GlassCard, {
+								className: "jm-chart-card animate-rise p-4",
+								style: { animationDelay: "200ms" },
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(SectionLabel, { children: t("ui.issue_breakdown") }), issueData.length > 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(IssueBreakdownChart, {
+									data: issueData,
+									className: "mt-2"
+								}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+									className: "mt-6 text-sm text-muted-foreground",
+									children: t("ui.no_data_under_current_filters")
+								})]
+							})]
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
+							className: "flex items-start gap-2 text-xs text-subtle",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Info, {
+								className: "mt-0.5 h-3.5 w-3.5 shrink-0",
+								"aria-hidden": true
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { children: [
+								geography.dataNote,
+								" ",
+								t("ui.shaded_polygons_are_an_approxi")
+							] })]
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
+							className: "flex items-start gap-2 text-xs text-subtle",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(ShieldCheck, {
+								className: "mt-0.5 h-3.5 w-3.5 shrink-0",
+								"aria-hidden": true
+							}), t("ui.aggregate_view_only_no_names_c")]
+						})
+					]
+				}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "hidden space-y-4 lg:block",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)(GlassCard, {
+						className: "jm-chart-card animate-rise p-4",
+						style: { animationDelay: "80ms" },
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(SectionLabel, { children: t("ui.severity_distribution") }), healthData.length > 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(HealthPieChart, { data: healthData }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+							className: "mt-4 text-sm text-muted-foreground",
+							children: t("ui.no_data_under_current_filters")
+						})]
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(GlassCard, {
+						className: "animate-rise p-4",
+						style: { animationDelay: "160ms" },
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(SectionLabel, { children: mode === "hotspots" ? "Active hotspots" : "Most active areas" }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("ul", {
+							className: "mt-3 space-y-1",
+							children: [(mode === "hotspots" ? hotspots : ranked.slice(0, 10)).map((a) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("li", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+								type: "button",
+								onClick: () => goToArea(a.area.id),
+								className: cn("press flex w-full items-center gap-2.5 rounded-xl px-2.5 py-2 text-left transition-colors", selected === a.area.id ? "bg-[var(--surface-elevated)]" : "hover:bg-[var(--glass)]"),
+								children: [
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+										className: "h-2.5 w-2.5 shrink-0 rounded-[3px]",
+										style: { background: AREA_HEALTH_HEX[a.health] },
+										"aria-hidden": true
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+										className: "min-w-0 flex-1",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+											className: "block truncate text-sm",
+											children: a.area.name
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+											className: "block text-[0.66rem] tracking-[0.08em] text-subtle uppercase",
+											children: [
+												AREA_HEALTH_LABEL[a.health],
+												" · ~",
+												(a.affectedPopulation || 0).toLocaleString("en-IN"),
+												" affected"
+											]
+										})]
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+										className: "text-sm text-muted-foreground",
+										children: a.total
+									})
+								]
+							}) }, a.area.id)), mode === "hotspots" && hotspots.length === 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("li", {
+								className: "px-2.5 py-2 text-sm text-muted-foreground",
+								children: t("ui.no_hotspots_under_the_current_")
+							})]
 						})]
 					})]
 				})]
-			})]
-		}),
-		selectedArea && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(AreaPanel, {
-			activity: selectedArea,
-			trendData: areaTrend,
-			onClose: () => setSelected(null)
-		})
-	] });
+			}),
+			selectedArea && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(AreaPanel, {
+				activity: selectedArea,
+				trendData: areaTrend,
+				onClose: () => setSelected(null)
+			})
+		]
+	});
 }
 function AreaPanel({ activity, trendData, onClose }) {
 	const { t } = useI18n();
@@ -952,39 +947,60 @@ function AreaPanel({ activity, trendData, onClose }) {
 					})]
 				}),
 				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-					className: "mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4",
+					className: "mt-4 grid grid-cols-2 gap-2.5 sm:grid-cols-4",
 					children: [
-						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-							className: "label-xs",
-							children: t("ui.reports")
-						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-							className: "mt-0.5 text-lg font-semibold tabular-nums",
-							children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(AnimatedStat, { value: activity.total })
-						})] }),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-							className: "label-xs",
-							children: t("ui.top_issue")
-						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-							className: "mt-0.5 truncate text-sm",
-							children: ISSUE_LABEL[activity.topIssue]
-						})] }),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-							className: "label-xs",
-							children: t("ui.7_day_trend")
-						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-							className: "mt-0.5",
-							children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Trend, { pct: activity.trendPct })
-						})] }),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-							className: "label-xs",
-							children: t("ui.risk")
-						}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
-							className: "mt-0.5 text-lg font-semibold tabular-nums",
-							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(AnimatedStat, { value: activity.risk }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-								className: "text-sm font-normal text-muted-foreground",
-								children: "/100"
+						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "p-2.5 rounded-xl bg-[var(--surface)] border border-[var(--glass-border)]",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+								className: "label-xs text-muted-foreground",
+								children: t("ui.reports")
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+								className: "mt-0.5 text-base font-semibold tabular-nums",
+								children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(AnimatedStat, { value: activity.total })
 							})]
-						})] })
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "p-2.5 rounded-xl bg-[var(--surface)] border border-[var(--glass-border)]",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+								className: "label-xs text-muted-foreground",
+								children: "Ward Population"
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
+								className: "mt-0.5 text-base font-semibold tabular-nums text-[var(--foreground)]",
+								children: ["~", (area.population || 8e4).toLocaleString("en-IN")]
+							})]
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "p-2.5 rounded-xl bg-blue-500/10 border border-blue-500/30",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+								className: "label-xs text-blue-300 font-medium",
+								children: "Citizens Affected"
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
+								className: "mt-0.5 text-base font-bold text-blue-400 tabular-nums",
+								children: [
+									"~",
+									(activity.affectedPopulation || 0).toLocaleString("en-IN"),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+										className: "text-xs font-normal opacity-80 ml-1",
+										children: [
+											"(",
+											activity.affectedPercent,
+											"%)"
+										]
+									})
+								]
+							})]
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "p-2.5 rounded-xl bg-[var(--surface)] border border-[var(--glass-border)]",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+								className: "label-xs text-muted-foreground",
+								children: "Impact Rating"
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+								className: "mt-0.5 text-xs font-bold",
+								style: { color: AREA_HEALTH_HEX[activity.health] },
+								children: activity.impactLevel
+							})]
+						})
 					]
 				}),
 				trendData.some((d) => d.reports > 0) && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {

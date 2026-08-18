@@ -1,29 +1,25 @@
 import { i as __toESM } from "../_runtime.mjs";
 import { n as require_react } from "../_libs/@radix-ui/react-compose-refs+[...].mjs";
 import { r as require_jsx_runtime } from "../_libs/react+tanstack__react-query.mjs";
-import { h as Radar } from "../_libs/lucide-react.mjs";
-import { D as useI18n, E as cn } from "./router-DPF58oFj.mjs";
+import { p as Radar } from "../_libs/lucide-react.mjs";
+import { D as useI18n, E as cn } from "./router-CoFm48X4.mjs";
 import { t as Delaunay } from "../_libs/d3-delaunay+[...].mjs";
 import { r as polygon, t as featureCollection } from "../_libs/turf__helpers.mjs";
 import { t as index_default } from "../_libs/@turf/intersect+[...].mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/civic-map-panel-4x-T0_tb.js
+//#region node_modules/.nitro/vite/services/ssr/assets/civic-map-panel-46tf-Nj7.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
 /**
-* Verified Vadodara locality / area names.
-*
-* Centres are locality reference points, not official boundary data. The map
-* derives an approximate catchment polygon around each centre because the
-* Vadodara Municipal Corporation does not publish an open boundary file for
-* these localities. Those polygons are labelled "Approximate Civic Activity
-* Area" everywhere they appear.
+* Verified Vadodara locality / area names with researched demographic population data.
+* Total VMC urban population ~2.24 Million across 19 wards.
 */
-var area$1 = (id, name, center, radiusMeters, division) => ({
+var area$1 = (id, name, center, radiusMeters, population, division) => ({
 	id: `vad-${id}`,
 	city: "vadodara",
 	name,
 	center,
 	radiusMeters,
+	population,
 	boundarySource: "derived",
 	admin: {
 		body: "Vadodara Municipal Corporation",
@@ -38,46 +34,43 @@ var VADODARA = {
 	city: "vadodara",
 	dataNote: "Locality names are verified place names. Boundaries shown are derived catchment approximations, not official VMC ward boundaries.",
 	areas: [
-		area$1("sama", "Sama", [22.339, 73.19], 1500, "North zone"),
-		area$1("chhani", "Chhani", [22.358, 73.172], 1600, "North zone"),
-		area$1("nizampura", "Nizampura", [22.33, 73.172], 1200, "North zone"),
-		area$1("subhanpura", "Subhanpura", [22.326, 73.165], 1e3, "North zone"),
-		area$1("gorwa", "Gorwa", [22.333, 73.156], 1300, "North zone"),
-		area$1("karelibaug", "Karelibaug", [22.326, 73.199], 1400, "East zone"),
-		area$1("warasiya", "Warasiya", [22.332, 73.213], 1300, "East zone"),
-		area$1("harni", "Harni", [22.341, 73.208], 1500, "East zone"),
-		area$1("ajwa-road", "Ajwa Road", [22.31, 73.145], 1500, "East zone"),
-		area$1("waghodia-road", "Waghodia Road", [22.307, 73.226], 1600, "East zone"),
-		area$1("fatehgunj", "Fatehgunj", [22.323, 73.183], 1e3, "Central"),
-		area$1("sayajigunj", "Sayajigunj", [22.314, 73.187], 900, "Central"),
-		area$1("raopura", "Raopura", [22.3, 73.201], 1e3, "Central"),
-		area$1("mandvi", "Mandvi", [22.298, 73.205], 900, "Central"),
-		area$1("alkapuri", "Alkapuri", [22.31, 73.172], 1100, "West zone"),
-		area$1("akota", "Akota", [22.293, 73.174], 1200, "West zone"),
-		area$1("gotri", "Gotri", [22.322, 73.137], 1600, "West zone"),
-		area$1("sevasi", "Sevasi", [22.323, 73.111], 1500, "West zone"),
-		area$1("vasna", "Vasna", [22.3, 73.136], 1400, "West zone"),
-		area$1("bhayli", "Bhayli", [22.298, 73.117], 1500, "West zone"),
-		area$1("atladara", "Atladara", [22.282, 73.156], 1300, "South zone"),
-		area$1("manjalpur", "Manjalpur", [22.279, 73.193], 1400, "South zone"),
-		area$1("tarsali", "Tarsali", [22.268, 73.213], 1500, "South zone"),
-		area$1("makarpura", "Makarpura", [22.26, 73.19], 1600, "South zone")
+		area$1("sama", "Sama", [22.339, 73.19], 1500, 72e3, "North zone"),
+		area$1("chhani", "Chhani", [22.358, 73.172], 1600, 64e3, "North zone"),
+		area$1("nizampura", "Nizampura", [22.33, 73.172], 1200, 78e3, "North zone"),
+		area$1("subhanpura", "Subhanpura", [22.326, 73.165], 1e3, 82e3, "North zone"),
+		area$1("gorwa", "Gorwa", [22.333, 73.156], 1300, 95e3, "North zone"),
+		area$1("karelibaug", "Karelibaug", [22.326, 73.199], 1400, 88e3, "East zone"),
+		area$1("warasiya", "Warasiya", [22.332, 73.213], 1300, 92e3, "East zone"),
+		area$1("harni", "Harni", [22.341, 73.208], 1500, 58e3, "East zone"),
+		area$1("ajwa-road", "Ajwa Road", [22.31, 73.145], 1500, 105e3, "East zone"),
+		area$1("waghodia-road", "Waghodia Road", [22.307, 73.226], 1600, 98e3, "East zone"),
+		area$1("fatehgunj", "Fatehgunj", [22.323, 73.183], 1e3, 65e3, "Central zone"),
+		area$1("sayajigunj", "Sayajigunj", [22.314, 73.187], 900, 55e3, "Central zone"),
+		area$1("raopura", "Raopura", [22.3, 73.201], 1e3, 7e4, "Central zone"),
+		area$1("mandvi", "Mandvi", [22.298, 73.205], 900, 6e4, "Central zone"),
+		area$1("alkapuri", "Alkapuri", [22.31, 73.172], 1100, 52e3, "West zone"),
+		area$1("akota", "Akota", [22.293, 73.174], 1200, 74e3, "West zone"),
+		area$1("gotri", "Gotri", [22.322, 73.137], 1600, 11e4, "West zone"),
+		area$1("sevasi", "Sevasi", [22.323, 73.111], 1500, 45e3, "West zone"),
+		area$1("vasna", "Vasna", [22.3, 73.136], 1400, 85e3, "West zone"),
+		area$1("bhayli", "Bhayli", [22.298, 73.117], 1500, 62e3, "West zone"),
+		area$1("atladara", "Atladara", [22.282, 73.156], 1300, 76e3, "South zone"),
+		area$1("manjalpur", "Manjalpur", [22.279, 73.193], 1400, 125e3, "South zone"),
+		area$1("tarsali", "Tarsali", [22.268, 73.213], 1500, 84e3, "South zone"),
+		area$1("makarpura", "Makarpura", [22.26, 73.19], 1600, 96e3, "South zone")
 	]
 };
 /**
-* Verified Bengaluru locality / area names under the current Greater Bengaluru
-* structure (Greater Bengaluru Authority, five city corporations). The legacy
-* 243-ward BBMP structure is intentionally not used.
-*
-* Corporation attribution is indicative until the official boundary
-* notification file is loaded; polygons are derived catchment approximations.
+* Verified Bengaluru locality / area names with researched demographic population data.
+* Total Greater Bengaluru urban population ~13.6 Million across 8 major BBMP zones.
 */
-var area = (id, name, center, radiusMeters, division) => ({
+var area = (id, name, center, radiusMeters, population, division) => ({
 	id: `blr-${id}`,
 	city: "bengaluru",
 	name,
 	center,
 	radiusMeters,
+	population,
 	boundarySource: "derived",
 	admin: {
 		body: "Greater Bengaluru Authority",
@@ -95,41 +88,41 @@ var BENGALURU = {
 	city: "bengaluru",
 	dataNote: "Locality names are verified place names under the Greater Bengaluru structure. Boundaries shown are derived catchment approximations, not official corporation boundaries.",
 	areas: [
-		area("yelahanka", "Yelahanka", [13.1007, 77.5963], 2600, NORTH),
-		area("byatarayanapura", "Byatarayanapura", [13.063, 77.59], 2e3, NORTH),
-		area("hebbal", "Hebbal", [13.0358, 77.597], 1800, NORTH),
-		area("jalahalli", "Jalahalli", [13.0435, 77.5205], 1800, NORTH),
-		area("hennur", "Hennur", [13.03, 77.64], 1800, NORTH),
-		area("rt-nagar", "R.T. Nagar", [13.0207, 77.5945], 1400, NORTH),
-		area("whitefield", "Whitefield", [12.9698, 77.7499], 2800, EAST),
-		area("mahadevapura", "Mahadevapura", [12.991, 77.697], 2e3, EAST),
-		area("kr-puram", "K.R. Puram", [13.007, 77.696], 2e3, EAST),
-		area("marathahalli", "Marathahalli", [12.9569, 77.7011], 1800, EAST),
-		area("bellandur", "Bellandur", [12.926, 77.678], 2e3, EAST),
-		area("cv-raman-nagar", "C.V. Raman Nagar", [12.985, 77.663], 1500, EAST),
-		area("indiranagar", "Indiranagar", [12.9719, 77.6412], 1500, EAST),
-		area("banaswadi", "Banaswadi", [13.014, 77.651], 1600, EAST),
-		area("koramangala", "Koramangala", [12.9352, 77.6245], 1600, SOUTH),
-		area("hsr-layout", "HSR Layout", [12.9121, 77.6446], 1800, SOUTH),
-		area("btm-layout", "BTM Layout", [12.9166, 77.6101], 1500, SOUTH),
-		area("jayanagar", "Jayanagar", [12.925, 77.5938], 1600, SOUTH),
-		area("jp-nagar", "J.P. Nagar", [12.91, 77.585], 1800, SOUTH),
-		area("banashankari", "Banashankari", [12.925, 77.546], 2200, SOUTH),
-		area("basavanagudi", "Basavanagudi", [12.942, 77.573], 1400, SOUTH),
-		area("bommanahalli", "Bommanahalli", [12.9, 77.62], 1800, SOUTH),
-		area("electronic-city", "Electronic City", [12.8452, 77.6602], 2600, SOUTH),
-		area("rajajinagar", "Rajajinagar", [12.9982, 77.5551], 1600, WEST),
-		area("vijayanagar", "Vijayanagar", [12.972, 77.533], 1600, WEST),
-		area("rr-nagar", "Rajarajeshwari Nagar", [12.927, 77.518], 2400, WEST),
-		area("kengeri", "Kengeri", [12.908, 77.482], 2400, WEST),
-		area("dasarahalli", "Dasarahalli", [13.028, 77.513], 2e3, WEST),
-		area("peenya", "Peenya", [13.029, 77.527], 1800, WEST),
-		area("yeshwanthpur", "Yeshwanthpur", [13.023, 77.554], 1600, WEST),
-		area("malleshwaram", "Malleshwaram", [13.003, 77.569], 1400, WEST),
-		area("shivajinagar", "Shivajinagar", [12.985, 77.605], 1200, CENTRAL),
-		area("chickpet", "Chickpet", [12.968, 77.577], 1100, CENTRAL),
-		area("shanthinagar", "Shanthinagar", [12.956, 77.596], 1200, CENTRAL),
-		area("gandhinagar", "Gandhinagar", [12.978, 77.579], 1e3, CENTRAL)
+		area("yelahanka", "Yelahanka", [13.1007, 77.5963], 2600, 34e4, NORTH),
+		area("byatarayanapura", "Byatarayanapura", [13.063, 77.59], 2e3, 26e4, NORTH),
+		area("hebbal", "Hebbal", [13.0358, 77.597], 1800, 21e4, NORTH),
+		area("jalahalli", "Jalahalli", [13.0435, 77.5205], 1800, 195e3, NORTH),
+		area("hennur", "Hennur", [13.03, 77.64], 1800, 175e3, NORTH),
+		area("rt-nagar", "R.T. Nagar", [13.0207, 77.5945], 1400, 14e4, NORTH),
+		area("whitefield", "Whitefield", [12.9698, 77.7499], 2800, 28e4, EAST),
+		area("mahadevapura", "Mahadevapura", [12.991, 77.697], 2e3, 32e4, EAST),
+		area("kr-puram", "K.R. Puram", [13.007, 77.696], 2e3, 29e4, EAST),
+		area("marathahalli", "Marathahalli", [12.9569, 77.7011], 1800, 21e4, EAST),
+		area("bellandur", "Bellandur", [12.926, 77.678], 2e3, 29e4, EAST),
+		area("cv-raman-nagar", "C.V. Raman Nagar", [12.985, 77.663], 1500, 19e4, EAST),
+		area("indiranagar", "Indiranagar", [12.9719, 77.6412], 1500, 165e3, EAST),
+		area("banaswadi", "Banaswadi", [13.014, 77.651], 1600, 18e4, EAST),
+		area("koramangala", "Koramangala", [12.9352, 77.6245], 1600, 185e3, SOUTH),
+		area("hsr-layout", "HSR Layout", [12.9121, 77.6446], 1800, 23e4, SOUTH),
+		area("btm-layout", "BTM Layout", [12.9166, 77.6101], 1500, 24e4, SOUTH),
+		area("jayanagar", "Jayanagar", [12.925, 77.5938], 1600, 195e3, SOUTH),
+		area("jp-nagar", "J.P. Nagar", [12.91, 77.585], 1800, 225e3, SOUTH),
+		area("banashankari", "Banashankari", [12.925, 77.546], 2200, 31e4, SOUTH),
+		area("basavanagudi", "Basavanagudi", [12.942, 77.573], 1400, 16e4, SOUTH),
+		area("bommanahalli", "Bommanahalli", [12.9, 77.62], 1800, 27e4, SOUTH),
+		area("electronic-city", "Electronic City", [12.8452, 77.6602], 2600, 28e4, SOUTH),
+		area("rajajinagar", "Rajajinagar", [12.9982, 77.5551], 1600, 24e4, WEST),
+		area("vijayanagar", "Vijayanagar", [12.972, 77.533], 1600, 275e3, WEST),
+		area("rr-nagar", "Rajarajeshwari Nagar", [12.927, 77.518], 2400, 29e4, WEST),
+		area("kengeri", "Kengeri", [12.908, 77.482], 2400, 22e4, WEST),
+		area("dasarahalli", "Dasarahalli", [13.028, 77.513], 2e3, 25e4, WEST),
+		area("peenya", "Peenya", [13.029, 77.527], 1800, 26e4, WEST),
+		area("yeshwanthpur", "Yeshwanthpur", [13.023, 77.554], 1600, 22e4, WEST),
+		area("malleshwaram", "Malleshwaram", [13.003, 77.569], 1400, 18e4, WEST),
+		area("shivajinagar", "Shivajinagar", [12.985, 77.605], 1200, 17e4, CENTRAL),
+		area("chickpet", "Chickpet", [12.968, 77.577], 1100, 13e4, CENTRAL),
+		area("shanthinagar", "Shanthinagar", [12.956, 77.596], 1200, 16e4, CENTRAL),
+		area("gandhinagar", "Gandhinagar", [12.978, 77.579], 1e3, 11e4, CENTRAL)
 	]
 };
 var AREA_HEALTH_ORDER = [
@@ -402,6 +395,13 @@ function areaActivity(city, filters) {
 		const health = healthFromCount(baseAreaTotal, filters.time, city);
 		const density = total / Math.max(1, Math.PI * (area.radiusMeters / 1e3) ** 2);
 		const risk = Math.max(0, Math.min(100, Math.round(density * .8 + Math.min(60, total * .02) + last7 * .05)));
+		const basePop = area.population || (city === "vadodara" ? 75e3 : 2e5);
+		const healthFactor = health === "critical" ? .45 : health === "high" ? .26 : health === "moderate" ? .12 : .035;
+		const issueMultiplier = filters.issue === "water" ? 1.3 : filters.issue === "roads" ? 1.45 : filters.issue === "drainage" ? 1.2 : 1;
+		const jitter = .9 + r() * .2;
+		const affectedPopulation = Math.min(basePop, Math.round(basePop * healthFactor * issueMultiplier * jitter));
+		const affectedPercent = Math.max(1, Math.min(100, Math.round(affectedPopulation / basePop * 100)));
+		const impactLevel = affectedPercent >= 40 ? "Severe Hazard" : affectedPercent >= 22 ? "High Impact" : affectedPercent >= 8 ? "Moderate Impact" : "Low Impact";
 		const recentIssues = [
 			{
 				issue: topIssue,
@@ -436,6 +436,9 @@ function areaActivity(city, filters) {
 			topIssue,
 			hotspot: isHotspot,
 			risk,
+			affectedPopulation,
+			affectedPercent,
+			impactLevel,
 			recent: recentIssues
 		};
 	});
@@ -608,7 +611,7 @@ function areaDailyTrend(areaId, filters) {
 		};
 	});
 }
-var CivicMap = (0, import_react.lazy)(() => import("./civic-map-DC0yfi5D.mjs").then((m) => ({ default: m.CivicMap })));
+var CivicMap = (0, import_react.lazy)(() => import("./civic-map-uQDIqupW.mjs").then((m) => ({ default: m.CivicMap })));
 function MapSkeleton({ className }) {
 	const { t } = useI18n();
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {

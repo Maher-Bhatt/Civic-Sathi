@@ -1,12 +1,12 @@
 import { i as __toESM } from "../_runtime.mjs";
 import { n as require_react } from "../_libs/@radix-ui/react-compose-refs+[...].mjs";
 import { r as require_jsx_runtime } from "../_libs/react+tanstack__react-query.mjs";
-import { N as Crosshair, _ as Minus, g as Plus, p as RotateCcw } from "../_libs/lucide-react.mjs";
+import { d as RotateCcw, h as Minus, j as Crosshair, m as Plus } from "../_libs/lucide-react.mjs";
 import { i as TILES, o as getCity, t as ATTRIBUTION } from "./cities-J8wcazPB.mjs";
-import { D as useI18n, E as cn } from "./router-DPF58oFj.mjs";
-import { o as useTheme } from "./router-DPF58oFj2.mjs";
-import { d as areaFeatureCollection, g as clusterPoints, n as AREA_HEALTH_LABEL, s as ISSUE_LABEL, t as AREA_HEALTH_HEX } from "./civic-map-panel-4x-T0_tb.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/civic-map-DC0yfi5D.js
+import { D as useI18n, E as cn } from "./router-CoFm48X4.mjs";
+import { o as useTheme } from "./router-CoFm48X42.mjs";
+import { d as areaFeatureCollection, g as clusterPoints, n as AREA_HEALTH_LABEL, s as ISSUE_LABEL, t as AREA_HEALTH_HEX } from "./civic-map-panel-46tf-Nj7.mjs";
+//#region node_modules/.nitro/vite/services/ssr/assets/civic-map-uQDIqupW.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
 var escapeHtml = (s) => s.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
@@ -136,9 +136,11 @@ function CivicMap({ cityId, mode, activities, points, selectedAreaId, onSelectAr
 				lyr.on("mouseover", () => {
 					const a = activityRef.current.get(areaId);
 					if (!a) return;
-					const tip = `<span class="jm-ward-tip"><strong>${escapeHtml(a.area.name)}</strong><br/>
-            ${AREA_HEALTH_LABEL[a.health]} civic activity · ${a.total} reports<br/>
-            <span class="jm-tip-sub">Top issue: ${ISSUE_LABEL[a.topIssue]}</span></span>`;
+					const div = a.area.admin.division ? ` · <span style="opacity:0.8;font-size:10px">${escapeHtml(a.area.admin.division)}</span>` : "";
+					const tip = `<span class="jm-ward-tip"><strong>${escapeHtml(a.area.name)}</strong>${div}<br/>
+            ${AREA_HEALTH_LABEL[a.health]} severity · ${a.total} reports<br/>
+            <span style="color:#60a5fa;font-weight:600">👥 ~${(a.affectedPopulation || 0).toLocaleString("en-IN")} citizens affected</span> (${a.affectedPercent}% of ward)<br/>
+            <span class="jm-tip-sub">Top: ${ISSUE_LABEL[a.topIssue]} · Impact: ${a.impactLevel}</span></span>`;
 					lyr.bindTooltip(tip, {
 						sticky: true,
 						direction: "top",
@@ -248,8 +250,9 @@ function CivicMap({ cityId, mode, activities, points, selectedAreaId, onSelectAr
 				title: `${a.area.name} hotspot`,
 				alt: `${a.area.name} hotspot`
 			}).addTo(layer);
-			m.bindTooltip(`<span class="jm-ward-tip"><strong>${escapeHtml(a.area.name)}</strong><br/>
+			m.bindTooltip(`<span class="jm-ward-tip"><strong>${escapeHtml(a.area.name)} Hotspot</strong><br/>
           ${ISSUE_LABEL[a.topIssue]} · ${a.total} reports<br/>
+          <span style="color:#f87171;font-weight:600">👥 ~${(a.affectedPopulation || 0).toLocaleString("en-IN")} citizens affected</span><br/>
           <span class="jm-tip-sub">Trend ${trend} · Risk ${a.risk}/100</span></span>`, {
 				direction: "top",
 				opacity: 1,

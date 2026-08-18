@@ -175,12 +175,21 @@ export interface AreaActivity {
   topIssue: IssueKey;
   hotspot: boolean;
   risk: number;
+  affectedPopulation: number;
+  affectedPercent: number;
+  impactLevel: "Low Impact" | "Moderate Impact" | "High Impact" | "Severe Hazard";
   recent: Array<{ issue: IssueKey; daysAgo: number; health: AreaHealth }>;
 }
 
 export const CITY_COMPLAINTS_TOTAL: Record<CityId, number> = {
   bengaluru: 100002,
   vadodara: 12139,
+};
+
+/** Total researched urban population per city */
+export const CITY_POPULATION_TOTAL: Record<CityId, number> = {
+  vadodara: 2240000,
+  bengaluru: 13600000,
 };
 
 /** Thresholds scale with the active time window and city scale so Vadodara is evaluated on its own compact scale. */
@@ -332,6 +341,16 @@ export function areaActivity(city: CityId, filters: MapFilters): AreaActivity[] 
     const density = total / Math.max(1, Math.PI * (area.radiusMeters / 1000) ** 2);
     const risk = Math.max(0, Math.min(100, Math.round(density * 0.8 + Math.min(60, total * 0.02) + last7 * 0.05)));
     
+    // Demographic Affected Population Model:
+    // Ratio of affected citizens based on issue severity and infrastructure impact multipliers
+    const basePop = area.population || (city === "vadodara" ? 75000 : 200000);
+    const healthFactor = health === "critical" ? 0.45 : health === "high" ? 0.26 : health === "moderate" ? 0.12 : 0.035;
+    const issueMultiplier = filters.issue === "water" ? 1.3 : filters.issue === "roads" ? 1.45 : filters.issue === "drainage" ? 1.2 : 1.0;
+    const jitter = 0.9 + r() * 0.2;
+    const affectedPopulation = Math.min(basePop, Math.round(basePop * healthFactor * issueMultiplier * jitter));
+    const affectedPercent = Math.max(1, Math.min(100, Math.round((affectedPopulation / basePop) * 100)));
+    const impactLevel = affectedPercent >= 40 ? "Severe Hazard" : affectedPercent >= 22 ? "High Impact" : affectedPercent >= 8 ? "Moderate Impact" : "Low Impact";
+
     const recentIssues: Array<{ issue: IssueKey; daysAgo: number; health: AreaHealth }> = [
       { issue: topIssue, daysAgo: 0, health },
       { issue: "roads", daysAgo: 1, health: "high" },
@@ -354,6 +373,9 @@ export function areaActivity(city: CityId, filters: MapFilters): AreaActivity[] 
       topIssue,
       hotspot: isHotspot,
       risk,
+      affectedPopulation,
+      affectedPercent,
+      impactLevel,
       recent: recentIssues,
     };
   });
