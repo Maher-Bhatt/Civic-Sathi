@@ -588,7 +588,7 @@ print(f"""
   Officer default password : CivicSathi@2026
   Contractor default login : <email>.login@contractor.com / CONTRACTOR@2026
 
-  Backend URL : https://civicsathi.onrender.com
+  Backend URL : https://civic-sathi-f7ml.onrender.com
   Admin Docs  : (disabled in production, use /docs on local)
 """)
 

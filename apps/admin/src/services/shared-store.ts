@@ -24,7 +24,7 @@ export function getApiBaseUrl(): string {
     envUrl.includes("civicsathi-backend.onrender.com") ||
     (typeof window !== "undefined" && window.location.protocol === "https:" && envUrl.startsWith("http://"))
   ) {
-    return "https://civicsathi.onrender.com";
+    return "https://civic-sathi-f7ml.onrender.com";
   }
   return envUrl;
 }

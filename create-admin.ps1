@@ -2,8 +2,8 @@
 
 Write-Host "Creating admin account..." -ForegroundColor Cyan
 
-$apiUrl = "https://civicsathi.onrender.com/api/v1/auth/admin-setup"
-$officerKey = "civicsathi_officer_key_2020_8f9d2c1a8b4c5d8e7f8a9h0i"
+$apiUrl = "https://civic-sathi-f7ml.onrender.com/api/v1/auth/admin-setup"
+$officerKey = "civicsathi_officer_key_2026_8f9d2e1a3b4c5d6e7f8g9h0i"
 
 # Admin details - CHANGE THESE TO YOUR DESIRED VALUES
 $adminData = @{

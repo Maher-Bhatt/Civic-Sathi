@@ -46,7 +46,7 @@ Backend has `/api/v1/auth/admin-setup` endpoint that creates admin/officer accou
 
 ```bash
 # Create admin account via API
-curl -X POST https://civicsathi.onrender.com/api/v1/auth/admin-setup \
+curl -X POST https://civic-sathi-f7ml.onrender.com/api/v1/auth/admin-setup \
   -H "Content-Type: application/json" \
   -H "X-Officer-Key: YOUR_OFFICER_API_KEY" \
   -d '{
@@ -236,7 +236,7 @@ All routes use JWT bearer token in `Authorization: Bearer <token>` header.
 
 All 4 frontend apps default to production backend:
 
-**Default API URL:** `https://civicsathi.onrender.com`
+**Default API URL:** `https://civic-sathi-f7ml.onrender.com`
 
 **Environment Override:**
 Set `VITE_API_BASE_URL` in `.env` file or Vercel environment variables to override.
@@ -306,7 +306,7 @@ Set `VITE_API_BASE_URL` in `.env` file or Vercel environment variables to overri
 ## Deployment Status
 
 ### Backend
-- **URL:** https://civicsathi.onrender.com
+- **URL:** https://civic-sathi-f7ml.onrender.com
 - **Health:** `/health` endpoint
 - **Platform:** Render.com
 - **Database:** Neon PostgreSQL
@@ -320,7 +320,7 @@ All 4 apps auto-deploy from `main` branch:
 3. **Contractor Portal** - `apps/contractor`
 4. **Admin Portal** - `apps/admin`
 
-**API Connection:** All apps default to `https://civicsathi.onrender.com`
+**API Connection:** All apps default to `https://civic-sathi-f7ml.onrender.com`
 
 ---
 

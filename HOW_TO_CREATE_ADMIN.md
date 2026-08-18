@@ -22,7 +22,7 @@
 **Create admin account:**
 
 ```bash
-curl -X POST https://civicsathi.onrender.com/api/v1/auth/admin-setup \
+curl -X POST https://civic-sathi-f7ml.onrender.com/api/v1/auth/admin-setup \
   -H "Content-Type: application/json" \
   -H "X-Officer-Key: YOUR_ACTUAL_OFFICER_API_KEY" \
   -d '{
@@ -57,7 +57,7 @@ $headers = @{
     "X-Officer-Key" = $key
 }
 
-Invoke-RestMethod -Uri "https://civicsathi.onrender.com/api/v1/auth/admin-setup" -Method Post -Headers $headers -Body $body
+Invoke-RestMethod -Uri "https://civic-sathi-f7ml.onrender.com/api/v1/auth/admin-setup" -Method Post -Headers $headers -Body $body
 ```
 
 ## After Creating Admin:
@@ -84,13 +84,13 @@ Invoke-RestMethod -Uri "https://civicsathi.onrender.com/api/v1/auth/admin-setup"
 
 **Connection Error:**
 - Check if backend is deployed on Render
-- Try accessing: https://civicsathi.onrender.com/
+- Try accessing: https://civic-sathi-f7ml.onrender.com/
 
 ## Need Help?
 
 The `OFFICER_API_KEY` from your screenshot was:
 ```
-civicsathi_officer_key_2020_8f9d2c1a8b4c5d8e7f8a9h0i
+civicsathi_officer_key_2026_8f9d2e1a3b4c5d6e7f8g9h0i
 ```
 
 If this key doesn't work (401 error), it means Render has a different key set.

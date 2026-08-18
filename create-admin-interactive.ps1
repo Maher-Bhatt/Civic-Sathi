@@ -7,7 +7,7 @@ Write-Host ""
 # Test backend connection first
 Write-Host "Step 1: Testing backend connection..." -ForegroundColor Yellow
 try {
-    $response = Invoke-RestMethod -Uri "https://civicsathi.onrender.com/" -Method Get
+    $response = Invoke-RestMethod -Uri "https://civic-sathi-f7ml.onrender.com/" -Method Get
     Write-Host "SUCCESS: Backend is online!" -ForegroundColor Green
     Write-Host "Environment: $($response.environment)" -ForegroundColor Gray
     Write-Host ""
@@ -52,7 +52,7 @@ if ($confirm -ne "y") {
 Write-Host ""
 Write-Host "Creating admin account..." -ForegroundColor Cyan
 
-$apiUrl = "https://civicsathi.onrender.com/api/v1/auth/admin-setup"
+$apiUrl = "https://civic-sathi-f7ml.onrender.com/api/v1/auth/admin-setup"
 
 $adminData = @{
     name = $adminName
