@@ -96,9 +96,10 @@ function RegisterPage() {
           />
           <GlassInput
             label={t("register.email", "Email")}
-            type="text" inputMode="email" autoComplete="email"
-            required
+            type="text"
+            inputMode="email"
             autoComplete="email"
+            required
             value={form.email}
             onChange={set("email")}
             placeholder={t("register.email.placeholder", "you@example.com")}

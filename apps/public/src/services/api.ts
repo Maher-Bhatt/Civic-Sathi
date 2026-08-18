@@ -2,7 +2,7 @@ import { APIClient, Endpoints } from '@janmind/api-client';
 import type { User, Complaint, IssueCategory, Severity, LocationInfo, AnalysisResult, ImageAnalysis, NearbyReport, AppNotification } from './types';
 import { CATEGORY_KEYWORDS, SEVERITY_KEYWORDS, DEMO_USER, NEARBY_REPORTS, SEED_NOTIFICATIONS, RELATED_SAMPLES, WARD_14 } from './mockData';
 
-export const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL as string | undefined) || "https://janmind.onrender.com";
+export const API_BASE_URL = ((import.meta.env as any)?.VITE_API_BASE_URL as string) || "https://janmind.onrender.com";
 
 const LS = {
   user: "janmind.user",
