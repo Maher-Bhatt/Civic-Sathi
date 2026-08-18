@@ -72,6 +72,7 @@ class CreateUserRequest(BaseModel):
 
 class UpdateUserRequest(BaseModel):
     name: Optional[str] = Field(None, min_length=2, max_length=100)
+    email: Optional[EmailStr] = None
     role: Optional[str] = None
     city: Optional[str] = None
     department: Optional[str] = None
@@ -374,6 +375,8 @@ def update_user(
         raise HTTPException(status_code=404, detail="User not found")
     if patch.name is not None:
         user.name = patch.name
+    if patch.email is not None:
+        user.email = patch.email
     if patch.role is not None:
         user.role = patch.role
     if patch.city is not None:

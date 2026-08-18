@@ -144,7 +144,7 @@ function UserManagementPage() {
     setSaving(true);
     try {
       if (editUser) {
-        const patch: any = { name: form.name, role: form.role, city: form.city || '', department: form.department || '', phone: form.phone || '' };
+        const patch: any = { name: form.name, email: form.email, role: form.role, city: form.city || '', department: form.department || '', phone: form.phone || '' };
         if (form.password.trim()) patch.password = form.password;
         await updateUser(editUser.id, patch);
         toast.success("User updated");
@@ -307,12 +307,10 @@ function UserManagementPage() {
                 <label className="label-xs">{t('ui.full_name')}</label>
                 <input className="ambient-field w-full mt-1" value={form.name} onChange={e => setForm(f => ({...f, name: e.target.value}))} placeholder={t('ui.e_g_priya_sharma')} />
               </div>
-              {!editUser && (
-                <div className="col-span-2">
-                  <label className="label-xs">{t('ui.email')}</label>
-                  <input type="email" className="ambient-field w-full mt-1" value={form.email} onChange={e => setForm(f => ({...f, email: e.target.value}))} placeholder={t('ui.user_example_com')} />
-                </div>
-              )}
+              <div className="col-span-2">
+                <label className="label-xs">{t('ui.email')} *</label>
+                <input type="email" className="ambient-field w-full mt-1" value={form.email} onChange={e => setForm(f => ({...f, email: e.target.value}))} placeholder={t('ui.user_example_com')} />
+              </div>
               <div className="col-span-2">
                 <label className="label-xs">{editUser ? "New Password (leave blank to keep)" : "Password *"}</label>
                 <input type="password" className="ambient-field w-full mt-1" value={form.password} onChange={e => setForm(f => ({...f, password: e.target.value}))} placeholder={t('ui.min_8_characters')} />

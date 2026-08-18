@@ -592,7 +592,7 @@ export async function createUser(data: {
 
 /** Update a user's details. */
 export async function updateUser(userId: string, patch: {
-  name?: string; role?: string; city?: string; department?: string; phone?: string; password?: string;
+  name?: string; email?: string; role?: string; city?: string; department?: string; phone?: string; password?: string;
 }): Promise<any> {
   return adminApiFetch<any>(`/api/v1/admin/users/${userId}`, { method: "PATCH", body: JSON.stringify(patch) });
 }
