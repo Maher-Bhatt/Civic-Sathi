@@ -16,7 +16,7 @@ export const Route = createFileRoute("/login")({
 });
 
 function MuniLoginPage() {
-    const { t } = useI18n();
+  const { t } = useI18n();
   const { signIn, officer, ready } = useMuniAuth();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
@@ -52,23 +52,23 @@ function MuniLoginPage() {
     <div className="ambient-field flex min-h-screen items-center justify-center bg-background p-4">
       <GlassCard elevation="raised" className="animate-rise w-full max-w-md p-6 sm:p-8">
         <div className="text-center">
-          <p className="text-2xl font-semibold tracking-tight">{t('ui.civicsathi')}</p>
-          <p className="mt-1 text-sm text-muted-foreground">{t('ui.municipal_intelligence')}</p>
+          <p className="text-2xl font-semibold tracking-tight">{t("ui.civicsathi")}</p>
+          <p className="mt-1 text-sm text-muted-foreground">{t("ui.municipal_intelligence")}</p>
         </div>
 
         <form onSubmit={onSubmit} className="mt-8 space-y-4" noValidate>
           <GlassInput
-            label={t('ui.officer_id_email')}
+            label={t("ui.officer_id_email")}
             type="text"
             inputMode="email"
             autoComplete="username"
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder={t('ui.officer_vmc_gov_in')}
+            placeholder={t("ui.officer_vmc_gov_in")}
           />
           <GlassInput
-            label={t('ui.password')}
+            label={t("ui.password")}
             type="password"
             autoComplete="current-password"
             required
@@ -79,7 +79,7 @@ function MuniLoginPage() {
           />
 
           <div>
-            <label className="label-xs mb-1.5 block">{t('ui.city')}</label>
+            <label className="label-xs mb-1.5 block">{t("ui.city")}</label>
             <select
               value={city}
               onChange={(e) => setCity(e.target.value as CityId)}
@@ -94,7 +94,7 @@ function MuniLoginPage() {
           </div>
 
           <div>
-            <label className="label-xs mb-1.5 block">{t('ui.designation') || 'Designation'}</label>
+            <label className="label-xs mb-1.5 block">{t("ui.designation") || "Designation"}</label>
             <select
               value={designation}
               onChange={(e) => setDesignation(e.target.value)}
@@ -116,14 +116,16 @@ function MuniLoginPage() {
               onChange={(e) => setRemember(e.target.checked)}
               className="rounded border-[var(--glass-border)]"
             />
-            {t('ui.remember_session')}</label>
+            {t("ui.remember_session")}
+          </label>
 
           <button
             type="button"
             className="text-xs text-primary hover:underline"
             onClick={() => toast.info("Password reset is not available in the prototype.")}
           >
-            {t('ui.forgot_password')}</button>
+            {t("ui.forgot_password")}
+          </button>
 
           <GlassButton type="submit" className="w-full" disabled={busy}>
             {busy ? "Signing in..." : "Sign In"}
@@ -140,74 +142,99 @@ function MuniLoginPage() {
               type="button"
               onClick={() => {
                 setEmail("officer@vmc.gov.in");
-                setPassword("CivicSathi@2026");
+                setPassword("Janmind@2026");
                 setCity("vadodara");
                 setDesignation("Ward Officer");
               }}
               className="w-full flex items-center justify-between p-2 rounded-lg bg-[var(--surface)] hover:bg-[var(--surface-elevated)] border border-[var(--glass-border)] text-xs transition text-left"
             >
               <div>
-                <span className="font-semibold text-[var(--foreground)]">Vadodara Officer (VMC)</span>
-                <span className="block text-[11px] text-[var(--muted-foreground)] font-mono">officer@vmc.gov.in</span>
+                <span className="font-semibold text-[var(--foreground)]">
+                  Vadodara Officer (VMC)
+                </span>
+                <span className="block text-[11px] text-[var(--muted-foreground)] font-mono">
+                  officer@vmc.gov.in
+                </span>
               </div>
-              <span className="text-[11px] px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-400 font-medium">Click to Fill</span>
+              <span className="text-[11px] px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-400 font-medium">
+                Click to Fill
+              </span>
             </button>
 
             <button
               type="button"
               onClick={() => {
                 setEmail("officer@bbmp.gov.in");
-                setPassword("CivicSathi@2026");
+                setPassword("Janmind@2026");
                 setCity("bengaluru");
                 setDesignation("Ward Officer");
               }}
               className="w-full flex items-center justify-between p-2 rounded-lg bg-[var(--surface)] hover:bg-[var(--surface-elevated)] border border-[var(--glass-border)] text-xs transition text-left"
             >
               <div>
-                <span className="font-semibold text-[var(--foreground)]">Bengaluru Officer (BBMP)</span>
-                <span className="block text-[11px] text-[var(--muted-foreground)] font-mono">officer@bbmp.gov.in</span>
+                <span className="font-semibold text-[var(--foreground)]">
+                  Bengaluru Officer (BBMP)
+                </span>
+                <span className="block text-[11px] text-[var(--muted-foreground)] font-mono">
+                  officer@bbmp.gov.in
+                </span>
               </div>
-              <span className="text-[11px] px-2 py-0.5 rounded bg-blue-500/15 text-blue-400 font-medium">Click to Fill</span>
+              <span className="text-[11px] px-2 py-0.5 rounded bg-blue-500/15 text-blue-400 font-medium">
+                Click to Fill
+              </span>
             </button>
 
             <button
               type="button"
               onClick={() => {
                 setEmail("supervisor@vmc.gov.in");
-                setPassword("CivicSathi@2026");
+                setPassword("Janmind@2026");
                 setCity("vadodara");
                 setDesignation("Municipal Supervisor");
               }}
               className="w-full flex items-center justify-between p-2 rounded-lg bg-[var(--surface)] hover:bg-[var(--surface-elevated)] border border-[var(--glass-border)] text-xs transition text-left"
             >
               <div>
-                <span className="font-semibold text-[var(--foreground)]">Municipal Supervisor (VMC)</span>
-                <span className="block text-[11px] text-[var(--muted-foreground)] font-mono">supervisor@vmc.gov.in</span>
+                <span className="font-semibold text-[var(--foreground)]">
+                  Municipal Supervisor (VMC)
+                </span>
+                <span className="block text-[11px] text-[var(--muted-foreground)] font-mono">
+                  supervisor@vmc.gov.in
+                </span>
               </div>
-              <span className="text-[11px] px-2 py-0.5 rounded bg-amber-500/15 text-amber-400 font-medium">Click to Fill</span>
+              <span className="text-[11px] px-2 py-0.5 rounded bg-amber-500/15 text-amber-400 font-medium">
+                Click to Fill
+              </span>
             </button>
 
             <button
               type="button"
               onClick={() => {
                 setEmail("municipality@vmc.gov.in");
-                setPassword("CivicSathi@2026");
+                setPassword("Janmind@2026");
                 setCity("vadodara");
                 setDesignation("Commissioner");
               }}
               className="w-full flex items-center justify-between p-2 rounded-lg bg-[var(--surface)] hover:bg-[var(--surface-elevated)] border border-[var(--glass-border)] text-xs transition text-left"
             >
               <div>
-                <span className="font-semibold text-[var(--foreground)]">Department Head (VMC)</span>
-                <span className="block text-[11px] text-[var(--muted-foreground)] font-mono">municipality@vmc.gov.in</span>
+                <span className="font-semibold text-[var(--foreground)]">
+                  Department Head (VMC)
+                </span>
+                <span className="block text-[11px] text-[var(--muted-foreground)] font-mono">
+                  municipality@vmc.gov.in
+                </span>
               </div>
-              <span className="text-[11px] px-2 py-0.5 rounded bg-purple-500/15 text-purple-400 font-medium">Click to Fill</span>
+              <span className="text-[11px] px-2 py-0.5 rounded bg-purple-500/15 text-purple-400 font-medium">
+                Click to Fill
+              </span>
             </button>
           </div>
         </div>
 
         <p className="mt-6 text-center text-[0.65rem] text-muted-foreground">
-          {t('ui.civicsathi_municipal_intelligence')}</p>
+          {t("ui.civicsathi_municipal_intelligence")}
+        </p>
       </GlassCard>
     </div>
   );

@@ -54,6 +54,7 @@ export const client = new APIClient({
   onUnauthorized: () => {
     if (typeof window !== "undefined") {
       window.localStorage.removeItem(LS.token);
+      window.localStorage.removeItem(LS.user);
       window.location.href = "/login";
     }
   },
@@ -181,6 +182,8 @@ export async function getCurrentUser(): Promise<User | null> {
       write(LS.user, user);
       return user;
     } catch {
+      window.localStorage.removeItem(LS.token);
+      window.localStorage.removeItem(LS.user);
       return null;
     }
   };

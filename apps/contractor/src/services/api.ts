@@ -1,17 +1,17 @@
-import { APIClient, Endpoints } from '@civicsathi/api-client';
+import { APIClient, Endpoints } from "@civicsathi/api-client";
 import type { CityId } from "@/services/cities";
-import type { User } from '@civicsathi/api-client';
-
+import type { User } from "@civicsathi/api-client";
 
 export function getApiBaseUrl(): string {
   const envUrl = ((import.meta.env as any)?.VITE_API_BASE_URL as string | undefined)?.trim();
   if (
     !envUrl ||
-        envUrl.includes("civicsathi-backend.onrender.com") ||
+    envUrl.includes("civicsathi-backend.onrender.com") ||
     envUrl.includes("civicsathi.onrender.com") ||
     envUrl.includes("janmind.onrender.com") ||
-
-    (typeof window !== "undefined" && window.location.protocol === "https:" && envUrl.startsWith("http://"))
+    (typeof window !== "undefined" &&
+      window.location.protocol === "https:" &&
+      envUrl.startsWith("http://"))
   ) {
     return "https://civic-sathi-f7ml.onrender.com";
   }
@@ -34,9 +34,10 @@ export const client = new APIClient({
   onUnauthorized: () => {
     if (typeof window !== "undefined") {
       window.localStorage.removeItem(LS.token);
-      window.location.href = '/login';
+      window.localStorage.removeItem(LS.contractor);
+      window.location.href = "/login";
     }
-  }
+  },
 });
 
 export const api = new Endpoints(client);
@@ -57,21 +58,27 @@ function write<T>(key: string, value: T) {
 }
 
 /* -------------------------------------------------------------- auth */
-export async function contractorLogin(input: { email: string; password: string; city: CityId }): Promise<User> {
+export async function contractorLogin(input: {
+  email: string;
+  password: string;
+  city: CityId;
+}): Promise<User> {
   try {
-    const res = await client.post<{ access_token: string; citizen: any }>(
-      '/api/v1/auth/contractor-login',
-      { email: input.email, password: input.password }
-    );
+    const res = await client.post<{
+      access_token: string;
+      user?: any;
+      citizen?: any;
+      contractor?: any;
+    }>("/api/v1/auth/contractor-login", { email: input.email, password: input.password });
 
-    // Normalize response - backend sends 'citizen' but api-client normalizes to 'user'
-    const userData = res.citizen;
+    // Accept the shared client's canonical user shape as well as legacy aliases.
+    const userData = res.user || res.contractor || res.citizen;
     if (!userData) {
-      throw new Error('Login failed: no user data returned');
+      throw new Error("Login failed: no user data returned");
     }
 
-    if (userData.role !== 'contractor') {
-      throw new Error('Access denied: this account is not registered as a contractor');
+    if (userData.role !== "contractor") {
+      throw new Error("Access denied: this account is not registered as a contractor");
     }
 
     if (typeof window !== "undefined") window.localStorage.setItem(LS.token, res.access_token);
@@ -89,9 +96,13 @@ export async function contractorLogout(): Promise<void> {
   }
 }
 
-export async function adminLogin(email: string, pass: string): Promise<any> { return {} as any; }
+export async function adminLogin(email: string, pass: string): Promise<any> {
+  return {} as any;
+}
 export async function adminLogout(): Promise<void> {}
-export async function getAdminUser(): Promise<any | null> { return null; }
+export async function getAdminUser(): Promise<any | null> {
+  return null;
+}
 
 export type ContractorUser = User & { city?: string; contractorId?: string };
 
@@ -106,7 +117,7 @@ export async function getContractorUser(): Promise<ContractorUser | null> {
   const refreshFromServer = async () => {
     try {
       const me = await api.auth.me();
-      if (me && (me as any).role === 'contractor') {
+      if (me && (me as any).role === "contractor") {
         write(LS.contractor, me);
         return me as ContractorUser;
       }
@@ -152,9 +163,10 @@ export async function resolveCityUuid(cityNameOrSlug: string): Promise<string | 
 /* -------------------------------------------------------------- tenders & bids */
 export async function getEligibleTenders(cityIdOrName: string) {
   // If it looks like a UUID already, use directly; otherwise resolve
-  const uuid = cityIdOrName.includes('-') && cityIdOrName.length === 36
-    ? cityIdOrName
-    : (await resolveCityUuid(cityIdOrName)) ?? cityIdOrName;
+  const uuid =
+    cityIdOrName.includes("-") && cityIdOrName.length === 36
+      ? cityIdOrName
+      : ((await resolveCityUuid(cityIdOrName)) ?? cityIdOrName);
   return await api.tenders.list(uuid);
 }
 
@@ -163,16 +175,17 @@ export async function getTenderDetails(id: string) {
 }
 
 export async function submitBid(tenderId: string, quotedAmount: number, technicalProposal: string) {
-  return await api.tenders.submitBid(tenderId, { quoted_amount: quotedAmount, technical_proposal: technicalProposal });
+  return await api.tenders.submitBid(tenderId, {
+    quoted_amount: quotedAmount,
+    technical_proposal: technicalProposal,
+  });
 }
 
 export async function getWorkOrders(cityIdOrName?: string) {
   const user = await getContractorUser();
   const raw = cityIdOrName || user?.city || "vadodara";
   // If it's already a UUID, use directly; otherwise resolve to UUID
-  const uuid = raw.includes('-') && raw.length === 36
-    ? raw
-    : (await resolveCityUuid(raw)) ?? raw;
+  const uuid = raw.includes("-") && raw.length === 36 ? raw : ((await resolveCityUuid(raw)) ?? raw);
   return await api.workOrders.list(uuid);
 }
 
@@ -180,7 +193,11 @@ export async function getWorkOrder(id: string) {
   return await api.workOrders.get(id);
 }
 
-export async function submitFieldEvidence(workOrderId: string, photoUrl: string, description: string) {
+export async function submitFieldEvidence(
+  workOrderId: string,
+  photoUrl: string,
+  description: string,
+) {
   return await api.workOrders.submitEvidence(workOrderId, { photo_url: photoUrl, description });
 }
 
@@ -193,15 +210,18 @@ export async function getDashboardKPIs() {
   try {
     const user = await getContractorUser();
     const rawCity = user?.city || "vadodara";
-    const uuid = rawCity.includes('-') && rawCity.length === 36
-      ? rawCity
-      : (await resolveCityUuid(rawCity)) ?? rawCity;
+    const uuid =
+      rawCity.includes("-") && rawCity.length === 36
+        ? rawCity
+        : ((await resolveCityUuid(rawCity)) ?? rawCity);
 
     const orders = await api.workOrders.list(uuid);
-    const all = Array.isArray(orders) ? orders : (orders as any)?.data ?? [];
+    const all = Array.isArray(orders) ? orders : ((orders as any)?.data ?? []);
 
-    const openWorkOrders      = all.filter((w: any) => !["COMPLETED","CANCELLED","CLOSED"].includes(w.status)).length;
-    const pendingInspections  = all.filter((w: any) => w.status === "INSPECTION_PENDING").length;
+    const openWorkOrders = all.filter(
+      (w: any) => !["COMPLETED", "CANCELLED", "CLOSED"].includes(w.status),
+    ).length;
+    const pendingInspections = all.filter((w: any) => w.status === "INSPECTION_PENDING").length;
     const completedWorkOrders = all.filter((w: any) => w.status === "COMPLETED").length;
 
     return { openWorkOrders, pendingInspections, recentPayments: 0, completedWorkOrders };
@@ -211,38 +231,96 @@ export async function getDashboardKPIs() {
 }
 
 /* -------------------------------------------------------------- stubs for unused municipality-facing functions */
-export async function getLiveActivity() { return []; }
-export async function getSystemicIssues() { return []; }
-export async function getSystemicIssue() { return null; }
-export async function updateSystemicIssue() { return null; }
-export async function startInvestigation() { return null; }
-export async function assignIssueDepartment() { return null; }
-export async function getMuniComplaints() { return []; }
-export async function getMuniComplaint() { return null; }
-export async function updateMuniComplaint() { return null; }
-export async function assignComplaint() { return null; }
-export async function bulkUpdateComplaints() { return null; }
-export async function getAlerts() { return []; }
-export async function acknowledgeAlert() { return null; }
-export async function getDepartments() { return []; }
-export async function getDepartment() { return null; }
-export async function getAreaOverviews() { return []; }
-export async function getTrendAnalysis() { return []; }
-export async function getHotspotRankings() { return []; }
-export async function getAnalyticsData() { return null; }
-export async function getOfficerNotifications() { return []; }
-export async function markNotificationRead(id?: string) { return null; }
-export async function getMuniSettings() { return { theme: 'system' }; }
-export async function saveMuniSettings(patch?: any) { return null; }
-export async function getSavedViews() { return []; }
-export async function officerSearch(query?: string) { return { complaints: [] as {id: string, category: string}[], issues: [] as {id: string, category: string, areaName: string}[], areas: [] as any[] }; }
+export async function getLiveActivity() {
+  return [];
+}
+export async function getSystemicIssues() {
+  return [];
+}
+export async function getSystemicIssue() {
+  return null;
+}
+export async function updateSystemicIssue() {
+  return null;
+}
+export async function startInvestigation() {
+  return null;
+}
+export async function assignIssueDepartment() {
+  return null;
+}
+export async function getMuniComplaints() {
+  return [];
+}
+export async function getMuniComplaint() {
+  return null;
+}
+export async function updateMuniComplaint() {
+  return null;
+}
+export async function assignComplaint() {
+  return null;
+}
+export async function bulkUpdateComplaints() {
+  return null;
+}
+export async function getAlerts() {
+  return [];
+}
+export async function acknowledgeAlert() {
+  return null;
+}
+export async function getDepartments() {
+  return [];
+}
+export async function getDepartment() {
+  return null;
+}
+export async function getAreaOverviews() {
+  return [];
+}
+export async function getTrendAnalysis() {
+  return [];
+}
+export async function getHotspotRankings() {
+  return [];
+}
+export async function getAnalyticsData() {
+  return null;
+}
+export async function getOfficerNotifications() {
+  return [];
+}
+export async function markNotificationRead(id?: string) {
+  return null;
+}
+export async function getMuniSettings() {
+  return { theme: "system" };
+}
+export async function saveMuniSettings(patch?: any) {
+  return null;
+}
+export async function getSavedViews() {
+  return [];
+}
+export async function officerSearch(query?: string) {
+  return {
+    complaints: [] as { id: string; category: string }[],
+    issues: [] as { id: string; category: string; areaName: string }[],
+    areas: [] as any[],
+  };
+}
 export function startLiveSimulation() {}
 export function stopLiveSimulation() {}
 
-export async function getWorkOrderEvents(id: string) { return []; }
-export async function submitMeasurement(data: any, contractorId: string, contractorName: string) { return null; }
-export async function getContractor(id: string) { 
-  return getContractorPerformance(); 
+export async function getWorkOrderEvents(id: string) {
+  return [];
+}
+export async function submitMeasurement(data: any, contractorId: string, contractorName: string) {
+  return null;
+}
+export async function getContractor(id: string) {
+  return getContractorPerformance();
 }
 
 export async function getContractorPerformance() {
@@ -267,9 +345,9 @@ export async function getContractorPerformance() {
       ai_insights: [
         "99.2% on-time milestone delivery across current work orders",
         "0 defect claims during 1-year guarantee period",
-        "Excellent citizen feedback on dust and noise suppression"
+        "Excellent citizen feedback on dust and noise suppression",
       ],
-      reviews: []
+      reviews: [],
     };
   } catch {
     return {
@@ -282,9 +360,9 @@ export async function getContractorPerformance() {
       ai_insights: [
         "99.2% on-time milestone delivery across current work orders",
         "0 defect claims during 1-year guarantee period",
-        "Excellent citizen feedback on dust and noise suppression"
+        "Excellent citizen feedback on dust and noise suppression",
       ],
-      reviews: []
+      reviews: [],
     };
   }
 }

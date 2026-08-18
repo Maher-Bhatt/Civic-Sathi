@@ -18,7 +18,8 @@ export const Route = createFileRoute("/login")({
       { title: "Sign in — Civic Sathi Citizen Portal" },
       {
         name: "description",
-        content: "Sign in to your Civic Sathi account to report civic problems and track complaints.",
+        content:
+          "Sign in to your Civic Sathi account to report civic problems and track complaints.",
       },
       { property: "og:title", content: "Sign in — Civic Sathi Citizen Portal" },
       {
@@ -99,16 +100,22 @@ function LoginPage() {
             <button
               type="button"
               onClick={() => {
-                setEmail("citizen@civicsathi.in");
-                setPassword("CivicSathi@2026");
+                setEmail("citizen@janmind.in");
+                setPassword("Janmind@2026");
               }}
               className="w-full flex items-center justify-between p-2 rounded-lg bg-[var(--surface)] hover:bg-[var(--surface-elevated)] border border-[var(--glass-border)] text-xs transition text-left"
             >
               <div>
-                <span className="font-semibold text-[var(--foreground)]">Verified Citizen Account</span>
-                <span className="block text-[11px] text-[var(--muted-foreground)] font-mono">citizen@civicsathi.in</span>
+                <span className="font-semibold text-[var(--foreground)]">
+                  Verified Citizen Account
+                </span>
+                <span className="block text-[11px] text-[var(--muted-foreground)] font-mono">
+                  citizen@janmind.in
+                </span>
               </div>
-              <span className="text-[11px] px-2 py-0.5 rounded bg-primary/15 text-primary font-medium">Click to Fill</span>
+              <span className="text-[11px] px-2 py-0.5 rounded bg-primary/15 text-primary font-medium">
+                Click to Fill
+              </span>
             </button>
           </div>
         </div>

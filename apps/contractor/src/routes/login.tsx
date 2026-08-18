@@ -10,7 +10,7 @@ export const Route = createFileRoute("/login")({
 });
 
 function ContractorLogin() {
-    const { t } = useI18n();
+  const { t } = useI18n();
   const { signIn } = useContractorAuth();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
@@ -26,7 +26,9 @@ function ContractorLogin() {
       await signIn(email.trim().toLowerCase(), password);
       navigate({ to: "/contractor/dashboard" as any });
     } catch (err: any) {
-      setError(err.message || "Invalid email or password. Please check your credentials and try again.");
+      setError(
+        err.message || "Invalid email or password. Please check your credentials and try again.",
+      );
     } finally {
       setLoading(false);
     }
@@ -36,8 +38,10 @@ function ContractorLogin() {
     <div className="min-h-screen flex items-center justify-center bg-[var(--background)] muni-page-enter p-4">
       <GlassCard className="w-full max-w-md p-8 glass-strong shadow-2xl">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2 tracking-tight">{t('ui.civicsathi')}</h1>
-          <p className="text-[var(--muted-foreground)]">{t('ui.contractor_portal')}</p>
+          <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2 tracking-tight">
+            {t("ui.civicsathi")}
+          </h1>
+          <p className="text-[var(--muted-foreground)]">{t("ui.contractor_portal")}</p>
         </div>
 
         {error && (
@@ -48,7 +52,9 @@ function ContractorLogin() {
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label className="label-xs block mb-2 text-[var(--foreground)]">{t('ui.email_address')}</label>
+            <label className="label-xs block mb-2 text-[var(--foreground)]">
+              {t("ui.email_address")}
+            </label>
             <input
               type="text"
               inputMode="email"
@@ -62,7 +68,9 @@ function ContractorLogin() {
           </div>
 
           <div>
-            <label className="label-xs block mb-2 text-[var(--foreground)]">{t('ui.password')}</label>
+            <label className="label-xs block mb-2 text-[var(--foreground)]">
+              {t("ui.password")}
+            </label>
             <input
               type="password"
               value={password}
@@ -91,38 +99,51 @@ function ContractorLogin() {
             <button
               type="button"
               onClick={() => {
-                setEmail("contractor@vadodara-infra.in");
-                setPassword("CivicSathi@2026");
+                setEmail("contractor@janmind.in");
+                setPassword("Janmind@2026");
               }}
               className="w-full flex items-center justify-between p-2 rounded-lg bg-[var(--surface)] hover:bg-[var(--surface-elevated)] border border-[var(--glass-border)] text-xs transition text-left"
             >
               <div>
-                <span className="font-semibold text-[var(--foreground)]">Vadodara Infra (Demo)</span>
-                <span className="block text-[11px] text-[var(--muted-foreground)] font-mono">contractor@vadodara-infra.in</span>
+                <span className="font-semibold text-[var(--foreground)]">
+                  Verified Contractor Lead
+                </span>
+                <span className="block text-[11px] text-[var(--muted-foreground)] font-mono">
+                  contractor@janmind.in
+                </span>
               </div>
-              <span className="text-[11px] px-2 py-0.5 rounded bg-amber-500/15 text-amber-700 dark:text-amber-400 font-medium">Click to Fill</span>
+              <span className="text-[11px] px-2 py-0.5 rounded bg-amber-500/15 text-amber-700 dark:text-amber-400 font-medium">
+                Click to Fill
+              </span>
             </button>
             <button
               type="button"
               onClick={() => {
-                setEmail("contractor@bbmp-infra.in");
-                setPassword("CivicSathi@2026");
+                setEmail("contractor@janmind.in");
+                setPassword("Janmind@2026");
               }}
               className="w-full flex items-center justify-between p-2 rounded-lg bg-[var(--surface)] hover:bg-[var(--surface-elevated)] border border-[var(--glass-border)] text-xs transition text-left"
             >
               <div>
-                <span className="font-semibold text-[var(--foreground)]">BBMP Infra (Demo)</span>
-                <span className="block text-[11px] text-[var(--muted-foreground)] font-mono">contractor@bbmp-infra.in</span>
+                <span className="font-semibold text-[var(--foreground)]">
+                  Verified Contractor Lead
+                </span>
+                <span className="block text-[11px] text-[var(--muted-foreground)] font-mono">
+                  contractor@janmind.in
+                </span>
               </div>
-              <span className="text-[11px] px-2 py-0.5 rounded bg-amber-500/15 text-amber-700 dark:text-amber-400 font-medium">Click to Fill</span>
+              <span className="text-[11px] px-2 py-0.5 rounded bg-amber-500/15 text-amber-700 dark:text-amber-400 font-medium">
+                Click to Fill
+              </span>
             </button>
           </div>
         </div>
 
         <div className="mt-6 text-center text-xs text-[var(--muted-foreground)]">
-          <p>{t('ui.sign_in_with_your_registered_c')}</p>
+          <p>{t("ui.sign_in_with_your_registered_c")}</p>
           <p className="mt-2 text-[10px] uppercase font-semibold text-primary/80">
-            Want to bid on Civic Projects? Contact your local municipality admin to register your company.
+            Want to bid on Civic Projects? Contact your local municipality admin to register your
+            company.
           </p>
         </div>
       </GlassCard>

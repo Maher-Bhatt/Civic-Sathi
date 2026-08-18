@@ -590,6 +590,13 @@ async function adminApiFetch<T>(path: string, options: RequestInit = {}): Promis
     clearTimeout(timeoutId);
     if (!res.ok) {
       const err = await res.json().catch(() => ({ detail: res.statusText }));
+      if (res.status === 401 && typeof window !== "undefined") {
+        localStorage.removeItem(LS_TOKEN);
+        localStorage.removeItem(LS_USER);
+        if (!window.location.pathname.endsWith("/login")) {
+          window.location.href = "/login";
+        }
+      }
       throw new Error((err as any).detail ?? res.statusText);
     }
     if (res.status === 204) return undefined as T;

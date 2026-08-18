@@ -50,6 +50,7 @@ export const client = new APIClient({
   onUnauthorized: () => {
     if (typeof window !== "undefined") {
       window.localStorage.removeItem(LS.token);
+      window.localStorage.removeItem(LS.officer);
       window.location.href = "/login";
     }
   },
@@ -70,6 +71,34 @@ function read<T>(key: string, fallback: T): T {
 function write<T>(key: string, value: T) {
   if (typeof window === "undefined") return;
   window.localStorage.setItem(key, JSON.stringify(value));
+}
+
+function normalizeOfficer(
+  userData: any,
+  fallbackCity: CityId = "vadodara",
+  fallbackDesignation?: string,
+): Officer {
+  const backendRole = String(userData?.role ?? "officer").toLowerCase();
+  const role: Officer["role"] =
+    backendRole === "admin"
+      ? "Administrator"
+      : backendRole === "supervisor"
+        ? "Supervisor"
+        : backendRole === "municipality"
+          ? "Department Head"
+          : "Officer";
+  const city = String(userData?.city ?? fallbackCity).toLowerCase() as CityId;
+  const designation = userData?.designation ?? fallbackDesignation;
+  return {
+    id: String(userData?.id ?? ""),
+    name: String(userData?.name ?? ""),
+    email: String(userData?.email ?? ""),
+    department: (userData?.department as any) ?? "General",
+    role,
+    ...(designation ? { designation: String(designation) } : {}),
+    city,
+    lastActive: new Date().toISOString(),
+  };
 }
 
 /* -------------------------------------------------------------- auth */
@@ -95,16 +124,7 @@ export async function muniLogin(input: {
       throw new Error("Access denied: this account does not have officer permissions");
     }
 
-    const officer: Officer = {
-      id: backendUser.id ?? "",
-      name: backendUser.name ?? "",
-      email: backendUser.email ?? "",
-      department: (backendUser.department as any) ?? "General",
-      role: "Officer",
-      ...(input.designation ? { designation: input.designation } : {}),
-      city: input.city,
-      lastActive: new Date().toISOString(),
-    };
+    const officer = normalizeOfficer(backendUser, input.city, input.designation);
     write(LS.officer, officer);
     return officer;
   } catch (error: any) {
@@ -140,15 +160,7 @@ export async function getMuniOfficer(): Promise<Officer | null> {
       const me = await api.auth.me();
       const roleLower = String((me as any)?.role || "").toLowerCase();
       if (me && ["officer", "supervisor", "admin", "municipality"].includes(roleLower)) {
-        const officer: Officer = {
-          id: (me as any).id,
-          name: (me as any).name,
-          email: (me as any).email ?? "",
-          department: ((me as any).department as any) ?? "General",
-          role: "Officer",
-          city: ((me as any).city as CityId) || "bengaluru",
-          lastActive: new Date().toISOString(),
-        };
+        const officer = normalizeOfficer(me, cached?.city ?? "vadodara", cached?.designation);
         write(LS.officer, officer);
         return officer;
       }
