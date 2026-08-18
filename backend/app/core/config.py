@@ -36,11 +36,13 @@ class Settings(BaseSettings):
     officer_api_key: str = Field(..., description="API key for officer endpoints")
     jwt_secret: str = Field(default="janmind_super_secret_dev_key_2026", description="Secret key for JWT generation")
     
-    # Grok (xAI) AI Configuration
+    # AI / LLM Configuration (Groq, Grok / xAI, etc.)
+    groq_api_key: str | None = Field(default=None, description="Groq API key")
     xai_api_key: str | None = Field(default=None, description="xAI API key for Grok models")
-    grok_api_key: str | None = Field(default=None, description="Alternative alias for xAI API key")
-    grok_model: str = Field(default="grok-beta", description="Grok model name (e.g. grok-beta, grok-2)")
-    grok_base_url: str = Field(default="https://api.x.ai/v1", description="xAI OpenAI-compatible API base URL")
+    grok_api_key: str | None = Field(default=None, description="Alternative alias for AI API key")
+    llm_api_key: str | None = Field(default=None, description="Generic LLM API key")
+    llm_model: str = Field(default="allam-2-7b", description="Lightweight low-resource 7B model to prevent rate limits")
+    llm_base_url: str = Field(default="https://api.groq.com/openai/v1", description="OpenAI-compatible LLM endpoint base URL")
     
     # ML Configuration
     sentence_model_name: str = "sentence-transformers/all-MiniLM-L6-v2"
