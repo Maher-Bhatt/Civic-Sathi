@@ -4,7 +4,7 @@ import { LANGUAGES, type Language } from "@/lib/translations";
 import { cn } from "@/lib/utils";
 
 export function LanguageToggle({ className }: { className?: string }) {
-  const { language, setLanguage } = useI18n();
+  const { language, setLanguage, t } = useI18n();
 
   return (
     <div className={cn("relative inline-flex items-center", className)}>
