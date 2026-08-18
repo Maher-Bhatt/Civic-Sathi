@@ -11,11 +11,8 @@ import { ClientCityMap } from "@/components/city-map-panel";
 import {
   analyzeComplaint,
   createComplaint,
-  detectDuplicateIssues,
-  createCivicIssue,
-  linkToCivicIssue,
 } from "@/services/api";
-import { clustersForCity, nearestCity } from "@/services/cities";
+import { getCity } from "@/services/cities";
 import type { AnalysisResult, Complaint } from "@/services/types";
 import { clearDraft, loadDraft } from "@/lib/report-draft";
 import { cn } from "@/lib/utils";
@@ -75,24 +72,9 @@ function AnalyzingPage() {
       });
       setResult(analysis);
 
-      // Call detect duplicate issues
-      if (draft.location) {
-        const matches = await detectDuplicateIssues({
-          lat: draft.location.lat,
-          lng: draft.location.lng,
-          category: analysis.category,
-          description: draft.description,
-        });
-
-        if (Array.isArray(matches) && matches.length > 0) {
-          window.clearInterval(timer);
-          setStage(4); // Scanning for duplicates
-          setDuplicates(matches);
-          return; // Pause here! Wait for user input.
-        }
-      }
-
-      // No duplicates found, proceed automatically
+      // Duplicate detection and issue clustering are performed by the backend
+      // analysis job after the complaint is created. The citizen portal must not
+      // fabricate a client-side issue or block submission on a mock detector.
       await proceedWithNewIssue(draft, analysis);
       window.clearInterval(timer);
     } catch (err) {
@@ -111,44 +93,21 @@ function AnalyzingPage() {
         ward: "Ward 14",
         area: "Vadodara",
       };
+    const city = getCity(draft.city || "vadodara");
+    const wardNumberMatch = String(safeLocation.ward || "").match(/\d+/);
     const created = await createComplaint({
+      title: `${analysis.category} at ${safeLocation.ward || city.name}`,
       description: draft.description,
       category: analysis.category,
+      category_hint: analysis.category,
       severity: analysis.severity,
-      location: safeLocation,
-
-      photo: draft.photo,
-      relatedCount: analysis.relatedCount,
-      nearbyCount: analysis.nearbyCount,
-    });
-
-    // Create new CivicIssue
-    const issue = await createCivicIssue({
-      title: `${analysis.category} at ${safeLocation.ward}`,
-
-      category: analysis.category,
-      description: draft.description,
+      city: city.name,
       lat: safeLocation.lat,
       lng: safeLocation.lng,
-      ward: safeLocation.ward,
-      area: safeLocation.area,
-
-      cityId: draft.city || "vadodara",
-      status: "OPEN",
-      priority: analysis.severity,
-      severity: analysis.severity,
-      impactScore: 10,
-      reportCount: 0,
-      uniqueReporterCount: 0,
-      confirmationCount: 0,
-      firstReportedAt: new Date().toISOString(),
-      lastReportedAt: new Date().toISOString(),
+      ward_number: wardNumberMatch ? Number(wardNumberMatch[0]) : undefined,
+      address_text: safeLocation.area,
+      photo: draft.photo,
     });
-
-    // Link it if both exist
-    if (issue?.id && created?.id) {
-      await linkToCivicIssue(issue.id, created.id, "PRIMARY_REPORT", 100, "Citizen");
-    }
 
     setComplaint(created);
     setStage(STAGES.length);
@@ -169,27 +128,21 @@ function AnalyzingPage() {
         ward: "Ward 14",
         area: "Vadodara",
       };
+    const city = getCity(draftData.city || "vadodara");
+    const wardNumberMatch = String(safeLocation.ward || "").match(/\d+/);
     const created = await createComplaint({
+      title: `${result.category} at ${safeLocation.ward || city.name}`,
       description: draftData.description,
-
       category: result.category,
+      category_hint: result.category,
       severity: result.severity,
-      location: safeLocation,
-
+      city: city.name,
+      lat: safeLocation.lat,
+      lng: safeLocation.lng,
+      ward_number: wardNumberMatch ? Number(wardNumberMatch[0]) : undefined,
+      address_text: safeLocation.area,
       photo: draftData.photo,
-      relatedCount: result.relatedCount,
-      nearbyCount: result.nearbyCount,
     });
-
-    if (match?.issue?.id && created?.id) {
-      await linkToCivicIssue(
-        match.issue.id,
-        created.id,
-        "DUPLICATE",
-        match.confidence || 90,
-        "Citizen",
-      );
-    }
 
     setComplaint(created);
     setStage(STAGES.length);

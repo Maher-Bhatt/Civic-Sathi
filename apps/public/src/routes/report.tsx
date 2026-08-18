@@ -10,6 +10,7 @@ import { LocationPicker } from "@/components/location-picker";
 import { PhotoUploader } from "@/components/photo-uploader";
 import { VoiceInput } from "@/components/voice-input";
 import { emptyDraft, loadDraft, saveDraft, type ReportDraft } from "@/lib/report-draft";
+import { detectCategory } from "@/services/api";
 import { useI18n } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
@@ -175,7 +176,7 @@ function ReportPage() {
                 {draft.description || "Not provided"}
               </ReviewRow>
               <ReviewRow label={t('ui.suggested_category')} onEdit={() => setStep(2)}>
-                {draft.category ?? "Civic Sathi will suggest one"}
+                {draft.category ?? (draft.description.trim() ? detectCategory(draft.description) : "Civic Sathi will suggest one")}
               </ReviewRow>
               <ReviewRow label={t('ui.location')} onEdit={() => setStep(1)}>
                 {draft.location

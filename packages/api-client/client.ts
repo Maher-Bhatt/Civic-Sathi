@@ -41,18 +41,30 @@ export class APIClient {
     }
 
     let response: Response;
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 15000);
     try {
       response = await fetch(url, {
         ...options,
         headers,
+        signal: options.signal ?? controller.signal,
       });
     } catch (fetchErr: any) {
       console.error(`[APIClient] Network error fetching ${url}:`, fetchErr);
+      if (fetchErr?.name === "AbortError") {
+        throw new APIClientError(
+          "The civic data service took too long to respond. Please retry once the backend is available.",
+          408,
+          fetchErr,
+        );
+      }
       throw new APIClientError(
         `Failed to reach backend server (${url}). Please check your internet connection or backend status.`,
         0,
-        fetchErr
+        fetchErr,
       );
+    } finally {
+      clearTimeout(timeoutId);
     }
 
     if (response.status === 401 && this.config.onUnauthorized) {

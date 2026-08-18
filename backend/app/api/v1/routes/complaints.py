@@ -26,7 +26,7 @@ def resolve_city_id(db: Session, city_value: str | None) -> str | None:
         return None
     try:
         city = db.get(City, UUID(city_value))
-    except (ValueError, TypeError):
+    except (ValueError, TypeError, AttributeError):
         city = db.query(City).filter(
             sqlfunc.lower(City.name) == city_value.strip().lower()
         ).first()

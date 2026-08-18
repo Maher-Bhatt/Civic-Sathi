@@ -253,6 +253,22 @@ export async function getCivicIssues(): Promise<any[]> {
 
 /* -------------------------------------------------------------- complaints */
 
+async function resolveCityId(cityIdOrName: string): Promise<string> {
+  const value = cityIdOrName.trim();
+  if (!value || (value.includes("-") && value.length === 36)) return value;
+  try {
+    const cities = await client.get<Array<{ id: string; name: string }>>("/api/v1/cities");
+    const normalized = value.toLowerCase().replace(/[_-]+/g, " ").trim();
+    const match = cities.find((city) => {
+      const name = String(city.name || "").toLowerCase().replace(/[_-]+/g, " ").trim();
+      return name === normalized || name.replace(/\s+/g, "") === normalized.replace(/\s+/g, "");
+    });
+    return match?.id || value;
+  } catch {
+    return value;
+  }
+}
+
 const STATUS_TO_BACKEND: Record<string, string> = {
   Received: "received",
   "Under Review": "in_review",
@@ -315,7 +331,7 @@ export async function getMuniComplaints(
   filters?: Partial<ComplaintFilters>,
 ): Promise<MuniComplaint[]> {
   const query: Record<string, string | number> = { limit: 100 };
-  if (filters?.city && filters.city !== "all") query["city"] = filters.city;
+  if (filters?.city && filters.city !== "all") query["city"] = await resolveCityId(filters.city);
   if (filters?.ward) {
     const wardNumber = Number(String(filters.ward).replace(/\D/g, ""));
     if (Number.isFinite(wardNumber) && wardNumber > 0) query["ward"] = wardNumber;
@@ -409,19 +425,8 @@ export async function inspectWorkOrder(workOrderId: string, result: string, feed
 
 export async function getWorkOrders(params?: any) {
   const officer = await getMuniOfficer();
-  const rawCity = params?.cityId || officer?.city || "vadodara";
-  // If it's already a UUID, use directly; otherwise resolve via cities API
-  let cityId = rawCity;
-  if (!rawCity.includes("-") || rawCity.length !== 36) {
-    try {
-      const cities = await client.get<Array<{ id: string; name: string }>>("/api/v1/cities");
-      const match = cities.find((c) => c.name.toLowerCase() === rawCity.toLowerCase());
-      if (match) cityId = match.id;
-    } catch {
-      // keep rawCity as-is if lookup fails
-    }
-  }
-  return await api.workOrders.list(cityId);
+  const rawCity = String(params?.cityId || officer?.city || "vadodara");
+  return await api.workOrders.list(await resolveCityId(rawCity));
 }
 
 export async function getWorkOrder(id: string) {

@@ -17,8 +17,6 @@ import {
   DEMO_USER,
   NEARBY_REPORTS,
   SEED_NOTIFICATIONS,
-  RELATED_SAMPLES,
-  WARD_14,
 } from "./mockData";
 
 export function getApiBaseUrl(): string {
@@ -101,13 +99,16 @@ export async function submitPublicRating(
 }
 
 export function detectCategory(text: string): IssueCategory {
-  const t = text.toLowerCase();
-  let best: { category: IssueCategory; score: number } = { category: "Water Supply", score: 0 };
-  for (const entry of CATEGORY_KEYWORDS) {
-    const score = entry.words.reduce((acc, w) => acc + (t.includes(w) ? 1 : 0), 0);
-    if (score > best.score) best = { category: entry.category, score };
-  }
-  return best.category;
+  const normalized = text.toLowerCase().replace(/[^a-z0-9\s]/g, " ");
+  const ranked = CATEGORY_KEYWORDS.map((entry, index) => ({
+    category: entry.category,
+    index,
+    score: entry.words.reduce((acc, word) => acc + (normalized.includes(word) ? 1 : 0), 0),
+  })).sort((a, b) => b.score - a.score || a.index - b.index);
+
+  // Do not invent a road issue when no signal exists. Sanitation is the
+  // neutral municipal intake category used for genuinely ambiguous reports.
+  return ranked[0]?.score ? ranked[0].category : "Sanitation";
 }
 
 export function detectSeverity(text: string): Severity {
@@ -324,29 +325,35 @@ export async function getComplaint(id: string): Promise<Complaint> {
   return normalizeComplaint(res);
 }
 
-// Keep mock AI capabilities for demo purposes as they don't have backend equivalents yet
 export async function analyzeComplaint(input: any): Promise<AnalysisResult> {
-  const category = input.imageCategory ?? detectCategory(input.description);
-  const severity = detectSeverity(input.description);
-  const location = input.location ?? WARD_14;
-  const isDemo = category === "Water Supply";
+  const description = String(input.description ?? "").trim();
+  const category = (input.imageCategory as IssueCategory | null) || detectCategory(description);
+  const severity = detectSeverity(description);
+  const location = input.location ?? {
+    lat: 22.3072,
+    lng: 73.1812,
+    ward: "Ward 14",
+    area: "Vadodara",
+    city: "Vadodara",
+  };
+  const hasDirectSignal = CATEGORY_KEYWORDS.some((entry) =>
+    entry.category === category && entry.words.some((word) => description.toLowerCase().includes(word)),
+  );
+  const summary = `${category} report classified as ${severity.toLowerCase()} severity from the submitted description. Backend analysis will check duplicate patterns after registration.`;
+
   return {
     category,
     severity,
-    confidence: "High",
+    confidence: hasDirectSignal ? "High" : "Medium",
     location,
-    relatedCount: isDemo ? 127 : 34,
-    nearbyCount: isDemo ? 23 : 7,
+    relatedCount: 0,
+    nearbyCount: 0,
     radiusMeters: 500,
-    hotspot: isDemo,
-    relatedSamples: isDemo ? RELATED_SAMPLES : RELATED_SAMPLES.slice(0, 2),
-    summary: isDemo
-      ? "127 reports in 30 days clustered near RC Dutt Road. Pattern indicates systemic main pipeline pressure failure rather than isolated domestic leaks."
-      : "Low frequency pattern. Standard municipal workflow applies.",
-    recommendedAction: isDemo
-      ? "Dispatch zonal water engineer to inspect pressure valve assembly at Sector 4 junction."
-      : "Standard inspection scheduled.",
-  } as any;
+    hotspot: false,
+    relatedSamples: [],
+    summary,
+    recommendedAction: `Route to the ${category.toLowerCase()} department for field verification.`,
+  } as AnalysisResult;
 }
 
 export async function uploadComplaintPhoto(file: File): Promise<string> {
@@ -373,9 +380,9 @@ export async function analyzeComplaintPhoto(fileName: string): Promise<ImageAnal
       confidence: "High",
     } as any;
   return {
-    detected: "Road surface damage / pothole",
-    category: "Road Damage",
-    confidence: "High",
+    detected: "Civic issue requiring review",
+    category: "Sanitation",
+    confidence: "Low",
   } as any;
 }
 
@@ -396,9 +403,9 @@ export async function analyzeImage(
       confidence: "Medium",
     } as any;
   return {
-    detected: "Possible road surface damage",
-    category: "Road Damage",
-    confidence: "High",
+    detected: "Civic issue requiring review",
+    category: "Sanitation",
+    confidence: "Low",
   } as any;
 }
 

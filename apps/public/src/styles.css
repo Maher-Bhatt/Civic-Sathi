@@ -442,3 +442,28 @@
   border-color: rgba(255, 153, 51, 0.35) !important;
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6) !important;
 }
+
+
+/* Subtle rangoli-inspired geometry: a quiet civic identity cue, not a decorative distraction. */
+body::after {
+  content: "";
+  position: fixed;
+  top: -7rem;
+  right: -7rem;
+  width: min(34vw, 27rem);
+  aspect-ratio: 1;
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0.16;
+  background: repeating-conic-gradient(
+    from 8deg,
+    color-mix(in oklab, var(--primary) 34%, transparent) 0deg 2deg,
+    transparent 2deg 18deg
+  );
+  -webkit-mask: radial-gradient(circle, transparent 0 27%, #000 28% 29%, transparent 30% 43%, #000 44% 45%, transparent 46% 100%);
+  mask: radial-gradient(circle, transparent 0 27%, #000 28% 29%, transparent 30% 43%, #000 44% 45%, transparent 46% 100%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body::after { opacity: 0.11; }
+}
