@@ -117,21 +117,23 @@ function ContractorDashboard() {
                <div className="p-8 text-center text-[var(--muted-foreground)] text-sm">{t('ui.no_active_projects')}</div>
              ) : (
                <ul className="divide-y divide-[var(--glass-border)]">
-                 {activeWorkOrders.map(wo => (
-                   <li key={wo.id} className="p-4 hover:bg-[var(--surface-elevated)] transition-colors">
-                     <div className="flex justify-between mb-1">
-                       <Link to={"/contractor/work-orders/$id" as any} params={{ id: wo.id } as any} className="font-medium hover:text-[var(--primary)]">{wo.title}</Link>
-                       <span className="text-xs px-2 py-0.5 rounded border border-[var(--glass-border)]" style={{ color: workOrderStatusColor(wo.status) }}>{workOrderStatusLabel(wo.status)}</span>
-                     </div>
-                     <div className="flex justify-between text-xs text-[var(--muted-foreground)] mt-2">
-                       <span>{t('ui.risk')}{(wo as any).risk_level || 'LOW'}</span>
-                       <span>{t('ui.planned')}{(wo as any).planned_progress_pct || 0}{t('ui.verified')}{(wo as any).verified_progress_pct || 0}%</span>
-                     </div>
-                     <div className="w-full bg-[var(--surface)] h-1.5 mt-2 rounded-full overflow-hidden flex">
-                        <div className="bg-[var(--primary)] h-full" style={{ width: `${(wo as any).verified_progress_pct || 0}%`}}></div>
-                     </div>
-                   </li>
-                 ))}
+                  {activeWorkOrders.map((wo: any) => (
+                    <li key={wo.id} className="p-4 hover:bg-[var(--surface-elevated)] transition-colors">
+                      <div className="flex justify-between mb-1">
+                        <Link to={"/contractor/work-orders/$id" as any} params={{ id: wo.id } as any} className="font-medium hover:text-[var(--primary)]">{wo.title}</Link>
+                        <span className="text-xs px-2 py-0.5 rounded border border-[var(--glass-border)]" style={{ color: typeof workOrderStatusColor === 'function' ? workOrderStatusColor(wo.status) : 'var(--primary)' }}>
+                          {typeof workOrderStatusLabel === 'function' ? workOrderStatusLabel(wo.status) : (wo.status || 'ACTIVE')}
+                        </span>
+                      </div>
+                      <div className="flex justify-between text-xs text-[var(--muted-foreground)] mt-2">
+                        <span>{t('ui.risk')}{(wo as any).risk_level || 'LOW'}</span>
+                        <span>{t('ui.planned')}{(wo as any).planned_progress_pct || 0}{t('ui.verified')}{(wo as any).verified_progress_pct || 0}%</span>
+                      </div>
+                      <div className="w-full bg-[var(--surface)] h-1.5 mt-2 rounded-full overflow-hidden flex">
+                         <div className="bg-[var(--primary)] h-full" style={{ width: `${(wo as any).verified_progress_pct || 0}%`}}></div>
+                      </div>
+                    </li>
+                  ))}
                </ul>
              )}
           </div>
