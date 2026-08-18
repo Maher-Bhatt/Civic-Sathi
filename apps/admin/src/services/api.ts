@@ -5,19 +5,7 @@
 
 import type { CityId } from "@/services/cities";
 import type { ComplaintStatus, Department } from "./types";
-import {
-  DASHBOARD_KPIS,
-  DEMO_OFFICER,
-  DEPARTMENT_STATS,
-  SEED_ALERTS,
-  SEED_LIVE_ACTIVITY,
-  SEED_MUNI_COMPLAINTS,
-  SEED_NOTIFICATIONS,
-  SEED_SYSTEMIC_ISSUES,
-  TREND_ANALYSIS,
-  HOTSPOT_RANKINGS,
-  buildAreaOverviews,
-} from "./mockData";
+
 import type {
   ComplaintFilters,
   DashboardKPIs,
@@ -80,7 +68,7 @@ export async function muniLogin(input: {
   if (!input.email.trim() || !input.password.trim()) {
     throw new Error("Invalid credentials");
   }
-  const officer: Officer = { ...DEMO_OFFICER, email: input.email, city: input.city };
+  const officer: Officer = { id: "demo", name: "Demo", department: "Municipal Water", role: "Administrator", lastActive: "now", email: input.email, city: input.city };
   write(STORAGE.officer, officer);
   return officer;
 }
@@ -99,23 +87,21 @@ export async function getMuniOfficer(): Promise<Officer | null> {
 
 export async function getDashboardKPIs(): Promise<DashboardKPIs> {
   await delay();
-  return { ...DASHBOARD_KPIS };
+  return { totalReports: 0, critical: 0, active: 0, resolved: 0, emergingIssues: 0, areaHotspots: 0 };
 }
 
 export async function getLiveActivity(): Promise<LiveActivity[]> {
   await delay(150);
-  return read(STORAGE.liveActivity, SEED_LIVE_ACTIVITY);
+  return read<any[]>(STORAGE.liveActivity, []);
 }
 
 /* --------------------------------------------------------- systemic issues */
 
-function getIssues(): SystemicIssue[] {
-  return read(STORAGE.issues, SEED_SYSTEMIC_ISSUES);
-}
+function getIssues(): any[] { return []; }
 
 export async function getSystemicIssues(city?: CityId): Promise<SystemicIssue[]> {
   await delay();
-  const issues = getIssues();
+  const issues: SystemicIssue[] = getIssues();
   return city ? issues.filter((i) => i.city === city) : issues;
 }
 
@@ -129,7 +115,7 @@ export async function updateSystemicIssue(
   patch: Partial<SystemicIssue>,
 ): Promise<SystemicIssue> {
   await delay();
-  const issues = getIssues();
+  const issues: SystemicIssue[] = getIssues();
   const idx = issues.findIndex((i) => i.id === id);
   if (idx < 0) throw new Error("Issue not found");
   issues[idx] = { ...issues[idx]!, ...patch, updatedAt: new Date().toISOString() };
@@ -150,14 +136,12 @@ export async function assignIssueDepartment(
 
 /* -------------------------------------------------------------- complaints */
 
-function getComplaints(): MuniComplaint[] {
-  return read(STORAGE.complaints, SEED_MUNI_COMPLAINTS);
-}
+function getComplaints(): any[] { return []; }
 
 export async function getMuniComplaints(filters?: Partial<ComplaintFilters>): Promise<MuniComplaint[]> {
   await delay();
   const f = { ...DEFAULT_COMPLAINT_FILTERS, ...filters };
-  let list = getComplaints();
+  let list: MuniComplaint[] = getComplaints();
 
   if (f.city !== "all") list = list.filter((c) => c.city === f.city);
   if (f.area) list = list.filter((c) => c.area.toLowerCase().includes(f.area.toLowerCase()));
@@ -235,13 +219,13 @@ export async function bulkUpdateComplaints(
 
 export async function getAlerts(city?: CityId): Promise<MuniAlert[]> {
   await delay();
-  const alerts = read(STORAGE.alerts, SEED_ALERTS);
+  const alerts = read<any[]>(STORAGE.alerts, []);
   return city ? alerts.filter((a) => a.city === city) : alerts;
 }
 
 export async function acknowledgeAlert(id: string): Promise<MuniAlert> {
   await delay();
-  const alerts = read(STORAGE.alerts, SEED_ALERTS);
+  const alerts = read<any[]>(STORAGE.alerts, []);
   const idx = alerts.findIndex((a) => a.id === id);
   if (idx < 0) throw new Error("Alert not found");
   alerts[idx] = { ...alerts[idx]!, acknowledged: true };
@@ -251,33 +235,30 @@ export async function acknowledgeAlert(id: string): Promise<MuniAlert> {
 
 /* ------------------------------------------------------------ departments */
 
-export async function getDepartments(): Promise<DepartmentStats[]> {
-  await delay();
-  return DEPARTMENT_STATS;
-}
+export async function getDepartments(): Promise<any[]> { return []; }
 
-export async function getDepartment(id: string): Promise<DepartmentStats | null> {
+export async function getDepartment(id: string): Promise<any | null> {
   await delay();
-  return DEPARTMENT_STATS.find((d) => d.id === id) ?? null;
+  return null;
 }
 
 /* ------------------------------------------------------------------ areas */
 
 export async function getAreaOverviews(city: CityId) {
   await delay();
-  return buildAreaOverviews(city);
+  return [];
 }
 
 /* -------------------------------------------------------------- analytics */
 
 export async function getTrendAnalysis() {
   await delay();
-  return TREND_ANALYSIS;
+  return [];
 }
 
 export async function getHotspotRankings() {
   await delay();
-  return HOTSPOT_RANKINGS;
+  return [];
 }
 
 export async function getAnalyticsData(city: CityId) {
@@ -296,10 +277,7 @@ export async function getAnalyticsData(city: CityId) {
       high: 180 + i * 10,
       critical: 30 + i * 2,
     })),
-    departmentDistribution: DEPARTMENT_STATS.map((d) => ({
-      name: d.name.replace("Municipal ", "").replace("Public ", ""),
-      value: d.open + d.resolved,
-    })),
+    departmentDistribution: [],
     categoryDistribution: [
       { name: "Water", value: 1842 },
       { name: "Road", value: 1523 },
@@ -325,12 +303,12 @@ export async function getAnalyticsData(city: CityId) {
 
 export async function getOfficerNotifications(): Promise<OfficerNotification[]> {
   await delay();
-  return read(STORAGE.notifications, SEED_NOTIFICATIONS);
+  return read<any[]>(STORAGE.notifications, []);
 }
 
 export async function markNotificationRead(id: string): Promise<void> {
   await delay(80);
-  const list = read(STORAGE.notifications, SEED_NOTIFICATIONS);
+  const list = read<any[]>(STORAGE.notifications, []);
   const idx = list.findIndex((n) => n.id === id);
   if (idx >= 0) {
     list[idx] = { ...list[idx]!, read: true };
@@ -372,23 +350,9 @@ export async function officerSearch(query: string) {
   const q = query.trim().toLowerCase();
   if (!q) return { complaints: [], issues: [], areas: [] };
 
-  const complaints = getComplaints()
-    .filter(
-      (c) =>
-        c.id.toLowerCase().includes(q) ||
-        c.area.toLowerCase().includes(q) ||
-        c.category.toLowerCase().includes(q),
-    )
-    .slice(0, 5);
+  const complaints: any[] = [];
 
-  const issues = getIssues()
-    .filter(
-      (i) =>
-        i.areaName.toLowerCase().includes(q) ||
-        i.category.toLowerCase().includes(q) ||
-        i.ward.toLowerCase().includes(q),
-    )
-    .slice(0, 5);
+  const issues: any[] = [];
 
   return { complaints, issues, areas: [] };
 }
@@ -400,7 +364,7 @@ let liveTimer: ReturnType<typeof setInterval> | null = null;
 export function startLiveSimulation(onUpdate: (activity: LiveActivity[]) => void) {
   if (liveTimer) return;
   liveTimer = setInterval(() => {
-    const current = read(STORAGE.liveActivity, SEED_LIVE_ACTIVITY);
+    const current: LiveActivity[] = read<any[]>(STORAGE.liveActivity, []);
     const event: LiveActivity = {
       id: `la_${Date.now()}`,
       type: "new_report",
@@ -413,7 +377,7 @@ export function startLiveSimulation(onUpdate: (activity: LiveActivity[]) => void
     write(STORAGE.liveActivity, next);
     onUpdate(next);
 
-    const issues = getIssues();
+    const issues: SystemicIssue[] = getIssues();
     const water = issues.find((i) => i.id === "sys_water_vad_14");
     if (water && Math.random() > 0.6) {
       water.complaintCount += 1;

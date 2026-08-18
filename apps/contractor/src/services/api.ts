@@ -56,11 +56,10 @@ function write<T>(key: string, value: T) {
 /* -------------------------------------------------------------- auth */
 export async function contractorLogin(input: { email: string; password: string; city: CityId }): Promise<User> {
   try {
-    const res = await client.request<{ access_token: string; citizen: any }>({
-      path: '/auth/contractor-login',
-      method: 'POST',
-      body: { email: input.email, password: input.password },
-    });
+    const res = await client.post<{ access_token: string; citizen: any }>(
+      '/api/v1/auth/contractor-login',
+      { email: input.email, password: input.password }
+    );
 
     // Normalize response - backend sends 'citizen' but api-client normalizes to 'user'
     const userData = res.citizen;

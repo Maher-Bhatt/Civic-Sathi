@@ -91,14 +91,28 @@ function ContractorLogin() {
             <button
               type="button"
               onClick={() => {
-                setEmail("contractor@bharat.in");
+                setEmail("contractor@vadodara-infra.in");
                 setPassword("Janmind@2026");
               }}
               className="w-full flex items-center justify-between p-2 rounded-lg bg-[var(--surface)] hover:bg-[var(--surface-elevated)] border border-[var(--glass-border)] text-xs transition text-left"
             >
               <div>
-                <span className="font-semibold text-[var(--foreground)]">Bharat Infra Field Operations</span>
-                <span className="block text-[11px] text-[var(--muted-foreground)] font-mono">contractor@bharat.in</span>
+                <span className="font-semibold text-[var(--foreground)]">Vadodara Infra (Demo)</span>
+                <span className="block text-[11px] text-[var(--muted-foreground)] font-mono">contractor@vadodara-infra.in</span>
+              </div>
+              <span className="text-[11px] px-2 py-0.5 rounded bg-amber-500/15 text-amber-700 dark:text-amber-400 font-medium">Click to Fill</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setEmail("contractor@bbmp-infra.in");
+                setPassword("Janmind@2026");
+              }}
+              className="w-full flex items-center justify-between p-2 rounded-lg bg-[var(--surface)] hover:bg-[var(--surface-elevated)] border border-[var(--glass-border)] text-xs transition text-left"
+            >
+              <div>
+                <span className="font-semibold text-[var(--foreground)]">BBMP Infra (Demo)</span>
+                <span className="block text-[11px] text-[var(--muted-foreground)] font-mono">contractor@bbmp-infra.in</span>
               </div>
               <span className="text-[11px] px-2 py-0.5 rounded bg-amber-500/15 text-amber-700 dark:text-amber-400 font-medium">Click to Fill</span>
             </button>

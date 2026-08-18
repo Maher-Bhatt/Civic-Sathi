@@ -102,7 +102,7 @@ function TendersIndex() {
                   <div className="shrink-0 text-right">
                     <div className="text-xs text-[var(--muted-foreground)] mb-1">{t('ui.est_budget')}</div>
                     <div className="text-lg font-semibold tabular-nums text-[var(--primary)]">
-                      ₹{(t.estimated_budget ?? 0).toLocaleString("en-IN")}
+                      ₹{(tender.estimated_budget ?? 0).toLocaleString("en-IN")}
                     </div>
                   </div>
                 </div>

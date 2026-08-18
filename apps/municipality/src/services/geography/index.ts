@@ -420,10 +420,9 @@ export function cityDailyTrend(city: CityId, filters: MapFilters, rawPoints: Com
     if (p.daysAgo > 6) continue;
     buckets[6 - p.daysAgo]! += 1;
   }
-  const r = rng(`trend:${city}:${filters.time}:${filters.issue}`);
   return labels.map((day, i) => ({
     day,
-    reports: buckets[i]! + Math.floor(r() * 4),
+    reports: buckets[i]!,
   }));
 }
 

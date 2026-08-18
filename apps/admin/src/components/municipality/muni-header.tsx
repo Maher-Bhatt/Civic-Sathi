@@ -51,10 +51,7 @@ export function MuniHeader({
           <Menu className="h-5 w-5" />
         </button>
 
-        <div className="hidden min-w-0 sm:block">
-          <p className="truncate text-sm font-semibold">{t('ui.janmind')}</p>
-          <p className="truncate text-[0.65rem] text-muted-foreground">{t('ui.municipal_intelligence')}</p>
-        </div>
+
 
         <div className="ml-auto flex items-center gap-2 sm:gap-3">
           <span className="hidden rounded-full border border-[var(--glass-border)] bg-[var(--glass)] px-3 py-1 text-xs text-muted-foreground md:inline">

@@ -1,7 +1,10 @@
 {
   "name": "admin-frontend",
   "private": true,
-  "sideEffects": ["./src/lib/error-capture.ts", "./src/styles.css"],
+  "sideEffects": [
+    "./src/lib/error-capture.ts",
+    "./src/styles.css"
+  ],
   "type": "module",
   "scripts": {
     "dev": "vite dev",
@@ -13,6 +16,7 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
+    "@janmind/api-client": "^1.0.0",
     "@radix-ui/react-accordion": "^1.2.12",
     "@radix-ui/react-alert-dialog": "^1.1.15",
     "@radix-ui/react-aspect-ratio": "^1.1.8",

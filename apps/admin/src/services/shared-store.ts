@@ -15,20 +15,7 @@ import type {
   WorkOrderStatus,
   WorkPackage,
 } from "./types";
-import {
-  DEMO_ADMIN_USER,
-  SEED_CONTRACTORS,
-  SEED_CONTRACTOR_DOCUMENTS,
-  SEED_WORK_PACKAGES,
-  SEED_WORK_ORDERS,
-  SEED_WORK_ORDER_EVENTS,
-  SEED_FIELD_PROGRESS,
-  SEED_INSPECTIONS,
-  SEED_MEASUREMENTS,
-  SEED_BILLS,
-  SEED_AUDIT_LOGS,
-  SEED_SLA_RULES,
-} from "./mockData";
+
 
 export function getApiBaseUrl(): string {
   const envUrl = ((import.meta.env as any)?.VITE_API_BASE_URL as string | undefined)?.trim();
@@ -47,20 +34,7 @@ export const API_BASE_URL = getApiBaseUrl();
 // ---------------------------------------------------------------- Utilities
 
 async function fetchStore<T>(collection: string, method = "GET", body?: unknown): Promise<T> {
-  const store: Record<string, any> = {
-    contractors: SEED_CONTRACTORS,
-    contractorDocuments: SEED_CONTRACTOR_DOCUMENTS,
-    workPackages: SEED_WORK_PACKAGES,
-    workOrders: SEED_WORK_ORDERS,
-    workOrderEvents: SEED_WORK_ORDER_EVENTS,
-    fieldProgress: SEED_FIELD_PROGRESS,
-    inspections: SEED_INSPECTIONS,
-    measurements: SEED_MEASUREMENTS,
-    bills: SEED_BILLS,
-    auditLogs: SEED_AUDIT_LOGS,
-    slaRules: SEED_SLA_RULES,
-    evidence: []
-  };
+  const store: Record<string, any> = {};
 
   const storageKey = `janmind_admin_${collection}`;
   let data = store[collection] || [];
@@ -508,7 +482,7 @@ export function getCachedWorkOrders(): any[] {
     const raw = localStorage.getItem("janmind_admin_work_orders");
     if (raw) return JSON.parse(raw);
   } catch {}
-  return SEED_WORK_ORDERS;
+  return [];
 }
 
 export async function getAdminUser(): Promise<AdminUser | null> {
@@ -642,7 +616,7 @@ export async function listRealContractors(): Promise<any[]> {
       const cached = localStorage.getItem("janmind_admin_contractors");
       if (cached) return JSON.parse(cached);
     }
-    return fetchStore<any[]>("contractors");
+    return [];
   }
 }
 

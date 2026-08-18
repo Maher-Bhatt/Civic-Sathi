@@ -183,6 +183,36 @@ export async function updateProfile(patch: Partial<User>): Promise<User> {
 
 export async function changePassword(): Promise<void> {}
 
+function normalizeComplaint(raw: any, fallbackInput?: any): Complaint {
+  const c = raw?.data || raw;
+  if (!c) return null as any;
+  if (c.location) return c as Complaint;
+  
+  const wardStr = c.ward_number ? `Ward ${c.ward_number}` : (fallbackInput?.location?.ward || "Ward 14");
+  
+  c.location = {
+    lat: c.lat ?? c.location_lat ?? fallbackInput?.location?.lat ?? 22.3072,
+    lng: c.lng ?? c.location_lng ?? fallbackInput?.location?.lng ?? 73.1812,
+    ward: wardStr,
+    area: c.address_text ?? fallbackInput?.location?.area ?? "Vadodara",
+    city: fallbackInput?.location?.city ?? fallbackInput?.cityId ?? c.city_id,
+  };
+  
+  if (!c.timeline) {
+    c.timeline = [
+      {
+        id: `TL-${c.id || Date.now()}`,
+        stage: c.status || "SUBMITTED",
+        title: "Report Received",
+        description: "Your report has been received.",
+        at: c.created_at || new Date().toISOString(),
+      }
+    ];
+  }
+  
+  return c as Complaint;
+}
+
 export async function createComplaint(input: any): Promise<Complaint> {
   try {
     const res = await api.complaints.create(input);
@@ -201,7 +231,7 @@ export async function createComplaint(input: any): Promise<Complaint> {
     const existing = read<AppNotification[]>(LS.notifications, SEED_NOTIFICATIONS as any);
     write(LS.notifications, [notif, ...existing]);
     
-    return created;
+    return normalizeComplaint(created, input);
   } catch (err) {
     console.warn("Backend complaint creation fallback to optimistic local record:", err);
     const trackingSuffix = Math.floor(100000 + Math.random() * 900000);
@@ -249,14 +279,16 @@ export async function createComplaint(input: any): Promise<Complaint> {
 export async function getMyComplaints(): Promise<Complaint[]> {
   try {
     const res = await api.complaints.list({ limit: 100 });
-    return res.data || res;
+    const list = res.data || res;
+    return (Array.isArray(list) ? list : []).map(c => normalizeComplaint(c));
   } catch {
     return [];
   }
 }
 
 export async function getComplaint(id: string): Promise<Complaint> {
-  return await api.complaints.get(id) as any;
+  const res = await api.complaints.get(id);
+  return normalizeComplaint(res);
 }
 
 // Keep mock AI capabilities for demo purposes as they don't have backend equivalents yet
