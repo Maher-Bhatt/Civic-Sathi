@@ -5,13 +5,7 @@ import {
   ChevronRight,
   MapPin,
   MessageSquareText,
-  ShieldCheck,
   Sparkles,
-  Flame,
-  Droplets,
-  Zap,
-  Trash2,
-  Construction,
 } from "lucide-react";
 import { useState } from "react";
 import { PageShell } from "@/components/site-nav";

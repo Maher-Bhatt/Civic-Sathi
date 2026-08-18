@@ -19,7 +19,7 @@ export function MuniSearchCommand({
 }) {
     const { t } = useI18n();
   const [query, setQuery] = useState("");
-  const [results, setResults] = useState<Awaited<ReturnType<typeof officerSearch>> | null>(null);
+  const [results, setResults] = useState<any | null>(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -64,7 +64,7 @@ export function MuniSearchCommand({
                   <div>
                     <p className="label-xs mb-2">{t('ui.complaints')}</p>
                     <ul className="space-y-1">
-                      {results.complaints.map((c) => (
+                      {results.complaints.map((c: any) => (
                         <li key={c.id}>
                           <Link
                             to={"/complaints/$id" as any}
@@ -85,7 +85,7 @@ export function MuniSearchCommand({
                   <div>
                     <p className="label-xs mb-2">{t('ui.emerging_issues')}</p>
                     <ul className="space-y-1">
-                      {results.issues.map((i) => (
+                      {results.issues.map((i: any) => (
                         <li key={i.id}>
                           <Link
                             to={"/issues/$id" as any}

@@ -144,12 +144,12 @@ function UserManagementPage() {
     setSaving(true);
     try {
       if (editUser) {
-        const patch: any = { name: form.name, role: form.role, city: form.city || undefined, department: form.department || undefined, phone: form.phone || undefined };
+        const patch: any = { name: form.name, role: form.role, city: form.city || '', department: form.department || '', phone: form.phone || '' };
         if (form.password.trim()) patch.password = form.password;
         await updateUser(editUser.id, patch);
         toast.success("User updated");
       } else {
-        await createUser({ name: form.name, email: form.email, password: form.password, role: form.role, city: form.city || undefined, department: form.department || undefined, phone: form.phone || undefined });
+        await createUser({ name: form.name, email: form.email, password: form.password, role: form.role, city: form.city || '', department: form.department || '', phone: form.phone || '' });
         toast.success("User created");
       }
       setShowForm(false);

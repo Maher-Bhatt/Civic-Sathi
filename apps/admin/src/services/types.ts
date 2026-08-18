@@ -365,8 +365,11 @@ export interface AdminUser {
   id: string;
   name: string;
   email: string;
-  role: "admin";
-  createdAt: string;
+  role: string;
+  department?: string;
+  city?: string;
+  permissions?: string[];
+  createdAt?: string;
   lastActive: string;
 }
 

@@ -1,18 +1,17 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { contractorLogin, contractorLogout, getContractorUser } from "@/services/api";
-import type { User } from "@janmind/api-client";
+import { contractorLogin, contractorLogout, getContractorUser, ContractorUser } from "@/services/api";
 
 interface ContractorAuthContextValue {
-  contractor: User | null;
+  contractor: ContractorUser | null;
   ready: boolean;
-  signIn: (email: string, password: string) => Promise<User>;
+  signIn: (email: string, password: string) => Promise<ContractorUser>;
   signOut: () => Promise<void>;
 }
 
 const CTX = createContext<ContractorAuthContextValue | null>(null);
 
 export function ContractorAuthProvider({ children }: { children: React.ReactNode }) {
-  const [contractor, setContractor] = useState<User | null>(null);
+  const [contractor, setContractor] = useState<ContractorUser | null>(null);
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
@@ -21,10 +20,10 @@ export function ContractorAuthProvider({ children }: { children: React.ReactNode
       .finally(() => setReady(true));
   }, []);
 
-  const signIn = useCallback(async (email: string, password: string): Promise<User> => {
+  const signIn = useCallback(async (email: string, password: string): Promise<ContractorUser> => {
     const user = await contractorLogin({ email, password, city: "vadodara" });
-    setContractor(user);
-    return user;
+    setContractor(user as ContractorUser);
+    return user as ContractorUser;
   }, []);
 
   const signOut = useCallback(async () => {

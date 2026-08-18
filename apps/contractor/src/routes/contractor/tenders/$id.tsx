@@ -36,7 +36,10 @@ function TenderDetail() {
 
   async function handleBid(e: React.FormEvent) {
     e.preventDefault();
-    if (!bidAmount || !proposal) return toast.error("Please fill all fields.");
+    if (!bidAmount || !proposal) {
+      toast.error("Please fill all fields.");
+      return;
+    }
     submitMutation.mutate();
   }
 

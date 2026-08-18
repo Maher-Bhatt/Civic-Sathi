@@ -29,16 +29,16 @@ export function MuniAuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     Promise.all([getMuniOfficer(), getMuniSettings()])
       .then(([o, s]) => {
-        setOfficer(o);
-        setSettings(s);
+        setOfficer(o as any);
+        setSettings(s as any);
       })
       .finally(() => setReady(true));
   }, []);
 
   const signIn = useCallback(async (email: string, password: string, city: CityId) => {
     const o = await muniLogin({ email, password, city });
-    setOfficer(o);
-    return o;
+    setOfficer(o as any);
+    return o as any;
   }, []);
 
   const signOut = useCallback(async () => {
@@ -48,13 +48,13 @@ export function MuniAuthProvider({ children }: { children: React.ReactNode }) {
 
   const updateSettings = useCallback(async (patch: Partial<MuniSettings>) => {
     const s = await saveMuniSettings(patch);
-    setSettings(s);
-    return s;
+    setSettings(s as any);
+    return s as any;
   }, []);
 
   const refreshSettings = useCallback(async () => {
     const s = await getMuniSettings();
-    setSettings(s);
+    setSettings(s as any);
   }, []);
 
   const value = useMemo(

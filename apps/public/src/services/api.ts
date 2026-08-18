@@ -2,7 +2,7 @@ import { APIClient, Endpoints } from '@janmind/api-client';
 import type { User, Complaint, IssueCategory, Severity, LocationInfo, AnalysisResult, ImageAnalysis, NearbyReport, AppNotification } from './types';
 import { CATEGORY_KEYWORDS, SEVERITY_KEYWORDS, DEMO_USER, NEARBY_REPORTS, SEED_NOTIFICATIONS, RELATED_SAMPLES, WARD_14 } from './mockData';
 
-export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "https://janmind.onrender.com";
+export const API_BASE_URL = import.meta.env['VITE_API_BASE_URL'] ?? "https://janmind.onrender.com";
 
 const LS = {
   user: "janmind.user",
@@ -158,7 +158,7 @@ export async function changePassword(): Promise<void> {}
 export async function createComplaint(input: any): Promise<Complaint> {
   try {
     const res = await api.complaints.create(input);
-    const created = (res.data || res) as any;
+    const created = ((res as any).data || res) as any;
     
     // Automatically generate registered notification
     const notif: AppNotification = {

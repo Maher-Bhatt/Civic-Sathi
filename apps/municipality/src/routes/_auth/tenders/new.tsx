@@ -20,7 +20,7 @@ function NewTenderPage() {
   const { officer } = useMuniAuth();
   const [form, setForm] = useState({
     title: "", description: "", category: "Road Damage", department: "Public Works",
-    ward: "", area: "", estimatedCost: "", scope: "", civicIssueIds: "",
+    ward: "", area: "", estimatedCost: "", scope: "", civicIssueIds: "", priority: "Moderate"
   });
 
   const set = (k: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>

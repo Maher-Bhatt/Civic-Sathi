@@ -3,7 +3,7 @@ import type { CityId } from "@/services/cities";
 import type { User } from '@janmind/api-client';
 
 
-export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "https://janmind.onrender.com";
+export const API_BASE_URL = import.meta.env['VITE_API_BASE_URL'] ?? "https://janmind.onrender.com";
 
 const LS = {
   contractor: "janmind_contractor_user",
@@ -75,20 +75,22 @@ export async function adminLogin(email: string, pass: string): Promise<any> { re
 export async function adminLogout(): Promise<void> {}
 export async function getAdminUser(): Promise<any | null> { return null; }
 
-export async function getContractorUser(): Promise<User | null> {
+export type ContractorUser = User & { city?: string; contractorId?: string };
+
+export async function getContractorUser(): Promise<ContractorUser | null> {
   if (typeof window === "undefined") return null;
   const token = window.localStorage.getItem(LS.token);
   if (!token) return null;
 
   // Return cached user immediately so auth gate never bounces on slow network.
-  const cached = read<User | null>(LS.contractor, null);
+  const cached = read<ContractorUser | null>(LS.contractor, null);
 
   const refreshFromServer = async () => {
     try {
       const me = await api.auth.me();
       if (me && (me as any).role === 'contractor') {
         write(LS.contractor, me);
-        return me as User;
+        return me as ContractorUser;
       }
     } catch {
       // ignore — use cached
@@ -107,7 +109,7 @@ export async function getContractorUser(): Promise<User | null> {
 // For compatibility with old components
 export const muniLogin = contractorLogin;
 export const muniLogout = contractorLogout;
-export const getMuniOfficer = getContractorUser;
+export const getMuniOfficer = getContractorUser as () => Promise<any>;
 
 /* -------------------------------------------------------------- city UUID resolution
    The backend uses UUID primary keys for cities. We resolve the frontend city
@@ -211,11 +213,11 @@ export async function getTrendAnalysis() { return []; }
 export async function getHotspotRankings() { return []; }
 export async function getAnalyticsData() { return null; }
 export async function getOfficerNotifications() { return []; }
-export async function markNotificationRead() { return null; }
+export async function markNotificationRead(id?: string) { return null; }
 export async function getMuniSettings() { return { theme: 'system' }; }
-export async function saveMuniSettings() { return null; }
+export async function saveMuniSettings(patch?: any) { return null; }
 export async function getSavedViews() { return []; }
-export async function officerSearch() { return { complaints: [], issues: [], areas: [] }; }
+export async function officerSearch(query?: string) { return { complaints: [] as {id: string, category: string}[], issues: [] as {id: string, category: string, areaName: string}[], areas: [] as any[] }; }
 export function startLiveSimulation() {}
 export function stopLiveSimulation() {}
 

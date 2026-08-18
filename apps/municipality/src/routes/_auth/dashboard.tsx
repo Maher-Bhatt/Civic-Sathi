@@ -53,8 +53,27 @@ function MuniDashboardPage() {
   const [live, setLive] = useState<LiveActivity[]>([]);
   const [mapMode] = useState<MapMode>("health");
 
+  const { data, isLoading: loading } = useQuery({
+    queryKey: ["muni-dashboard", city],
+    queryFn: async () => {
+      const [k, i, l, h, c] = await Promise.all([
+        getDashboardKPIs(),
+        getSystemicIssues(city),
+        getLiveActivity(),
+        getHotspotRankings(),
+        getCivicIssues(),
+      ]);
+      return { kpis: k, issues: i.slice(0, 4), live: l, hotspots: h.slice(0, 3), civicIssues: c };
+    }
+  });
+
+  const kpis = data?.kpis;
+  const issues = data?.issues || [];
+  const hotspots = data?.hotspots || [];
+  const civicIssues = data?.civicIssues || [];
+
   const points: ComplaintPoint[] = useMemo(() => {
-    return civicIssues.map((ci) => {
+    return (civicIssues as any[]).map((ci: any) => {
       let issue: IssueKey = "other";
       const cat = (ci.category || "").toLowerCase();
       if (cat.includes("water")) issue = "water";
@@ -86,29 +105,10 @@ function MuniDashboardPage() {
   const issueData = useMemo(() => cityIssueBreakdown(city, DEFAULT_FILTERS, points), [city, points]);
   const healthData = useMemo(() => cityHealthDistribution(city, DEFAULT_FILTERS, points), [city, points]);
 
-  const { data, isLoading: loading } = useQuery({
-    queryKey: ["muni-dashboard", city],
-    queryFn: async () => {
-      const [k, i, l, h, c] = await Promise.all([
-        getDashboardKPIs(),
-        getSystemicIssues(city),
-        getLiveActivity(),
-        getHotspotRankings(),
-        getCivicIssues(),
-      ]);
-      return { kpis: k, issues: i.slice(0, 4), live: l, hotspots: h.slice(0, 3), civicIssues: c };
-    }
-  });
-
   useEffect(() => {
     startLiveSimulation(setLive);
     return () => stopLiveSimulation();
   }, [city]);
-
-  const kpis = data?.kpis;
-  const issues = data?.issues || [];
-  const hotspots = data?.hotspots || [];
-  const civicIssues = data?.civicIssues || [];
 
   if (loading || !kpis) {
     return <LoadingState message="Loading municipal intelligence..." />;
@@ -220,7 +220,7 @@ function MuniDashboardPage() {
       <section>
         <SectionLabel>{t('ui.hotspot_analysis')}</SectionLabel>
         <div className="mt-4 grid gap-3">
-          {hotspots.map((h) => (
+          {hotspots.map((h: any) => (
             <Link
               key={h.issueId}
               to={"/issues/$id" as any}

@@ -82,7 +82,7 @@ function AnalyticsPage() {
 
   if (loading || !data) return <LoadingState message="Loading analytics..." />;
 
-  const totalDeptReports = data.departmentDistribution.reduce((s, d) => s + d.value, 0);
+  const totalDeptReports = data.departmentDistribution.reduce((s: number, d: any) => s + d.value, 0);
 
   return (
     <div className="muni-page-enter space-y-6">
@@ -172,7 +172,7 @@ function AnalyticsPage() {
                   position="center"
                   style={{ fontSize: 22, fontWeight: 700, fill: "var(--foreground)" }}
                 />
-                {data.departmentDistribution.map((_, i) => (
+                {data.departmentDistribution.map((_: any, i: number) => (
                   <Cell
                     key={i}
                     fill={DEPT_COLORS[i % DEPT_COLORS.length]}
@@ -214,7 +214,7 @@ function AnalyticsPage() {
                   position="right"
                   style={{ fill: "var(--muted-foreground)", fontSize: 11 }}
                 />
-                {data.categoryDistribution.map((_, i) => (
+                {data.categoryDistribution.map((_: any, i: number) => (
                   <Cell key={i} fill={DEPT_COLORS[i % DEPT_COLORS.length]} />
                 ))}
               </Bar>

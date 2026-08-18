@@ -69,7 +69,7 @@ function TendersIndex() {
             <Link
               key={t.id}
               to={"/contractor/tenders/$id" as any}
-              params={{ id: t.id }}
+              params={{ id: t.id } as any}
               className="block"
             >
               <GlassCard className="p-6 glass-strong lift transition-all hover:border-[var(--primary)]/40">
