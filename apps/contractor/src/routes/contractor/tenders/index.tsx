@@ -65,11 +65,11 @@ function TendersIndex() {
         </GlassCard>
       ) : (
         <div className="grid gap-4">
-          {tenders.map((t: any) => (
+          {tenders.map((tender: any) => (
             <Link
-              key={t.id}
+              key={tender.id}
               to={"/contractor/tenders/$id" as any}
-              params={{ id: t.id } as any}
+              params={{ id: tender.id } as any}
               className="block"
             >
               <GlassCard className="p-6 glass-strong lift transition-all hover:border-[var(--primary)]/40">
@@ -77,24 +77,24 @@ function TendersIndex() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-2">
                       <span
-                        className={`text-xs font-semibold uppercase px-2 py-0.5 rounded bg-[var(--surface-elevated)] border border-[var(--glass-border)] ${TENDER_STATUS_COLOR[t.status] ?? "text-[var(--muted-foreground)]"}`}
+                        className={`text-xs font-semibold uppercase px-2 py-0.5 rounded bg-[var(--surface-elevated)] border border-[var(--glass-border)] ${TENDER_STATUS_COLOR[tender.status] ?? "text-[var(--muted-foreground)]"}`}
                       >
-                        {TENDER_STATUS_LABEL[t.status] ?? t.status}
+                        {TENDER_STATUS_LABEL[tender.status] ?? tender.status}
                       </span>
                     </div>
                     <h3 className="text-lg font-medium text-[var(--foreground)] leading-tight">
-                      {t.title}
+                      {tender.title}
                     </h3>
-                    {t.description && (
+                    {tender.description && (
                       <p className="mt-1.5 text-sm text-[var(--muted-foreground)] line-clamp-2">
-                        {t.description}
+                        {tender.description}
                       </p>
                     )}
-                    {t.closed_at && (
+                    {tender.closed_at && (
                       <p className="mt-2 text-xs text-[var(--muted-foreground)]">
                         {t('ui.closes')}{" "}
                         <span className="font-medium text-[var(--foreground)]">
-                          {new Date(t.closed_at).toLocaleDateString("en-IN")}
+                          {new Date(tender.closed_at).toLocaleDateString("en-IN")}
                         </span>
                       </p>
                     )}

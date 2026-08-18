@@ -148,15 +148,15 @@ function ContractorDashboard() {
                <div className="p-8 text-center text-[var(--muted-foreground)] text-sm">{t('ui.no_matching_tenders_available_')}</div>
              ) : (
                <ul className="divide-y divide-[var(--glass-border)]">
-                 {tenders.map(t => (
-                   <li key={t.id} className="p-4 hover:bg-[var(--surface-elevated)] transition-colors">
+                 {tenders.map(tender => (
+                   <li key={tender.id} className="p-4 hover:bg-[var(--surface-elevated)] transition-colors">
                      <div className="flex justify-between mb-1">
-                       <span className="font-medium">{t.title}</span>
-                       <span className="text-xs text-[var(--success)] font-mono">₹{t.estimated_budget?.toLocaleString('en-IN')}</span>
+                       <span className="font-medium">{tender.title}</span>
+                       <span className="text-xs text-[var(--success)] font-mono">₹{tender.estimated_budget?.toLocaleString('en-IN')}</span>
                      </div>
                      <div className="flex items-center gap-3 text-xs text-[var(--muted-foreground)] mt-2">
                        <span className="bg-green-500/10 text-green-600 px-1.5 py-0.5 rounded">{t('ui.high_match')}</span>
-                       <span>{t('ui.closes')}{new Date(t.closed_at).toLocaleDateString('en-IN')}</span>
+                       <span>{t('ui.closes')}{new Date(tender.closed_at).toLocaleDateString('en-IN')}</span>
                      </div>
                    </li>
                  ))}

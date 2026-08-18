@@ -217,19 +217,19 @@ export function PhotoUploader({
           </div>
           {changing && (
             <div className="flex flex-wrap gap-2 pt-1">
-              {ISSUE_TYPES.map((t) => (
+              {ISSUE_TYPES.map((issueType) => (
                 <button
-                  key={t}
+                  key={issueType}
                   type="button"
                   onClick={() => {
-                    onCategorySuggestion(t);
+                    onCategorySuggestion(issueType);
                     setChanging(false);
                   }}
                   className={cn(
                     "press rounded-full border border-border bg-[var(--glass)] px-3 py-1.5 text-xs text-muted-foreground hover:text-foreground",
                   )}
                 >
-                  {t}
+                  {issueType}
                 </button>
               ))}
             </div>

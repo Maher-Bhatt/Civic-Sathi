@@ -5,7 +5,7 @@ import type { IssueCategory, Severity } from "./types";
  * Modular by design: swap `TILES` or add a city without touching components.
  */
 
-export type CityId = "vadodara" | "bengaluru";
+export type CityId = "vadodara" | "bengaluru" | "mumbai" | "delhi";
 
 export interface City {
   id: CityId;
@@ -18,6 +18,8 @@ export interface City {
 export const CITIES: City[] = [
   { id: "vadodara", name: "Vadodara", state: "Gujarat", center: [22.3072, 73.1812], zoom: 13 },
   { id: "bengaluru", name: "Bengaluru", state: "Karnataka", center: [12.9716, 77.5946], zoom: 12 },
+  { id: "mumbai", name: "Mumbai", state: "Maharashtra", center: [19.0760, 72.8777], zoom: 12 },
+  { id: "delhi", name: "Delhi", state: "Delhi NCR", center: [28.6139, 77.2090], zoom: 12 },
 ];
 
 export const getCity = (id: CityId): City => CITIES.find((c) => c.id === id) ?? CITIES[0]!;

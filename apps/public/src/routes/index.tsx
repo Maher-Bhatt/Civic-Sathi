@@ -276,9 +276,11 @@ function Landing() {
                 </span>
               ))}
             </div>
-            <GlassButton asChild className="mt-4 bg-orange-600 text-white hover:bg-orange-500 border border-orange-400" variant="glass">
-              <Link to="/report">{t("pattern.startreport", "File a Grievance Now")}</Link>
-            </GlassButton>
+            <div className="pt-3">
+              <GlassButton asChild variant="primary" size="md" className="shadow-md font-bold">
+                <Link to="/report">{t("pattern.startreport", "Start a Report →")}</Link>
+              </GlassButton>
+            </div>
           </div>
         </GlassCard>
       </section>

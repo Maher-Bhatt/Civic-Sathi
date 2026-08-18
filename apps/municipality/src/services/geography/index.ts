@@ -4,6 +4,8 @@ import { polygon as turfPolygon, featureCollection } from "@turf/helpers";
 import type { CityId } from "@/services/cities";
 import { VADODARA } from "./vadodara";
 import { BENGALURU } from "./bengaluru";
+import { MUMBAI } from "./mumbai";
+import { DELHI } from "./delhi";
 import {
   AREA_HEALTH_HEX,
   AREA_HEALTH_LABEL,
@@ -20,10 +22,14 @@ import {
 export * from "./types";
 export { VADODARA } from "./vadodara";
 export { BENGALURU } from "./bengaluru";
+export { MUMBAI } from "./mumbai";
+export { DELHI } from "./delhi";
 
 const GEOGRAPHY: Record<CityId, CityGeography> = {
   vadodara: VADODARA,
   bengaluru: BENGALURU,
+  mumbai: MUMBAI,
+  delhi: DELHI,
 };
 
 export const cityGeography = (city: CityId): CityGeography => GEOGRAPHY[city];

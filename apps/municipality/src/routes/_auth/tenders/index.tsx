@@ -67,8 +67,8 @@ function TendersPage() {
             <p className="mt-4 text-sm text-muted-foreground">{t('ui.no_tenders_published_yet')}</p>
           </GlassCard>
         ) : (
-          (tenders as any[]).map((t) => (
-            <Link key={t.id} to={"/tenders/$id" as any} params={{ id: t.id } as any}>
+          (tenders as any[]).map((tenderItem) => (
+            <Link key={tenderItem.id} to={"/tenders/$id" as any} params={{ id: tenderItem.id } as any}>
               <GlassCard elevation="raised" className="lift p-5 cursor-pointer">
                 <div className="flex flex-wrap items-start gap-3">
                   <div className="flex-1 min-w-0">
@@ -76,33 +76,33 @@ function TendersPage() {
                       <span
                         className={cn(
                           "rounded-full px-2.5 py-0.5 text-xs font-medium",
-                          STATUS_CHIP[t.status] ?? STATUS_CHIP["DRAFT"],
+                          STATUS_CHIP[tenderItem.status] ?? STATUS_CHIP["DRAFT"],
                         )}
                       >
-                        {STATUS_LABEL[t.status] ?? t.status}
+                        {STATUS_LABEL[tenderItem.status] ?? tenderItem.status}
                       </span>
                     </div>
 
-                    <p className="font-semibold">{t.title}</p>
-                    {t.description && (
+                    <p className="font-semibold">{tenderItem.title}</p>
+                    {tenderItem.description && (
                       <p className="mt-1 text-sm text-muted-foreground line-clamp-2">
-                        {t.description}
+                        {tenderItem.description}
                       </p>
                     )}
 
                     <div className="mt-3 flex flex-wrap gap-4 text-xs text-muted-foreground">
                       {/* scope_of_work is the relevant details field */}
-                      {t.scope_of_work && <span className="line-clamp-1">{t.scope_of_work}</span>}
+                      {tenderItem.scope_of_work && <span className="line-clamp-1">{tenderItem.scope_of_work}</span>}
                     </div>
                   </div>
 
                   <div className="text-right shrink-0">
-                    <p className="text-xs font-mono text-muted-foreground">{t.id}</p>
+                    <p className="text-xs font-mono text-muted-foreground">{tenderItem.id}</p>
                     <p className="mt-1 text-sm font-semibold tabular-nums">
-                      ₹{(t.estimated_budget ?? 0).toLocaleString("en-IN")}
+                      ₹{(tenderItem.estimated_budget ?? 0).toLocaleString("en-IN")}
                     </p>
                     <p className="mt-1 text-xs text-muted-foreground">
-                      {t.published_at ? format(new Date(t.published_at), "dd MMM yyyy") : "Draft"}
+                      {tenderItem.published_at ? format(new Date(tenderItem.published_at), "dd MMM yyyy") : "Draft"}
                     </p>
                     <ArrowUpRight className="mt-2 ml-auto h-4 w-4 text-muted-foreground" />
                   </div>

@@ -77,9 +77,9 @@ export function FilterDrawer({
               className="filter-input"
             >
               <option value="all">{t('ui.all_categories')}</option>
-              {ISSUE_TYPES.map((t) => (
-                <option key={t} value={t}>
-                  {t}
+              {ISSUE_TYPES.map((issueType) => (
+                <option key={issueType} value={issueType}>
+                  {issueType}
                 </option>
               ))}
             </select>

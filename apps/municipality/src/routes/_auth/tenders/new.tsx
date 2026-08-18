@@ -73,7 +73,7 @@ function NewTenderPage() {
             <div className="space-y-1.5">
               <label className="label-xs" htmlFor="wp-cat">{t('ui.category')}</label>
               <select id="wp-cat" value={form.category} onChange={set("category")} className="filter-input">
-                {ISSUE_TYPES.map(t => <option key={t}>{t}</option>)}
+                {ISSUE_TYPES.map(issueType => <option key={issueType}>{issueType}</option>)}
               </select>
             </div>
             <div className="space-y-1.5">
