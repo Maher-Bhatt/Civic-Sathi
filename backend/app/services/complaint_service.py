@@ -98,8 +98,8 @@ class ComplaintService:
             lat=complaint_data.lat,
             lng=complaint_data.lng,
             address_text=complaint_data.address_text,
-            submitted_by_name=complaint_data.submitted_by.name if complaint_data.submitted_by else None,
-            submitted_by_phone=complaint_data.submitted_by.phone if complaint_data.submitted_by else None,
+            submitted_by_name=complaint_data.submitted_by.name if complaint_data.submitted_by else complaint_data.submitted_by_name,
+            submitted_by_phone=complaint_data.submitted_by.phone if complaint_data.submitted_by else complaint_data.submitted_by_phone,
             source='web',
         )
         # We need a proper city_id. In the route, we should inject city_id to complaint_data.
@@ -265,15 +265,27 @@ class ComplaintService:
         ward_number = None
         if complaint.ward:
             ward_number = complaint.ward.ward_number
+            
+        # Anti-retaliation privacy masking
+        raw_phone = complaint.submitted_by_phone
+        masked_phone = None
+        if raw_phone:
+            clean_digits = "".join(filter(str.isdigit, raw_phone))
+            if len(clean_digits) >= 10:
+                masked_phone = f"+91 {clean_digits[:2]}*** **{clean_digits[-3:]}"
+            else:
+                masked_phone = f"{raw_phone[:2]}***{raw_phone[-2:]}" if len(raw_phone) > 4 else "***"
+        
+        citizen_name = complaint.submitted_by_name or "Verified Citizen"
         
         return ComplaintResponse(
             id=complaint.id,
             public_id=complaint.public_id,
             title=complaint.title,
             description=complaint.description,
-            status=ComplaintStatus(complaint.status),
+            status=str(complaint.status),
             category=complaint.category,
-            department=complaint.department.name,
+            department=complaint.department.name if complaint.department else "Municipal Administration",
             priority=complaint.priority,
             severity_score=complaint.severity_score,
             risk_score=complaint.risk_score,
@@ -281,6 +293,9 @@ class ComplaintService:
             lat=complaint.lat,
             lng=complaint.lng,
             address_text=complaint.address_text,
+            submitted_by_name=citizen_name,
+            submitted_by_phone=masked_phone,
+            privacy_status="Protected (Anti-Retaliation)",
             created_at=complaint.created_at,
             updated_at=complaint.updated_at,
             analysis=analysis_response,

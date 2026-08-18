@@ -83,22 +83,29 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   head: () => ({
     meta: [
       { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "JANMIND — Municipal Intelligence" },
-      { name: "description", content: "Municipal operations dashboard for civic complaint intelligence, emerging issues, and city-wide monitoring." },
+      { name: "viewport", content: "width=device-width, initial-scale=1, maximum-scale=5" },
+      { name: "theme-color", content: "#0B0F19" },
+      { name: "mobile-web-app-capable", content: "yes" },
+      { name: "apple-mobile-web-app-capable", content: "yes" },
+      { name: "apple-mobile-web-app-status-bar-style", content: "black-translucent" },
+      { name: "apple-mobile-web-app-title", content: "JANMIND Admin" },
+      { title: "JANMIND — Super Admin Platform" },
+      { name: "description", content: "City-wide civic governance, contractor vetting, and SLA analytics administration." },
       { name: "author", content: "JANMIND" },
-      { property: "og:title", content: "JANMIND — Municipal Intelligence" },
-      { property: "og:description", content: "Officer dashboard for civic intelligence and operational response." },
+      { property: "og:title", content: "JANMIND — Super Admin Platform" },
+      { property: "og:description", content: "Platform governance and cross-city analytics." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [
+      { rel: "manifest", href: "/manifest.webmanifest" },
       { rel: "stylesheet", href: appCss },
       { rel: "stylesheet", href: leafletCss },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+      { rel: "apple-touch-icon", href: "/favicon.ico" },
     ],
   }),
   shellComponent: RootShell,
@@ -113,6 +120,15 @@ function RootShell({ children }: { children: ReactNode }) {
       <head>
         <HeadContent />
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+        <script dangerouslySetInnerHTML={{ __html: `
+          if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+              navigator.serviceWorker.register('/sw.js').catch(function(err) {
+                console.log('SW registration note:', err);
+              });
+            });
+          }
+        ` }} />
       </head>
       <body>
         {children}

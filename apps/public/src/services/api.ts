@@ -158,13 +158,30 @@ export async function changePassword(): Promise<void> {}
 export async function createComplaint(input: any): Promise<Complaint> {
   try {
     const res = await api.complaints.create(input);
-    return (res.data || res) as any;
+    const created = (res.data || res) as any;
+    
+    // Automatically generate registered notification
+    const notif: AppNotification = {
+      id: `notif-${Date.now()}`,
+      complaintId: created.public_id || created.id,
+      kind: "received",
+      title: `Complaint Registered: ${created.public_id || "JN-2026"}`,
+      body: `Your complaint "${created.title || input.title || 'Civic issue'}" has been received and indexed by Municipal Triage.`,
+      at: new Date().toISOString(),
+      read: false,
+    };
+    const existing = read<AppNotification[]>(LS.notifications, SEED_NOTIFICATIONS as any);
+    write(LS.notifications, [notif, ...existing]);
+    
+    return created;
   } catch (err) {
     console.warn("Backend complaint creation fallback to optimistic local record:", err);
     const trackingSuffix = Math.floor(100000 + Math.random() * 900000);
+    const publicId = `JN-2026-${trackingSuffix}`;
     const fallbackComplaint: Complaint = {
       id: `CMP-${trackingSuffix}`,
       trackingId: `TRK-${trackingSuffix}`,
+      public_id: publicId,
       category: input.category || "General",
       severity: input.severity || "Moderate",
       status: "UNDER_REVIEW",
@@ -184,6 +201,19 @@ export async function createComplaint(input: any): Promise<Complaint> {
         },
       ],
     } as any;
+    
+    const notif: AppNotification = {
+      id: `notif-${Date.now()}`,
+      complaintId: publicId,
+      kind: "received",
+      title: `Complaint Registered: ${publicId}`,
+      body: `Your complaint has been submitted to Municipal Triage. Status: Under Review.`,
+      at: new Date().toISOString(),
+      read: false,
+    };
+    const existing = read<AppNotification[]>(LS.notifications, SEED_NOTIFICATIONS as any);
+    write(LS.notifications, [notif, ...existing]);
+    
     return fallbackComplaint;
   }
 }
@@ -218,8 +248,11 @@ export async function analyzeComplaint(input: any): Promise<AnalysisResult> {
     hotspot: isDemo,
     relatedSamples: isDemo ? RELATED_SAMPLES : RELATED_SAMPLES.slice(0, 2),
     summary: isDemo
-      ? "JANMIND found other reports that may describe a similar civic issue nearby."
-      : "JANMIND found a small number of comparable reports in this area.",
+      ? "127 reports in 30 days clustered near RC Dutt Road. Pattern indicates systemic main pipeline pressure failure rather than isolated domestic leaks."
+      : "Low frequency pattern. Standard municipal workflow applies.",
+    recommendedAction: isDemo
+      ? "Dispatch zonal water engineer to inspect pressure valve assembly at Sector 4 junction."
+      : "Standard inspection scheduled.",
   } as any;
 }
 
@@ -236,7 +269,20 @@ export async function analyzeComplaintPhoto(fileName: string): Promise<ImageAnal
   const n = fileName.toLowerCase();
   if (n.includes("garbage") || n.includes("waste"))
     return { detected: "Garbage accumulation", category: "Garbage Collection", confidence: "High" } as any;
-  if (n.includes("water") || n.includes("tap"))
+  if (n.includes("water") || n.includes("tap") || n.includes("leak"))
+    return { detected: "Water leak / supply issue", category: "Water Supply", confidence: "High" } as any;
+  return {
+    detected: "Road surface damage / pothole",
+    category: "Road Damage",
+    confidence: "High",
+  } as any;
+}
+
+export async function analyzeImage(file: File): Promise<{ detected: string; category: string; confidence: string }> {
+  const name = file.name.toLowerCase();
+  if (name.includes("garbage") || name.includes("waste"))
+    return { detected: "Overflowing waste container", category: "Garbage Collection", confidence: "High" } as any;
+  if (name.includes("water") || name.includes("leak"))
     return { detected: "Dry public water point", category: "Water Supply", confidence: "Medium" } as any;
   return {
     detected: "Possible road surface damage",
@@ -250,7 +296,8 @@ export async function getNearbyComplaints(): Promise<NearbyReport[]> {
 }
 
 export async function getNotifications(): Promise<AppNotification[]> {
-  return read<AppNotification[]>(LS.notifications, SEED_NOTIFICATIONS as any);
+  const stored = read<AppNotification[]>(LS.notifications, SEED_NOTIFICATIONS as any);
+  return stored;
 }
 
 export async function markNotificationsRead(): Promise<AppNotification[]> {

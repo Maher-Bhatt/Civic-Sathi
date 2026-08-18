@@ -10,6 +10,7 @@ class ComplaintStatus(str, Enum):
     RECEIVED = "received"
     IN_REVIEW = "in_review"
     ASSIGNED = "assigned"
+    IN_PROGRESS = "in_progress"
     RESOLVED = "resolved"
     REJECTED = "rejected"
 

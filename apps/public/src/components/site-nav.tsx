@@ -6,6 +6,7 @@ import { GlassButton } from "@/components/ui/glass-button";
 import { useAuth } from "@/lib/auth";
 import { useI18n } from "@/lib/i18n";
 import { LanguageToggle } from "@/components/language-toggle";
+import { InstallPwaButton } from "@/components/install-pwa-button";
 import { cn } from "@/lib/utils";
 
 const navLinks = [
@@ -85,6 +86,7 @@ export function SiteNav() {
         </ul>
 
         <div className="ml-auto flex items-center gap-2">
+          <InstallPwaButton className="hidden md:inline-flex" />
           <LanguageToggle className="hidden sm:inline-flex" />
           <ThemeToggle className="hidden sm:inline-flex" />
           <Link

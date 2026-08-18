@@ -1,0 +1,19 @@
+{
+  "name": "JANMIND — Citizen Civic Portal",
+  "short_name": "JANMIND",
+  "description": "Report civic issues, track municipal response, and monitor neighborhood health in real-time.",
+  "start_url": "/",
+  "id": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0B0F19",
+  "theme_color": "#0B0F19",
+  "categories": ["government", "utilities", "social"],
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    }
+  ]
+}

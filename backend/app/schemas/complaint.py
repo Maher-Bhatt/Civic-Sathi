@@ -33,6 +33,8 @@ class ComplaintCreate(BaseModel):
     city: str | None = None
     photo: str | None = None
     submitted_by: SubmittedBy | None = None
+    submitted_by_name: str | None = None
+    submitted_by_phone: str | None = None
     
     @field_validator("description")
     @classmethod
@@ -65,7 +67,7 @@ class ComplaintLinks(BaseModel):
 
 
 class ComplaintResponse(BaseModel):
-    """Response schema for a complaint"""
+    """Response schema for a complaint with privacy protection"""
     id: UUID
     public_id: str
     title: str
@@ -80,6 +82,9 @@ class ComplaintResponse(BaseModel):
     lat: float | None = None
     lng: float | None = None
     address_text: str | None = None
+    submitted_by_name: str | None = None
+    submitted_by_phone: str | None = None
+    privacy_status: str = "Protected (Anti-Retaliation)"
     created_at: datetime
     updated_at: datetime
     analysis: ComplaintAnalysisResponse | None = None

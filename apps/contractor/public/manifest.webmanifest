@@ -1,0 +1,19 @@
+{
+  "name": "JANMIND — Contractor Field Operations",
+  "short_name": "JANMIND Contractor",
+  "description": "Field operations for contractors: view work orders, submit milestone proof, and manage repair jobs.",
+  "start_url": "/",
+  "id": "/contractor",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0B0F19",
+  "theme_color": "#0B0F19",
+  "categories": ["business", "productivity", "utilities"],
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    }
+  ]
+}

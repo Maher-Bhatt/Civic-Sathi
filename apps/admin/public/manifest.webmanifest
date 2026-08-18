@@ -1,0 +1,19 @@
+{
+  "name": "JANMIND — Super Admin Platform",
+  "short_name": "JANMIND Admin",
+  "description": "City-wide civic governance, contractor vetting, and SLA analytics administration.",
+  "start_url": "/",
+  "id": "/admin",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0B0F19",
+  "theme_color": "#0B0F19",
+  "categories": ["government", "business", "administration"],
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    }
+  ]
+}
