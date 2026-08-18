@@ -116,6 +116,62 @@ function MuniLoginPage() {
           </GlassButton>
         </form>
 
+        {/* 1-Click Demo Credentials */}
+        <div className="mt-6 pt-5 border-t border-[var(--glass-border)]">
+          <p className="text-[11px] font-semibold uppercase tracking-wider text-[var(--muted-foreground)] mb-2.5 text-center">
+            Quick Demo Logins
+          </p>
+          <div className="space-y-1.5">
+            <button
+              type="button"
+              onClick={() => {
+                setEmail("officer@vmc.gov.in");
+                setPassword("Janmind@2026");
+                setCity("vadodara");
+              }}
+              className="w-full flex items-center justify-between p-2 rounded-lg bg-[var(--surface)] hover:bg-[var(--surface-elevated)] border border-[var(--glass-border)] text-xs transition text-left"
+            >
+              <div>
+                <span className="font-semibold text-[var(--foreground)]">Vadodara Officer (VMC)</span>
+                <span className="block text-[11px] text-[var(--muted-foreground)] font-mono">officer@vmc.gov.in</span>
+              </div>
+              <span className="text-[11px] px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-400 font-medium">Click to Fill</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                setEmail("officer@bbmp.gov.in");
+                setPassword("Janmind@2026");
+                setCity("bengaluru");
+              }}
+              className="w-full flex items-center justify-between p-2 rounded-lg bg-[var(--surface)] hover:bg-[var(--surface-elevated)] border border-[var(--glass-border)] text-xs transition text-left"
+            >
+              <div>
+                <span className="font-semibold text-[var(--foreground)]">Bengaluru Officer (BBMP)</span>
+                <span className="block text-[11px] text-[var(--muted-foreground)] font-mono">officer@bbmp.gov.in</span>
+              </div>
+              <span className="text-[11px] px-2 py-0.5 rounded bg-blue-500/15 text-blue-400 font-medium">Click to Fill</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                setEmail("supervisor@vmc.gov.in");
+                setPassword("Janmind@2026");
+                setCity("vadodara");
+              }}
+              className="w-full flex items-center justify-between p-2 rounded-lg bg-[var(--surface)] hover:bg-[var(--surface-elevated)] border border-[var(--glass-border)] text-xs transition text-left"
+            >
+              <div>
+                <span className="font-semibold text-[var(--foreground)]">Municipal Supervisor (VMC)</span>
+                <span className="block text-[11px] text-[var(--muted-foreground)] font-mono">supervisor@vmc.gov.in</span>
+              </div>
+              <span className="text-[11px] px-2 py-0.5 rounded bg-amber-500/15 text-amber-400 font-medium">Click to Fill</span>
+            </button>
+          </div>
+        </div>
+
         <p className="mt-6 text-center text-[0.65rem] text-muted-foreground">
           {t('ui.janmind_municipal_intelligence')}</p>
       </GlassCard>

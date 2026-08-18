@@ -4,7 +4,7 @@ import { n as require_jsx_runtime } from "../_libs/react+tanstack__react-query.m
 import { h as Link } from "../_libs/@tanstack/react-router+[...].mjs";
 import { n as toast } from "../_libs/sonner.mjs";
 import { C as Check, b as Copy, d as Plus, m as MapPin, n as Users, o as Shield, t as X, v as Key, w as Building2, x as ClipboardList, y as FileText } from "../_libs/lucide-react.mjs";
-import { S as useI18n, a as createUser, c as getCachedPlatformStats, i as createRealContractor, l as getCachedWorkOrders, p as getPlatformStats, v as listRealWorkOrders } from "./router-BfY5w09t.mjs";
+import { S as useI18n, a as createUser, c as getCachedPlatformStats, i as createRealContractor, l as getCachedWorkOrders, p as getPlatformStats, v as listRealWorkOrders } from "./router-BSWPfuIR.mjs";
 import { n as SectionLabel, t as GlassCard } from "./glass-card-CoNgXAty.mjs";
 import { a as Bar, c as Tooltip, i as CartesianGrid, n as YAxis, o as Cell, r as XAxis, s as ResponsiveContainer, t as BarChart } from "../_libs/recharts+[...].mjs";
 //#region node_modules/.nitro/vite/services/ssr/assets/dashboard-BWwdzq6g.js
