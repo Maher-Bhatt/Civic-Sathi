@@ -1,1 +1,0 @@
-import{A as e,D as t}from"./i18n-Dkh8n2A1.js";var n=e(t(),1),r=n.createContext(null);function i(e){return n.useContext(r)}export{r as n,i as t};

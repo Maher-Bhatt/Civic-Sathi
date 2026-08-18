@@ -22,3 +22,6 @@ env/
 .gemini/
 brain/
 backend/data/
+# Vercel build output - should NOT be committed (Vercel builds from source)
+apps/*/.vercel/output/
+apps/*/.vercel/cache/
