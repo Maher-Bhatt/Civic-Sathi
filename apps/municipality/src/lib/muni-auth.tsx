@@ -36,7 +36,12 @@ export function MuniAuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const signIn = useCallback(async (email: string, password: string, city: CityId, designation?: string) => {
-    const o = await muniLogin({ email, password, city, designation });
+    const o = await muniLogin({
+      email,
+      password,
+      city,
+      ...(designation ? { designation } : {}),
+    });
     setOfficer(o);
     return o;
   }, []);

@@ -106,7 +106,9 @@ function ComplaintDetail() {
 
   const workInfo = useWorkExecutionStatus(id);
 
-  const city = data ? nearestCity(data.location.lat, data.location.lng) : null;
+  const location = data?.location ?? { lat: 22.3072, lng: 73.1812, ward: "Ward 14", area: "Vadodara" };
+  const city = data ? nearestCity(location.lat, location.lng) : null;
+  const mapCityId = city?.id ?? "vadodara";
 
   const getRelatedSamples = (category: string) => {
     const cat = category.toLowerCase();
@@ -159,7 +161,7 @@ function ComplaintDetail() {
               <dl className="grid gap-4 sm:grid-cols-3">
                 <div>
                   <dt className="label-xs">{t('ui.location')}</dt>
-                  <dd className="mt-1.5 text-sm font-medium">{data.location.area}</dd>
+                  <dd className="mt-1.5 text-sm font-medium">{location.area}</dd>
                 </div>
                 <div>
                   <dt className="label-xs">{t('ui.submitted')}</dt>
@@ -252,11 +254,11 @@ function ComplaintDetail() {
                   {data.nearbyCount} {t('ui.similar_reports_within_500m')}</span>
               </div>
               <ClientCityMap
-                cityId={city!.id}
-                clusters={clustersForCity(city!.id)}
+                cityId={mapCityId}
+                clusters={clustersForCity(mapCityId)}
                 className="h-[260px] sm:h-[320px]"
-                focus={{ lat: data.location.lat, lng: data.location.lng, zoom: 14 }}
-                ariaLabel={`Map of civic activity near ${data.location.ward}`}
+                focus={{ lat: location.lat, lng: location.lng, zoom: 14 }}
+                ariaLabel={`Map of civic activity near ${location.ward}`}
                 showLegend={false}
               />
               <ul className="space-y-2 px-2.5 py-4">

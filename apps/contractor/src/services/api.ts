@@ -7,7 +7,10 @@ export function getApiBaseUrl(): string {
   const envUrl = ((import.meta.env as any)?.VITE_API_BASE_URL as string | undefined)?.trim();
   if (
     !envUrl ||
-    envUrl.includes("civicsathi-backend.onrender.com") ||
+        envUrl.includes("civicsathi-backend.onrender.com") ||
+    envUrl.includes("civicsathi.onrender.com") ||
+    envUrl.includes("janmind.onrender.com") ||
+
     (typeof window !== "undefined" && window.location.protocol === "https:" && envUrl.startsWith("http://"))
   ) {
     return "https://civic-sathi-f7ml.onrender.com";

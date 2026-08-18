@@ -17,6 +17,7 @@ ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24  # 24 hours
 
 security_scheme = HTTPBearer()
+optional_security_scheme = HTTPBearer(auto_error=False)
 
 
 def hash_password(password: str) -> str:
@@ -138,10 +139,36 @@ def get_current_officer(token_data: dict = Depends(verify_token)) -> dict:
         )
     return token_data
 
-def get_current_user(token_data: dict = Depends(verify_token), db = Depends(get_db)) -> dict:
+def get_current_user(token_data: dict = Depends(verify_token), db = Depends(get_db)):
     from app.models.user import User
     user = db.query(User).filter(User.id == token_data.get("sub")).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
+    return user
+
+
+def get_optional_user(
+    credentials: HTTPAuthorizationCredentials | None = Depends(optional_security_scheme),
+    db = Depends(get_db),
+):
+    """Return the authenticated user when a bearer token is supplied.
+
+    Missing credentials are allowed so public map/list projections can remain
+    reachable, but an invalid supplied token is still rejected instead of
+    silently downgrading the caller to anonymous access.
+    """
+    if credentials is None:
+        return None
+    try:
+        payload = jwt.decode(credentials.credentials, SECRET_KEY, algorithms=[ALGORITHM])
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(status_code=401, detail="Token has expired", headers={"WWW-Authenticate": "Bearer"})
+    except jwt.InvalidTokenError:
+        raise HTTPException(status_code=401, detail="Invalid authentication credentials", headers={"WWW-Authenticate": "Bearer"})
+
+    from app.models.user import User
+    user = db.query(User).filter(User.id == payload.get("sub")).first()
+    if not user:
+        raise HTTPException(status_code=401, detail="User not found", headers={"WWW-Authenticate": "Bearer"})
     return user
 

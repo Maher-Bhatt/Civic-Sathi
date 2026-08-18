@@ -8,7 +8,13 @@ import { GlassButton } from "@/components/ui/glass-button";
 import { SeverityBadge, StatusBadge } from "@/components/ui/badges";
 import { ErrorState } from "@/components/ui/states";
 import { ClientCityMap } from "@/components/city-map-panel";
-import { analyzeComplaint, createComplaint, detectDuplicateIssues, createCivicIssue, linkToCivicIssue } from "@/services/api";
+import {
+  analyzeComplaint,
+  createComplaint,
+  detectDuplicateIssues,
+  createCivicIssue,
+  linkToCivicIssue,
+} from "@/services/api";
 import { clustersForCity, nearestCity } from "@/services/cities";
 import type { AnalysisResult, Complaint } from "@/services/types";
 import { clearDraft, loadDraft } from "@/lib/report-draft";
@@ -17,9 +23,7 @@ import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/analyzing")({
   head: () => ({
-    meta: [
-      { title: "Analyzing your report — Civic Sathi" },
-    ],
+    meta: [{ title: "Analyzing your report — Civic Sathi" }],
   }),
   component: () => (
     <AuthGate redirectTo="/report">
@@ -38,7 +42,7 @@ const STAGES = [
 ];
 
 function AnalyzingPage() {
-    const { t } = useI18n();
+  const { t } = useI18n();
   const navigate = useNavigate();
   const [stage, setStage] = useState(0);
   const [result, setResult] = useState<AnalysisResult | null>(null);
@@ -56,7 +60,7 @@ function AnalyzingPage() {
       navigate({ to: "/report" });
       return;
     }
-    
+
     setDraftData(draft);
 
     const timer = window.setInterval(
@@ -100,25 +104,35 @@ function AnalyzingPage() {
 
   async function proceedWithNewIssue(draft: any, analysis: AnalysisResult) {
     setStage(STAGES.length - 1);
+    const safeLocation = analysis.location ??
+      draft.location ?? {
+        lat: 22.3072,
+        lng: 73.1812,
+        ward: "Ward 14",
+        area: "Vadodara",
+      };
     const created = await createComplaint({
       description: draft.description,
       category: analysis.category,
       severity: analysis.severity,
-      location: analysis.location,
+      location: safeLocation,
+
       photo: draft.photo,
       relatedCount: analysis.relatedCount,
       nearbyCount: analysis.nearbyCount,
     });
-    
+
     // Create new CivicIssue
     const issue = await createCivicIssue({
-      title: `${analysis.category} at ${analysis.location.ward}`,
+      title: `${analysis.category} at ${safeLocation.ward}`,
+
       category: analysis.category,
       description: draft.description,
-      lat: analysis.location.lat,
-      lng: analysis.location.lng,
-      ward: analysis.location.ward,
-      area: analysis.location.area,
+      lat: safeLocation.lat,
+      lng: safeLocation.lng,
+      ward: safeLocation.ward,
+      area: safeLocation.area,
+
       cityId: draft.city || "vadodara",
       status: "OPEN",
       priority: analysis.severity,
@@ -142,22 +156,41 @@ function AnalyzingPage() {
   }
 
   async function handleLinkExisting(match: any) {
+    if (!result) {
+      setError(true);
+      return;
+    }
     setStage(STAGES.length - 1);
     setDuplicates([]);
+    const safeLocation = result.location ??
+      draftData.location ?? {
+        lat: 22.3072,
+        lng: 73.1812,
+        ward: "Ward 14",
+        area: "Vadodara",
+      };
     const created = await createComplaint({
       description: draftData.description,
-      category: result!.category,
-      severity: result!.severity,
-      location: result!.location,
+
+      category: result.category,
+      severity: result.severity,
+      location: safeLocation,
+
       photo: draftData.photo,
-      relatedCount: result!.relatedCount,
-      nearbyCount: result!.nearbyCount,
+      relatedCount: result.relatedCount,
+      nearbyCount: result.nearbyCount,
     });
-    
+
     if (match?.issue?.id && created?.id) {
-      await linkToCivicIssue(match.issue.id, created.id, "DUPLICATE", match.confidence || 90, "Citizen");
+      await linkToCivicIssue(
+        match.issue.id,
+        created.id,
+        "DUPLICATE",
+        match.confidence || 90,
+        "Citizen",
+      );
     }
-    
+
     setComplaint(created);
     setStage(STAGES.length);
     clearDraft();
@@ -174,7 +207,7 @@ function AnalyzingPage() {
     return (
       <PageShell className="max-w-2xl">
         <ErrorState
-          title={t('ui.we_couldn_t_analyze_your_repor')}
+          title={t("ui.we_couldn_t_analyze_your_repor")}
           description="Your description is safe. Try again in a moment."
           onRetry={() => void run()}
         />
@@ -187,37 +220,58 @@ function AnalyzingPage() {
     return (
       <PageShell className="max-w-3xl">
         <div className="animate-rise space-y-2">
-          <SectionLabel className="text-warning">{t('ui.wait_a_moment')}</SectionLabel>
-          <h1 className="text-2xl font-semibold sm:text-3xl">{t('ui.similar_issues_found_nearby')}</h1>
-          <p className="text-muted-foreground">{t('ui.civicsathi_has_detected_existing_')}</p>
+          <SectionLabel className="text-warning">{t("ui.wait_a_moment")}</SectionLabel>
+          <h1 className="text-2xl font-semibold sm:text-3xl">
+            {t("ui.similar_issues_found_nearby")}
+          </h1>
+          <p className="text-muted-foreground">{t("ui.civicsathi_has_detected_existing_")}</p>
         </div>
-        
+
         <div className="animate-rise mt-8 space-y-4">
-          {duplicates.map(match => (
-            <GlassCard key={match.issue.id} className="p-5 flex flex-col sm:flex-row sm:items-center gap-4 border-[color-mix(in_oklab,var(--primary)_30%,transparent)]">
+          {duplicates.map((match) => (
+            <GlassCard
+              key={match.issue.id}
+              className="p-5 flex flex-col sm:flex-row sm:items-center gap-4 border-[color-mix(in_oklab,var(--primary)_30%,transparent)]"
+            >
               <div className="flex-1 space-y-2">
                 <div className="flex items-center gap-2">
                   <SeverityBadge severity={match.issue.severity} />
-                  <span className="text-sm font-medium text-foreground">{match.issue.category}</span>
-                  <span className="text-xs text-muted-foreground ml-auto">{match.distance}{t('ui.m_away')}</span>
+                  <span className="text-sm font-medium text-foreground">
+                    {match.issue.category}
+                  </span>
+                  <span className="text-xs text-muted-foreground ml-auto">
+                    {match.distance}
+                    {t("ui.m_away")}
+                  </span>
                 </div>
                 <p className="text-sm text-subtle line-clamp-2">{match.issue.description}</p>
                 <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground">
-                  <span className="flex items-center gap-1"><AlertCircle className="w-3.5 h-3.5" /> {match.issue.reportCount} {t('ui.other_reports')}</span>
-                  <span className="flex items-center gap-1"><MapPin className="w-3.5 h-3.5" /> {match.issue.ward}</span>
+                  <span className="flex items-center gap-1">
+                    <AlertCircle className="w-3.5 h-3.5" /> {match.issue.reportCount}{" "}
+                    {t("ui.other_reports")}
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <MapPin className="w-3.5 h-3.5" /> {match.issue.ward}
+                  </span>
                 </div>
               </div>
               <div className="sm:border-l border-border sm:pl-5 sm:ml-2">
-                <GlassButton variant="primary" className="w-full sm:w-auto" onClick={() => handleLinkExisting(match)}>
-                  {t('ui.yes_i_m_also_affected')}</GlassButton>
+                <GlassButton
+                  variant="primary"
+                  className="w-full sm:w-auto"
+                  onClick={() => handleLinkExisting(match)}
+                >
+                  {t("ui.yes_i_m_also_affected")}
+                </GlassButton>
               </div>
             </GlassCard>
           ))}
-          
+
           <div className="pt-6 border-t border-border flex flex-col items-center justify-center">
-            <p className="text-sm text-subtle mb-3">{t('ui.is_your_issue_completely_diffe')}</p>
+            <p className="text-sm text-subtle mb-3">{t("ui.is_your_issue_completely_diffe")}</p>
             <GlassButton variant="ghost" onClick={() => proceedWithNewIssue(draftData, result)}>
-              {t('ui.no_report_as_a_new_issue')}</GlassButton>
+              {t("ui.no_report_as_a_new_issue")}
+            </GlassButton>
           </div>
         </div>
       </PageShell>
@@ -229,25 +283,25 @@ function AnalyzingPage() {
     return (
       <PageShell className="max-w-3xl">
         <div className="animate-rise space-y-2">
-          <SectionLabel>{t('ui.your_report')}</SectionLabel>
-          <h1 className="text-2xl font-semibold sm:text-3xl">{t('ui.analysis_complete')}</h1>
+          <SectionLabel>{t("ui.your_report")}</SectionLabel>
+          <h1 className="text-2xl font-semibold sm:text-3xl">{t("ui.analysis_complete")}</h1>
         </div>
 
         <GlassCard elevation="raised" className="animate-rise mt-6 space-y-6 p-5 sm:p-7">
           <p className="text-[0.98rem] leading-relaxed">{complaint.description}</p>
           <dl className="grid gap-4 sm:grid-cols-3">
             <div>
-              <dt className="label-xs">{t('ui.ai_suggested_category')}</dt>
+              <dt className="label-xs">{t("ui.ai_suggested_category")}</dt>
               <dd className="mt-1.5 text-sm font-medium">{result.category}</dd>
             </div>
             <div>
-              <dt className="label-xs">{t('ui.severity')}</dt>
+              <dt className="label-xs">{t("ui.severity")}</dt>
               <dd className="mt-1.5">
                 <SeverityBadge severity={result.severity} />
               </dd>
             </div>
             <div>
-              <dt className="label-xs">{t('ui.location')}</dt>
+              <dt className="label-xs">{t("ui.location")}</dt>
               <dd className="mt-1.5 text-sm font-medium">{result.location.ward}</dd>
             </div>
           </dl>
@@ -259,26 +313,27 @@ function AnalyzingPage() {
               <Check className="h-4 w-4" aria-hidden />
             </span>
             <div>
-              <SectionLabel>{t('ui.complaint_received')}</SectionLabel>
+              <SectionLabel>{t("ui.complaint_received")}</SectionLabel>
               <p className="mt-0.5 text-sm text-muted-foreground">
-                {t('ui.your_report_is_now_on_record_a')}</p>
+                {t("ui.your_report_is_now_on_record_a")}
+              </p>
             </div>
           </div>
           <dl className="grid gap-4 sm:grid-cols-4">
             <div>
-              <dt className="label-xs">{t('ui.complaint_id')}</dt>
+              <dt className="label-xs">{t("ui.complaint_id")}</dt>
               <dd className="mt-1.5 text-sm font-medium tabular-nums">{complaint.id}</dd>
             </div>
             <div>
-              <dt className="label-xs">{t('ui.category')}</dt>
+              <dt className="label-xs">{t("ui.category")}</dt>
               <dd className="mt-1.5 text-sm font-medium">{complaint.category}</dd>
             </div>
             <div>
-              <dt className="label-xs">{t('ui.location')}</dt>
+              <dt className="label-xs">{t("ui.location")}</dt>
               <dd className="mt-1.5 text-sm font-medium">{complaint.location.ward}</dd>
             </div>
             <div>
-              <dt className="label-xs">{t('ui.status')}</dt>
+              <dt className="label-xs">{t("ui.status")}</dt>
               <dd className="mt-1.5">
                 <StatusBadge status={complaint.status} />
               </dd>
@@ -286,7 +341,8 @@ function AnalyzingPage() {
           </dl>
           <GlassButton asChild>
             <Link to="/complaint/$id" params={{ id: complaint.id }}>
-              {t('ui.track_complaint')}</Link>
+              {t("ui.track_complaint")}
+            </Link>
           </GlassButton>
         </GlassCard>
       </PageShell>
@@ -299,9 +355,9 @@ function AnalyzingPage() {
       <GlassCard elevation="raised" className="animate-rise p-7 sm:p-9">
         <div className="flex items-center gap-2.5">
           <Sparkles className="h-4 w-4 animate-pulse text-primary" aria-hidden />
-          <SectionLabel>{t('ui.civicsathi_intelligence')}</SectionLabel>
+          <SectionLabel>{t("ui.civicsathi_intelligence")}</SectionLabel>
         </div>
-        <h1 className="mt-4 text-xl font-semibold">{t('ui.analyzing_your_report')}</h1>
+        <h1 className="mt-4 text-xl font-semibold">{t("ui.analyzing_your_report")}</h1>
         <ul className="mt-7 space-y-3.5" aria-live="polite">
           {STAGES.map((s, i) => (
             <li key={s} className="flex items-center gap-3">

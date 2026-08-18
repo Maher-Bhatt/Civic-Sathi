@@ -95,17 +95,24 @@ class ComplaintResponse(BaseModel):
 
 
 class ComplaintListItem(BaseModel):
-    """Simplified complaint for list views"""
+    """Privacy-safe complaint list item with operational fields."""
     id: UUID
     public_id: str
     title: str
+    description: str | None = None
     status: str
     category: str
+    department: str | None = None
     priority: str
-    risk_score: int
-    ward_number: int | None
+    severity_score: int = 0
+    risk_score: int = 0
+    ward_number: int | None = None
+    lat: float | None = None
+    lng: float | None = None
+    address_text: str | None = None
     created_at: datetime
-    
+    updated_at: datetime | None = None
+
     class Config:
         from_attributes = True
 

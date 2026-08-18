@@ -8,14 +8,14 @@ from sqlalchemy import select
 from app.core.database import get_db
 from app.models.complaint import Complaint, ComplaintAnalysis
 from app.models.issue import IssueComplaint, IssueCluster
-from app.core.security import get_current_user
+from app.core.security import get_current_officer
 
 router = APIRouter()
 
 @router.get("/pending")
 def get_pending_triage(
     db: Session = Depends(get_db),
-    current_user = Depends(get_current_user)
+    current_officer: dict = Depends(get_current_officer)
 ):
     """
     Get complaints flagged as RELATED by AI that need human review to 
@@ -59,7 +59,7 @@ def get_pending_triage(
 def approve_duplicate(
     complaint_id: UUID,
     db: Session = Depends(get_db),
-    current_user = Depends(get_current_user)
+    current_officer: dict = Depends(get_current_officer)
 ):
     """
     Human approves the AI's RELATED flag and confirms it is a DUPLICATE.
@@ -94,7 +94,7 @@ def approve_duplicate(
 def reject_duplicate(
     complaint_id: UUID,
     db: Session = Depends(get_db),
-    current_user = Depends(get_current_user)
+    current_officer: dict = Depends(get_current_officer)
 ):
     """
     Human rejects the AI's RELATED flag and confirms it is UNIQUE.

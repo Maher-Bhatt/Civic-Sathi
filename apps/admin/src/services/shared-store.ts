@@ -16,13 +16,16 @@ import type {
   WorkPackage,
 } from "./types";
 
-
 export function getApiBaseUrl(): string {
   const envUrl = ((import.meta.env as any)?.VITE_API_BASE_URL as string | undefined)?.trim();
   if (
     !envUrl ||
     envUrl.includes("civicsathi-backend.onrender.com") ||
-    (typeof window !== "undefined" && window.location.protocol === "https:" && envUrl.startsWith("http://"))
+    envUrl.includes("civicsathi.onrender.com") ||
+    envUrl.includes("janmind.onrender.com") ||
+    (typeof window !== "undefined" &&
+      window.location.protocol === "https:" &&
+      envUrl.startsWith("http://"))
   ) {
     return "https://civic-sathi-f7ml.onrender.com";
   }
@@ -45,14 +48,14 @@ async function fetchStore<T>(collection: string, method = "GET", body?: unknown)
   } catch {}
 
   if (method === "GET") return data as T;
-  
+
   if (method === "POST") {
     const newItem = { id: Date.now().toString(), ...(body as any) };
     data = [...data, newItem];
     localStorage.setItem(storageKey, JSON.stringify(data));
     return newItem as T;
   }
-  
+
   return data as T;
 }
 
@@ -112,29 +115,74 @@ export async function getContractor(id: string): Promise<Contractor | null> {
   return list.find((c) => c.id === id) ?? null;
 }
 
-export async function createContractor(input: Omit<Contractor, "id" | "createdAt" | "updatedAt">): Promise<Contractor> {
+export async function createContractor(
+  input: Omit<Contractor, "id" | "createdAt" | "updatedAt">,
+): Promise<Contractor> {
   const contractor = await fetchStore<Contractor>("contractors", "POST", {
     ...input,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   });
-  await appendAudit("system", "System", "admin", "WORK_ORDER_CREATED", "contractor", contractor.id, contractor.companyName);
+  await appendAudit(
+    "system",
+    "System",
+    "admin",
+    "WORK_ORDER_CREATED",
+    "contractor",
+    contractor.id,
+    contractor.companyName,
+  );
   return contractor;
 }
 
-export async function updateContractor(id: string, patch: Partial<Contractor>): Promise<Contractor> {
-  return fetchStorePatch<Contractor>("contractors", id, { ...patch, updatedAt: new Date().toISOString() });
+export async function updateContractor(
+  id: string,
+  patch: Partial<Contractor>,
+): Promise<Contractor> {
+  return fetchStorePatch<Contractor>("contractors", id, {
+    ...patch,
+    updatedAt: new Date().toISOString(),
+  });
 }
 
-export async function verifyContractor(id: string, actorId: string, actorName: string): Promise<Contractor> {
-  const updated = await updateContractor(id, { status: "VERIFIED", verificationStatus: "VERIFIED" });
-  await appendAudit(actorId, actorName, "admin", "CONTRACTOR_VERIFIED", "contractor", id, updated.companyName);
+export async function verifyContractor(
+  id: string,
+  actorId: string,
+  actorName: string,
+): Promise<Contractor> {
+  const updated = await updateContractor(id, {
+    status: "VERIFIED",
+    verificationStatus: "VERIFIED",
+  });
+  await appendAudit(
+    actorId,
+    actorName,
+    "admin",
+    "CONTRACTOR_VERIFIED",
+    "contractor",
+    id,
+    updated.companyName,
+  );
   return updated;
 }
 
-export async function suspendContractor(id: string, actorId: string, actorName: string, reason: string): Promise<Contractor> {
+export async function suspendContractor(
+  id: string,
+  actorId: string,
+  actorName: string,
+  reason: string,
+): Promise<Contractor> {
   const updated = await updateContractor(id, { status: "SUSPENDED" });
-  await appendAudit(actorId, actorName, "admin", "CONTRACTOR_SUSPENDED", "contractor", id, updated.companyName, { reason });
+  await appendAudit(
+    actorId,
+    actorName,
+    "admin",
+    "CONTRACTOR_SUSPENDED",
+    "contractor",
+    id,
+    updated.companyName,
+    { reason },
+  );
   return updated;
 }
 
@@ -167,12 +215,26 @@ export async function createWorkPackage(
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   });
-  await appendAudit(actorId, actorName, "officer", "WORK_PACKAGE_CREATED", "work_package", wp.id, wp.title);
+  await appendAudit(
+    actorId,
+    actorName,
+    "officer",
+    "WORK_PACKAGE_CREATED",
+    "work_package",
+    wp.id,
+    wp.title,
+  );
   return wp;
 }
 
-export async function updateWorkPackage(id: string, patch: Partial<WorkPackage>): Promise<WorkPackage> {
-  return fetchStorePatch<WorkPackage>("workPackages", id, { ...patch, updatedAt: new Date().toISOString() });
+export async function updateWorkPackage(
+  id: string,
+  patch: Partial<WorkPackage>,
+): Promise<WorkPackage> {
+  return fetchStorePatch<WorkPackage>("workPackages", id, {
+    ...patch,
+    updatedAt: new Date().toISOString(),
+  });
 }
 
 // ================================================================ Work Orders
@@ -223,7 +285,16 @@ export async function createWorkOrder(
     actorRole: "officer",
   });
 
-  await appendAudit(actorId, actorName, "officer", "WORK_ORDER_CREATED", "work_order", wo.id, wo.title, { newValue: wo.contractorName });
+  await appendAudit(
+    actorId,
+    actorName,
+    "officer",
+    "WORK_ORDER_CREATED",
+    "work_order",
+    wo.id,
+    wo.title,
+    { newValue: wo.contractorName },
+  );
   return wo;
 }
 
@@ -264,11 +335,20 @@ export async function updateWorkOrderStatus(
     actorRole,
   });
 
-  await appendAudit(actorId, actorName, actorRole, "WORK_ORDER_STATUS_CHANGED", "work_order", id, current.title, {
-    previousValue: previousStatus,
-    newValue: newStatus,
-    ...(reason ? { reason } : {}),
-  });
+  await appendAudit(
+    actorId,
+    actorName,
+    actorRole,
+    "WORK_ORDER_STATUS_CHANGED",
+    "work_order",
+    id,
+    current.title,
+    {
+      previousValue: previousStatus,
+      newValue: newStatus,
+      ...(reason ? { reason } : {}),
+    },
+  );
 
   return updatedWo;
 }
@@ -288,7 +368,9 @@ export async function appendWorkOrderEvent(
 
 export async function getWorkOrderEvents(workOrderId: string): Promise<WorkOrderEvent[]> {
   const evts = await fetchStore<WorkOrderEvent[]>("workOrderEvents");
-  return evts.filter((e) => e.workOrderId === workOrderId).sort((a, b) => new Date(b.at).getTime() - new Date(a.at).getTime());
+  return evts
+    .filter((e) => e.workOrderId === workOrderId)
+    .sort((a, b) => new Date(b.at).getTime() - new Date(a.at).getTime());
 }
 
 export async function getAllEvidence(): Promise<any[]> {
@@ -297,7 +379,9 @@ export async function getAllEvidence(): Promise<any[]> {
 
 // ================================================================ Field Progress
 
-export async function submitFieldProgress(input: Omit<FieldProgress, "id">): Promise<FieldProgress> {
+export async function submitFieldProgress(
+  input: Omit<FieldProgress, "id">,
+): Promise<FieldProgress> {
   const fp = await fetchStore<FieldProgress>("fieldProgress", "POST", input);
   await appendWorkOrderEvent(fp.workOrderId, {
     eventType: "PROGRESS_UPDATE",
@@ -314,7 +398,9 @@ export async function submitFieldProgress(input: Omit<FieldProgress, "id">): Pro
 
 export async function getFieldProgress(workOrderId: string): Promise<FieldProgress[]> {
   const evts = await fetchStore<FieldProgress[]>("fieldProgress");
-  return evts.filter((fp) => fp.workOrderId === workOrderId).sort((a, b) => new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime());
+  return evts
+    .filter((fp) => fp.workOrderId === workOrderId)
+    .sort((a, b) => new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime());
 }
 
 // ================================================================ Inspections
@@ -328,7 +414,10 @@ export async function recordInspection(
   await appendWorkOrderEvent(inspection.workOrderId, {
     eventType: "INSPECTION",
     title: `Inspection ${inspection.result === "PASSED" ? "Passed" : "Failed"}`,
-    description: inspection.result === "PASSED" ? inspection.notes : `Failed: ${inspection.failureReasons?.join(", ")}. ${inspection.notes}`,
+    description:
+      inspection.result === "PASSED"
+        ? inspection.notes
+        : `Failed: ${inspection.failureReasons?.join(", ")}. ${inspection.notes}`,
     actorId,
     actorName,
     actorRole: "officer",
@@ -345,7 +434,11 @@ export async function getInspections(workOrderId: string): Promise<Inspection[]>
 
 // ================================================================ Measurements
 
-export async function submitMeasurement(input: Omit<Measurement, "id">, actorId: string, actorName: string): Promise<Measurement> {
+export async function submitMeasurement(
+  input: Omit<Measurement, "id">,
+  actorId: string,
+  actorName: string,
+): Promise<Measurement> {
   const measurement = await fetchStore<Measurement>("measurements", "POST", input);
   await appendWorkOrderEvent(measurement.workOrderId, {
     eventType: "MEASUREMENT",
@@ -365,8 +458,16 @@ export async function getMeasurement(workOrderId: string): Promise<Measurement |
 
 // ================================================================ Bills
 
-export async function submitBill(input: Omit<Bill, "id" | "submittedAt">, actorId: string, actorName: string): Promise<Bill> {
-  const bill = await fetchStore<Bill>("bills", "POST", { ...input, submittedAt: new Date().toISOString(), status: "SUBMITTED" });
+export async function submitBill(
+  input: Omit<Bill, "id" | "submittedAt">,
+  actorId: string,
+  actorName: string,
+): Promise<Bill> {
+  const bill = await fetchStore<Bill>("bills", "POST", {
+    ...input,
+    submittedAt: new Date().toISOString(),
+    status: "SUBMITTED",
+  });
   await appendWorkOrderEvent(bill.workOrderId, {
     eventType: "BILL",
     title: "Bill submitted",
@@ -388,13 +489,28 @@ export async function getBill(workOrderId: string): Promise<Bill | null> {
   return bills.find((b) => b.workOrderId === workOrderId) ?? null;
 }
 
-export async function approveBill(billId: string, workOrderId: string, actorId: string, actorName: string, approvedAmount: number): Promise<Bill> {
-  return updateBill(billId, { status: "APPROVED", approvedAmount, approvedBy: actorName, approvedAt: new Date().toISOString() });
+export async function approveBill(
+  billId: string,
+  workOrderId: string,
+  actorId: string,
+  actorName: string,
+  approvedAmount: number,
+): Promise<Bill> {
+  return updateBill(billId, {
+    status: "APPROVED",
+    approvedAmount,
+    approvedBy: actorName,
+    approvedAt: new Date().toISOString(),
+  });
 }
 
 // ================================================================ Audit Logs
 
-export async function getAuditLogs(filters?: { entityType?: AuditLog["entityType"]; actorRole?: SystemRole; limit?: number; }): Promise<AuditLog[]> {
+export async function getAuditLogs(filters?: {
+  entityType?: AuditLog["entityType"];
+  actorRole?: SystemRole;
+  limit?: number;
+}): Promise<AuditLog[]> {
   let logs = await fetchStore<AuditLog[]>("auditLogs");
   if (filters?.entityType) logs = logs.filter((l) => l.entityType === filters.entityType);
   if (filters?.actorRole) logs = logs.filter((l) => l.actorRole === filters.actorRole);
@@ -407,19 +523,50 @@ export async function getSLARules(): Promise<SLARule[]> {
   return fetchStore<SLARule[]>("slaRules");
 }
 
-export async function updateSLARule(id: string, patch: Partial<SLARule>, actorId: string, actorName: string): Promise<SLARule> {
+export async function updateSLARule(
+  id: string,
+  patch: Partial<SLARule>,
+  actorId: string,
+  actorName: string,
+): Promise<SLARule> {
   const r = await fetchStorePatch<SLARule>("slaRules", id, patch);
-  await appendAudit(actorId, actorName, "admin", "SLA_RULE_CHANGED", "sla", id, `${r.category} / ${r.severity}`);
+  await appendAudit(
+    actorId,
+    actorName,
+    "admin",
+    "SLA_RULE_CHANGED",
+    "sla",
+    id,
+    `${r.category} / ${r.severity}`,
+  );
   return r;
 }
 
 // ================================================================ Admin Auth — Real JWT backend
 
 const LS_TOKEN = "civicsathi.admin_token";
-const LS_USER  = "civicsathi.admin_user";
+const LS_USER = "civicsathi.admin_user";
 
 export function getAdminToken(): string | null {
-  try { return localStorage.getItem(LS_TOKEN); } catch { return null; }
+  try {
+    return localStorage.getItem(LS_TOKEN);
+  } catch {
+    return null;
+  }
+}
+
+function normalizeAdminUser(userData: any, fallbackEmail = ""): AdminUser {
+  const role = String(userData?.role ?? "admin").toLowerCase();
+  return {
+    id: String(userData?.id ?? "admin"),
+    name: userData?.name ?? fallbackEmail,
+    email: userData?.email ?? fallbackEmail,
+    role,
+    department: userData?.department ?? "Administration",
+    city: userData?.city || undefined,
+    lastActive: new Date().toISOString(),
+    permissions: ["ALL"],
+  };
 }
 
 async function adminApiFetch<T>(path: string, options: RequestInit = {}): Promise<T> {
@@ -427,7 +574,7 @@ async function adminApiFetch<T>(path: string, options: RequestInit = {}): Promis
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    ...(options.headers as Record<string, string> ?? {}),
+    ...((options.headers as Record<string, string>) ?? {}),
   };
 
   // Add 6-second timeout to prevent UI hanging on slow/sleeping backends
@@ -495,29 +642,50 @@ export async function getAdminUser(): Promise<AdminUser | null> {
     if (raw) {
       const cached = JSON.parse(raw) as AdminUser;
       // Background refresh — don't await
-      adminApiFetch<any>("/api/v1/auth/me").then((me) => {
-        if (me) {
-          const updated: AdminUser = { ...cached, name: me.name, email: me.email, lastActive: new Date().toISOString() };
-          localStorage.setItem(LS_USER, JSON.stringify(updated));
-        }
-      }).catch(() => {/* ignore */});
+      adminApiFetch<any>("/api/v1/auth/me")
+        .then((me) => {
+          if (me) {
+            const updated: AdminUser = {
+              ...cached,
+              name: me.name,
+              email: me.email,
+              lastActive: new Date().toISOString(),
+            };
+            localStorage.setItem(LS_USER, JSON.stringify(updated));
+          }
+        })
+        .catch(() => {
+          /* ignore */
+        });
       return cached;
     }
-  } catch { /* ignore */ }
-  return null;
+  } catch {
+    /* ignore */
+  }
+
+  try {
+    const me = await adminApiFetch<any>("/api/v1/auth/me");
+    const recovered = normalizeAdminUser(me, me?.email || "admin");
+    localStorage.setItem(LS_USER, JSON.stringify(recovered));
+    return recovered;
+  } catch {
+    return null;
+  }
 }
 
 export async function adminLogin(email: string, password: string): Promise<AdminUser> {
   if (!email.trim()) throw new Error("Email is required");
   if (!password.trim()) throw new Error("Password is required");
 
-  const res = await adminApiFetch<{ access_token: string; token_type: string; officer?: any; user?: any }>(
-    "/api/v1/auth/officer-login",
-    {
-      method: "POST",
-      body: JSON.stringify({ email: email.trim(), password }),
-    }
-  );
+  const res = await adminApiFetch<{
+    access_token: string;
+    token_type: string;
+    officer?: any;
+    user?: any;
+  }>("/api/v1/auth/officer-login", {
+    method: "POST",
+    body: JSON.stringify({ email: email.trim(), password }),
+  });
 
   // Backend returns { officer: {...} } — normalise
   const userData = res.officer || res.user;
@@ -531,16 +699,8 @@ export async function adminLogin(email: string, password: string): Promise<Admin
 
   localStorage.setItem(LS_TOKEN, res.access_token);
 
-  const admin: AdminUser = {
-    id: userData.id ?? "admin",
-    name: userData.name ?? email,
-    email: userData.email ?? email,
-    role: userData.role ?? "admin",
-    department: userData.department ?? "Administration",
-    city: userData.city ?? undefined,
-    lastActive: new Date().toISOString(),
-    permissions: ["ALL"],
-  };
+  const admin = normalizeAdminUser(userData, email);
+
   localStorage.setItem(LS_USER, JSON.stringify(admin));
   return admin;
 }
@@ -548,10 +708,14 @@ export async function adminLogin(email: string, password: string): Promise<Admin
 // ── Real backend admin API helpers ────────────────────────────────────────
 
 /** List all users from the real backend. */
-export async function listAllUsers(filters?: { role?: string; city?: string; limit?: number }): Promise<any[]> {
+export async function listAllUsers(filters?: {
+  role?: string;
+  city?: string;
+  limit?: number;
+}): Promise<any[]> {
   const params = new URLSearchParams();
-  if (filters?.role)  params.set("role", filters.role);
-  if (filters?.city)  params.set("city", filters.city);
+  if (filters?.role) params.set("role", filters.role);
+  if (filters?.city) params.set("city", filters.city);
   if (filters?.limit) params.set("limit", String(filters.limit));
   try {
     const res = await adminApiFetch<any[]>(`/api/v1/admin/users?${params.toString()}`);
@@ -570,17 +734,34 @@ export async function listAllUsers(filters?: { role?: string; city?: string; lim
 
 /** Create any user (officer, municipality, contractor login, admin). */
 export async function createUser(data: {
-  name: string; email: string; password: string;
-  role: string; city?: string; department?: string; phone?: string;
+  name: string;
+  email: string;
+  password: string;
+  role: string;
+  city?: string;
+  department?: string;
+  phone?: string;
 }): Promise<any> {
   return adminApiFetch<any>("/api/v1/admin/users", { method: "POST", body: JSON.stringify(data) });
 }
 
 /** Update a user's details. */
-export async function updateUser(userId: string, patch: {
-  name?: string; email?: string; role?: string; city?: string; department?: string; phone?: string; password?: string;
-}): Promise<any> {
-  return adminApiFetch<any>(`/api/v1/admin/users/${userId}`, { method: "PATCH", body: JSON.stringify(patch) });
+export async function updateUser(
+  userId: string,
+  patch: {
+    name?: string;
+    email?: string;
+    role?: string;
+    city?: string;
+    department?: string;
+    phone?: string;
+    password?: string;
+  },
+): Promise<any> {
+  return adminApiFetch<any>(`/api/v1/admin/users/${userId}`, {
+    method: "PATCH",
+    body: JSON.stringify(patch),
+  });
 }
 
 /** Delete a user. */
@@ -622,10 +803,17 @@ export async function listRealContractors(): Promise<any[]> {
 
 /** Create a contractor with an optional login user. */
 export async function createRealContractor(data: {
-  company_name: string; contact_person: string; email: string; phone: string;
-  login_email?: string; login_password?: string;
+  company_name: string;
+  contact_person: string;
+  email: string;
+  phone: string;
+  login_email?: string;
+  login_password?: string;
 }): Promise<any> {
-  return adminApiFetch<any>("/api/v1/admin/contractors", { method: "POST", body: JSON.stringify(data) });
+  return adminApiFetch<any>("/api/v1/admin/contractors", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
 }
 
 /** Approve / reject / revoke a contractor's city registration. */
@@ -635,10 +823,10 @@ export async function updateContractorRegistration(
   status: "APPROVED" | "REJECTED" | "REVOKED" | "PENDING",
   categories?: string[],
 ): Promise<any> {
-  return adminApiFetch<any>(
-    `/api/v1/admin/contractors/${contractorId}/registrations/${regId}`,
-    { method: "PATCH", body: JSON.stringify({ status, approved_categories: categories }) }
-  );
+  return adminApiFetch<any>(`/api/v1/admin/contractors/${contractorId}/registrations/${regId}`, {
+    method: "PATCH",
+    body: JSON.stringify({ status, approved_categories: categories }),
+  });
 }
 
 /** List all work orders across all cities (admin view). */

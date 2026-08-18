@@ -19,6 +19,8 @@ services:
         sync: false
       - key: OFFICER_API_KEY
         sync: false
+      - key: JWT_SECRET
+        sync: false
       - key: SENTENCE_MODEL_NAME
         value: sentence-transformers/all-MiniLM-L6-v2
       - key: SIMILARITY_THRESHOLD

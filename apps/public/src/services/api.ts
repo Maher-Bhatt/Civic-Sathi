@@ -1,13 +1,36 @@
-import { APIClient, Endpoints } from '@civicsathi/api-client';
-import type { User, Complaint, IssueCategory, Severity, LocationInfo, AnalysisResult, ImageAnalysis, NearbyReport, AppNotification } from './types';
-import { CATEGORY_KEYWORDS, SEVERITY_KEYWORDS, DEMO_USER, NEARBY_REPORTS, SEED_NOTIFICATIONS, RELATED_SAMPLES, WARD_14 } from './mockData';
+import { APIClient, Endpoints } from "@civicsathi/api-client";
+import type {
+  User,
+  Complaint,
+  IssueCategory,
+  Severity,
+  ComplaintStatus,
+  LocationInfo,
+  AnalysisResult,
+  ImageAnalysis,
+  NearbyReport,
+  AppNotification,
+} from "./types";
+import {
+  CATEGORY_KEYWORDS,
+  SEVERITY_KEYWORDS,
+  DEMO_USER,
+  NEARBY_REPORTS,
+  SEED_NOTIFICATIONS,
+  RELATED_SAMPLES,
+  WARD_14,
+} from "./mockData";
 
 export function getApiBaseUrl(): string {
   const envUrl = ((import.meta.env as any)?.VITE_API_BASE_URL as string | undefined)?.trim();
   if (
     !envUrl ||
     envUrl.includes("civicsathi-backend.onrender.com") ||
-    (typeof window !== "undefined" && window.location.protocol === "https:" && envUrl.startsWith("http://"))
+    envUrl.includes("civicsathi.onrender.com") ||
+    envUrl.includes("janmind.onrender.com") ||
+    (typeof window !== "undefined" &&
+      window.location.protocol === "https:" &&
+      envUrl.startsWith("http://"))
   ) {
     return "https://civic-sathi-f7ml.onrender.com";
   }
@@ -31,9 +54,9 @@ export const client = new APIClient({
   onUnauthorized: () => {
     if (typeof window !== "undefined") {
       window.localStorage.removeItem(LS.token);
-      window.location.href = '/login';
+      window.location.href = "/login";
     }
-  }
+  },
 });
 
 export const api = new Endpoints(client);
@@ -63,11 +86,16 @@ export async function listPublicContractors() {
   }
 }
 
-export async function submitPublicRating(contractorId: string, rating: number, comment: string, category: string) {
+export async function submitPublicRating(
+  contractorId: string,
+  rating: number,
+  comment: string,
+  category: string,
+) {
   return await api.contractors.submitRating(contractorId, {
     rating,
     comment,
-    category
+    category,
   });
 }
 
@@ -93,18 +121,18 @@ export async function registerUser(input: any): Promise<User> {
   try {
     const res = await api.auth.registerCitizen(input);
     if (typeof window !== "undefined") window.localStorage.setItem(LS.token, res.access_token);
-    
+
     // Normalize response - backend sends 'citizen' but api-client normalizes to 'user'
     const userData = res.user || res.citizen || (res as any).citizen;
     if (!userData) {
-      console.error('No user data in registration response:', res);
-      throw new Error('Registration succeeded but no user data returned');
+      console.error("No user data in registration response:", res);
+      throw new Error("Registration succeeded but no user data returned");
     }
-    
+
     write(LS.user, userData);
     return userData as any;
   } catch (error: any) {
-    console.error('Registration error:', error);
+    console.error("Registration error:", error);
     throw error;
   }
 }
@@ -113,18 +141,18 @@ export async function loginUser(input: { email: string; password: string }): Pro
   try {
     const res = await api.auth.loginCitizen(input);
     if (typeof window !== "undefined") window.localStorage.setItem(LS.token, res.access_token);
-    
+
     // Normalize response - backend sends 'citizen' but api-client normalizes to 'user'
     const userData = res.user || res.citizen || (res as any).citizen;
     if (!userData) {
-      console.error('No user data in login response:', res);
-      throw new Error('Login succeeded but no user data returned');
+      console.error("No user data in login response:", res);
+      throw new Error("Login succeeded but no user data returned");
     }
-    
+
     write(LS.user, userData);
     return userData as any;
   } catch (error: any) {
-    console.error('Login error:', error);
+    console.error("Login error:", error);
     throw error;
   }
 }
@@ -175,7 +203,7 @@ export async function logoutUser(): Promise<void> {
 }
 
 export async function updateProfile(patch: Partial<User>): Promise<User> {
-  const current = await getCurrentUser() ?? DEMO_USER;
+  const current = (await getCurrentUser()) ?? DEMO_USER;
   const next = { ...current, ...patch };
   write(LS.user, next);
   return next;
@@ -184,103 +212,105 @@ export async function updateProfile(patch: Partial<User>): Promise<User> {
 export async function changePassword(): Promise<void> {}
 
 function normalizeComplaint(raw: any, fallbackInput?: any): Complaint {
-  const c = raw?.data || raw;
-  if (!c) return null as any;
-  if (c.location) return c as Complaint;
-  
-  const wardStr = c.ward_number ? `Ward ${c.ward_number}` : (fallbackInput?.location?.ward || "Ward 14");
-  
-  c.location = {
-    lat: c.lat ?? c.location_lat ?? fallbackInput?.location?.lat ?? 22.3072,
-    lng: c.lng ?? c.location_lng ?? fallbackInput?.location?.lng ?? 73.1812,
-    ward: wardStr,
-    area: c.address_text ?? fallbackInput?.location?.area ?? "Vadodara",
-    city: fallbackInput?.location?.city ?? fallbackInput?.cityId ?? c.city_id,
+  const source = raw?.data || raw;
+  if (!source) return null as any;
+
+  const sourceLocation = source.location || {};
+  const fallbackLocation = fallbackInput?.location || {};
+  const lat =
+    source.lat ?? source.location_lat ?? sourceLocation.lat ?? fallbackLocation.lat ?? 22.3072;
+  const lng =
+    source.lng ?? source.location_lng ?? sourceLocation.lng ?? fallbackLocation.lng ?? 73.1812;
+  const ward =
+    sourceLocation.ward ||
+    (source.ward_number ? `Ward ${source.ward_number}` : fallbackLocation.ward || "Ward 14");
+  const area = sourceLocation.area || source.address_text || fallbackLocation.area || "Vadodara";
+  const statusMap: Record<string, ComplaintStatus> = {
+    received: "Received",
+    submitted: "Received",
+    under_review: "Under Review",
+    investigating: "Under Review",
+    assigned: "Assigned",
+    in_progress: "In Progress",
+    resolved: "Resolved",
+    closed: "Closed",
   };
-  
-  if (!c.timeline) {
-    c.timeline = [
-      {
-        id: `TL-${c.id || Date.now()}`,
-        stage: c.status || "SUBMITTED",
-        title: "Report Received",
-        description: "Your report has been received.",
-        at: c.created_at || new Date().toISOString(),
-      }
-    ];
-  }
-  
-  return c as Complaint;
+  const rawStatus = String(source.status || "received")
+    .toLowerCase()
+    .replace(/\s+/g, "_");
+  const score = Number(source.severity_score ?? 0);
+  const severity: Severity =
+    source.severity ||
+    (score >= 80 ? "Critical" : score >= 60 ? "High" : score >= 35 ? "Moderate" : "Low");
+  const createdAt = source.createdAt || source.created_at || new Date().toISOString();
+  const complaintId = source.public_id || source.id || `CMP-${Date.now()}`;
+  const timeline =
+    Array.isArray(source.timeline) && source.timeline.length > 0
+      ? source.timeline
+      : [
+          {
+            label: "Report Received",
+            description: "Your report has been received.",
+            at: createdAt,
+            done: true,
+          },
+        ];
+
+  return {
+    ...source,
+    id: complaintId,
+    public_id: source.public_id || complaintId,
+    description: source.description || fallbackInput?.description || "",
+    category: source.category || fallbackInput?.category || "Water Supply",
+    severity,
+    location: {
+      lat,
+      lng,
+      ward,
+      area,
+      city: sourceLocation.city || fallbackLocation.city || source.city,
+    },
+    createdAt,
+    status: statusMap[rawStatus] || (source.status as ComplaintStatus) || "Received",
+    relatedCount: Number(
+      source.relatedCount ?? source.related_count ?? source.analysis?.similar_count ?? 0,
+    ),
+    nearbyCount: Number(source.nearbyCount ?? source.nearby_count ?? 0),
+    timeline,
+  } as Complaint;
 }
 
 export async function createComplaint(input: any): Promise<Complaint> {
   try {
     const res = await api.complaints.create(input);
     const created = ((res as any).data || res) as any;
-    
-    // Automatically generate registered notification
+
     const notif: AppNotification = {
       id: `notif-${Date.now()}`,
       complaintId: created.public_id || created.id,
       kind: "received",
-      title: `Complaint Registered: ${created.public_id || "JN-2026"}`,
-      body: `Your complaint "${created.title || input.title || 'Civic issue'}" has been received and indexed by Municipal Triage.`,
+      title: `Complaint Registered: ${created.public_id || "Civic Sathi"}`,
+      body: `Your complaint "${created.title || input.title || "Civic issue"}" has been received.`,
       at: new Date().toISOString(),
       read: false,
     };
     const existing = read<AppNotification[]>(LS.notifications, SEED_NOTIFICATIONS as any);
     write(LS.notifications, [notif, ...existing]);
-    
+
     return normalizeComplaint(created, input);
   } catch (err) {
-    console.warn("Backend complaint creation fallback to optimistic local record:", err);
-    const trackingSuffix = Math.floor(100000 + Math.random() * 900000);
-    const publicId = `JN-2026-${trackingSuffix}`;
-    const fallbackComplaint: Complaint = {
-      id: `CMP-${trackingSuffix}`,
-      trackingId: `TRK-${trackingSuffix}`,
-      public_id: publicId,
-      category: input.category || "General",
-      severity: input.severity || "Moderate",
-      status: "UNDER_REVIEW",
-      description: input.description,
-      location: input.location || { lat: 22.3072, lng: 73.1812, ward: "Ward 14", area: "Vadodara" },
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      photo: input.photo,
-      estimatedResolution: "48-72 hours",
-      timeline: [
-        {
-          id: `TL-${Date.now()}`,
-          stage: "SUBMITTED",
-          title: "Report Received",
-          description: "Your report has been received and indexed by Civic Sathi AI triage.",
-          at: new Date().toISOString(),
-        },
-      ],
-    } as any;
-    
-    const notif: AppNotification = {
-      id: `notif-${Date.now()}`,
-      complaintId: publicId,
-      kind: "received",
-      title: `Complaint Registered: ${publicId}`,
-      body: `Your complaint has been submitted to Municipal Triage. Status: Under Review.`,
-      at: new Date().toISOString(),
-      read: false,
-    };
-    const existing = read<AppNotification[]>(LS.notifications, SEED_NOTIFICATIONS as any);
-    write(LS.notifications, [notif, ...existing]);
-    
-    return fallbackComplaint;
+    console.error("Complaint creation failed:", err);
+    throw err instanceof Error
+      ? err
+      : new Error("We couldn't submit your report. Please try again.");
   }
 }
 
 export async function getMyComplaints(): Promise<Complaint[]> {
   try {
     const res = await api.complaints.list({ limit: 100 });
-    const list = res.data || res;
-    return (Array.isArray(list) ? list : []).map(c => normalizeComplaint(c));
+    const list = res?.items ?? res?.data ?? res;
+    return (Array.isArray(list) ? list : []).map((c) => normalizeComplaint(c));
   } catch {
     return [];
   }
@@ -328,9 +358,17 @@ export async function uploadComplaintPhoto(file: File): Promise<string> {
 export async function analyzeComplaintPhoto(fileName: string): Promise<ImageAnalysis> {
   const n = fileName.toLowerCase();
   if (n.includes("garbage") || n.includes("waste"))
-    return { detected: "Garbage accumulation", category: "Garbage Collection", confidence: "High" } as any;
+    return {
+      detected: "Garbage accumulation",
+      category: "Garbage Collection",
+      confidence: "High",
+    } as any;
   if (n.includes("water") || n.includes("tap") || n.includes("leak"))
-    return { detected: "Water leak / supply issue", category: "Water Supply", confidence: "High" } as any;
+    return {
+      detected: "Water leak / supply issue",
+      category: "Water Supply",
+      confidence: "High",
+    } as any;
   return {
     detected: "Road surface damage / pothole",
     category: "Road Damage",
@@ -338,12 +376,22 @@ export async function analyzeComplaintPhoto(fileName: string): Promise<ImageAnal
   } as any;
 }
 
-export async function analyzeImage(file: File): Promise<{ detected: string; category: string; confidence: string }> {
+export async function analyzeImage(
+  file: File,
+): Promise<{ detected: string; category: string; confidence: string }> {
   const name = file.name.toLowerCase();
   if (name.includes("garbage") || name.includes("waste"))
-    return { detected: "Overflowing waste container", category: "Garbage Collection", confidence: "High" } as any;
+    return {
+      detected: "Overflowing waste container",
+      category: "Garbage Collection",
+      confidence: "High",
+    } as any;
   if (name.includes("water") || name.includes("leak"))
-    return { detected: "Dry public water point", category: "Water Supply", confidence: "Medium" } as any;
+    return {
+      detected: "Dry public water point",
+      category: "Water Supply",
+      confidence: "Medium",
+    } as any;
   return {
     detected: "Possible road surface damage",
     category: "Road Damage",
@@ -380,6 +428,12 @@ export async function createCivicIssue(input: any): Promise<any> {
   };
 }
 
-export async function linkToCivicIssue(issueId: string, complaintId: string, relationshipType: string, matchConfidence: number, linkedBy: string): Promise<any> {
+export async function linkToCivicIssue(
+  issueId: string,
+  complaintId: string,
+  relationshipType: string,
+  matchConfidence: number,
+  linkedBy: string,
+): Promise<any> {
   return { success: true };
 }
