@@ -23,7 +23,7 @@ const NAV = [
   { to: "/map", label: "Civic Map", icon: Map },
   { to: "/civic-issues", label: "Civic Issues", icon: Zap },
   { to: "/complaints", label: "Complaints", icon: FileText },
-  { to: "/work-packages", label: "Work Packages", icon: Package },
+  { to: "/tenders", label: "Tenders & Packages", icon: Package },
   { to: "/work-orders", label: "Work Orders", icon: ClipboardList },
   { to: "/alerts", label: "Alerts", icon: AlertTriangle },
   { to: "/departments", label: "Departments", icon: Building2 },

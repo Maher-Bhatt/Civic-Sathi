@@ -25,6 +25,13 @@ class Contractor(Base, UUIDMixin, TimestampMixin):
     email: Mapped[str] = mapped_column(String(255), unique=True, index=True)
     phone: Mapped[str] = mapped_column(String(20), index=True)
     auth_user_id: Mapped[str | None] = mapped_column(String(50), index=True) # ID of user that logs in
+    
+    # 3-Dimensional Tri-Party Performance Ratings (1.0 - 5.0)
+    public_rating: Mapped[float] = mapped_column(Float, default=4.5)     # Citizen feedback rating
+    ai_rating: Mapped[float] = mapped_column(Float, default=4.8)         # AI Algorithmic SLA & Quality Audit
+    officer_rating: Mapped[float] = mapped_column(Float, default=4.6)    # Municipal Engineer Inspection Score
+    total_reviews_count: Mapped[int] = mapped_column(Integer, default=24)
+    ai_insights: Mapped[list[str] | None] = mapped_column(JSONB)        # AI-generated performance strengths & recommendations
 
 
 class RegistrationStatus(str, enum.Enum):
@@ -138,6 +145,29 @@ class FieldEvidence(Base, UUIDMixin, TimestampMixin):
     work_order_id = mapped_column(ForeignKey("work_orders.id"), nullable=False, index=True)
     photo_url: Mapped[str] = mapped_column(String(1024), nullable=False)
     description: Mapped[str | None] = mapped_column(Text)
+
+
+class ReviewAuthorType(str, enum.Enum):
+    PUBLIC = "PUBLIC"       # Citizen rating
+    AI = "AI"               # Automated AI audit
+    OFFICER = "OFFICER"     # Municipal engineering inspection
+
+
+class ContractorReview(Base, UUIDMixin, TimestampMixin):
+    """Tri-Party Rating and Review on a contractor's civic execution"""
+    __tablename__ = "contractor_reviews"
+    
+    contractor_id = mapped_column(ForeignKey("contractors.id", ondelete="CASCADE"), nullable=False, index=True)
+    work_order_id = mapped_column(ForeignKey("work_orders.id", ondelete="SET NULL"), nullable=True, index=True)
+    
+    author_type: Mapped[ReviewAuthorType] = mapped_column(Enum(ReviewAuthorType), nullable=False, index=True)
+    author_name: Mapped[str] = mapped_column(String(255), nullable=False)
+    author_id: Mapped[str | None] = mapped_column(String(50))
+    
+    rating: Mapped[float] = mapped_column(Float, nullable=False) # 1.0 to 5.0
+    comment: Mapped[str | None] = mapped_column(Text)
+    category: Mapped[str | None] = mapped_column(String(100)) # e.g. "Workmanship", "Punctuality", "Material Quality"
+    evidence_urls: Mapped[list[str] | None] = mapped_column(JSONB)
 
 
 class InspectionResult(str, enum.Enum):

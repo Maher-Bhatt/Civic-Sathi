@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AnalyzingRouteImport } from './routes/analyzing'
 import { Route as ComplaintsRouteImport } from './routes/complaints'
+import { Route as ContractorsRouteImport } from './routes/contractors'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as MapRouteImport } from './routes/map'
 import { Route as NotificationsRouteImport } from './routes/notifications'
@@ -33,6 +34,11 @@ const AnalyzingRoute = AnalyzingRouteImport.update({
 const ComplaintsRoute = ComplaintsRouteImport.update({
   id: '/complaints',
   path: '/complaints',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContractorsRoute = ContractorsRouteImport.update({
+  id: '/contractors',
+  path: '/contractors',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -75,6 +81,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/analyzing': typeof AnalyzingRoute
   '/complaints': typeof ComplaintsRoute
+  '/contractors': typeof ContractorsRoute
   '/login': typeof LoginRoute
   '/map': typeof MapRoute
   '/notifications': typeof NotificationsRoute
@@ -87,6 +94,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/analyzing': typeof AnalyzingRoute
   '/complaints': typeof ComplaintsRoute
+  '/contractors': typeof ContractorsRoute
   '/login': typeof LoginRoute
   '/map': typeof MapRoute
   '/notifications': typeof NotificationsRoute
@@ -100,6 +108,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/analyzing': typeof AnalyzingRoute
   '/complaints': typeof ComplaintsRoute
+  '/contractors': typeof ContractorsRoute
   '/login': typeof LoginRoute
   '/map': typeof MapRoute
   '/notifications': typeof NotificationsRoute
@@ -114,6 +123,7 @@ export interface FileRouteTypes {
     | '/'
     | '/analyzing'
     | '/complaints'
+    | '/contractors'
     | '/login'
     | '/map'
     | '/notifications'
@@ -126,6 +136,7 @@ export interface FileRouteTypes {
     | '/'
     | '/analyzing'
     | '/complaints'
+    | '/contractors'
     | '/login'
     | '/map'
     | '/notifications'
@@ -138,6 +149,7 @@ export interface FileRouteTypes {
     | '/'
     | '/analyzing'
     | '/complaints'
+    | '/contractors'
     | '/login'
     | '/map'
     | '/notifications'
@@ -151,6 +163,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AnalyzingRoute: typeof AnalyzingRoute
   ComplaintsRoute: typeof ComplaintsRoute
+  ContractorsRoute: typeof ContractorsRoute
   LoginRoute: typeof LoginRoute
   MapRoute: typeof MapRoute
   NotificationsRoute: typeof NotificationsRoute
@@ -181,6 +194,13 @@ declare module '@tanstack/react-router' {
       path: '/complaints'
       fullPath: '/complaints'
       preLoaderRoute: typeof ComplaintsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contractors': {
+      id: '/contractors'
+      path: '/contractors'
+      fullPath: '/contractors'
+      preLoaderRoute: typeof ContractorsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -239,6 +259,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AnalyzingRoute: AnalyzingRoute,
   ComplaintsRoute: ComplaintsRoute,
+  ContractorsRoute: ContractorsRoute,
   LoginRoute: LoginRoute,
   MapRoute: MapRoute,
   NotificationsRoute: NotificationsRoute,

@@ -98,11 +98,51 @@ class InspectionCreate(BaseModel):
 
 class InspectionResponse(BaseModel):
     id: UUID
-    field_evidence_id: UUID
-    inspector_user_id: UUID
+    work_order_id: UUID
+    inspector_id: UUID
     result: str
     feedback: Optional[str]
     created_at: datetime
+    
+    class Config:
+        from_attributes = True
+
+
+class ContractorReviewCreate(BaseModel):
+    work_order_id: Optional[UUID] = None
+    rating: float = Field(..., ge=1.0, le=5.0)
+    comment: Optional[str] = None
+    category: Optional[str] = None
+    evidence_urls: Optional[List[str]] = None
+
+
+class ContractorReviewResponse(BaseModel):
+    id: UUID
+    contractor_id: UUID
+    work_order_id: Optional[UUID] = None
+    author_type: str
+    author_name: str
+    rating: float
+    comment: Optional[str] = None
+    category: Optional[str] = None
+    created_at: datetime
+    
+    class Config:
+        from_attributes = True
+
+
+class ContractorProfileResponse(BaseModel):
+    id: UUID
+    company_name: str
+    contact_person: str
+    email: str
+    phone: str
+    public_rating: float = 4.5
+    ai_rating: float = 4.8
+    officer_rating: float = 4.6
+    overall_rating: float = 4.63
+    total_reviews_count: int = 24
+    ai_insights: Optional[List[str]] = None
     
     class Config:
         from_attributes = True

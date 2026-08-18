@@ -19,6 +19,7 @@ import { Route as AuthDashboardRouteImport } from './routes/_auth/dashboard'
 import { Route as AuthMapRouteImport } from './routes/_auth/map'
 import { Route as AuthProfileRouteImport } from './routes/_auth/profile'
 import { Route as AuthSettingsRouteImport } from './routes/_auth/settings'
+import { Route as AuthWorkPackagesRouteImport } from './routes/_auth/work-packages'
 import { Route as AuthAreasIndexRouteImport } from './routes/_auth/areas/index'
 import { Route as AuthCivicIssuesIndexRouteImport } from './routes/_auth/civic-issues/index'
 import { Route as AuthCivicIssuesIdRouteImport } from './routes/_auth/civic-issues/$id'
@@ -81,6 +82,11 @@ const AuthProfileRoute = AuthProfileRouteImport.update({
 const AuthSettingsRoute = AuthSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
+  getParentRoute: () => AuthRouteRoute,
+} as any)
+const AuthWorkPackagesRoute = AuthWorkPackagesRouteImport.update({
+  id: '/work-packages',
+  path: '/work-packages',
   getParentRoute: () => AuthRouteRoute,
 } as any)
 const AuthAreasIndexRoute = AuthAreasIndexRouteImport.update({
@@ -164,6 +170,7 @@ export interface FileRoutesByFullPath {
   '/map': typeof AuthMapRoute
   '/profile': typeof AuthProfileRoute
   '/settings': typeof AuthSettingsRoute
+  '/work-packages': typeof AuthWorkPackagesRoute
   '/civic-issues/$id': typeof AuthCivicIssuesIdRoute
   '/complaints/$id': typeof AuthComplaintsIdRoute
   '/departments/$id': typeof AuthDepartmentsIdRoute
@@ -189,6 +196,7 @@ export interface FileRoutesByTo {
   '/map': typeof AuthMapRoute
   '/profile': typeof AuthProfileRoute
   '/settings': typeof AuthSettingsRoute
+  '/work-packages': typeof AuthWorkPackagesRoute
   '/civic-issues/$id': typeof AuthCivicIssuesIdRoute
   '/complaints/$id': typeof AuthComplaintsIdRoute
   '/departments/$id': typeof AuthDepartmentsIdRoute
@@ -216,6 +224,7 @@ export interface FileRoutesById {
   '/_auth/map': typeof AuthMapRoute
   '/_auth/profile': typeof AuthProfileRoute
   '/_auth/settings': typeof AuthSettingsRoute
+  '/_auth/work-packages': typeof AuthWorkPackagesRoute
   '/_auth/civic-issues/$id': typeof AuthCivicIssuesIdRoute
   '/_auth/complaints/$id': typeof AuthComplaintsIdRoute
   '/_auth/departments/$id': typeof AuthDepartmentsIdRoute
@@ -243,6 +252,7 @@ export interface FileRouteTypes {
     | '/map'
     | '/profile'
     | '/settings'
+    | '/work-packages'
     | '/civic-issues/$id'
     | '/complaints/$id'
     | '/departments/$id'
@@ -268,6 +278,7 @@ export interface FileRouteTypes {
     | '/map'
     | '/profile'
     | '/settings'
+    | '/work-packages'
     | '/civic-issues/$id'
     | '/complaints/$id'
     | '/departments/$id'
@@ -294,6 +305,7 @@ export interface FileRouteTypes {
     | '/_auth/map'
     | '/_auth/profile'
     | '/_auth/settings'
+    | '/_auth/work-packages'
     | '/_auth/civic-issues/$id'
     | '/_auth/complaints/$id'
     | '/_auth/departments/$id'
@@ -386,6 +398,13 @@ declare module '@tanstack/react-router' {
       path: '/settings'
       fullPath: '/settings'
       preLoaderRoute: typeof AuthSettingsRouteImport
+      parentRoute: typeof AuthRouteRoute
+    }
+    '/_auth/work-packages': {
+      id: '/_auth/work-packages'
+      path: '/work-packages'
+      fullPath: '/work-packages'
+      preLoaderRoute: typeof AuthWorkPackagesRouteImport
       parentRoute: typeof AuthRouteRoute
     }
     '/_auth/areas/': {
@@ -497,6 +516,7 @@ interface AuthRouteRouteChildren {
   AuthMapRoute: typeof AuthMapRoute
   AuthProfileRoute: typeof AuthProfileRoute
   AuthSettingsRoute: typeof AuthSettingsRoute
+  AuthWorkPackagesRoute: typeof AuthWorkPackagesRoute
   AuthCivicIssuesIdRoute: typeof AuthCivicIssuesIdRoute
   AuthComplaintsIdRoute: typeof AuthComplaintsIdRoute
   AuthDepartmentsIdRoute: typeof AuthDepartmentsIdRoute
@@ -521,6 +541,7 @@ const AuthRouteRouteChildren: AuthRouteRouteChildren = {
   AuthMapRoute: AuthMapRoute,
   AuthProfileRoute: AuthProfileRoute,
   AuthSettingsRoute: AuthSettingsRoute,
+  AuthWorkPackagesRoute: AuthWorkPackagesRoute,
   AuthCivicIssuesIdRoute: AuthCivicIssuesIdRoute,
   AuthComplaintsIdRoute: AuthComplaintsIdRoute,
   AuthDepartmentsIdRoute: AuthDepartmentsIdRoute,

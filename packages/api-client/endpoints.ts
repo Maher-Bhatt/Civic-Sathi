@@ -60,4 +60,11 @@ export class Endpoints {
   cities = {
     list: () => this.client.get<Array<{ id: string; name: string; state_code: string }>>('/api/v1/cities'),
   };
+
+  contractors = {
+    list: () => this.client.get<any[]>('/api/v1/procurement/contractors'),
+    get: (id: string) => this.client.get<any>(`/api/v1/procurement/contractors/${id}`),
+    getRatings: (id: string) => this.client.get<any[]>(`/api/v1/procurement/contractors/${id}/ratings`),
+    submitRating: (id: string, data: any) => this.client.post<any>(`/api/v1/procurement/contractors/${id}/ratings`, data),
+  };
 }

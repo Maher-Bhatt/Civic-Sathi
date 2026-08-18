@@ -12,6 +12,7 @@ import { cn } from "@/lib/utils";
 const navLinks = [
   { to: "/", tKey: "nav.home", defaultLabel: "Home" },
   { to: "/map", tKey: "nav.map", defaultLabel: "Civic Map" },
+  { to: "/contractors", tKey: "nav.contractors", defaultLabel: "Contractor Ratings" },
   { to: "/", tKey: "nav.howitworks", defaultLabel: "How It Works", hash: true },
   { to: "/report", tKey: "nav.report", defaultLabel: "Report Problem" },
   { to: "/complaints", tKey: "nav.complaints", defaultLabel: "My Complaints" },

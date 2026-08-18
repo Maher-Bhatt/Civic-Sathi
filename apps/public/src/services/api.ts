@@ -55,6 +55,22 @@ function write<T>(key: string, value: T) {
   } catch {}
 }
 
+export async function listPublicContractors() {
+  try {
+    return await api.contractors.list();
+  } catch {
+    return [];
+  }
+}
+
+export async function submitPublicRating(contractorId: string, rating: number, comment: string, category: string) {
+  return await api.contractors.submitRating(contractorId, {
+    rating,
+    comment,
+    category
+  });
+}
+
 export function detectCategory(text: string): IssueCategory {
   const t = text.toLowerCase();
   let best: { category: IssueCategory; score: number } = { category: "Water Supply", score: 0 };
