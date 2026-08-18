@@ -2,11 +2,11 @@ import { i as __toESM } from "../_runtime.mjs";
 import { n as require_react } from "../_libs/@radix-ui/react-compose-refs+[...].mjs";
 import { r as require_jsx_runtime } from "../_libs/react+tanstack__react-query.mjs";
 import { h as Radar } from "../_libs/lucide-react.mjs";
-import { D as useI18n, E as cn } from "./router-BhIDCrT5.mjs";
+import { D as useI18n, E as cn } from "./router-DPF58oFj.mjs";
 import { t as Delaunay } from "../_libs/d3-delaunay+[...].mjs";
 import { r as polygon, t as featureCollection } from "../_libs/turf__helpers.mjs";
 import { t as index_default } from "../_libs/@turf/intersect+[...].mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/civic-map-panel-DB1k32eg.js
+//#region node_modules/.nitro/vite/services/ssr/assets/civic-map-panel-4x-T0_tb.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
 /**
@@ -608,7 +608,7 @@ function areaDailyTrend(areaId, filters) {
 		};
 	});
 }
-var CivicMap = (0, import_react.lazy)(() => import("./civic-map-BRY0t-gD.mjs").then((m) => ({ default: m.CivicMap })));
+var CivicMap = (0, import_react.lazy)(() => import("./civic-map-DC0yfi5D.mjs").then((m) => ({ default: m.CivicMap })));
 function MapSkeleton({ className }) {
 	const { t } = useI18n();
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {

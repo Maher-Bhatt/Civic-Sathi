@@ -1,4 +1,4 @@
-//#region node_modules/.nitro/vite/services/ssr/assets/cities-CP3Vvkkz.js
+//#region node_modules/.nitro/vite/services/ssr/assets/cities-J8wcazPB.js
 var CITIES = [{
 	id: "vadodara",
 	name: "Vadodara",
@@ -196,5 +196,21 @@ function nearestWardOrArea(cityId, lat, lng) {
 		area: `${c.name} · ${best.area} (${best.ward})`
 	};
 }
+/** Get the active default city based on user preference, saved selection or IP/geo fallback */
+function getDefaultCity() {
+	if (typeof window === "undefined") return "vadodara";
+	try {
+		const saved = localStorage.getItem("janmind_preferred_city");
+		if (saved === "vadodara" || saved === "bengaluru") return saved;
+	} catch {}
+	return "bengaluru";
+}
+/** Save preferred city selection across sessions */
+function setPreferredCity(cityId) {
+	if (typeof window === "undefined") return;
+	try {
+		localStorage.setItem("janmind_preferred_city", cityId);
+	} catch {}
+}
 //#endregion
-export { clustersForCity as a, nearestWardOrArea as c, TILES as i, CITIES as n, getCity as o, SEVERITY_HEX as r, nearestCity as s, ATTRIBUTION as t };
+export { clustersForCity as a, nearestCity as c, TILES as i, nearestWardOrArea as l, CITIES as n, getCity as o, SEVERITY_HEX as r, getDefaultCity as s, ATTRIBUTION as t, setPreferredCity as u };

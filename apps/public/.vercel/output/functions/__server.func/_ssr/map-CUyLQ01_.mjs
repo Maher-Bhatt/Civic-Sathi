@@ -3,11 +3,11 @@ import { n as require_react } from "../_libs/@radix-ui/react-compose-refs+[...].
 import { r as require_jsx_runtime } from "../_libs/react+tanstack__react-query.mjs";
 import { E as Info, N as Crosshair, W as ArrowUpRight, d as ShieldCheck, f as Search, o as TrendingUp, p as RotateCcw, s as TrendingDown, t as X } from "../_libs/lucide-react.mjs";
 import { g as Link } from "../_libs/@tanstack/react-router+[...].mjs";
-import { o as getCity, s as nearestCity } from "./cities-CP3Vvkkz.mjs";
-import { D as useI18n, E as cn, c as GlassButton, d as SectionLabel, l as GlassCard, u as PageShell } from "./router-BhIDCrT5.mjs";
-import { _ as complaintPoints, a as DEFAULT_FILTERS, b as searchAreas, c as TIME_WINDOWS, f as cityDailyTrend, h as cityIssueBreakdown, i as ClientCivicMap, l as areaActivity, m as cityHealthDistribution, n as AREA_HEALTH_LABEL, o as ISSUE_KEYS, p as cityGeography, r as AREA_HEALTH_ORDER, s as ISSUE_LABEL, t as AREA_HEALTH_HEX, u as areaDailyTrend, v as filterPoints, y as nearestArea } from "./civic-map-panel-DB1k32eg.mjs";
+import { c as nearestCity, o as getCity, s as getDefaultCity, u as setPreferredCity } from "./cities-J8wcazPB.mjs";
+import { D as useI18n, E as cn, c as GlassButton, d as SectionLabel, l as GlassCard, u as PageShell } from "./router-DPF58oFj.mjs";
+import { _ as complaintPoints, a as DEFAULT_FILTERS, b as searchAreas, c as TIME_WINDOWS, f as cityDailyTrend, h as cityIssueBreakdown, i as ClientCivicMap, l as areaActivity, m as cityHealthDistribution, n as AREA_HEALTH_LABEL, o as ISSUE_KEYS, p as cityGeography, r as AREA_HEALTH_ORDER, s as ISSUE_LABEL, t as AREA_HEALTH_HEX, u as areaDailyTrend, v as filterPoints, y as nearestArea } from "./civic-map-panel-4x-T0_tb.mjs";
 import { a as XAxis, c as Bar, d as Cell, f as ResponsiveContainer, i as YAxis, l as Pie, m as Legend, n as PieChart, o as Area, p as Tooltip, r as BarChart, s as CartesianGrid, t as AreaChart, u as LabelList } from "../_libs/recharts+[...].mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/map-DoU1LShV.js
+//#region node_modules/.nitro/vite/services/ssr/assets/map-CUyLQ01_.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
 var THEMES = {
@@ -444,7 +444,7 @@ function Trend({ pct }) {
 }
 function CivicMapPage() {
 	const { t } = useI18n();
-	const [cityId, setCityId] = (0, import_react.useState)("vadodara");
+	const [cityId, setCityId] = (0, import_react.useState)(() => getDefaultCity());
 	const [mode, setMode] = (0, import_react.useState)("health");
 	const [filters, setFilters] = (0, import_react.useState)(DEFAULT_FILTERS);
 	const [selected, setSelected] = (0, import_react.useState)(null);
@@ -453,6 +453,22 @@ function CivicMapPage() {
 	const [locating, setLocating] = (0, import_react.useState)(false);
 	const [locationNote, setLocationNote] = (0, import_react.useState)(null);
 	const searchRef = (0, import_react.useRef)(null);
+	const handleCityChange = (c) => {
+		setCityId(c);
+		setPreferredCity(c);
+	};
+	(0, import_react.useEffect)(() => {
+		if (typeof window === "undefined" || !navigator.geolocation) return;
+		try {
+			if (!localStorage.getItem("janmind_preferred_city")) navigator.geolocation.getCurrentPosition((pos) => {
+				const nearest = nearestCity(pos.coords.latitude, pos.coords.longitude);
+				if (nearest && nearest.id !== cityId) setCityId(nearest.id);
+			}, () => {}, {
+				timeout: 4e3,
+				maximumAge: 6e4
+			});
+		} catch {}
+	}, []);
 	(0, import_react.useEffect)(() => {
 		const handleClickOutside = (event) => {
 			if (searchRef.current && !searchRef.current.contains(event.target)) setQuery("");
@@ -558,7 +574,7 @@ function CivicMapPage() {
 					children: [
 						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
 							type: "button",
-							onClick: () => setCityId("vadodara"),
+							onClick: () => handleCityChange("vadodara"),
 							"aria-pressed": cityId === "vadodara",
 							className: cn("press flex items-center gap-2 rounded-xl border px-4 py-2 text-xs font-semibold tracking-wide transition-all duration-200 shadow-sm", cityId === "vadodara" ? "border-emerald-500/50 bg-emerald-500/15 text-emerald-300 shadow-[0_0_15px_rgba(16,185,129,0.15)]" : "border-[var(--glass-border)] bg-[var(--glass)] text-muted-foreground hover:text-foreground"),
 							children: [
@@ -572,7 +588,7 @@ function CivicMapPage() {
 						}),
 						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
 							type: "button",
-							onClick: () => setCityId("bengaluru"),
+							onClick: () => handleCityChange("bengaluru"),
 							"aria-pressed": cityId === "bengaluru",
 							className: cn("press flex items-center gap-2 rounded-xl border px-4 py-2 text-xs font-semibold tracking-wide transition-all duration-200 shadow-sm", cityId === "bengaluru" ? "border-blue-500/50 bg-blue-500/15 text-blue-300 shadow-[0_0_15px_rgba(59,130,246,0.15)]" : "border-[var(--glass-border)] bg-[var(--glass)] text-muted-foreground hover:text-foreground"),
 							children: [

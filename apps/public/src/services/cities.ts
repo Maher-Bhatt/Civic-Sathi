@@ -229,3 +229,21 @@ export function nearestWardOrArea(cityId: CityId, lat: number, lng: number): { w
   const c = getCity(cityId);
   return { ward: best.ward, area: `${c.name} · ${best.area} (${best.ward})` };
 }
+
+/** Get the active default city based on user preference, saved selection or IP/geo fallback */
+export function getDefaultCity(): CityId {
+  if (typeof window === "undefined") return "vadodara";
+  try {
+    const saved = localStorage.getItem("janmind_preferred_city");
+    if (saved === "vadodara" || saved === "bengaluru") return saved;
+  } catch {}
+  return "bengaluru"; // Fair alternate default / can toggle freely
+}
+
+/** Save preferred city selection across sessions */
+export function setPreferredCity(cityId: CityId): void {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.setItem("janmind_preferred_city", cityId);
+  } catch {}
+}

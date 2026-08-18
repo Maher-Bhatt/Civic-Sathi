@@ -11,7 +11,9 @@ import { PageShell } from "@/components/site-nav";
 import { GlassCard, SectionLabel } from "@/components/ui/glass-card";
 import { GlassButton } from "@/components/ui/glass-button";
 import { ClientCivicMap } from "@/components/civic-map-panel";
+import { useState } from "react";
 import { DEFAULT_FILTERS, areaActivity } from "@/services/geography";
+import { getDefaultCity, setPreferredCity, type CityId } from "@/services/cities";
 import { ISSUE_TYPES } from "@/services/types";
 import { useI18n } from "@/lib/i18n";
 
@@ -54,6 +56,13 @@ const steps = [
 
 function Landing() {
   const { t } = useI18n();
+  const [cityId, setCityId] = useState<CityId>(() => getDefaultCity());
+
+  const handleCitySelect = (c: CityId) => {
+    setCityId(c);
+    setPreferredCity(c);
+  };
+
   return (
     <PageShell className="pt-24 sm:pt-32">
       <section className="grid items-center gap-10 lg:grid-cols-[1.05fr_1fr] lg:gap-14">
@@ -95,26 +104,58 @@ function Landing() {
         </div>
 
         <div className="animate-rise [animation-delay:120ms]">
-          <GlassCard elevation="raised" className="overflow-hidden p-3">
+          <GlassCard elevation="raised" className="overflow-hidden p-3.5 space-y-2.5">
+            {/* Multi-City Equal Choice Switcher */}
+            <div className="flex items-center justify-between gap-2 px-1 pb-1">
+              <div className="flex items-center gap-1.5 p-1 rounded-xl bg-[var(--surface)] border border-[var(--glass-border)]">
+                <button
+                  type="button"
+                  onClick={() => handleCitySelect("vadodara")}
+                  className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all ${
+                    cityId === "vadodara"
+                      ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 shadow-sm"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  Vadodara (VMC)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleCitySelect("bengaluru")}
+                  className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all ${
+                    cityId === "bengaluru"
+                      ? "bg-blue-500/20 text-blue-300 border border-blue-500/40 shadow-sm"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  Bengaluru (BBMP)
+                </button>
+              </div>
+
+              <span className="text-[10px] text-muted-foreground">
+                {cityId === "vadodara" ? "24 Areas · 12k Reports" : "35 Areas · 100k Reports"}
+              </span>
+            </div>
+
             <ClientCivicMap
-              cityId="vadodara"
+              cityId={cityId}
               mode="health"
-              activities={areaActivity("vadodara", DEFAULT_FILTERS)}
+              activities={areaActivity(cityId, DEFAULT_FILTERS)}
               points={[]}
               selectedAreaId={null}
               onSelectArea={() => {}}
               compact
-              className="h-[320px] sm:h-[420px]"
+              className="h-[300px] sm:h-[400px] rounded-xl overflow-hidden"
             />
-            <div className="flex items-center justify-between gap-3 px-1.5 pt-2.5 pb-0.5">
+            <div className="flex items-center justify-between gap-3 px-1.5 pt-1 pb-0.5">
               <p className="text-[0.68rem] tracking-[0.08em] text-subtle uppercase">
-                {t("map.card.label", "Locality civic activity — sample data")}
+                {cityId === "vadodara" ? "Vadodara Live Catchment" : "Bengaluru Live Catchment"}
               </p>
               <Link
                 to="/map"
-                className="text-xs text-primary underline-offset-4 transition-opacity hover:underline hover:opacity-80"
+                className="text-xs text-primary underline-offset-4 transition-opacity hover:underline hover:opacity-80 font-medium"
               >
-                {t("map.card.open", "Open Civic Map")}
+                {t("map.card.open", "Open Civic Map →")}
               </Link>
             </div>
           </GlassCard>

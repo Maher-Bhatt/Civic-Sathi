@@ -23,7 +23,7 @@ import {
   HealthPieChart,
   IssueBreakdownChart,
 } from "@/components/civic-charts";
-import { CITIES, getCity, nearestCity, type CityId } from "@/services/cities";
+import { CITIES, getCity, nearestCity, getDefaultCity, setPreferredCity, type CityId } from "@/services/cities";
 import {
   AREA_HEALTH_HEX,
   AREA_HEALTH_LABEL,
@@ -120,8 +120,8 @@ function Trend({ pct }: { pct: number }) {
 }
 
 function CivicMapPage() {
-    const { t } = useI18n();
-  const [cityId, setCityId] = useState<CityId>("vadodara");
+  const { t } = useI18n();
+  const [cityId, setCityId] = useState<CityId>(() => getDefaultCity());
   const [mode, setMode] = useState<MapMode>("health");
   const [filters, setFilters] = useState<MapFilters>(DEFAULT_FILTERS);
   const [selected, setSelected] = useState<string | null>(null);
@@ -130,6 +130,31 @@ function CivicMapPage() {
   const [locating, setLocating] = useState(false);
   const [locationNote, setLocationNote] = useState<string | null>(null);
   const searchRef = useRef<HTMLDivElement>(null);
+
+  const handleCityChange = (c: CityId) => {
+    setCityId(c);
+    setPreferredCity(c);
+  };
+
+  // Attempt non-intrusive auto-detection if no preference was explicitly saved
+  useEffect(() => {
+    if (typeof window === "undefined" || !navigator.geolocation) return;
+    try {
+      const saved = localStorage.getItem("janmind_preferred_city");
+      if (!saved) {
+        navigator.geolocation.getCurrentPosition(
+          (pos) => {
+            const nearest = nearestCity(pos.coords.latitude, pos.coords.longitude);
+            if (nearest && nearest.id !== cityId) {
+              setCityId(nearest.id);
+            }
+          },
+          () => {},
+          { timeout: 4000, maximumAge: 60000 }
+        );
+      }
+    } catch {}
+  }, []);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -234,7 +259,7 @@ function CivicMapPage() {
         <div className="flex flex-wrap items-center gap-2.5">
           <button
             type="button"
-            onClick={() => setCityId("vadodara")}
+            onClick={() => handleCityChange("vadodara")}
             aria-pressed={cityId === "vadodara"}
             className={cn(
               "press flex items-center gap-2 rounded-xl border px-4 py-2 text-xs font-semibold tracking-wide transition-all duration-200 shadow-sm",
@@ -250,7 +275,7 @@ function CivicMapPage() {
 
           <button
             type="button"
-            onClick={() => setCityId("bengaluru")}
+            onClick={() => handleCityChange("bengaluru")}
             aria-pressed={cityId === "bengaluru"}
             className={cn(
               "press flex items-center gap-2 rounded-xl border px-4 py-2 text-xs font-semibold tracking-wide transition-all duration-200 shadow-sm",
