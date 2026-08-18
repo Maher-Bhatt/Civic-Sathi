@@ -98,7 +98,7 @@ def officer_login(
         )
 
     # Verify user is an officer
-    if user.role not in ["officer", "supervisor", "municipality"]:
+    if user.role not in ["admin", "officer", "supervisor", "municipality"]:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Access denied - officer role required"

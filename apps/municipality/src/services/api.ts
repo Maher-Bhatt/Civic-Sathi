@@ -150,13 +150,14 @@ export async function getDashboardKPIs(): Promise<DashboardKPIs> {
   const data = await client.get<any>('/api/v1/analytics/summary');
   if (data) {
     const total = data.total_complaints || 0;
+    const statusDist = data.status_distribution || {};
     return {
       totalReports: total,
-      critical: data.critical_issues || Math.round(total * 0.03) || 364,
-      active: data.unresolved_complaints || 6661,
-      resolved: data.status_distribution?.resolved || 5483,
-      emergingIssues: data.total_issues || 12,
-      areaHotspots: 5,
+      critical: data.critical_issues || Math.round(total * 0.03),
+      active: data.unresolved_complaints || (total - (statusDist.resolved || 0)),
+      resolved: statusDist.resolved || 0,
+      emergingIssues: data.total_issues || 0,
+      areaHotspots: data.hotspot_count || 0,
     };
   }
   return {

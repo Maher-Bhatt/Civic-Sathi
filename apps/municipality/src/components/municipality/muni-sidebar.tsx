@@ -16,22 +16,54 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/lib/i18n";
+import { useMuniAuth } from "@/lib/muni-auth";
 
-const NAV = [
-  { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { to: "/ai-triage", label: "AI Triage", icon: AlertTriangle },
-  { to: "/map", label: "Civic Map", icon: Map },
-  { to: "/civic-issues", label: "Civic Issues", icon: Zap },
-  { to: "/complaints", label: "Complaints", icon: FileText },
-  { to: "/tenders", label: "Tenders & Packages", icon: Package },
-  { to: "/work-orders", label: "Work Orders", icon: ClipboardList },
-  { to: "/alerts", label: "Alerts", icon: AlertTriangle },
-  { to: "/departments", label: "Departments", icon: Building2 },
-  { to: "/areas", label: "Areas", icon: MapPin },
-  { to: "/analytics", label: "Analytics", icon: BarChart3 },
-  { to: "/settings", label: "Settings", icon: Settings },
-  { to: "/profile", label: "Profile", icon: User },
-] as const;
+/**
+ * Role-based access matrix.
+ * Each nav item lists which designations can see it.
+ * "all" = visible to every designation.
+ */
+type Designation =
+  | "Ward Officer"
+  | "Field Inspector"
+  | "Triage Officer"
+  | "Municipal Supervisor"
+  | "Chief Engineer"
+  | "Commissioner"
+  | "Department Head"
+  | "all";
+
+interface NavItem {
+  to: string;
+  label: string;
+  icon: React.ComponentType<{ className?: string; "aria-hidden"?: boolean }>;
+  access: Designation[];
+}
+
+const NAV: NavItem[] = [
+  { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard, access: ["all"] },
+  { to: "/ai-triage", label: "AI Triage", icon: AlertTriangle, access: ["Triage Officer", "Municipal Supervisor", "Commissioner", "Department Head"] },
+  { to: "/map", label: "Civic Map", icon: Map, access: ["all"] },
+  { to: "/civic-issues", label: "Civic Issues", icon: Zap, access: ["Field Inspector", "Triage Officer", "Municipal Supervisor", "Commissioner", "Department Head"] },
+  { to: "/complaints", label: "Complaints", icon: FileText, access: ["all"] },
+  { to: "/tenders", label: "Tenders & Packages", icon: Package, access: ["Chief Engineer", "Commissioner", "Department Head"] },
+  { to: "/work-orders", label: "Work Orders", icon: ClipboardList, access: ["Chief Engineer", "Commissioner", "Department Head"] },
+  { to: "/alerts", label: "Alerts", icon: AlertTriangle, access: ["Ward Officer", "Triage Officer", "Municipal Supervisor", "Commissioner", "Department Head"] },
+  { to: "/departments", label: "Departments", icon: Building2, access: ["Municipal Supervisor", "Commissioner", "Department Head"] },
+  { to: "/areas", label: "Areas", icon: MapPin, access: ["Field Inspector", "Municipal Supervisor", "Commissioner", "Department Head"] },
+  { to: "/analytics", label: "Analytics", icon: BarChart3, access: ["Chief Engineer", "Municipal Supervisor", "Commissioner", "Department Head"] },
+  { to: "/settings", label: "Settings", icon: Settings, access: ["Municipal Supervisor", "Commissioner", "Department Head"] },
+  { to: "/profile", label: "Profile", icon: User, access: ["all"] },
+];
+
+function getVisibleNav(designation?: string): NavItem[] {
+  if (!designation) return NAV; // fallback: show everything
+  return NAV.filter(
+    (item) =>
+      item.access.includes("all") ||
+      item.access.includes(designation as Designation),
+  );
+}
 
 export function MuniSidebar({
   collapsed,
@@ -45,7 +77,9 @@ export function MuniSidebar({
   onMobileClose: () => void;
 }) {
     const { t } = useI18n();
+  const { officer } = useMuniAuth();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const visibleNav = getVisibleNav(officer?.designation);
 
   return (
     <>
@@ -83,8 +117,16 @@ export function MuniSidebar({
           </button>
         </div>
 
+        {/* Show designation badge when sidebar is expanded */}
+        {!collapsed && officer?.designation && (
+          <div className="border-b border-[var(--glass-border)] px-4 py-2">
+            <p className="text-[0.6rem] uppercase tracking-wider text-muted-foreground">Role</p>
+            <p className="text-xs font-medium text-foreground truncate">{officer.designation}</p>
+          </div>
+        )}
+
         <nav className="flex-1 space-y-1 overflow-y-auto p-3" aria-label={t('ui.municipality_navigation')}>
-          {NAV.map(({ to, label, icon: Icon }) => {
+          {visibleNav.map(({ to, label, icon: Icon }) => {
             const active = pathname === to || (to !== "/dashboard" && pathname.startsWith(to));
             return (
               <Link
@@ -116,3 +158,4 @@ export function MuniSidebar({
     </>
   );
 }
+
