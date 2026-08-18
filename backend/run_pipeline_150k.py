@@ -10,7 +10,7 @@ from datetime import datetime
 import traceback
 
 sys.path.insert(0, str(Path(__file__).parent))
-from ml.pipeline import Civic SathiPipeline
+from ml.pipeline import CivicSathiPipeline
 
 
 def print_header(text):
@@ -29,7 +29,7 @@ def main():
     
     try:
         data_dir = Path(__file__).parent / "data"
-        pipeline = Civic SathiPipeline(data_dir)
+        pipeline = CivicSathiPipeline(data_dir)
         
         print("✓ Pipeline initialized")
         print()

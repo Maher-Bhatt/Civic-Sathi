@@ -24,7 +24,7 @@ from ml.root_cause import RootCauseAnalyzer
 from ml.recommendations import RecommendationEngine
 
 
-class Civic SathiPipeline:
+class CivicSathiPipeline:
     """Complete end-to-end ML pipeline"""
     
     def __init__(self, data_dir: Path):
@@ -369,7 +369,7 @@ def main():
     data_dir = Path(__file__).parent.parent / "data"
     
     # Initialize pipeline
-    pipeline = Civic SathiPipeline(data_dir)
+    pipeline = CivicSathiPipeline(data_dir)
     
     # Run pipeline (FULL DATASET)
     report = pipeline.run_full_pipeline(
