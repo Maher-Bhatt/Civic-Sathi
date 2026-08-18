@@ -2,7 +2,7 @@ import { r as require_jsx_runtime, t as useQuery } from "../_libs/react+tanstack
 import { B as CalendarDays, L as ChevronRight, S as MapPin } from "../_libs/lucide-react.mjs";
 import { g as Link, v as useNavigate } from "../_libs/@tanstack/react-router+[...].mjs";
 import { n as StatusBadge } from "./badges-jtQKvOp1.mjs";
-import { O as useI18n, a as LoadingState, b as getMyComplaints, d as SectionLabel, i as ErrorState, l as GlassCard, n as AuthGate, r as EmptyState, u as PageShell } from "./router-DnxNDTwc.mjs";
+import { O as useI18n, a as LoadingState, b as getMyComplaints, d as SectionLabel, i as ErrorState, l as GlassCard, n as AuthGate, r as EmptyState, u as PageShell } from "./router-BOgL0e-W.mjs";
 //#region node_modules/.nitro/vite/services/ssr/assets/complaints-CTBQqnVI.js
 var import_jsx_runtime = require_jsx_runtime();
 function ComplaintCard({ complaint, index = 0 }) {
