@@ -196,47 +196,70 @@ def update_me(
     )
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# Platform Stats
-# ─────────────────────────────────────────────────────────────────────────────
+# Platform Stats Cache
+_stats_cache = {"data": None, "expires_at": 0.0}
 
 @router.get("/stats", response_model=PlatformStatsOut)
 def get_platform_stats(
     db: Session = Depends(get_db),
     current: dict = Depends(require_admin),
 ):
-    """Return real platform-wide statistics for the admin dashboard."""
-    def count(model, **filters):
-        q = db.query(func.count(model.id))
-        for col, val in filters.items():
-            q = q.filter(getattr(model, col) == val)
-        return q.scalar() or 0
+    """Return real platform-wide statistics for the admin dashboard (cached for 60s)."""
+    import time
+    now = time.time()
+    if _stats_cache["data"] is not None and now < _stats_cache["expires_at"]:
+        return _stats_cache["data"]
 
-    return PlatformStatsOut(
-        total_users=count(User),
-        total_citizens=count(User, role="citizen"),
-        total_officers=count(User, role="officer"),
-        total_contractors=count(User, role="contractor"),
-        total_admins=db.query(func.count(User.id)).filter(
-            User.role.in_(["admin", "supervisor", "municipality"])
-        ).scalar() or 0,
-        total_complaints=count(Complaint),
-        open_complaints=db.query(func.count(Complaint.id)).filter(
-            Complaint.status.notin_(["resolved", "rejected", "closed"])
-        ).scalar() or 0,
-        resolved_complaints=count(Complaint, status="resolved"),
-        total_issues=count(IssueCluster),
-        open_issues=db.query(func.count(IssueCluster.id)).filter(
-            IssueCluster.status.notin_(["resolved", "closed"])
-        ).scalar() or 0,
-        total_tenders=count(Tender),
-        active_work_orders=db.query(func.count(WorkOrder.id)).filter(
-            WorkOrder.status.notin_(
-                [WorkOrderStatus.COMPLETED, WorkOrderStatus.CLOSED, WorkOrderStatus.CANCELLED]
-            )
-        ).scalar() or 0,
-        total_cities=count(City),
+    # 1. Grouped user counts
+    user_counts = dict(db.query(User.role, func.count(User.id)).group_by(User.role).all())
+    
+    # 2. Grouped complaint counts
+    complaint_counts = dict(db.query(Complaint.status, func.count(Complaint.id)).group_by(Complaint.status).all())
+    
+    # 3. Grouped issue counts
+    issue_counts = dict(db.query(IssueCluster.status, func.count(IssueCluster.id)).group_by(IssueCluster.status).all())
+    
+    # 4. Grouped work order counts
+    wo_counts = dict(db.query(WorkOrder.status, func.count(WorkOrder.id)).group_by(WorkOrder.status).all())
+
+    total_complaints = sum(complaint_counts.values())
+    resolved_complaints = complaint_counts.get("resolved", 0)
+    open_complaints = sum(v for k, v in complaint_counts.items() if k not in ("resolved", "rejected", "closed"))
+
+    total_issues = sum(issue_counts.values())
+    open_issues = sum(v for k, v in issue_counts.items() if k not in ("resolved", "closed"))
+
+    active_work_orders = sum(
+        v for k, v in wo_counts.items() 
+        if k not in (WorkOrderStatus.COMPLETED, WorkOrderStatus.CLOSED, WorkOrderStatus.CANCELLED)
     )
+
+    tenders_count = db.query(func.count(Tender.id)).scalar() or 0
+    cities_count = db.query(func.count(City.id)).scalar() or 0
+
+    result = PlatformStatsOut(
+        total_users=sum(user_counts.values()),
+        total_citizens=user_counts.get("citizen", 0),
+        total_officers=user_counts.get("officer", 0),
+        total_contractors=user_counts.get("contractor", 0),
+        total_admins=(
+            user_counts.get("admin", 0) 
+            + user_counts.get("supervisor", 0) 
+            + user_counts.get("municipality", 0)
+        ),
+        total_complaints=total_complaints,
+        open_complaints=open_complaints,
+        resolved_complaints=resolved_complaints,
+        total_issues=total_issues,
+        open_issues=open_issues,
+        total_tenders=tenders_count,
+        active_work_orders=active_work_orders,
+        total_cities=cities_count,
+    )
+
+    _stats_cache["data"] = result
+    _stats_cache["expires_at"] = now + 60.0
+    return result
 
 
 # ─────────────────────────────────────────────────────────────────────────────

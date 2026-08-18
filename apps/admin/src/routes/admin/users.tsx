@@ -82,9 +82,21 @@ const EMPTY_FORM: FormState = {
 
 function UserManagementPage() {
     const { t } = useI18n();
-  const [users, setUsers]         = useState<UserRow[]>([]);
+  const [users, setUsers]         = useState<UserRow[]>(() => {
+    if (typeof window === "undefined") return [];
+    try {
+      const raw = localStorage.getItem("janmind_admin_users");
+      if (raw) return JSON.parse(raw);
+    } catch {}
+    return [];
+  });
   const [cities, setCities]       = useState<{ id: string; name: string }[]>([]);
-  const [loading, setLoading]     = useState(true);
+  const [loading, setLoading]     = useState(() => {
+    if (typeof window !== "undefined" && localStorage.getItem("janmind_admin_users")) {
+      return false;
+    }
+    return true;
+  });
   const [search, setSearch]       = useState("");
   const [roleFilter, setRoleFilter] = useState<string>("all");
   const [showForm, setShowForm]   = useState(false);
@@ -94,13 +106,14 @@ function UserManagementPage() {
   const [deleting, setDeleting]   = useState<string | null>(null);
 
   const load = async () => {
-    setLoading(true);
     try {
       const [us, cs] = await Promise.all([listAllUsers({ limit: 200 }), listAdminCities()]);
-      setUsers(us);
-      setCities(cs);
+      if (us && Array.isArray(us)) setUsers(us);
+      if (cs && Array.isArray(cs)) setCities(cs);
     } catch (e: any) {
-      toast.error(e.message ?? "Failed to load users");
+      if (users.length === 0) {
+        toast.error(e.message ?? "Failed to load users");
+      }
     } finally {
       setLoading(false);
     }
