@@ -3,7 +3,7 @@ import type { CityId } from "@/services/cities";
 import type { User } from '@janmind/api-client';
 
 
-export const API_BASE_URL = import.meta.env["VITE_API_BASE_URL"] ?? "https://janmind.onrender.com";
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "https://janmind.onrender.com";
 
 const LS = {
   contractor: "janmind_contractor_user",
