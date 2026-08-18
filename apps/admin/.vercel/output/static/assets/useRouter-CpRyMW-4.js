@@ -1,0 +1,1 @@
+import{D as e,w as t}from"./i18n-Cn-bxpsM.js";var n=e(t(),1),r=n.createContext(null);function i(e){return n.useContext(r)}export{r as n,i as t};

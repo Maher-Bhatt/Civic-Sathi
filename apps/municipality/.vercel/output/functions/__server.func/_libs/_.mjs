@@ -1,2 +1,2 @@
-import { _ as api_exports } from "../_ssr/router-C5G_q8ix.mjs";
+import { _ as api_exports } from "../_ssr/router-BreDjdEy.mjs";
 export { api_exports as i };
