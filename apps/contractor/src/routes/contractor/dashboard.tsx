@@ -18,7 +18,7 @@ export const Route = createFileRoute("/contractor/dashboard")({
 function ContractorDashboard() {
     const { t } = useI18n();
   const { contractor } = useContractorAuth();
-  const cityId = contractor?.city || "11111111-1111-1111-1111-111111111111";
+  const cityId = contractor?.city || "vadodara";
 
   const { data, isLoading: loading, error } = useQuery({
     queryKey: ["contractor-dashboard", contractor?.id, cityId],
