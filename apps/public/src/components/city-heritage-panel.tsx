@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Landmark, Compass, Sparkles, Building2, Trees, Droplets, Crown, Scroll, ChevronRight } from "lucide-react";
-import { GlassCard, SectionLabel } from "@/components/ui/glass-card";
+import { Landmark, Sparkles, Building2, Trees, Droplets, Crown, Scroll, ChevronRight } from "lucide-react";
+import { GlassCard } from "@/components/ui/glass-card";
 import { type CityId } from "@/services/cities";
 import { cn } from "@/lib/utils";
 

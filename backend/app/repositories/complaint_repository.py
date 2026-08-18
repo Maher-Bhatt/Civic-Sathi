@@ -65,7 +65,7 @@ class ComplaintRepository:
             query = query.join(Ward).filter(Ward.ward_number == ward)
             
         if city:
-            query = query.filter(Complaint.city == city)
+            query = query.filter(Complaint.city_id == city)
             
         # Get total count
         total = self.db.execute(

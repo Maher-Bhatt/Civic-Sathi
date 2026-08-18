@@ -266,7 +266,7 @@ function CivicMapPage() {
             className={cn(
               "press flex items-center gap-2 rounded-xl border px-4 py-2 text-xs font-semibold tracking-wide transition-all duration-200 shadow-sm",
               cityId === "vadodara"
-                ? "border-emerald-500/50 bg-emerald-500/15 text-emerald-300 shadow-[0_0_15px_rgba(16,185,129,0.15)]"
+                ? "border-emerald-500/50 bg-emerald-500/15 text-emerald-800 dark:text-emerald-300 shadow-[0_0_15px_rgba(16,185,129,0.15)]"
                 : "border-[var(--glass-border)] bg-[var(--glass)] text-muted-foreground hover:text-foreground",
             )}
           >
@@ -282,7 +282,7 @@ function CivicMapPage() {
             className={cn(
               "press flex items-center gap-2 rounded-xl border px-4 py-2 text-xs font-semibold tracking-wide transition-all duration-200 shadow-sm",
               cityId === "bengaluru"
-                ? "border-blue-500/50 bg-blue-500/15 text-blue-300 shadow-[0_0_15px_rgba(59,130,246,0.15)]"
+                ? "border-blue-500/50 bg-blue-500/15 text-blue-800 dark:text-blue-300 shadow-[0_0_15px_rgba(59,130,246,0.15)]"
                 : "border-[var(--glass-border)] bg-[var(--glass)] text-muted-foreground hover:text-foreground",
             )}
           >
@@ -482,10 +482,10 @@ function CivicMapPage() {
             </GlassCard>
 
             <GlassCard className="jm-stat-card animate-rise p-3 border-blue-500/30 bg-blue-500/5">
-              <p className="text-lg font-bold tabular-nums text-blue-400">
+              <p className="text-lg font-bold tabular-nums text-blue-700 dark:text-blue-400">
                 ~<AnimatedStat value={totals.affectedPeople} />
               </p>
-              <p className="text-[0.66rem] tracking-[0.08em] text-blue-300 font-medium uppercase">
+              <p className="text-[0.66rem] tracking-[0.08em] text-blue-700 dark:text-blue-300 font-medium uppercase">
                 Citizens Affected
               </p>
             </GlassCard>
@@ -637,8 +637,8 @@ function AreaPanel({
             </p>
           </div>
           <div className="p-2.5 rounded-xl bg-blue-500/10 border border-blue-500/30">
-            <p className="label-xs text-blue-300 font-medium">Citizens Affected</p>
-            <p className="mt-0.5 text-base font-bold text-blue-400 tabular-nums">
+            <p className="label-xs text-blue-700 dark:text-blue-300 font-medium">Citizens Affected</p>
+            <p className="mt-0.5 text-base font-bold text-blue-700 dark:text-blue-400 tabular-nums">
               ~{(activity.affectedPopulation || 0).toLocaleString('en-IN')}
               <span className="text-xs font-normal opacity-80 ml-1">({activity.affectedPercent}%)</span>
             </p>

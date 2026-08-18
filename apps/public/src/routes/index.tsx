@@ -15,7 +15,6 @@ import { ClientCivicMap } from "@/components/civic-map-panel";
 import { CityHeritagePanel } from "@/components/city-heritage-panel";
 import { DEFAULT_FILTERS, areaActivity } from "@/services/geography";
 import { getDefaultCity, setPreferredCity, type CityId } from "@/services/cities";
-import { ISSUE_TYPES } from "@/services/types";
 import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/")({
