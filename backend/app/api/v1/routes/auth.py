@@ -104,9 +104,7 @@ def officer_login(
             detail="Access denied - officer role required"
         )
         
-    if login_data.designation and user.designation != login_data.designation:
-        user.designation = login_data.designation
-        db.commit()
+
 
     # Create access token
     access_token = create_access_token(
