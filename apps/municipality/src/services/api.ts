@@ -8,7 +8,7 @@ import type {
 import { DEFAULT_COMPLAINT_FILTERS } from "./types";
 // Mocks removed
 
-export const API_BASE_URL = import.meta.env["VITE_API_BASE_URL"] ?? "https://janmind.onrender.com";
+export const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL as string | undefined) || "https://janmind.onrender.com";
 
 const LS = {
   officer: "janmind_muni_officer",

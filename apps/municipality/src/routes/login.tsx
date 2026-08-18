@@ -39,8 +39,9 @@ function MuniLoginPage() {
       await signIn(email.trim().toLowerCase(), password, city);
       toast.success("Signed in to Municipal Intelligence");
       void navigate({ to: "/dashboard" as any });
-    } catch {
-      setError("Invalid credentials. Please check your email and password.");
+    } catch (err: any) {
+      console.error("Municipal login error:", err);
+      setError(err?.message || "Invalid credentials. Please check your email and password.");
     } finally {
       setBusy(false);
     }

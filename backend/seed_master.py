@@ -188,7 +188,9 @@ for name, email, role, city, dept in OFFICERS:
             ward="Admin",
         )
         db.add(u)
+        db.flush()
         print(f"  ✓ Created officer: {name} ({city})")
+    else:
         existing.password_hash = hash_password("Janmind@2026")
         existing.role = role
         db.commit()
@@ -232,6 +234,9 @@ for company, contact, email, phone in CONTRACTORS:
         )
         db.add(login_user)
         db.flush()
+    else:
+        login_user.password_hash = hash_password("Janmind@2026")
+        db.commit()
 
     c = Contractor(
         company_name=company,
