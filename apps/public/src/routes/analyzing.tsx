@@ -80,7 +80,7 @@ function AnalyzingPage() {
           description: draft.description,
         });
 
-        if (matches.length > 0) {
+        if (Array.isArray(matches) && matches.length > 0) {
           window.clearInterval(timer);
           setStage(4); // Scanning for duplicates
           setDuplicates(matches);
@@ -119,7 +119,7 @@ function AnalyzingPage() {
       lng: analysis.location.lng,
       ward: analysis.location.ward,
       area: analysis.location.area,
-      cityId: "vadodara",
+      cityId: draft.city || "vadodara",
       status: "OPEN",
       priority: analysis.severity,
       severity: analysis.severity,
@@ -131,8 +131,10 @@ function AnalyzingPage() {
       lastReportedAt: new Date().toISOString(),
     });
 
-    // Link it
-    await linkToCivicIssue(issue.id, created.id, "PRIMARY_REPORT", 100, "Citizen");
+    // Link it if both exist
+    if (issue?.id && created?.id) {
+      await linkToCivicIssue(issue.id, created.id, "PRIMARY_REPORT", 100, "Citizen");
+    }
 
     setComplaint(created);
     setStage(STAGES.length);
@@ -152,7 +154,9 @@ function AnalyzingPage() {
       nearbyCount: result!.nearbyCount,
     });
     
-    await linkToCivicIssue(match.issue.id, created.id, "DUPLICATE", match.confidence, "Citizen");
+    if (match?.issue?.id && created?.id) {
+      await linkToCivicIssue(match.issue.id, created.id, "DUPLICATE", match.confidence || 90, "Citizen");
+    }
     
     setComplaint(created);
     setStage(STAGES.length);

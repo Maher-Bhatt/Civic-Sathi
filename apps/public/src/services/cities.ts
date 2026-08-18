@@ -210,3 +210,22 @@ export function nearestCity(lat: number, lng: number): City {
   }
   return best;
 }
+
+export function nearestWardOrArea(cityId: CityId, lat: number, lng: number): { ward: string; area: string } {
+  const clusters = clustersForCity(cityId);
+  if (clusters.length === 0) {
+    const c = getCity(cityId);
+    return { ward: "Ward 1", area: `${c.name} · Ward 1` };
+  }
+  let best = clusters[0]!;
+  let bestD = Number.POSITIVE_INFINITY;
+  for (const item of clusters) {
+    const d = (item.lat - lat) ** 2 + (item.lng - lng) ** 2;
+    if (d < bestD) {
+      bestD = d;
+      best = item;
+    }
+  }
+  const c = getCity(cityId);
+  return { ward: best.ward, area: `${c.name} · ${best.area} (${best.ward})` };
+}

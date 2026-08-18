@@ -26,7 +26,14 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
 
   const t = (key: string, fallback?: string) => {
     const dict = TRANSLATIONS[language];
-    return dict[key] || TRANSLATIONS["en"][key] || fallback || key;
+    if (dict && dict[key]) return dict[key];
+    if (TRANSLATIONS["en"] && TRANSLATIONS["en"][key]) return TRANSLATIONS["en"][key];
+    if (fallback) return fallback;
+    if (key.startsWith("ui.")) {
+      const cleaned = key.replace(/^ui\./, "").replace(/_/g, " ");
+      return cleaned.charAt(0).toUpperCase() + cleaned.slice(1);
+    }
+    return key;
   };
 
   return (

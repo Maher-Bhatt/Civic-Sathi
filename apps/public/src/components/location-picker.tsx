@@ -3,8 +3,7 @@ import { Crosshair, Loader2, MapPin, ShieldCheck } from "lucide-react";
 import { GlassCard, SectionLabel } from "@/components/ui/glass-card";
 import { GlassButton } from "@/components/ui/glass-button";
 import { CitySelector, ClientCityMap } from "@/components/city-map-panel";
-import { clustersForCity, getCity, nearestCity, type CityId } from "@/services/cities";
-import { WARD_14 } from "@/services/mockData";
+import { clustersForCity, getCity, nearestCity, nearestWardOrArea, type CityId } from "@/services/cities";
 import type { LocationInfo } from "@/services/types";
 import { useI18n } from "@/lib/i18n";
 
@@ -32,14 +31,14 @@ export function LocationPicker({
   const [phase, setPhase] = useState<Phase>(marker ? "ready" : "idle");
   const [mapMode, setMapMode] = useState(!!marker);
 
-  const commit = (pos: { lat: number; lng: number }, cityId: CityId, ward?: string) => {
-    const c = getCity(cityId);
+  const commit = (pos: { lat: number; lng: number }, cityId: CityId) => {
+    const { ward, area } = nearestWardOrArea(cityId, pos.lat, pos.lng);
     onChange({
       location: {
         lat: pos.lat,
         lng: pos.lng,
-        ward: ward ?? location?.ward ?? WARD_14.ward,
-        area: `${c.name} · ${ward ?? location?.ward ?? WARD_14.ward}`,
+        ward,
+        area,
       },
       marker: pos,
       city: cityId,
