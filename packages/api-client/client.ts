@@ -26,7 +26,10 @@ export class APIClient {
   }
 
   private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
-    const url = `${this.config.baseUrl}${endpoint}`;
+    const rawBase = (this.config.baseUrl || "https://janmind.onrender.com").trim();
+    const cleanBase = rawBase.replace(/\/+$/, '');
+    const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+    const url = `${cleanBase}${cleanEndpoint}`;
     const token = await this.config.getToken();
     
     const headers = new Headers(options.headers);
@@ -37,10 +40,20 @@ export class APIClient {
       headers.set('Content-Type', 'application/json');
     }
 
-    const response = await fetch(url, {
-      ...options,
-      headers,
-    });
+    let response: Response;
+    try {
+      response = await fetch(url, {
+        ...options,
+        headers,
+      });
+    } catch (fetchErr: any) {
+      console.error(`[APIClient] Network error fetching ${url}:`, fetchErr);
+      throw new APIClientError(
+        `Failed to reach backend server (${url}). Please check your internet connection or backend status.`,
+        0,
+        fetchErr
+      );
+    }
 
     if (response.status === 401 && this.config.onUnauthorized) {
       this.config.onUnauthorized();
