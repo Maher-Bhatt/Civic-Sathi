@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { format } from "date-fns";
+import { safeFormat } from "@/lib/safe-format";
 import { ArrowLeft, TrendingDown, TrendingUp } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -118,7 +118,7 @@ function IssueDetailPage() {
             <span className="text-muted-foreground">{t('ui.7_day_trend')}</span>
           </div>
           <div className="text-muted-foreground">
-            {t('ui.updated')}{format(new Date(issue.updatedAt), "dd MMM yyyy, HH:mm")}
+            {t('ui.updated')}{safeFormat(issue.updatedAt, "dd MMM yyyy, HH:mm")}
           </div>
         </div>
       </header>

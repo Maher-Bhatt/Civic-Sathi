@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { format } from "date-fns";
+import { safeFormat } from "@/lib/safe-format";
 import { ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
 import { CivicMap } from "@/components/civic-map";
@@ -143,13 +143,13 @@ function ComplaintDetailPage() {
               <div>
                 <dt className="label-xs">{t('ui.created')}</dt>
                 <dd className="mt-1 text-sm">
-                  {format(new Date(complaint.createdAt), "dd MMM yyyy, HH:mm")}
+                  {safeFormat(complaint.createdAt, "dd MMM yyyy, HH:mm")}
                 </dd>
               </div>
               <div>
                 <dt className="label-xs">{t('ui.last_updated')}</dt>
                 <dd className="mt-1 text-sm">
-                  {format(new Date(complaint.updatedAt), "dd MMM yyyy, HH:mm")}
+                  {safeFormat(complaint.updatedAt, "dd MMM yyyy, HH:mm")}
                 </dd>
               </div>
             </dl>

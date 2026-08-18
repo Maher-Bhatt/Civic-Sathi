@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { format } from "date-fns";
+import { safeFormat } from "@/lib/safe-format";
 import { ArrowLeft, Split, Merge, AlertTriangle, Check, ShieldAlert } from "lucide-react";
 import { toast } from "sonner";
 import { GlassCard, SectionLabel } from "@/components/ui/glass-card";
@@ -88,7 +88,7 @@ function CivicIssueDetailPage() {
               </div>
               <div>
                 <dt className="label-xs">{t('ui.first_reported')}</dt>
-                <dd className="mt-1 text-sm font-medium">{format(new Date(issue.firstReportedAt), "dd MMM yyyy")}</dd>
+                <dd className="mt-1 text-sm font-medium">{safeFormat(issue.firstReportedAt, "dd MMM yyyy")}</dd>
               </div>
             </div>
           </GlassCard>

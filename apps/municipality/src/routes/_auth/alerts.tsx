@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { format } from "date-fns";
+import { safeFormat } from "@/lib/safe-format";
 import { toast } from "sonner";
 import { PriorityBadge } from "@/components/municipality/status-badge";
 import { GlassCard, SectionLabel } from "@/components/ui/glass-card";
@@ -109,7 +109,7 @@ function AlertsPage() {
                     </span>
                   </div>
                   <p className="mt-2 text-xs text-subtle">
-                    {format(new Date(alert.createdAt), "dd MMM yyyy, HH:mm")}
+                    {safeFormat(alert.createdAt, "dd MMM yyyy, HH:mm")}
                   </p>
                 </div>
                 <div className="flex flex-col gap-2">

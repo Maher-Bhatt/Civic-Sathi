@@ -4,7 +4,7 @@ import { SectionLabel, GlassCard } from "@/components/ui/glass-card";
 import { getCivicIssues } from "@/services/api";
 import { LoadingState, EmptyState } from "@/components/ui/states";
 import { SeverityBadge, StatusBadge } from "@/components/municipality/status-badge";
-import { format } from "date-fns";
+import { safeFormat } from "@/lib/safe-format";
 import { MapPin, Users } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 
@@ -57,7 +57,7 @@ function CivicIssuesPage() {
                 <div className="text-right sm:text-left">
                   <StatusBadge status={issue.status} />
                   <p className="mt-2 text-[0.65rem] text-muted-foreground uppercase tracking-wider">
-                    {format(new Date(issue.firstReportedAt || issue.createdAt || Date.now()), "dd MMM")}
+                    {safeFormat(issue.firstReportedAt || issue.createdAt || Date.now(), "dd MMM")}
                   </p>
                 </div>
                 <Link

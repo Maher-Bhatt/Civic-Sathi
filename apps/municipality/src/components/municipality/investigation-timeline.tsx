@@ -1,4 +1,4 @@
-import { format } from "date-fns";
+import { safeFormat } from "@/lib/safe-format";
 import { cn } from "@/lib/utils";
 import { GlassCard, SectionLabel } from "@/components/ui/glass-card";
 import { COMPLAINT_STATUSES } from "@/services/types";
@@ -52,7 +52,7 @@ export function InvestigationTimeline({
                 {event && (
                   <>
                     <p className="text-xs text-muted-foreground">
-                      {format(new Date(event.at), "HH:mm")}
+                      {safeFormat(event.at, "HH:mm")}
                       {event.actor && ` · ${event.actor}`}
                     </p>
                   </>

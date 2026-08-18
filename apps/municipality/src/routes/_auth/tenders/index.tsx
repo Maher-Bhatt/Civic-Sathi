@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { format } from "date-fns";
+import { safeFormat } from "@/lib/safe-format";
 import { Package, Plus, ArrowUpRight } from "lucide-react";
 import { GlassCard, SectionLabel } from "@/components/ui/glass-card";
 import { LoadingState } from "@/components/ui/states";
@@ -102,7 +102,7 @@ function TendersPage() {
                       ₹{(tenderItem.estimated_budget ?? 0).toLocaleString("en-IN")}
                     </p>
                     <p className="mt-1 text-xs text-muted-foreground">
-                      {tenderItem.published_at ? format(new Date(tenderItem.published_at), "dd MMM yyyy") : "Draft"}
+                      {safeFormat(tenderItem.published_at, "dd MMM yyyy", "Draft")}
                     </p>
                     <ArrowUpRight className="mt-2 ml-auto h-4 w-4 text-muted-foreground" />
                   </div>

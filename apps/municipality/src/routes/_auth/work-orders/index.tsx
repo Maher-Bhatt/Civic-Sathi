@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { format, formatDistanceToNow, isPast } from "date-fns";
+import { formatDistanceToNow, isPast } from "date-fns";
+import { safeFormat } from "@/lib/safe-format";
 import { ClipboardList, ArrowUpRight, AlertCircle } from "lucide-react";
 import { GlassCard, SectionLabel } from "@/components/ui/glass-card";
 import { LoadingState } from "@/components/ui/states";
@@ -189,9 +190,7 @@ function WorkOrdersPage() {
                         {wo.id}
                       </p>
                       <p className="mt-1 text-xs text-muted-foreground">
-                        {wo.created_at
-                          ? format(new Date(wo.created_at), "dd MMM yyyy")
-                          : ""}
+                        {safeFormat(wo.created_at, "dd MMM yyyy")}
                       </p>
                       <ArrowUpRight className="mt-2 ml-auto h-4 w-4 text-muted-foreground" />
                     </div>

@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { format, formatDistanceToNow, isPast } from "date-fns";
+import { formatDistanceToNow, isPast } from "date-fns";
+import { safeFormat } from "@/lib/safe-format";
 import {
   ArrowLeft,
   CheckCircle2,
@@ -273,14 +274,14 @@ function WorkOrderDetailPage() {
                 <dt className="label-xs">{t('ui.start_date')}</dt>
                 <dd className="mt-1 text-sm">
                   {wo.actualStartDate
-                    ? format(new Date(wo.actualStartDate), "dd MMM yyyy")
-                    : format(new Date(wo.startDate), "dd MMM yyyy")}
+                    ? safeFormat(wo.actualStartDate, "dd MMM yyyy")
+                    : safeFormat(wo.startDate, "dd MMM yyyy")}
                 </dd>
               </div>
               <div>
                 <dt className="label-xs">{t('ui.sla_deadline')}</dt>
                 <dd className={cn("mt-1 text-sm font-medium", isOverdue && "text-[var(--critical)]")}>
-                  {format(new Date(wo.slaDeadline), "dd MMM yyyy")}
+                  {safeFormat(wo.slaDeadline, "dd MMM yyyy")}
                   {" "}
                   <span className="font-normal text-muted-foreground">
                     ({formatDistanceToNow(new Date(wo.slaDeadline), { addSuffix: true })})
@@ -485,7 +486,7 @@ function WorkOrderDetailPage() {
                       <div className="mt-1 flex gap-3 text-[0.65rem] text-muted-foreground">
                         <span>{evt.actorName}</span>
                         <span className="capitalize">{evt.actorRole}</span>
-                        <span>{format(new Date(evt.at), "dd MMM yyyy, HH:mm")}</span>
+                        <span>{safeFormat(evt.at, "dd MMM yyyy, HH:mm")}</span>
                       </div>
                     </div>
                   </li>

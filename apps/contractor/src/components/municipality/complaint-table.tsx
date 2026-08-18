@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { format } from "date-fns";
+import { safeFormat } from "@/lib/safe-format";
 import { cn } from "@/lib/utils";
 import {
   Table,
@@ -127,7 +127,7 @@ export function ComplaintTable({
                 <StatusBadge status={c.status} />
               </TableCell>
               <TableCell className="text-xs text-muted-foreground">
-                {format(new Date(c.createdAt), "dd MMM yyyy")}
+                {safeFormat(c.createdAt, "dd MMM yyyy")}
               </TableCell>
             </TableRow>
           ))}

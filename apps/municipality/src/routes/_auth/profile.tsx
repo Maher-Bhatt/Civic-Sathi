@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { format } from "date-fns";
+import { safeFormat } from "@/lib/safe-format";
 import { LogOut } from "lucide-react";
 import { toast } from "sonner";
 import { GlassCard, SectionLabel } from "@/components/ui/glass-card";
@@ -57,7 +57,7 @@ function ProfilePage() {
           </div>
           <div className="flex justify-between">
             <dt className="text-muted-foreground">{t('ui.last_active')}</dt>
-            <dd>{format(new Date(officer.lastActive), "dd MMM yyyy, HH:mm")}</dd>
+            <dd>{safeFormat(officer.lastActive, "dd MMM yyyy, HH:mm")}</dd>
           </div>
         </dl>
       </GlassCard>
