@@ -28,6 +28,7 @@ from app.core.config import settings
 from app.core.database import SessionLocal, engine
 from app.models.complaint import Complaint, ComplaintAnalysis
 from app.models.user import Ward, Department
+from app.models.procurement import City
 from app.ml.preprocessing import preprocess_text
 from app.ml.pipeline import classify_category
 from app.ml.risk import calculate_complaint_risk_score
@@ -223,6 +224,15 @@ def load_real_complaints(batch_size=100, limit=None):
     db = SessionLocal()
     try:
         departments, wards = load_departments_and_wards(db)
+        bengaluru_city = (
+            db.query(City)
+            .filter(City.name.ilike("%bengaluru%"))
+            .first()
+        )
+        if not bengaluru_city:
+            bengaluru_city = City(name="Bengaluru", state_code="KA")
+            db.add(bengaluru_city)
+            db.flush()
         
         total_loaded = 0
         total_errors = 0
@@ -338,6 +348,8 @@ def load_real_complaints(batch_size=100, limit=None):
                             severity_score=50,
                             risk_score=risk_score,
                             ward_id=ward.id if ward else None,
+                            city_id=bengaluru_city.id,
+                            address_text=ward_name,
                             source='historical',
                             created_at=pd.to_datetime(grievance_date) if pd.notna(grievance_date) else datetime.now(timezone.utc),
                         )

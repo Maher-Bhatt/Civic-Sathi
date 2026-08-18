@@ -23,10 +23,13 @@ setup_logging()
 async def lifespan(app: FastAPI):
     # Auto-create tables on startup in PostgreSQL
     try:
-        from app.core.database import engine
+        from app.core.database import engine, SessionLocal
         from app.models import Base
+        from app.services.data_integrity import ensure_historical_city_separation
         Base.metadata.create_all(bind=engine)
-        print("Database schema initialized successfully.")
+        with SessionLocal() as db:
+            repaired = ensure_historical_city_separation(db)
+        print(f"Database schema initialized successfully; city integrity repaired: {repaired} rows.")
     except Exception as e:
         print(f"Warning: Auto-migration on startup failed: {e}")
     yield
