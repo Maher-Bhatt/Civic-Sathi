@@ -1,5 +1,5 @@
 """
-JANMIND Exploratory Data Analysis Module
+Civic Sathi Exploratory Data Analysis Module
 Phase 2: Comprehensive Data Analysis
 
 Generates insights, statistics, and analysis reports.
@@ -13,7 +13,7 @@ import json
 
 
 class EDAAnalyzer:
-    """Comprehensive EDA for JANMIND data"""
+    """Comprehensive EDA for Civic Sathi data"""
     
     def __init__(self, df: pd.DataFrame):
         self.df = df
@@ -23,7 +23,7 @@ class EDAAnalyzer:
     def run_full_eda(self):
         """Run complete EDA analysis"""
         print("\n" + "="*80)
-        print("JANMIND EXPLORATORY DATA ANALYSIS")
+        print("Civic Sathi EXPLORATORY DATA ANALYSIS")
         print("="*80)
         
         analyses = {}
@@ -374,12 +374,12 @@ class EDAAnalyzer:
 def main():
     """Run EDA"""
     print("="*80)
-    print("JANMIND EXPLORATORY DATA ANALYSIS - PHASE 2")
+    print("Civic Sathi EXPLORATORY DATA ANALYSIS - PHASE 2")
     print("="*80)
     
     # Load cleaned dataset
     data_dir = Path(__file__).parent.parent / "data"
-    df = pd.read_csv(data_dir / "processed" / "janmind_cleaned.csv", parse_dates=['grievance_date'])
+    df = pd.read_csv(data_dir / "processed" / "civicsathi_cleaned.csv", parse_dates=['grievance_date'])
     
     print(f"\nLoaded {len(df):,} cleaned records")
     

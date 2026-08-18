@@ -1,4 +1,4 @@
-# JANMIND Phase 3: ML Pipeline - IN PROGRESS
+# Civic Sathi Phase 3: ML Pipeline - IN PROGRESS
 
 **Date:** August 11, 2026  
 **Status:** 🔄 **Phase 3 In Progress - Core Modules Created**
@@ -37,7 +37,7 @@
   - `category_closure_rate` - Closure rate per category
 
 **Output:**
-- `data/processed/janmind_features.csv` (323.82 MB, 45 columns)
+- `data/processed/civicsathi_features.csv` (323.82 MB, 45 columns)
 - Added 16 new feature columns
 
 ---
@@ -63,7 +63,7 @@
   - 100% of records have usable text
 
 **Output:**
-- `data/processed/janmind_nlp.csv` (475.07 MB, 51 columns)
+- `data/processed/civicsathi_nlp.csv` (475.07 MB, 51 columns)
 - Ready for embedding generation
 
 **Note:** spaCy keyword extraction skipped (using embeddings instead)
@@ -142,15 +142,15 @@
 
 ### Phase 2: Cleaning & EDA  
 - **Input:** 766,648 raw records
-- **Output:** `janmind_cleaned.csv` (29 columns)
+- **Output:** `civicsathi_cleaned.csv` (29 columns)
 
 ### Phase 3A: Feature Engineering
 - **Input:** Cleaned dataset
-- **Output:** `janmind_features.csv` (45 columns, +16 features)
+- **Output:** `civicsathi_features.csv` (45 columns, +16 features)
 
 ### Phase 3B: NLP Processing
 - **Input:** Feature dataset
-- **Output:** `janmind_nlp.csv` (51 columns, +6 text fields)
+- **Output:** `civicsathi_nlp.csv` (51 columns, +6 text fields)
 
 ### Phase 3C: Embeddings (In Progress)
 - **Input:** NLP dataset
@@ -367,10 +367,10 @@ data/
 │   ├── grievances_2024.csv
 │   └── grievances_2025.csv
 ├── processed/
-│   ├── janmind_master.csv (119 MB)
-│   ├── janmind_cleaned.csv (214 MB)
-│   ├── janmind_features.csv (323 MB)
-│   └── janmind_nlp.csv (475 MB)
+│   ├── civicsathi_master.csv (119 MB)
+│   ├── civicsathi_cleaned.csv (214 MB)
+│   ├── civicsathi_features.csv (323 MB)
+│   └── civicsathi_nlp.csv (475 MB)
 └── embeddings/
     ├── embeddings_sample.npy (in progress) 🔄
     ├── embeddings_metadata.json (pending) ⏳

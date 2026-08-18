@@ -1,5 +1,5 @@
 """
-JANMIND Embeddings Module
+Civic Sathi Embeddings Module
 Phase 3: Generate Semantic Embeddings
 
 Uses Sentence Transformers to generate semantic embeddings for similarity search.
@@ -15,7 +15,7 @@ from tqdm import tqdm
 
 
 class EmbeddingGenerator:
-    """Generate semantic embeddings for JANMIND complaints"""
+    """Generate semantic embeddings for Civic Sathi complaints"""
     
     def __init__(self, model_name: str = "sentence-transformers/all-MiniLM-L6-v2"):
         self.model_name = model_name
@@ -129,12 +129,12 @@ class EmbeddingGenerator:
 def main():
     """Generate embeddings"""
     print("="*80)
-    print("JANMIND EMBEDDING GENERATION - PHASE 3")
+    print("Civic Sathi EMBEDDING GENERATION - PHASE 3")
     print("="*80)
     
     # Load NLP data
     data_dir = Path(__file__).parent.parent / "data"
-    df = pd.read_csv(data_dir / "processed" / "janmind_nlp.csv")
+    df = pd.read_csv(data_dir / "processed" / "civicsathi_nlp.csv")
     
     print(f"\nLoaded {len(df):,} records")
     

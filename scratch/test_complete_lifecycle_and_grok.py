@@ -25,7 +25,7 @@ from app.schemas.common import ComplaintStatus
 
 async def run_tests():
     print("=" * 70)
-    print("RUNNING COMPREHENSIVE JANMIND LIFECYCLE & GROK VERIFICATION")
+    print("RUNNING COMPREHENSIVE Civic Sathi LIFECYCLE & GROK VERIFICATION")
     print("=" * 70)
 
     # 1. Test Grok AI Service

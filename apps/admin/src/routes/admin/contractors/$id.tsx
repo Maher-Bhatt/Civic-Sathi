@@ -10,7 +10,7 @@ import { toast } from "sonner";
 import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/admin/contractors/$id")({
-  head: () => ({ meta: [{ title: "Contractor Details | Admin | CivicSathi" }] }),
+  head: () => ({ meta: [{ title: "Contractor Details | Admin | Civic Sathi" }] }),
   component: ContractorDetail,
 });
 

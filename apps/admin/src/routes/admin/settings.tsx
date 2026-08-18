@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/admin/settings")({
-  head: () => ({ meta: [{ title: "Settings | Admin | CivicSathi" }] }),
+  head: () => ({ meta: [{ title: "Settings | Admin | Civic Sathi" }] }),
   component: AdminSettings,
 });
 

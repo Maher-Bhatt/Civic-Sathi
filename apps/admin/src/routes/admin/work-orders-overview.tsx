@@ -9,7 +9,7 @@ import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, CartesianGri
 import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/admin/work-orders-overview")({
-  head: () => ({ meta: [{ title: "Work Orders Overview | Admin | CivicSathi" }] }),
+  head: () => ({ meta: [{ title: "Work Orders Overview | Admin | Civic Sathi" }] }),
   component: WorkOrdersOverview,
 });
 

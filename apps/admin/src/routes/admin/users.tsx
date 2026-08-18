@@ -22,7 +22,7 @@ import { listAllUsers, createUser, updateUser, deleteUser, listAdminCities } fro
 import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/admin/users")({
-  head: () => ({ meta: [{ title: "User Management | CivicSathi Admin" }] }),
+  head: () => ({ meta: [{ title: "User Management | Civic Sathi Admin" }] }),
   component: UserManagementPage,
 });
 

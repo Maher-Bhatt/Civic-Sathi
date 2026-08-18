@@ -1,5 +1,5 @@
 """
-JANMIND Clustering Module
+Civic Sathi Clustering Module
 Phase 3: Systemic Issue Clustering
 
 Multi-dimensional clustering using category, ward, temporal, and semantic features.
@@ -195,7 +195,7 @@ class SystemicClusterer:
 def main():
     """Run clustering"""
     print("="*80)
-    print("JANMIND CLUSTERING - PHASE 3")
+    print("Civic Sathi CLUSTERING - PHASE 3")
     print("="*80)
     
     # Load NLP data
@@ -203,7 +203,7 @@ def main():
     
     print("\n  Loading data...")
     # Use sample for testing
-    df = pd.read_csv(data_dir / "processed" / "janmind_nlp.csv", 
+    df = pd.read_csv(data_dir / "processed" / "civicsathi_nlp.csv", 
                      parse_dates=['grievance_date'],
                      nrows=50000)  # Sample for testing
     
@@ -223,7 +223,7 @@ def main():
     # Save results
     output_dir = data_dir / "processed"
     
-    df_clustered.to_csv(output_dir / "janmind_clustered_sample.csv", index=False)
+    df_clustered.to_csv(output_dir / "civicsathi_clustered_sample.csv", index=False)
     cluster_summary.to_csv(output_dir / "cluster_summary_sample.csv", index=False)
     
     print(f"\n✓ Saved clustered data and summary")

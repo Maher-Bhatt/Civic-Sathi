@@ -1,4 +1,4 @@
-# AGENTS.md — CivicSathi Municipality Portal
+# AGENTS.md — Civic Sathi Municipality Portal
 
 Notes for anyone (human or AI agent) working on this repo next.
 

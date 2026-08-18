@@ -14,7 +14,7 @@ import { Link } from "@tanstack/react-router";
 import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/contractor/work-orders/$id")({
-  head: ({ params }: any) => ({ meta: [{ title: `Work Order – CivicSathi` }] }),
+  head: ({ params }: any) => ({ meta: [{ title: `Work Order – Civic Sathi` }] }),
   component: ContractorWorkOrderDetail,
 });
 

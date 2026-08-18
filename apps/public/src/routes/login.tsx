@@ -15,15 +15,15 @@ export const Route = createFileRoute("/login")({
   }),
   head: () => ({
     meta: [
-      { title: "Sign in — CivicSathi Citizen Portal" },
+      { title: "Sign in — Civic Sathi Citizen Portal" },
       {
         name: "description",
-        content: "Sign in to your CivicSathi account to report civic problems and track complaints.",
+        content: "Sign in to your Civic Sathi account to report civic problems and track complaints.",
       },
-      { property: "og:title", content: "Sign in — CivicSathi Citizen Portal" },
+      { property: "og:title", content: "Sign in — Civic Sathi Citizen Portal" },
       {
         property: "og:description",
-        content: "Access your civic reports, notifications and complaint history on CivicSathi.",
+        content: "Access your civic reports, notifications and complaint history on Civic Sathi.",
       },
     ],
   }),
@@ -114,7 +114,7 @@ function LoginPage() {
         </div>
 
         <p className="mt-6 text-sm text-muted-foreground">
-          {t("login.new", "New to CivicSathi?")}{" "}
+          {t("login.new", "New to Civic Sathi?")}{" "}
           <Link
             to="/register"
             search={{ redirect }}

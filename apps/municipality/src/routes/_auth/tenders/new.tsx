@@ -9,7 +9,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/_auth/tenders/new")({ 
-  head: () => ({ meta: [{ title: "Publish Tender — CivicSathi" }] }), 
+  head: () => ({ meta: [{ title: "Publish Tender — Civic Sathi" }] }), 
   component: NewTenderPage 
 });
 

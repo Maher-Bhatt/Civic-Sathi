@@ -42,7 +42,7 @@ import { cn } from "@/lib/utils";
 import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/_auth/work-orders/$id")({
-  head: ({ params }: any) => ({ meta: [{ title: `Work Order ${params.id} — CivicSathi` }] }),
+  head: ({ params }: any) => ({ meta: [{ title: `Work Order ${params.id} — Civic Sathi` }] }),
   component: WorkOrderDetailPage,
 });
 

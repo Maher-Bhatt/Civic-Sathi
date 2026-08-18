@@ -29,7 +29,7 @@ Required variables that might be missing:
 
 ### Step 1: Check Render Logs
 1. Go to https://dashboard.render.com
-2. Click on your CivicSathi backend service
+2. Click on your Civic Sathi backend service
 3. Click "Logs" tab
 4. Look for error messages around the time you tried to create the admin
 

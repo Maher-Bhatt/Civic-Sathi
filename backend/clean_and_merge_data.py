@@ -1,5 +1,5 @@
 """
-CivicSathi Backend - Data Cleaning and Master Dataset Creation
+Civic Sathi Backend - Data Cleaning and Master Dataset Creation
 Cleans all 6 CSV files and creates a master dataset
 """
 
@@ -280,7 +280,7 @@ def save_datasets(master: pd.DataFrame):
 def main():
     """Main execution"""
     print("="*60)
-    print("CivicSathi DATA CLEANING & MASTER DATASET CREATION")
+    print("Civic Sathi DATA CLEANING & MASTER DATASET CREATION")
     print("="*60)
     
     data_dir = Path('data/raw')

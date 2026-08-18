@@ -20,7 +20,7 @@ class Settings(BaseSettings):
     
     # API
     api_v1_prefix: str = "/api/v1"
-    app_name: str = "CivicSathi Backend"
+    app_name: str = "Civic Sathi Backend"
     app_version: str = "1.0.0"
     
     # Database

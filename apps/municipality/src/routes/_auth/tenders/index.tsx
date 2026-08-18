@@ -10,7 +10,7 @@ import { listTenders } from "@/services/api";
 import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/_auth/tenders/")({
-  head: () => ({ meta: [{ title: "Tenders — CivicSathi" }] }),
+  head: () => ({ meta: [{ title: "Tenders — Civic Sathi" }] }),
   component: TendersPage,
 });
 

@@ -1,5 +1,5 @@
 """
-JANMIND Systemic Issue Detection Module
+Civic Sathi Systemic Issue Detection Module
 Phase 3: Final Systemic Issue Identification
 
 Combines all signals to identify and classify systemic issues.
@@ -167,7 +167,7 @@ class SystemicIssueDetector:
 def main():
     """Detect systemic issues"""
     print("="*80)
-    print("JANMIND SYSTEMIC ISSUE DETECTION - PHASE 3")
+    print("Civic Sathi SYSTEMIC ISSUE DETECTION - PHASE 3")
     print("="*80)
     
     # Load risk scores

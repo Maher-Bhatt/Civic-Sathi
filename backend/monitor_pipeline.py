@@ -1,5 +1,5 @@
 """
-Monitor CivicSathi Pipeline Execution
+Monitor Civic Sathi Pipeline Execution
 Shows progress of ongoing pipeline run
 """
 
@@ -30,7 +30,7 @@ def check_file_progress(file_path):
 def main():
     """Monitor pipeline progress"""
     print("="*80)
-    print("CivicSathi PIPELINE MONITOR")
+    print("Civic Sathi PIPELINE MONITOR")
     print("="*80)
     print("\nMonitoring data/processed/ directory for pipeline progress...")
     print("Press Ctrl+C to stop monitoring\n")

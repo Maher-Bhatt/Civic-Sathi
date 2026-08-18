@@ -1,6 +1,6 @@
 {
-  "name": "CivicSathi — Contractor Field Operations",
-  "short_name": "CivicSathi Contractor",
+  "name": "Civic Sathi — Contractor Field Operations",
+  "short_name": "Civic Sathi Contractor",
   "description": "Field operations for contractors: view work orders, submit milestone proof, and manage repair jobs.",
   "start_url": "/",
   "id": "/contractor",

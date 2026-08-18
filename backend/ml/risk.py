@@ -1,5 +1,5 @@
 """
-JANMIND Risk Scoring Module
+Civic Sathi Risk Scoring Module
 Phase 3: 6-Factor Risk Assessment
 
 Calculates comprehensive risk scores for systemic issues.
@@ -231,7 +231,7 @@ class RiskScorer:
 def main():
     """Run risk scoring"""
     print("="*80)
-    print("JANMIND RISK SCORING - PHASE 3")
+    print("Civic Sathi RISK SCORING - PHASE 3")
     print("="*80)
     
     # Load temporal analysis results

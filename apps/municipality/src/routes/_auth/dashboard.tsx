@@ -41,7 +41,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/_auth/dashboard")({
-  head: () => ({ meta: [{ title: "Municipal Intelligence — CivicSathi" }] }),
+  head: () => ({ meta: [{ title: "Municipal Intelligence — Civic Sathi" }] }),
   component: MuniDashboardPage,
 });
 

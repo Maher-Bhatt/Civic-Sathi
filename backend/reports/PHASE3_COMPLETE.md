@@ -1,4 +1,4 @@
-# JANMIND Phase 3: ML Pipeline - COMPLETE ✅
+# Civic Sathi Phase 3: ML Pipeline - COMPLETE ✅
 
 **Completion Date:** August 11, 2026  
 **Status:** ✅ **ALL MODULES COMPLETE & TESTED**
@@ -482,9 +482,9 @@ Raw CSV Files (6 files, 766K records)
 ### Processed Datasets
 ```
 data/processed/
-├── janmind_features.csv (323 MB, 45 columns)
-├── janmind_nlp.csv (475 MB, 51 columns)
-├── janmind_clustered_sample.csv
+├── civicsathi_features.csv (323 MB, 45 columns)
+├── civicsathi_nlp.csv (475 MB, 51 columns)
+├── civicsathi_clustered_sample.csv
 ├── cluster_summary_sample.csv
 ├── cluster_temporal_analysis_sample.csv
 ├── cluster_risk_scores_sample.csv
@@ -531,7 +531,7 @@ reports/
    - Calculate precision metrics
 
 3. **Database Integration** ⏳
-   - Map results to JANMIND schema
+   - Map results to Civic Sathi schema
    - Load systemic issues into PostgreSQL
    - Create API endpoints
    - Connect to FastAPI backend
@@ -622,13 +622,13 @@ reports/
 
 ### Value Proposition
 
-**Before JANMIND:**
+**Before Civic Sathi:**
 - Officers see 766K individual complaints
 - Patterns hidden in noise
 - Reactive problem-solving
 - No prioritization framework
 
-**With JANMIND:**
+**With Civic Sathi:**
 - 351 actionable systemic issues identified
 - Risk-scored and prioritized (CRITICAL/HIGH/MEDIUM/LOW)
 - Evidence-based root causes

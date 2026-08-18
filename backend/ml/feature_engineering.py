@@ -1,5 +1,5 @@
 """
-JANMIND Feature Engineering Module
+Civic Sathi Feature Engineering Module
 Phase 3: Advanced Feature Creation for ML
 
 Creates frequency, temporal, and aggregation features for systemic issue detection.
@@ -178,12 +178,12 @@ class FeatureEngineer:
 def main():
     """Run feature engineering"""
     print("="*80)
-    print("JANMIND FEATURE ENGINEERING - PHASE 3")
+    print("Civic Sathi FEATURE ENGINEERING - PHASE 3")
     print("="*80)
     
     # Load cleaned data
     data_dir = Path(__file__).parent.parent / "data"
-    df = pd.read_csv(data_dir / "processed" / "janmind_cleaned.csv", parse_dates=['grievance_date'])
+    df = pd.read_csv(data_dir / "processed" / "civicsathi_cleaned.csv", parse_dates=['grievance_date'])
     
     print(f"\nLoaded {len(df):,} cleaned records")
     print(f"Starting columns: {len(df.columns)}")
@@ -193,7 +193,7 @@ def main():
     df_features = engineer.engineer_all_features(df)
     
     # Save
-    output_path = data_dir / "processed" / "janmind_features.csv"
+    output_path = data_dir / "processed" / "civicsathi_features.csv"
     df_features.to_csv(output_path, index=False)
     
     size_mb = output_path.stat().st_size / (1024 * 1024)

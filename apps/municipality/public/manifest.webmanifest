@@ -1,6 +1,6 @@
 {
-  "name": "CivicSathi — Municipality Operations",
-  "short_name": "CivicSathi Muni",
+  "name": "Civic Sathi — Municipality Operations",
+  "short_name": "Civic Sathi Muni",
   "description": "Officer operations console for complaint triage, contractor dispatch, and civic intelligence.",
   "start_url": "/",
   "id": "/municipality",

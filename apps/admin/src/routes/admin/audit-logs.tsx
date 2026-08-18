@@ -8,7 +8,7 @@ import { Shield, Search, RefreshCw } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/admin/audit-logs")({
-  head: () => ({ meta: [{ title: "Audit Logs | Admin | CivicSathi" }] }),
+  head: () => ({ meta: [{ title: "Audit Logs | Admin | Civic Sathi" }] }),
   component: AuditLogsPage,
 });
 

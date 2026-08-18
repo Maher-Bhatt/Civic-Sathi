@@ -15,7 +15,7 @@
 
 **Find your OFFICER_API_KEY:**
 1. Go to https://dashboard.render.com
-2. Click on your "CivicSathi backend" service
+2. Click on your "Civic Sathi backend" service
 3. Click "Environment" tab
 4. Find `OFFICER_API_KEY` value (something like: `civicsathi_officer_key_...`)
 

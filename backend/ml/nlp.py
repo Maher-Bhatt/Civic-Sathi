@@ -1,5 +1,5 @@
 """
-JANMIND NLP Module
+Civic Sathi NLP Module
 Phase 3: Text Preprocessing for Embeddings
 
 Preprocesses staff remarks and category text for semantic embeddings.
@@ -13,7 +13,7 @@ import spacy
 
 
 class NLPPreprocessor:
-    """NLP preprocessing for JANMIND text data"""
+    """NLP preprocessing for Civic Sathi text data"""
     
     def __init__(self):
         self.nlp = None
@@ -142,12 +142,12 @@ class NLPPreprocessor:
 def main():
     """Run NLP preprocessing"""
     print("="*80)
-    print("JANMIND NLP PREPROCESSING - PHASE 3")
+    print("Civic Sathi NLP PREPROCESSING - PHASE 3")
     print("="*80)
     
     # Load features data
     data_dir = Path(__file__).parent.parent / "data"
-    df = pd.read_csv(data_dir / "processed" / "janmind_features.csv", parse_dates=['grievance_date'])
+    df = pd.read_csv(data_dir / "processed" / "civicsathi_features.csv", parse_dates=['grievance_date'])
     
     print(f"\nLoaded {len(df):,} records")
     
@@ -156,7 +156,7 @@ def main():
     df_nlp = preprocessor.preprocess_all(df)
     
     # Save
-    output_path = data_dir / "processed" / "janmind_nlp.csv"
+    output_path = data_dir / "processed" / "civicsathi_nlp.csv"
     df_nlp.to_csv(output_path, index=False)
     
     size_mb = output_path.stat().st_size / (1024 * 1024)

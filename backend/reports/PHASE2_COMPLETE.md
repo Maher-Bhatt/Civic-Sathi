@@ -1,4 +1,4 @@
-# JANMIND Phase 2: Data Cleaning & EDA - COMPLETE ✅
+# Civic Sathi Phase 2: Data Cleaning & EDA - COMPLETE ✅
 
 **Completion Date:** August 11, 2026  
 **Status:** ✅ **READY FOR PHASE 3 (ML Pipeline)**
@@ -12,7 +12,7 @@
 - **766,648 records** combined successfully
 - **100% data integrity** - no rows lost in merge
 - **Source tracking** added (`source_file`, `source_year`)
-- **Output:** `data/processed/janmind_master.csv` (119 MB)
+- **Output:** `data/processed/civicsathi_master.csv` (119 MB)
 
 ### ✅ 2. Data Cleaning
 - **Column names** standardized to snake_case
@@ -20,7 +20,7 @@
 - **Dates** parsed and validated (100% success)
 - **Text fields** normalized (whitespace, formatting)
 - **Status values** mapped to standard format
-- **Output:** `data/processed/janmind_cleaned.csv` (214 MB)
+- **Output:** `data/processed/civicsathi_cleaned.csv` (214 MB)
 
 ### ✅ 3. Feature Engineering
 - **Added 17 derived features:**
@@ -140,8 +140,8 @@ data/raw/
 ### Output (Processed Data)
 ```
 data/processed/
-├── janmind_master.csv (766,648 rows, 10 columns, 119 MB)
-└── janmind_cleaned.csv (766,648 rows, 29 columns, 214 MB)
+├── civicsathi_master.csv (766,648 rows, 10 columns, 119 MB)
+└── civicsathi_cleaned.csv (766,648 rows, 29 columns, 214 MB)
 ```
 
 ### Schema Evolution
@@ -265,13 +265,13 @@ data/processed/
 
 ### Value Proposition
 
-**Before JANMIND:**
+**Before Civic Sathi:**
 - Officers see individual complaints
 - No pattern recognition
 - Reactive problem-solving
 - Systemic issues hidden in noise
 
-**With JANMIND:**
+**With Civic Sathi:**
 - ✅ Detect recurring patterns automatically
 - ✅ Identify systemic issues from 2,699 reopens
 - ✅ Prioritize by risk scores

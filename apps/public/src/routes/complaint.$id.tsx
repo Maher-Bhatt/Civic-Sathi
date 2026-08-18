@@ -76,13 +76,13 @@ const WO_STATUS_PUBLIC: Record<string, { label: string; desc: string }> = {
 export const Route = createFileRoute("/complaint/$id")({
   head: () => ({
     meta: [
-      { title: "Complaint details — CivicSathi" },
+      { title: "Complaint details — Civic Sathi" },
       {
         name: "description",
         content:
           "Full detail of a civic complaint: category, severity, location, evidence and resolution timeline.",
       },
-      { property: "og:title", content: "Complaint details — CivicSathi" },
+      { property: "og:title", content: "Complaint details — Civic Sathi" },
       {
         property: "og:description",
         content: "Follow a civic complaint from submission to resolution.",

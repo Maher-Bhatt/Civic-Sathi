@@ -1,5 +1,5 @@
 """
-JANMIND Data Preprocessing Module
+Civic Sathi Data Preprocessing Module
 Phase 2: Data Cleaning & Standardization
 
 Cleans and standardizes the merged master dataset.
@@ -13,7 +13,7 @@ from datetime import datetime
 
 
 class DataPreprocessor:
-    """Clean and standardize JANMIND data"""
+    """Clean and standardize Civic Sathi data"""
     
     def __init__(self):
         self.category_mapping = {}
@@ -256,7 +256,7 @@ def main():
     from ml.data_loader import DataLoader
     
     print("="*80)
-    print("JANMIND DATA PREPROCESSING - PHASE 2")
+    print("Civic Sathi DATA PREPROCESSING - PHASE 2")
     print("="*80)
     
     # Load master dataset
@@ -271,7 +271,7 @@ def main():
     df_clean = preprocessor.clean_all(df)
     
     # Save cleaned dataset
-    output_path = data_dir / "processed" / "janmind_cleaned.csv"
+    output_path = data_dir / "processed" / "civicsathi_cleaned.csv"
     df_clean.to_csv(output_path, index=False, encoding='utf-8')
     
     size_mb = output_path.stat().st_size / (1024 * 1024)

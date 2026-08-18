@@ -1,5 +1,5 @@
 """
-JANMIND Similarity Module
+Civic Sathi Similarity Module
 Phase 3: FAISS Similarity Search
 
 Builds FAISS index for fast similarity search.
@@ -13,7 +13,7 @@ import pickle
 
 
 class SimilaritySearcher:
-    """FAISS-based similarity search for JANMIND"""
+    """FAISS-based similarity search for Civic Sathi"""
     
     def __init__(self, embedding_dim: int = 384):
         self.embedding_dim = embedding_dim
@@ -128,7 +128,7 @@ class SimilaritySearcher:
 def main():
     """Build FAISS index"""
     print("="*80)
-    print("JANMIND SIMILARITY SEARCH - PHASE 3")
+    print("Civic Sathi SIMILARITY SEARCH - PHASE 3")
     print("="*80)
     
     # Load embeddings
@@ -147,7 +147,7 @@ def main():
     searcher.save_index(embeddings_dir, "faiss_index_sample.bin")
     
     # Load NLP data for similarity demo
-    df = pd.read_csv(data_dir / "processed" / "janmind_nlp.csv", nrows=50000)
+    df = pd.read_csv(data_dir / "processed" / "civicsathi_nlp.csv", nrows=50000)
     
     # Find similar complaints
     similar_df = searcher.find_similar_complaints(

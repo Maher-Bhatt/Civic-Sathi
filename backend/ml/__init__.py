@@ -1,5 +1,5 @@
 """
-JANMIND ML Pipeline
+Civic Sathi ML Pipeline
 Real-Data Intelligence Engine
 """
 

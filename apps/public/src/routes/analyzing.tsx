@@ -18,7 +18,7 @@ import { useI18n } from "@/lib/i18n";
 export const Route = createFileRoute("/analyzing")({
   head: () => ({
     meta: [
-      { title: "Analyzing your report — CivicSathi" },
+      { title: "Analyzing your report — Civic Sathi" },
     ],
   }),
   component: () => (

@@ -52,13 +52,13 @@ import { useI18n } from "@/lib/i18n";
 export const Route = createFileRoute("/map")({
   head: () => ({
     meta: [
-      { title: "Civic Map — locality civic activity | CivicSathi" },
+      { title: "Civic Map — locality civic activity | Civic Sathi" },
       {
         name: "description",
         content:
           "Explore aggregated civic activity by locality across Vadodara and Bengaluru: area health, complaint activity and emerging hotspots.",
       },
-      { property: "og:title", content: "Civic Map — locality civic activity | CivicSathi" },
+      { property: "og:title", content: "Civic Map — locality civic activity | Civic Sathi" },
       {
         property: "og:description",
         content:

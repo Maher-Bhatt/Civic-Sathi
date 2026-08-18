@@ -1,5 +1,5 @@
 """
-JANMIND Temporal Analysis Module
+Civic Sathi Temporal Analysis Module
 Phase 3: Spike Detection & Trend Analysis
 
 Detects temporal patterns, spikes, and persistence in complaint clusters.
@@ -212,7 +212,7 @@ class TemporalAnalyzer:
 def main():
     """Run temporal analysis"""
     print("="*80)
-    print("JANMIND TEMPORAL ANALYSIS - PHASE 3")
+    print("Civic Sathi TEMPORAL ANALYSIS - PHASE 3")
     print("="*80)
     
     # Load clustered data
@@ -220,7 +220,7 @@ def main():
     
     print("\n  Loading clustered data...")
     df = pd.read_csv(
-        data_dir / "processed" / "janmind_clustered_sample.csv",
+        data_dir / "processed" / "civicsathi_clustered_sample.csv",
         parse_dates=['grievance_date']
     )
     

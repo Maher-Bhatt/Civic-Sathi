@@ -1,5 +1,5 @@
 """
-JANMIND Root Cause Analysis Module
+Civic Sathi Root Cause Analysis Module
 Phase 3: Evidence-Based Root Cause Signals
 
 Generates possible root cause signals based on evidence from patterns.
@@ -271,7 +271,7 @@ class RootCauseAnalyzer:
 def main():
     """Analyze root causes"""
     print("="*80)
-    print("JANMIND ROOT CAUSE ANALYSIS - PHASE 3")
+    print("Civic Sathi ROOT CAUSE ANALYSIS - PHASE 3")
     print("="*80)
     
     # Load systemic issues

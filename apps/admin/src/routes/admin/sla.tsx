@@ -10,7 +10,7 @@ import { toast } from "sonner";
 import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/admin/sla")({
-  head: () => ({ meta: [{ title: "SLA Configuration | Admin | CivicSathi" }] }),
+  head: () => ({ meta: [{ title: "SLA Configuration | Admin | Civic Sathi" }] }),
   component: SLAConfig,
 });
 

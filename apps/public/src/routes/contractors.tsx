@@ -17,7 +17,7 @@ import {
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/contractors")({
-  head: () => ({ meta: [{ title: "Contractor Transparency & Tri-Party Ratings — CivicSathi" }] }),
+  head: () => ({ meta: [{ title: "Contractor Transparency & Tri-Party Ratings — Civic Sathi" }] }),
   component: ContractorsPublicPage,
 });
 

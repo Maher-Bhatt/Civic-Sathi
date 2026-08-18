@@ -10,7 +10,7 @@ import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/login")({
   head: () => ({
-    meta: [{ title: "Municipal Sign In — CivicSathi" }],
+    meta: [{ title: "Municipal Sign In — Civic Sathi" }],
   }),
   component: MuniLoginPage,
 });

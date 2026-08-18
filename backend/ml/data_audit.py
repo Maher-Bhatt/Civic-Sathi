@@ -1,5 +1,5 @@
 """
-JANMIND Data Audit Module
+Civic Sathi Data Audit Module
 Phase 1: Dataset Inventory & Quality Audit
 
 This module performs comprehensive auditing of the 6 real grievance CSV files.
@@ -13,7 +13,7 @@ import json
 
 
 class DataAuditor:
-    """Comprehensive data quality auditor for JANMIND datasets"""
+    """Comprehensive data quality auditor for Civic Sathi datasets"""
     
     def __init__(self, data_dir: Path):
         self.data_dir = data_dir
@@ -27,7 +27,7 @@ class DataAuditor:
     def audit_all(self):
         """Run complete audit on all datasets"""
         print("="*80)
-        print("JANMIND DATASET AUDIT - PHASE 1")
+        print("Civic Sathi DATASET AUDIT - PHASE 1")
         print("="*80)
         print(f"\nAudit Started: {datetime.now()}")
         print(f"Data Directory: {self.raw_dir}")

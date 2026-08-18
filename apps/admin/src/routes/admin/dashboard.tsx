@@ -14,7 +14,7 @@ import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, CartesianGri
 import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/admin/dashboard")({
-  head: () => ({ meta: [{ title: "Admin Dashboard | CivicSathi" }] }),
+  head: () => ({ meta: [{ title: "Admin Dashboard | Civic Sathi" }] }),
   component: AdminDashboardContent,
 });
 

@@ -16,13 +16,13 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/report")({
   head: () => ({
     meta: [
-      { title: "Report a civic problem — CivicSathi" },
+      { title: "Report a civic problem — Civic Sathi" },
       {
         name: "description",
         content:
-          "Describe the problem in your own words, add your location and a photo. CivicSathi suggests the category and severity.",
+          "Describe the problem in your own words, add your location and a photo. Civic Sathi suggests the category and severity.",
       },
-      { property: "og:title", content: "Report a civic problem — CivicSathi" },
+      { property: "og:title", content: "Report a civic problem — Civic Sathi" },
       {
         property: "og:description",
         content: "Describe a civic issue, pin the location, add evidence and track the response.",
@@ -175,7 +175,7 @@ function ReportPage() {
                 {draft.description || "Not provided"}
               </ReviewRow>
               <ReviewRow label={t('ui.suggested_category')} onEdit={() => setStep(2)}>
-                {draft.category ?? "CivicSathi will suggest one"}
+                {draft.category ?? "Civic Sathi will suggest one"}
               </ReviewRow>
               <ReviewRow label={t('ui.location')} onEdit={() => setStep(1)}>
                 {draft.location

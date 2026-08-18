@@ -21,7 +21,7 @@ def count_lines(directories):
     return total_lines
 
 if __name__ == "__main__":
-    base = r"C:\Users\maher\OneDrive\Desktop\CivicSathi"
+    base = r"C:\Users\maher\OneDrive\Desktop\Civic Sathi"
     dirs = [
         os.path.join(base, "apps"),
         os.path.join(base, "packages"),

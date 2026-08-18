@@ -5,7 +5,7 @@ import { GlassCard } from "@/components/ui/glass-card";
 import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/login")({
-  head: () => ({ meta: [{ title: "Contractor Login - CivicSathi" }] }),
+  head: () => ({ meta: [{ title: "Contractor Login - Civic Sathi" }] }),
   component: ContractorLogin,
 });
 

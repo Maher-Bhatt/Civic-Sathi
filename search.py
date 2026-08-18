@@ -20,8 +20,8 @@ def search_files(root_dir, target_strings, extensions):
     return list(results)
 
 if __name__ == '__main__':
-    apps_dir = r"C:\Users\maher\OneDrive\Desktop\CivicSathi\apps"
-    backend_dir = r"C:\Users\maher\OneDrive\Desktop\CivicSathi\backend"
+    apps_dir = r"C:\Users\maher\OneDrive\Desktop\Civic Sathi\apps"
+    backend_dir = r"C:\Users\maher\OneDrive\Desktop\Civic Sathi\backend"
     
     apps_results = search_files(apps_dir, ["localStorage", "sessionStorage", "mockData", "dummyData", "fakeData", "demoData", "json-server"], ['.ts', '.tsx', '.js', '.jsx'])
     print("APPS MOCK/LOCALSTORAGE:")

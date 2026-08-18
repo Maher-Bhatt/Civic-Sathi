@@ -18,12 +18,12 @@ db = SessionLocal()
 demo_accounts = [
     {
         "name": "Maher Bhatt (Super Admin)",
-        "email": "admin@janmind.in",
+        "email": "admin@civicsathi.in",
         "phone": "+91 98765 43210",
         "role": "admin",
         "city": "vadodara",
         "department": "Administration",
-        "password": "Janmind@2026",
+        "password": "CivicSathi@2026",
     },
     {
         "name": "Maher Bhatt (Admin)",
@@ -32,7 +32,7 @@ demo_accounts = [
         "role": "admin",
         "city": "vadodara",
         "department": "Administration",
-        "password": "Janmind@2026",
+        "password": "CivicSathi@2026",
     },
     {
         "name": "Dhruv Patel (VMC Officer)",
@@ -41,7 +41,7 @@ demo_accounts = [
         "role": "officer",
         "city": "vadodara",
         "department": "Roads",
-        "password": "Janmind@2026",
+        "password": "CivicSathi@2026",
     },
     {
         "name": "Priya Sharma (BBMP Officer)",
@@ -50,7 +50,7 @@ demo_accounts = [
         "role": "officer",
         "city": "bengaluru",
         "department": "Roads",
-        "password": "Janmind@2026",
+        "password": "CivicSathi@2026",
     },
     {
         "name": "Sneha Desai (VMC Supervisor)",
@@ -59,7 +59,7 @@ demo_accounts = [
         "role": "supervisor",
         "city": "vadodara",
         "department": "Sanitation",
-        "password": "Janmind@2026",
+        "password": "CivicSathi@2026",
     },
     {
         "name": "Mihir Shah (VMC Municipality)",
@@ -68,7 +68,7 @@ demo_accounts = [
         "role": "municipality",
         "city": "vadodara",
         "department": "Electricity",
-        "password": "Janmind@2026",
+        "password": "CivicSathi@2026",
     },
     {
         "name": "Suresh Patel (Bharat Infra)",
@@ -77,7 +77,7 @@ demo_accounts = [
         "role": "contractor",
         "city": "vadodara",
         "department": "Roads",
-        "password": "Janmind@2026",
+        "password": "CivicSathi@2026",
     },
 ]
 
@@ -110,7 +110,7 @@ for acc in demo_accounts:
 for em in ["priya.sharma@bbmp.gov.in", "dhruv.patel@vmc.gov.in", "sneha.desai@vmc.gov.in", "mihir.shah@vmc.gov.in"]:
     u = db.query(User).filter(User.email == em).first()
     if u:
-        u.password_hash = hash_password("Janmind@2026")
+        u.password_hash = hash_password("CivicSathi@2026")
         print(f" [~] Synchronized password for {em}")
 
 # Ensure contractor company exists for contractor@bharat.in

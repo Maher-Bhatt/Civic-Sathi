@@ -1,5 +1,5 @@
 """
-JANMIND ML Pipeline
+Civic Sathi ML Pipeline
 Phase 3: End-to-End Pipeline
 
 Complete pipeline from raw data to systemic issues with recommendations.
@@ -24,7 +24,7 @@ from ml.root_cause import RootCauseAnalyzer
 from ml.recommendations import RecommendationEngine
 
 
-class JANMINDPipeline:
+class Civic SathiPipeline:
     """Complete end-to-end ML pipeline"""
     
     def __init__(self, data_dir: Path):
@@ -56,9 +56,9 @@ class JANMINDPipeline:
         self.recommendations_df = None
     
     def run_full_pipeline(self, use_sample: bool = True, sample_size: int = 50000):
-        """Run the complete JANMIND ML pipeline"""
+        """Run the complete Civic Sathi ML pipeline"""
         print("\n" + "="*80)
-        print("JANMIND COMPLETE ML PIPELINE")
+        print("Civic Sathi COMPLETE ML PIPELINE")
         print("="*80)
         print(f"\nPipeline Started: {datetime.now()}")
         print(f"Mode: {'SAMPLE' if use_sample else 'FULL'} ({sample_size:,} records)" if use_sample else "Mode: FULL")
@@ -114,7 +114,7 @@ class JANMINDPipeline:
     def run_phase1_preprocessing(self, use_sample: bool, sample_size: int) -> pd.DataFrame:
         """Phase 1: Load and preprocess data - Memory optimized"""
         # Check if already preprocessed
-        nlp_path = self.processed_dir / "janmind_nlp.csv"
+        nlp_path = self.processed_dir / "civicsathi_nlp.csv"
         
         if nlp_path.exists() and not use_sample:
             print("  ✓ Using existing preprocessed data")
@@ -168,7 +168,7 @@ class JANMINDPipeline:
             print(f"  ✓ Total rows loaded: {len(df):,}")
         else:
             # Load master or merge
-            master_path = self.processed_dir / "janmind_master.csv"
+            master_path = self.processed_dir / "civicsathi_master.csv"
             
             if not master_path.exists():
                 print("  Loading and merging raw CSV files...")
@@ -363,13 +363,13 @@ class JANMINDPipeline:
 def main():
     """Run the complete pipeline"""
     print("="*80)
-    print("JANMIND END-TO-END ML PIPELINE")
+    print("Civic Sathi END-TO-END ML PIPELINE")
     print("="*80)
     
     data_dir = Path(__file__).parent.parent / "data"
     
     # Initialize pipeline
-    pipeline = JANMINDPipeline(data_dir)
+    pipeline = Civic SathiPipeline(data_dir)
     
     # Run pipeline (FULL DATASET)
     report = pipeline.run_full_pipeline(

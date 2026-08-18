@@ -1,5 +1,5 @@
 """
-CivicSathi Master Seed Script
+Civic Sathi Master Seed Script
 ==========================
 Run this ONCE against your production Neon database to:
   1. Create Bengaluru and Vadodara cities
@@ -53,7 +53,7 @@ Session = sessionmaker(bind=engine)
 db = Session()
 
 print("=" * 60)
-print("CivicSathi Master Seed Script")
+print("Civic Sathi Master Seed Script")
 print("=" * 60)
 
 # ─────────────────────────────────────────────────────────────────

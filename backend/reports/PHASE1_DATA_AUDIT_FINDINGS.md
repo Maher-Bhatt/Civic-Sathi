@@ -1,7 +1,7 @@
-# JANMIND Phase 1: Data Audit Findings & Recommendations
+# Civic Sathi Phase 1: Data Audit Findings & Recommendations
 
 **Audit Date:** August 11, 2026  
-**Auditor:** JANMIND ML Engineering Team  
+**Auditor:** Civic Sathi ML Engineering Team  
 **Dataset:** Real Government Grievance Records (2020-2025)  
 
 ---
@@ -49,7 +49,7 @@
 
 ### Complete Schema (All Files)
 
-| Column | Data Type | Description | JANMIND Mapping |
+| Column | Data Type | Description | Civic Sathi Mapping |
 |--------|-----------|-------------|-----------------|
 | **Complaint ID** | int64 | Unique identifier | `id` (after validation) |
 | **Category** | object (string) | Main complaint category | `category` |
@@ -288,11 +288,11 @@
 
 ---
 
-## 🎯 JANMIND FEATURE MAPPING
+## 🎯 Civic Sathi FEATURE MAPPING
 
-### Proposed Mapping: CSV → JANMIND Database
+### Proposed Mapping: CSV → Civic Sathi Database
 
-| CSV Field | JANMIND Field | Transformation |
+| CSV Field | Civic Sathi Field | Transformation |
 |-----------|---------------|----------------|
 | Complaint ID | `id` (UUID) | Generate UUID, store original as `original_id` |
 | Category | `category` | Standardize & map to department |
@@ -472,7 +472,7 @@
    - `ml/feature_engineering.py`
 
 3. 🔄 **Merge 6 Datasets**
-   - Create `janmind_grievances_master.csv`
+   - Create `civicsathi_grievances_master.csv`
    - Add source tracking
    - Validate row counts
 
@@ -483,7 +483,7 @@
    - Temporal analysis
 
 5. 🔄 **Schema Mapping**
-   - Create JANMIND database mappings
+   - Create Civic Sathi database mappings
    - Build data transformation pipeline
 
 ---

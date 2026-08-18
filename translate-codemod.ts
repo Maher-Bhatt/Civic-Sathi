@@ -122,6 +122,6 @@ for (const app of apps) {
   processApp(app);
 }
 
-fs.writeFileSync("c:/Users/maher/OneDrive/Desktop/CivicSathi/extracted_strings.json", JSON.stringify(extractedStrings, null, 2));
+fs.writeFileSync("c:/Users/maher/OneDrive/Desktop/Civic Sathi/extracted_strings.json", JSON.stringify(extractedStrings, null, 2));
 console.log("Done extracting strings.");
 

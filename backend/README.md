@@ -1,4 +1,4 @@
-# CivicSathi Backend
+# Civic Sathi Backend
 
 Civic complaint intelligence platform backend built with FastAPI, PostgreSQL, and AI/ML.
 

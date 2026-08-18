@@ -62,7 +62,7 @@ export function InstallPwaButton({ className = "" }: { className?: string }) {
       <button
         onClick={handleInstallClick}
         type="button"
-        title="Install CivicSathi on Android / Desktop"
+        title="Install Civic Sathi on Android / Desktop"
         className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 border border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-500/20 hover:border-emerald-500/50 shadow-sm active:scale-95 ${className}`}
       >
         <Smartphone className="w-3.5 h-3.5" />

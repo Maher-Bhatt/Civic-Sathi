@@ -7,7 +7,7 @@ export function AiCopilotWidget() {
     const { t } = useI18n();
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<{ role: "user" | "ai"; text: string }[]>([
-    { role: "ai", text: "Hello! I am your CivicSathi AI Copilot. I can help you analyze project risks, review contractor performance, or summarize systemic issues. How can I help you today?" }
+    { role: "ai", text: "Hello! I am your Civic Sathi AI Copilot. I can help you analyze project risks, review contractor performance, or summarize systemic issues. How can I help you today?" }
   ]);
   const [input, setInput] = useState("");
 

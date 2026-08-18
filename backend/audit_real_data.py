@@ -1,5 +1,5 @@
 """
-CivicSathi Backend - Real Data Audit Script
+Civic Sathi Backend - Real Data Audit Script
 Analyzes all 6 CSV files (2020-2025) for quality, consistency, and completeness
 """
 

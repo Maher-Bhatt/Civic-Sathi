@@ -1,5 +1,5 @@
 """
-JANMIND Data Loader Module
+Civic Sathi Data Loader Module
 Phase 2: Data Loading & Merging
 
 Safely loads and merges the 6 CSV files into a master dataset.
@@ -13,7 +13,7 @@ import json
 
 
 class DataLoader:
-    """Load and merge JANMIND grievance datasets"""
+    """Load and merge Civic Sathi grievance datasets"""
     
     def __init__(self, data_dir: Path):
         self.data_dir = data_dir
@@ -75,7 +75,7 @@ class DataLoader:
         
         return merged_df
     
-    def save_master_dataset(self, df: pd.DataFrame, filename: str = "janmind_master.csv"):
+    def save_master_dataset(self, df: pd.DataFrame, filename: str = "civicsathi_master.csv"):
         """Save the merged master dataset"""
         filepath = self.processed_dir / filename
         
@@ -87,7 +87,7 @@ class DataLoader:
         
         return filepath
     
-    def load_master_dataset(self, filename: str = "janmind_master.csv") -> pd.DataFrame:
+    def load_master_dataset(self, filename: str = "civicsathi_master.csv") -> pd.DataFrame:
         """Load the master dataset"""
         filepath = self.processed_dir / filename
         
@@ -121,7 +121,7 @@ class DataLoader:
 def main():
     """Run data loading and merging"""
     print("="*80)
-    print("JANMIND DATA LOADER - PHASE 2")
+    print("Civic Sathi DATA LOADER - PHASE 2")
     print("="*80)
     
     data_dir = Path(__file__).parent.parent / "data"

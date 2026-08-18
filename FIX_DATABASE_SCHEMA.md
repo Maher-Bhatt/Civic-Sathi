@@ -15,7 +15,7 @@ The database was created before the `department` field was added to the User mod
 ### **Option 1: Using Neon SQL Editor (Easiest)**
 
 1. Go to https://console.neon.tech
-2. Select your CivicSathi database
+2. Select your Civic Sathi database
 3. Click **"SQL Editor"** tab
 4. Copy and paste this SQL:
 

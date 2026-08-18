@@ -254,7 +254,7 @@ export async function createComplaint(input: any): Promise<Complaint> {
           id: `TL-${Date.now()}`,
           stage: "SUBMITTED",
           title: "Report Received",
-          description: "Your report has been received and indexed by CivicSathi AI triage.",
+          description: "Your report has been received and indexed by Civic Sathi AI triage.",
           at: new Date().toISOString(),
         },
       ],

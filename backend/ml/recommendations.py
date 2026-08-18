@@ -1,5 +1,5 @@
 """
-JANMIND Recommendations Module
+Civic Sathi Recommendations Module
 Phase 3: Actionable Recommendations
 
 Generates category-specific actionable recommendations for systemic issues.
@@ -354,7 +354,7 @@ class RecommendationEngine:
 def main():
     """Generate recommendations"""
     print("="*80)
-    print("JANMIND RECOMMENDATION ENGINE - PHASE 3")
+    print("Civic Sathi RECOMMENDATION ENGINE - PHASE 3")
     print("="*80)
     
     # Load systemic issues

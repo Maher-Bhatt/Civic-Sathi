@@ -26,7 +26,7 @@ export class APIClient {
   }
 
   private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
-    const rawBase = (this.config.baseUrl || "https://janmind.onrender.com").trim();
+    const rawBase = (this.config.baseUrl || "https://civicsathi.onrender.com").trim();
     const cleanBase = rawBase.replace(/\/+$/, '');
     const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
     const url = `${cleanBase}${cleanEndpoint}`;

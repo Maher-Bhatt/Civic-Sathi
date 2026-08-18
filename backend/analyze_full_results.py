@@ -2,7 +2,7 @@
 import pandas as pd
 
 print("="*80)
-print("CivicSathi FULL DATASET ANALYSIS - 766,648 COMPLAINTS")
+print("Civic Sathi FULL DATASET ANALYSIS - 766,648 COMPLAINTS")
 print("="*80)
 
 # Load issues
