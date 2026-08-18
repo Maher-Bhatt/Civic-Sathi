@@ -25,11 +25,19 @@ async def lifespan(app: FastAPI):
     try:
         from app.core.database import engine, SessionLocal
         from app.models import Base
-        from app.services.data_integrity import ensure_historical_city_separation
+        from app.services.data_integrity import (
+            ensure_historical_city_separation,
+            ensure_working_contractor_access,
+        )
         Base.metadata.create_all(bind=engine)
         with SessionLocal() as db:
             repaired = ensure_historical_city_separation(db)
-        print(f"Database schema initialized successfully; city integrity repaired: {repaired} rows.")
+            contractor_repaired = ensure_working_contractor_access(db)
+        print(
+            "Database schema initialized successfully; "
+            f"city integrity repaired: {repaired} rows, "
+            f"contractor access repaired: {contractor_repaired} changes."
+        )
     except Exception as e:
         print(f"Warning: Auto-migration on startup failed: {e}")
     yield
