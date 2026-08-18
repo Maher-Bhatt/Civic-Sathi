@@ -52,13 +52,13 @@ import { useI18n } from "@/lib/i18n";
 export const Route = createFileRoute("/map")({
   head: () => ({
     meta: [
-      { title: "Civic Map — locality civic activity | JANMIND" },
+      { title: "Civic Map — locality civic activity | CivicSathi" },
       {
         name: "description",
         content:
           "Explore aggregated civic activity by locality across Vadodara and Bengaluru: area health, complaint activity and emerging hotspots.",
       },
-      { property: "og:title", content: "Civic Map — locality civic activity | JANMIND" },
+      { property: "og:title", content: "Civic Map — locality civic activity | CivicSathi" },
       {
         property: "og:description",
         content:
@@ -141,7 +141,7 @@ function CivicMapPage() {
   useEffect(() => {
     if (typeof window === "undefined" || !navigator.geolocation) return;
     try {
-      const saved = localStorage.getItem("janmind_preferred_city");
+      const saved = localStorage.getItem("civicsathi_preferred_city");
       if (!saved) {
         navigator.geolocation.getCurrentPosition(
           (pos) => {

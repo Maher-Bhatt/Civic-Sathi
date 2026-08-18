@@ -15,15 +15,15 @@ export const Route = createFileRoute("/login")({
   }),
   head: () => ({
     meta: [
-      { title: "Sign in — JANMIND Citizen Portal" },
+      { title: "Sign in — CivicSathi Citizen Portal" },
       {
         name: "description",
-        content: "Sign in to your JANMIND account to report civic problems and track complaints.",
+        content: "Sign in to your CivicSathi account to report civic problems and track complaints.",
       },
-      { property: "og:title", content: "Sign in — JANMIND Citizen Portal" },
+      { property: "og:title", content: "Sign in — CivicSathi Citizen Portal" },
       {
         property: "og:description",
-        content: "Access your civic reports, notifications and complaint history on JANMIND.",
+        content: "Access your civic reports, notifications and complaint history on CivicSathi.",
       },
     ],
   }),
@@ -99,14 +99,14 @@ function LoginPage() {
             <button
               type="button"
               onClick={() => {
-                setEmail("citizen@janmind.in");
-                setPassword("Janmind@2026");
+                setEmail("citizen@civicsathi.in");
+                setPassword("CivicSathi@2026");
               }}
               className="w-full flex items-center justify-between p-2 rounded-lg bg-[var(--surface)] hover:bg-[var(--surface-elevated)] border border-[var(--glass-border)] text-xs transition text-left"
             >
               <div>
                 <span className="font-semibold text-[var(--foreground)]">Verified Citizen Account</span>
-                <span className="block text-[11px] text-[var(--muted-foreground)] font-mono">citizen@janmind.in</span>
+                <span className="block text-[11px] text-[var(--muted-foreground)] font-mono">citizen@civicsathi.in</span>
               </div>
               <span className="text-[11px] px-2 py-0.5 rounded bg-primary/15 text-primary font-medium">Click to Fill</span>
             </button>
@@ -114,7 +114,7 @@ function LoginPage() {
         </div>
 
         <p className="mt-6 text-sm text-muted-foreground">
-          {t("login.new", "New to JANMIND?")}{" "}
+          {t("login.new", "New to CivicSathi?")}{" "}
           <Link
             to="/register"
             search={{ redirect }}

@@ -199,7 +199,7 @@ def load_real_complaints(batch_size=100, limit=None):
     print("="*80)
     
     # Load master CSV
-    csv_path = Path(__file__).parent / "data" / "processed" / "janmind_master.csv"
+    csv_path = Path(__file__).parent / "data" / "processed" / "civicsathi_master.csv"
     if not csv_path.exists():
         print(f"[X] Master CSV not found: {csv_path}")
         return 0

@@ -28,7 +28,7 @@ function useWorkExecutionStatus(complaintId: string) {
 
   useEffect(() => {
     try {
-      const orders = JSON.parse(localStorage.getItem("janmind.work_orders") ?? "[]") as Array<{
+      const orders = JSON.parse(localStorage.getItem("civicsathi.work_orders") ?? "[]") as Array<{
         relatedComplaintIds: string[];
         contractorName: string;
         status: string;
@@ -37,11 +37,11 @@ function useWorkExecutionStatus(complaintId: string) {
       const wo = orders.find((o) => o.relatedComplaintIds.includes(complaintId));
       if (!wo) return;
 
-      const progress = JSON.parse(localStorage.getItem("janmind.field_progress") ?? "[]") as Array<{
+      const progress = JSON.parse(localStorage.getItem("civicsathi.field_progress") ?? "[]") as Array<{
         workOrderId: string; percentComplete: number;
       }>;
       // Find matching work order id
-      const ordersRaw = JSON.parse(localStorage.getItem("janmind.work_orders") ?? "[]") as Array<{id:string;relatedComplaintIds:string[];}>;
+      const ordersRaw = JSON.parse(localStorage.getItem("civicsathi.work_orders") ?? "[]") as Array<{id:string;relatedComplaintIds:string[];}>;
       const woFull = ordersRaw.find((o) => o.relatedComplaintIds.includes(complaintId));
       const latestProgress = woFull ? progress.filter(p => p.workOrderId === (woFull as any).id).sort((a,b) => b.percentComplete - a.percentComplete)[0] : null;
 
@@ -76,13 +76,13 @@ const WO_STATUS_PUBLIC: Record<string, { label: string; desc: string }> = {
 export const Route = createFileRoute("/complaint/$id")({
   head: () => ({
     meta: [
-      { title: "Complaint details — JANMIND" },
+      { title: "Complaint details — CivicSathi" },
       {
         name: "description",
         content:
           "Full detail of a civic complaint: category, severity, location, evidence and resolution timeline.",
       },
-      { property: "og:title", content: "Complaint details — JANMIND" },
+      { property: "og:title", content: "Complaint details — CivicSathi" },
       {
         property: "og:description",
         content: "Follow a civic complaint from submission to resolution.",

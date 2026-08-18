@@ -1,4 +1,4 @@
-# JANMIND MVP Bug Fix Report
+# CivicSathi MVP Bug Fix Report
 
 **Date:** August 16, 2026  
 **Status:** All Critical Issues Resolved ✅
@@ -46,7 +46,7 @@ Backend has `/api/v1/auth/admin-setup` endpoint that creates admin/officer accou
 
 ```bash
 # Create admin account via API
-curl -X POST https://janmind.onrender.com/api/v1/auth/admin-setup \
+curl -X POST https://civicsathi.onrender.com/api/v1/auth/admin-setup \
   -H "Content-Type: application/json" \
   -H "X-Officer-Key: YOUR_OFFICER_API_KEY" \
   -d '{
@@ -222,10 +222,10 @@ FastAPI returns validation errors as:
 ```
 
 **Frontend Storage:**
-- Admin app: `localStorage.getItem("janmind.admin_token")`
-- Municipality app: `localStorage.getItem("janmind.muni_token")`
-- Contractor app: `localStorage.getItem("janmind.contractor_session")`
-- Public app: `localStorage.getItem("janmind-user")`
+- Admin app: `localStorage.getItem("civicsathi.admin_token")`
+- Municipality app: `localStorage.getItem("civicsathi.muni_token")`
+- Contractor app: `localStorage.getItem("civicsathi.contractor_session")`
+- Public app: `localStorage.getItem("civicsathi-user")`
 
 **Protected Routes:**
 All routes use JWT bearer token in `Authorization: Bearer <token>` header.
@@ -236,7 +236,7 @@ All routes use JWT bearer token in `Authorization: Bearer <token>` header.
 
 All 4 frontend apps default to production backend:
 
-**Default API URL:** `https://janmind.onrender.com`
+**Default API URL:** `https://civicsathi.onrender.com`
 
 **Environment Override:**
 Set `VITE_API_BASE_URL` in `.env` file or Vercel environment variables to override.
@@ -306,7 +306,7 @@ Set `VITE_API_BASE_URL` in `.env` file or Vercel environment variables to overri
 ## Deployment Status
 
 ### Backend
-- **URL:** https://janmind.onrender.com
+- **URL:** https://civicsathi.onrender.com
 - **Health:** `/health` endpoint
 - **Platform:** Render.com
 - **Database:** Neon PostgreSQL
@@ -320,7 +320,7 @@ All 4 apps auto-deploy from `main` branch:
 3. **Contractor Portal** - `apps/contractor`
 4. **Admin Portal** - `apps/admin`
 
-**API Connection:** All apps default to `https://janmind.onrender.com`
+**API Connection:** All apps default to `https://civicsathi.onrender.com`
 
 ---
 

@@ -5,7 +5,7 @@ import tailwindcss from "@tailwindcss/vite";
 import tsConfigPaths from "vite-tsconfig-paths";
 import { nitro } from "nitro/vite";
 
-// Standard Vite config for the JANMIND municipality portal (TanStack Start + React 19).
+// Standard Vite config for the CivicSathi municipality portal (TanStack Start + React 19).
 // This app deploys to Vercel: the `nitro` plugin builds the SSR server (auth
 // gate, complaint routes, server functions) into Vercel's serverless output.
 export default defineConfig(({ mode, command }) => {

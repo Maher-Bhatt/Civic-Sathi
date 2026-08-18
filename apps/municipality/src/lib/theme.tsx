@@ -2,7 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState } 
 
 export type ThemeMode = "dark" | "light" | "system";
 
-const STORAGE_KEY = "janmind.theme";
+const STORAGE_KEY = "civicsathi.theme";
 
 interface ThemeContextValue {
   mode: ThemeMode;

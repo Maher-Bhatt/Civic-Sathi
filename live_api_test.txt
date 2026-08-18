@@ -1,2 +1,2 @@
-Health check (https://janmind.onrender.com/api/v1): 200 - {"status":"healthy","app_name":"JANMIND Backend","version":"1.0.0","environment":"production","database":"connected"}
-Health check (https://janmind-backend.onrender.com/api/v1): 404 - Not Found
+Health check (https://civicsathi.onrender.com/api/v1): 200 - {"status":"healthy","app_name":"CivicSathi Backend","version":"1.0.0","environment":"production","database":"connected"}
+Health check (https://civicsathi-backend.onrender.com/api/v1): 404 - Not Found

@@ -24,14 +24,14 @@ import { DEFAULT_COMPLAINT_FILTERS } from "./types";
 const delay = (ms = 280) => new Promise((r) => setTimeout(r, ms));
 
 const STORAGE = {
-  officer: "janmind_muni_officer",
-  complaints: "janmind_muni_complaints",
-  issues: "janmind_muni_issues",
-  alerts: "janmind_muni_alerts",
-  notifications: "janmind_muni_notifications",
-  settings: "janmind_muni_settings",
-  savedViews: "janmind_muni_saved_views",
-  liveActivity: "janmind_muni_live",
+  officer: "civicsathi_muni_officer",
+  complaints: "civicsathi_muni_complaints",
+  issues: "civicsathi_muni_issues",
+  alerts: "civicsathi_muni_alerts",
+  notifications: "civicsathi_muni_notifications",
+  settings: "civicsathi_muni_settings",
+  savedViews: "civicsathi_muni_saved_views",
+  liveActivity: "civicsathi_muni_live",
 } as const;
 
 function read<T>(key: string, fallback: T): T {

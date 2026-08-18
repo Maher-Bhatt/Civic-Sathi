@@ -1,5 +1,5 @@
 {
-  "name": "janmind-citizen-portal",
+  "name": "civicsathi-citizen-portal",
   "private": true,
   "sideEffects": ["./src/lib/error-capture.ts", "./src/styles.css"],
   "type": "module",
@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
-    "@janmind/api-client": "*",
+    "@civicsathi/api-client": "*",
     "@radix-ui/react-accordion": "^1.2.12",
     "@radix-ui/react-alert-dialog": "^1.1.15",
     "@radix-ui/react-aspect-ratio": "^1.1.8",

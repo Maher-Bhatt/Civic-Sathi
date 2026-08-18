@@ -21,11 +21,11 @@ def seed_data():
 
         # Create Departments
         departments = [
-            ("Water Supply", "water_works", "water@janmind.com"),
-            ("Roads", "public_works", "roads@janmind.com"),
-            ("Solid Waste Management", "sanitation", "swm@janmind.com"),
-            ("Sewerage", "drainage", "sewage@janmind.com"),
-            ("Electricity", "electricity", "elec@janmind.com"),
+            ("Water Supply", "water_works", "water@civicsathi.com"),
+            ("Roads", "public_works", "roads@civicsathi.com"),
+            ("Solid Waste Management", "sanitation", "swm@civicsathi.com"),
+            ("Sewerage", "drainage", "sewage@civicsathi.com"),
+            ("Electricity", "electricity", "elec@civicsathi.com"),
         ]
         
         dept_obj = None
@@ -43,7 +43,7 @@ def seed_data():
         db.refresh(dept_obj)
 
         # Create Admin User
-        admin_email = "admin@janmind.com"
+        admin_email = "admin@civicsathi.com"
         if not db.query(User).filter(User.email == admin_email).first():
             hashed_pwd = hash_password("Admin@123456")
             admin = User(
@@ -57,7 +57,7 @@ def seed_data():
             )
             db.add(admin)
             db.commit()
-            print("Added admin user: admin@janmind.com (Password: Admin@123456)")
+            print("Added admin user: admin@civicsathi.com (Password: Admin@123456)")
         else:
             print("Admin user already exists")
             

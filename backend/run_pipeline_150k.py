@@ -1,5 +1,5 @@
 """
-Run JANMIND ML Pipeline - 150K Sample Mode
+Run CivicSathi ML Pipeline - 150K Sample Mode
 Memory-optimized for systems with limited RAM
 Expected: 1,000+ systemic issues in 30-40 minutes
 """
@@ -10,7 +10,7 @@ from datetime import datetime
 import traceback
 
 sys.path.insert(0, str(Path(__file__).parent))
-from ml.pipeline import JANMINDPipeline
+from ml.pipeline import CivicSathiPipeline
 
 
 def print_header(text):
@@ -20,7 +20,7 @@ def print_header(text):
 
 
 def main():
-    print_header("JANMIND ML PIPELINE - 150K SAMPLE MODE")
+    print_header("CivicSathi ML PIPELINE - 150K SAMPLE MODE")
     print(f"Start Time: {datetime.now()}")
     print(f"Sample Size: 150,000 complaints (20% of 766K)")
     print(f"Estimated Duration: 30-40 minutes")
@@ -29,7 +29,7 @@ def main():
     
     try:
         data_dir = Path(__file__).parent / "data"
-        pipeline = JANMINDPipeline(data_dir)
+        pipeline = CivicSathiPipeline(data_dir)
         
         print("✓ Pipeline initialized")
         print()

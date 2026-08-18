@@ -1,7 +1,7 @@
 # Test if backend is running
 Write-Host "Testing backend connection..." -ForegroundColor Cyan
 
-$rootUrl = "https://janmind.onrender.com/"
+$rootUrl = "https://civicsathi.onrender.com/"
 
 try {
     $response = Invoke-RestMethod -Uri $rootUrl -Method Get
@@ -14,12 +14,12 @@ try {
     Write-Host "Now testing admin creation..." -ForegroundColor Cyan
     
     # Try to create admin account
-    $apiUrl = "https://janmind.onrender.com/api/v1/auth/admin-setup"
-    $officerKey = "janmind_officer_key_2020_8f9d2c1a8b4c5d8e7f8a9h0i"
+    $apiUrl = "https://civicsathi.onrender.com/api/v1/auth/admin-setup"
+    $officerKey = "civicsathi_officer_key_2020_8f9d2c1a8b4c5d8e7f8a9h0i"
     
     $adminData = @{
         name = "Admin User"
-        email = "admin@janmind.com"
+        email = "admin@civicsathi.com"
         password = "Admin@123456"
         role = "admin"
         city = "bengaluru"
@@ -33,7 +33,7 @@ try {
     $adminResponse = Invoke-RestMethod -Uri $apiUrl -Method Post -Headers $headers -Body $adminData
     Write-Host ""
     Write-Host "Admin account created successfully!" -ForegroundColor Green
-    Write-Host "Email: admin@janmind.com"
+    Write-Host "Email: admin@civicsathi.com"
     Write-Host "Password: Admin@123456"
     Write-Host "Role: $($adminResponse.role)"
 }

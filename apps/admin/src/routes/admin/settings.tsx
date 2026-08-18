@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/admin/settings")({
-  head: () => ({ meta: [{ title: "Settings | Admin | JANMIND" }] }),
+  head: () => ({ meta: [{ title: "Settings | Admin | CivicSathi" }] }),
   component: AdminSettings,
 });
 
@@ -42,7 +42,7 @@ function AdminSettings() {
           <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="p-4 rounded-md bg-[var(--surface-elevated)] border border-[var(--glass-border)]">
               <p className="text-sm text-[var(--muted-foreground)] mb-1">{t('ui.platform_name')}</p>
-              <p className="font-medium">{t('ui.janmind_civic_infrastructure_p')}</p>
+              <p className="font-medium">{t('ui.civicsathi_civic_infrastructure_p')}</p>
             </div>
             <div className="p-4 rounded-md bg-[var(--surface-elevated)] border border-[var(--glass-border)]">
               <p className="text-sm text-[var(--muted-foreground)] mb-1">{t('ui.environment')}</p>

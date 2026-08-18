@@ -11,7 +11,7 @@ import type {
 
 /**
  * Centralised prototype data. Everything here is mock content used until the
- * JANMIND backend is connected. Do not scatter mock data across components.
+ * CivicSathi backend is connected. Do not scatter mock data across components.
  */
 
 export const WARD_14: LocationInfo = {
@@ -62,8 +62,8 @@ export const SEVERITY_KEYWORDS: Array<{ severity: Severity; words: string[] }> =
 
 function timeline(stage: number): TimelineEvent[] {
   const steps: Array<[string, string]> = [
-    ["Submitted", "Your report was received by JANMIND."],
-    ["JANMIND analyzed", "Category, severity and location pattern detected."],
+    ["Submitted", "Your report was received by CivicSathi."],
+    ["CivicSathi analyzed", "Category, severity and location pattern detected."],
     ["Municipality received", "Forwarded to the responsible civic department."],
     ["Officer assigned", "A field officer has been allocated."],
     ["In progress", "Work has started on the ground."],

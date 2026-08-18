@@ -1,13 +1,13 @@
-# Interactive admin creation script for JANMIND
+# Interactive admin creation script for CivicSathi
 Write-Host "============================================" -ForegroundColor Cyan
-Write-Host "   JANMIND Admin Account Creator" -ForegroundColor Cyan
+Write-Host "   CivicSathi Admin Account Creator" -ForegroundColor Cyan
 Write-Host "============================================" -ForegroundColor Cyan
 Write-Host ""
 
 # Test backend connection first
 Write-Host "Step 1: Testing backend connection..." -ForegroundColor Yellow
 try {
-    $response = Invoke-RestMethod -Uri "https://janmind.onrender.com/" -Method Get
+    $response = Invoke-RestMethod -Uri "https://civicsathi.onrender.com/" -Method Get
     Write-Host "SUCCESS: Backend is online!" -ForegroundColor Green
     Write-Host "Environment: $($response.environment)" -ForegroundColor Gray
     Write-Host ""
@@ -29,7 +29,7 @@ Write-Host ""
 Write-Host "Step 3: Enter admin account details" -ForegroundColor Yellow
 Write-Host ""
 $adminName = Read-Host "Admin Name (e.g., Admin User)"
-$adminEmail = Read-Host "Admin Email (e.g., admin@janmind.com)"
+$adminEmail = Read-Host "Admin Email (e.g., admin@civicsathi.com)"
 $adminPassword = Read-Host "Admin Password (min 8 characters)" -AsSecureString
 $adminPasswordText = [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($adminPassword))
 Write-Host ""
@@ -52,7 +52,7 @@ if ($confirm -ne "y") {
 Write-Host ""
 Write-Host "Creating admin account..." -ForegroundColor Cyan
 
-$apiUrl = "https://janmind.onrender.com/api/v1/auth/admin-setup"
+$apiUrl = "https://civicsathi.onrender.com/api/v1/auth/admin-setup"
 
 $adminData = @{
     name = $adminName
@@ -95,7 +95,7 @@ catch {
         Write-Host ""
         Write-Host "Please check your Render.com backend Environment variables:" -ForegroundColor Yellow
         Write-Host "1. Go to https://dashboard.render.com"
-        Write-Host "2. Open your JANMIND backend service"
+        Write-Host "2. Open your CivicSathi backend service"
         Write-Host "3. Click 'Environment' tab"
         Write-Host "4. Find the OFFICER_API_KEY value"
         Write-Host "5. Run this script again with the correct key"

@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: janmind-backend
+    name: civicsathi-backend
     runtime: python
     rootDir: backend
     buildCommand: pip install -r requirements.txt && python -m spacy download en_core_web_sm

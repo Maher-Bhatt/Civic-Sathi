@@ -13,14 +13,14 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
   const [language, setLanguageState] = useState<Language>("en");
 
   useEffect(() => {
-    const saved = localStorage.getItem("janmind-lang") as Language;
+    const saved = localStorage.getItem("civicsathi-lang") as Language;
     if (saved && TRANSLATIONS[saved]) {
       setLanguageState(saved);
     }
   }, []);
 
   const setLanguage = (lang: Language) => {
-    localStorage.setItem("janmind-lang", lang);
+    localStorage.setItem("civicsathi-lang", lang);
     setLanguageState(lang);
   };
 

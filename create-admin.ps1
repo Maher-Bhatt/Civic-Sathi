@@ -1,14 +1,14 @@
-# PowerShell script to create admin account for JANMIND
+# PowerShell script to create admin account for CivicSathi
 
 Write-Host "Creating admin account..." -ForegroundColor Cyan
 
-$apiUrl = "https://janmind.onrender.com/api/v1/auth/admin-setup"
-$officerKey = "janmind_officer_key_2020_8f9d2c1a8b4c5d8e7f8a9h0i"
+$apiUrl = "https://civicsathi.onrender.com/api/v1/auth/admin-setup"
+$officerKey = "civicsathi_officer_key_2020_8f9d2c1a8b4c5d8e7f8a9h0i"
 
 # Admin details - CHANGE THESE TO YOUR DESIRED VALUES
 $adminData = @{
     name = "Admin User"
-    email = "admin@janmind.com"
+    email = "admin@civicsathi.com"
     password = "Admin@123456"
     role = "admin"
     city = "bengaluru"
@@ -25,7 +25,7 @@ try {
     Write-Host "SUCCESS: Admin account created!" -ForegroundColor Green
     Write-Host ""
     Write-Host "Account Details:" -ForegroundColor Yellow
-    Write-Host "  Email: admin@janmind.com"
+    Write-Host "  Email: admin@civicsathi.com"
     Write-Host "  Password: Admin@123456"
     Write-Host "  Role: $($response.role)"
     Write-Host "  User ID: $($response.user_id)"

@@ -230,7 +230,7 @@ function ContractorPerformance() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Composite Score */}
         <GlassCard className="p-8 glass-strong flex flex-col items-center justify-center text-center lift">
-          <SectionLabel className="mb-4">Composite JANMIND Trust Index</SectionLabel>
+          <SectionLabel className="mb-4">Composite CivicSathi Trust Index</SectionLabel>
           <div className="relative w-44 h-44 rounded-full border-8 border-emerald-500 flex items-center justify-center bg-[var(--surface)] shadow-xl">
             <div className="flex flex-col items-center">
               <span className="text-5xl font-extrabold text-emerald-500">{overall.toFixed(1)}</span>

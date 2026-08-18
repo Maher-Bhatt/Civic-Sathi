@@ -33,11 +33,11 @@ router = APIRouter()
 # ─────────────────────────────────────────────────────────────────────────────
 
 def require_admin(current: dict = Depends(get_current_officer)) -> dict:
-    """Only admin or supervisor roles may call admin endpoints."""
-    if current.get("role") not in ("admin", "supervisor"):
+    """Only admin, supervisor, or municipality head roles may call admin endpoints."""
+    if current.get("role") not in ("admin", "supervisor", "municipality"):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="Admin or supervisor role required",
+            detail="Admin, supervisor, or municipality head role required",
         )
     return current
 

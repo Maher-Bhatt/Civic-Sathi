@@ -20,7 +20,7 @@ class Settings(BaseSettings):
     
     # API
     api_v1_prefix: str = "/api/v1"
-    app_name: str = "JANMIND Backend"
+    app_name: str = "CivicSathi Backend"
     app_version: str = "1.0.0"
     
     # Database
@@ -34,7 +34,7 @@ class Settings(BaseSettings):
     
     # Security
     officer_api_key: str = Field(..., description="API key for officer endpoints")
-    jwt_secret: str = Field(default="janmind_super_secret_dev_key_2026", description="Secret key for JWT generation")
+    jwt_secret: str = Field(default="civicsathi_super_secret_dev_key_2026", description="Secret key for JWT generation")
     
     # AI / LLM Configuration (Groq, Grok / xAI, etc.)
     groq_api_key: str | None = Field(default=None, description="Groq API key")

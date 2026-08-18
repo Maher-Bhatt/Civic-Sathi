@@ -31,7 +31,7 @@ function IssuesPage() {
     <div className="muni-page-enter space-y-6">
       <header>
         <SectionLabel>{t('ui.emerging_systemic_issues')}</SectionLabel>
-        <h1 className="mt-2 text-2xl font-semibold">{t('ui.patterns_janmind_has_detected')}</h1>
+        <h1 className="mt-2 text-2xl font-semibold">{t('ui.patterns_civicsathi_has_detected')}</h1>
         <p className="mt-1 text-sm text-muted-foreground">{t('ui.prototype_intelligence_data')}</p>
       </header>
 

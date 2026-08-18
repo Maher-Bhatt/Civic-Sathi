@@ -1,4 +1,4 @@
-# JANMIND Backend
+# CivicSathi Backend
 
 Civic complaint intelligence platform backend built with FastAPI, PostgreSQL, and AI/ML.
 
@@ -77,7 +77,7 @@ See `render.yaml` for Render deployment configuration.
 
 - `DATABASE_URL`: Neon pooled connection string with sslmode=require
 - `ENVIRONMENT`: production
-- `CORS_ORIGINS`: https://janmind.vercel.app
+- `CORS_ORIGINS`: https://civicsathi.vercel.app
 - `OFFICER_API_KEY`: Strong random key
 - `ENABLE_SEED_ENDPOINT`: false
 

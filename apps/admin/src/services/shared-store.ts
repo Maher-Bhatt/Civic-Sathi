@@ -21,10 +21,10 @@ export function getApiBaseUrl(): string {
   const envUrl = ((import.meta.env as any)?.VITE_API_BASE_URL as string | undefined)?.trim();
   if (
     !envUrl ||
-    envUrl.includes("janmind-backend.onrender.com") ||
+    envUrl.includes("civicsathi-backend.onrender.com") ||
     (typeof window !== "undefined" && window.location.protocol === "https:" && envUrl.startsWith("http://"))
   ) {
-    return "https://janmind.onrender.com";
+    return "https://civicsathi.onrender.com";
   }
   return envUrl;
 }
@@ -36,7 +36,7 @@ export const API_BASE_URL = getApiBaseUrl();
 async function fetchStore<T>(collection: string, method = "GET", body?: unknown): Promise<T> {
   const store: Record<string, any> = {};
 
-  const storageKey = `janmind_admin_${collection}`;
+  const storageKey = `civicsathi_admin_${collection}`;
   let data = store[collection] || [];
   try {
     const cached = localStorage.getItem(storageKey);
@@ -57,7 +57,7 @@ async function fetchStore<T>(collection: string, method = "GET", body?: unknown)
 }
 
 async function fetchStorePatch<T>(collection: string, id: string, body: any): Promise<T> {
-  const storageKey = `janmind_admin_${collection}`;
+  const storageKey = `civicsathi_admin_${collection}`;
   let data: any[] = [];
   try {
     const cached = localStorage.getItem(storageKey);
@@ -415,8 +415,8 @@ export async function updateSLARule(id: string, patch: Partial<SLARule>, actorId
 
 // ================================================================ Admin Auth — Real JWT backend
 
-const LS_TOKEN = "janmind.admin_token";
-const LS_USER  = "janmind.admin_user";
+const LS_TOKEN = "civicsathi.admin_token";
+const LS_USER  = "civicsathi.admin_user";
 
 export function getAdminToken(): string | null {
   try { return localStorage.getItem(LS_TOKEN); } catch { return null; }
@@ -456,7 +456,7 @@ async function adminApiFetch<T>(path: string, options: RequestInit = {}): Promis
 export function getCachedPlatformStats(): any {
   if (typeof window === "undefined") return null;
   try {
-    const raw = localStorage.getItem("janmind_admin_stats");
+    const raw = localStorage.getItem("civicsathi_admin_stats");
     if (raw) return JSON.parse(raw);
   } catch {}
   return {
@@ -479,7 +479,7 @@ export function getCachedPlatformStats(): any {
 export function getCachedWorkOrders(): any[] {
   if (typeof window === "undefined") return [];
   try {
-    const raw = localStorage.getItem("janmind_admin_work_orders");
+    const raw = localStorage.getItem("civicsathi_admin_work_orders");
     if (raw) return JSON.parse(raw);
   } catch {}
   return [];
@@ -556,12 +556,12 @@ export async function listAllUsers(filters?: { role?: string; city?: string; lim
   try {
     const res = await adminApiFetch<any[]>(`/api/v1/admin/users?${params.toString()}`);
     if (res && Array.isArray(res) && typeof window !== "undefined") {
-      localStorage.setItem("janmind_admin_users", JSON.stringify(res));
+      localStorage.setItem("civicsathi_admin_users", JSON.stringify(res));
     }
     return res;
   } catch (e) {
     if (typeof window !== "undefined") {
-      const cached = localStorage.getItem("janmind_admin_users");
+      const cached = localStorage.getItem("civicsathi_admin_users");
       if (cached) return JSON.parse(cached);
     }
     throw e;
@@ -593,7 +593,7 @@ export async function getPlatformStats(): Promise<any> {
   try {
     const stats = await adminApiFetch<any>("/api/v1/admin/stats");
     if (stats && typeof window !== "undefined") {
-      localStorage.setItem("janmind_admin_stats", JSON.stringify(stats));
+      localStorage.setItem("civicsathi_admin_stats", JSON.stringify(stats));
     }
     return stats;
   } catch (e) {
@@ -608,12 +608,12 @@ export async function listRealContractors(): Promise<any[]> {
   try {
     const res = await adminApiFetch<any[]>("/api/v1/admin/contractors");
     if (res && typeof window !== "undefined") {
-      localStorage.setItem("janmind_admin_contractors", JSON.stringify(res));
+      localStorage.setItem("civicsathi_admin_contractors", JSON.stringify(res));
     }
     return res;
   } catch (e) {
     if (typeof window !== "undefined") {
-      const cached = localStorage.getItem("janmind_admin_contractors");
+      const cached = localStorage.getItem("civicsathi_admin_contractors");
       if (cached) return JSON.parse(cached);
     }
     return [];
@@ -646,7 +646,7 @@ export async function listRealWorkOrders(): Promise<any[]> {
   try {
     const wos = await adminApiFetch<any[]>("/api/v1/admin/work-orders");
     if (wos && typeof window !== "undefined") {
-      localStorage.setItem("janmind_admin_work_orders", JSON.stringify(wos));
+      localStorage.setItem("civicsathi_admin_work_orders", JSON.stringify(wos));
     }
     return wos;
   } catch (e) {

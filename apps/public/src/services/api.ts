@@ -1,4 +1,4 @@
-import { APIClient, Endpoints } from '@janmind/api-client';
+import { APIClient, Endpoints } from '@civicsathi/api-client';
 import type { User, Complaint, IssueCategory, Severity, LocationInfo, AnalysisResult, ImageAnalysis, NearbyReport, AppNotification } from './types';
 import { CATEGORY_KEYWORDS, SEVERITY_KEYWORDS, DEMO_USER, NEARBY_REPORTS, SEED_NOTIFICATIONS, RELATED_SAMPLES, WARD_14 } from './mockData';
 
@@ -6,10 +6,10 @@ export function getApiBaseUrl(): string {
   const envUrl = ((import.meta.env as any)?.VITE_API_BASE_URL as string | undefined)?.trim();
   if (
     !envUrl ||
-    envUrl.includes("janmind-backend.onrender.com") ||
+    envUrl.includes("civicsathi-backend.onrender.com") ||
     (typeof window !== "undefined" && window.location.protocol === "https:" && envUrl.startsWith("http://"))
   ) {
-    return "https://janmind.onrender.com";
+    return "https://civicsathi.onrender.com";
   }
   return envUrl;
 }
@@ -17,9 +17,9 @@ export function getApiBaseUrl(): string {
 export const API_BASE_URL = getApiBaseUrl();
 
 const LS = {
-  user: "janmind.user",
-  notifications: "janmind.notifications",
-  token: "janmind.token",
+  user: "civicsathi.user",
+  notifications: "civicsathi.notifications",
+  token: "civicsathi.token",
 };
 
 export const client = new APIClient({
@@ -254,7 +254,7 @@ export async function createComplaint(input: any): Promise<Complaint> {
           id: `TL-${Date.now()}`,
           stage: "SUBMITTED",
           title: "Report Received",
-          description: "Your report has been received and indexed by JANMIND AI triage.",
+          description: "Your report has been received and indexed by CivicSathi AI triage.",
           at: new Date().toISOString(),
         },
       ],

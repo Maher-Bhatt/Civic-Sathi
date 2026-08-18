@@ -101,7 +101,7 @@ export function MuniSidebar({
         <div className="flex h-16 items-center justify-between border-b border-[var(--glass-border)] px-4">
           {!collapsed && (
             <div>
-              <p className="text-sm font-semibold tracking-tight">{t('ui.janmind')}</p>
+              <p className="text-sm font-semibold tracking-tight">{t('ui.civicsathi')}</p>
               <p className="text-[0.65rem] text-muted-foreground">{t('ui.municipal_intelligence')}</p>
             </div>
           )}

@@ -36,7 +36,7 @@ function ContractorLayout({ children }: { children: React.ReactNode }) {
       {/* Sidebar */}
       <div className="w-64 border-r border-[var(--glass-border)] bg-[var(--surface)] flex flex-col glass z-10">
         <div className="h-16 flex items-center px-6 border-b border-[var(--glass-border)]">
-          <span className="text-xl font-bold tracking-tight text-[var(--foreground)]">{t('ui.janmind')}</span>
+          <span className="text-xl font-bold tracking-tight text-[var(--foreground)]">{t('ui.civicsathi')}</span>
           <span className="ml-2 text-xs px-2 py-0.5 rounded bg-[var(--primary)]/10 text-[var(--primary)] border border-[var(--primary)]/20">{t('ui.contractor')}</span>
         </div>
 

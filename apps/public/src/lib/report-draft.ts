@@ -13,7 +13,7 @@ export interface ReportDraft {
   complaintId?: string;
 }
 
-const KEY = "janmind.draft";
+const KEY = "civicsathi.draft";
 
 export const emptyDraft: ReportDraft = {
   description: "",

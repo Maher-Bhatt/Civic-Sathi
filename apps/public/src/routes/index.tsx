@@ -20,13 +20,13 @@ import { useI18n } from "@/lib/i18n";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "JANMIND — India's Intelligent Civic & Grievance Platform" },
+      { title: "CivicSathi — India's Intelligent Civic & Grievance Platform" },
       {
         name: "description",
         content:
-          "Report civic problems in Vadodara and Bengaluru with real-time evidence. JANMIND connects complaints into transparent public patterns.",
+          "Report civic problems in Vadodara and Bengaluru with real-time evidence. CivicSathi connects complaints into transparent public patterns.",
       },
-      { property: "og:title", content: "JANMIND — Indian Civic Intelligence & Heritage" },
+      { property: "og:title", content: "CivicSathi — Indian Civic Intelligence & Heritage" },
       {
         property: "og:description",
         content:
@@ -41,7 +41,7 @@ const steps = [
   {
     n: "01",
     title: "Report Issue",
-    body: "Tell JANMIND what happened in your locality.",
+    body: "Tell CivicSathi what happened in your locality.",
     icon: MessageSquareText,
     accent: "#FF6F00",
   },
@@ -98,7 +98,7 @@ function Landing() {
             <p className="max-w-xl text-[0.98rem] leading-relaxed text-muted-foreground">
               {t(
                 "home.hero.desc",
-                "Report water contamination, broken roads, sanitation, and streetlights with instant location evidence. JANMIND groups local complaints into transparent municipal patterns.",
+                "Report water contamination, broken roads, sanitation, and streetlights with instant location evidence. CivicSathi groups local complaints into transparent municipal patterns.",
               )}
             </p>
           </div>
@@ -235,7 +235,7 @@ function Landing() {
             Empowered by the 74th Amendment
           </h2>
           <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-            The 74th Constitutional Amendment Act of 1992 recognized Urban Local Bodies (ULBs) as the third tier of government. JANMIND empowers this democratic structure by directly connecting citizens with their local Ward Corporators, Municipal Engineers, and Civic Departments.
+            The 74th Constitutional Amendment Act of 1992 recognized Urban Local Bodies (ULBs) as the third tier of government. CivicSathi empowers this democratic structure by directly connecting citizens with their local Ward Corporators, Municipal Engineers, and Civic Departments.
           </p>
           <div className="mt-8 grid gap-4 sm:grid-cols-3">
             <div className="space-y-2 p-4 rounded-xl bg-white/50 dark:bg-black/20 border border-[var(--glass-border)]">
@@ -268,7 +268,7 @@ function Landing() {
             <p className="text-sm leading-relaxed text-muted-foreground">
               {t(
                 "pattern.desc",
-                "When several citizens describe a similar issue nearby, JANMIND groups them into an aggregated hotspot — without exposing anyone's identity or exact private address.",
+                "When several citizens describe a similar issue nearby, CivicSathi groups them into an aggregated hotspot — without exposing anyone's identity or exact private address.",
               )}
             </p>
             <ul className="space-y-2.5 pt-1">
@@ -339,7 +339,7 @@ function Landing() {
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-2">
             <span className="font-bold tracking-[0.14em] uppercase text-amber-900 dark:text-amber-200">
-              JANMIND · જન મન
+              CivicSathi · જન મન
             </span>
             <span className="text-[10px] text-muted-foreground">· Built for Indian Cities</span>
           </div>

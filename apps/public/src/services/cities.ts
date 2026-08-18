@@ -234,7 +234,7 @@ export function nearestWardOrArea(cityId: CityId, lat: number, lng: number): { w
 export function getDefaultCity(): CityId {
   if (typeof window === "undefined") return "vadodara";
   try {
-    const saved = localStorage.getItem("janmind_preferred_city");
+    const saved = localStorage.getItem("civicsathi_preferred_city");
     if (saved === "vadodara" || saved === "bengaluru") return saved;
   } catch {}
   return "bengaluru"; // Fair alternate default / can toggle freely
@@ -244,6 +244,6 @@ export function getDefaultCity(): CityId {
 export function setPreferredCity(cityId: CityId): void {
   if (typeof window === "undefined") return;
   try {
-    localStorage.setItem("janmind_preferred_city", cityId);
+    localStorage.setItem("civicsathi_preferred_city", cityId);
   } catch {}
 }

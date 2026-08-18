@@ -15,7 +15,7 @@ The database was created before the `department` field was added to the User mod
 ### **Option 1: Using Neon SQL Editor (Easiest)**
 
 1. Go to https://console.neon.tech
-2. Select your JANMIND database
+2. Select your CivicSathi database
 3. Click **"SQL Editor"** tab
 4. Copy and paste this SQL:
 
@@ -68,7 +68,7 @@ Now run the admin creation script again:
 ```
 
 Enter:
-- OFFICER_API_KEY: `janmind_officer_key_2026_8f9d2e1a3b4c5d6e7f8g9h0i`
+- OFFICER_API_KEY: `civicsathi_officer_key_2026_8f9d2e1a3b4c5d6e7f8g9h0i`
 - Name: Maher Bhatt
 - Email: maherbhatt01@gmail.com
 - Password: (your password)

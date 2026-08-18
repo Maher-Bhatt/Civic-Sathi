@@ -1,5 +1,5 @@
 """
-JANMIND Backend - Data Cleaning and Master Dataset Creation
+CivicSathi Backend - Data Cleaning and Master Dataset Creation
 Cleans all 6 CSV files and creates a master dataset
 """
 
@@ -237,7 +237,7 @@ def save_datasets(master: pd.DataFrame):
     output_dir.mkdir(parents=True, exist_ok=True)
     
     # Full master dataset
-    master_path = output_dir / 'janmind_master.csv'
+    master_path = output_dir / 'civicsathi_master.csv'
     master.to_csv(master_path, index=False)
     print(f"\n✓ Saved master dataset: {master_path}")
     print(f"  Rows: {len(master):,}")
@@ -245,7 +245,7 @@ def save_datasets(master: pd.DataFrame):
     
     # Create a sample for quick testing (10k records)
     sample = master.sample(n=min(10000, len(master)), random_state=42)
-    sample_path = output_dir / 'janmind_master_sample_10k.csv'
+    sample_path = output_dir / 'civicsathi_master_sample_10k.csv'
     sample.to_csv(sample_path, index=False)
     print(f"\n✓ Saved sample dataset: {sample_path}")
     print(f"  Rows: {len(sample):,}")
@@ -270,7 +270,7 @@ def save_datasets(master: pd.DataFrame):
         'columns': list(master.columns),
     }
     
-    metadata_path = output_dir / 'janmind_master_metadata.json'
+    metadata_path = output_dir / 'civicsathi_master_metadata.json'
     with open(metadata_path, 'w') as f:
         json.dump(metadata, f, indent=2, default=str)
     
@@ -280,7 +280,7 @@ def save_datasets(master: pd.DataFrame):
 def main():
     """Main execution"""
     print("="*60)
-    print("JANMIND DATA CLEANING & MASTER DATASET CREATION")
+    print("CivicSathi DATA CLEANING & MASTER DATASET CREATION")
     print("="*60)
     
     data_dir = Path('data/raw')
@@ -312,7 +312,7 @@ def main():
     print("DATA CLEANING COMPLETE")
     print(f"{'='*60}")
     print(f"\nMaster dataset ready for ML pipeline!")
-    print(f"Location: data/processed/janmind_master.csv")
+    print(f"Location: data/processed/civicsathi_master.csv")
     print(f"Records: {len(master):,}")
 
 

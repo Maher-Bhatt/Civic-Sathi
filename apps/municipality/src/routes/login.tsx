@@ -10,7 +10,7 @@ import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/login")({
   head: () => ({
-    meta: [{ title: "Municipal Sign In — JANMIND" }],
+    meta: [{ title: "Municipal Sign In — CivicSathi" }],
   }),
   component: MuniLoginPage,
 });
@@ -52,7 +52,7 @@ function MuniLoginPage() {
     <div className="ambient-field flex min-h-screen items-center justify-center bg-background p-4">
       <GlassCard elevation="raised" className="animate-rise w-full max-w-md p-6 sm:p-8">
         <div className="text-center">
-          <p className="text-2xl font-semibold tracking-tight">{t('ui.janmind')}</p>
+          <p className="text-2xl font-semibold tracking-tight">{t('ui.civicsathi')}</p>
           <p className="mt-1 text-sm text-muted-foreground">{t('ui.municipal_intelligence')}</p>
         </div>
 
@@ -140,7 +140,7 @@ function MuniLoginPage() {
               type="button"
               onClick={() => {
                 setEmail("officer@vmc.gov.in");
-                setPassword("Janmind@2026");
+                setPassword("CivicSathi@2026");
                 setCity("vadodara");
                 setDesignation("Ward Officer");
               }}
@@ -157,7 +157,7 @@ function MuniLoginPage() {
               type="button"
               onClick={() => {
                 setEmail("officer@bbmp.gov.in");
-                setPassword("Janmind@2026");
+                setPassword("CivicSathi@2026");
                 setCity("bengaluru");
                 setDesignation("Ward Officer");
               }}
@@ -174,7 +174,7 @@ function MuniLoginPage() {
               type="button"
               onClick={() => {
                 setEmail("supervisor@vmc.gov.in");
-                setPassword("Janmind@2026");
+                setPassword("CivicSathi@2026");
                 setCity("vadodara");
                 setDesignation("Municipal Supervisor");
               }}
@@ -191,7 +191,7 @@ function MuniLoginPage() {
               type="button"
               onClick={() => {
                 setEmail("municipality@vmc.gov.in");
-                setPassword("Janmind@2026");
+                setPassword("CivicSathi@2026");
                 setCity("vadodara");
                 setDesignation("Commissioner");
               }}
@@ -207,7 +207,7 @@ function MuniLoginPage() {
         </div>
 
         <p className="mt-6 text-center text-[0.65rem] text-muted-foreground">
-          {t('ui.janmind_municipal_intelligence')}</p>
+          {t('ui.civicsathi_municipal_intelligence')}</p>
       </GlassCard>
     </div>
   );

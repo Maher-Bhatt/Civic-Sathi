@@ -58,7 +58,7 @@ export function SiteNav() {
             <span className="h-2 w-2 rounded-full bg-primary transition-transform duration-300 group-hover:scale-125" />
             <span className="absolute inset-0 rounded-lg border border-[color-mix(in_oklab,var(--primary)_25%,transparent)] opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
           </span>
-          <span className="text-[0.95rem] font-semibold tracking-[0.18em]">{t('ui.janmind')}</span>
+          <span className="text-[0.95rem] font-semibold tracking-[0.18em]">{t('ui.civicsathi')}</span>
         </Link>
 
         <ul className="ml-2 hidden items-center gap-1 lg:flex">

@@ -1,4 +1,4 @@
-import { APIClient, Endpoints } from '@janmind/api-client';
+import { APIClient, Endpoints } from '@civicsathi/api-client';
 import type { CityId } from "@/services/cities";
 import type {
   ComplaintFilters, DashboardKPIs, DepartmentStats, LiveActivity,
@@ -12,10 +12,10 @@ export function getApiBaseUrl(): string {
   const envUrl = ((import.meta.env as any)?.VITE_API_BASE_URL as string | undefined)?.trim();
   if (
     !envUrl ||
-    envUrl.includes("janmind-backend.onrender.com") ||
+    envUrl.includes("civicsathi-backend.onrender.com") ||
     (typeof window !== "undefined" && window.location.protocol === "https:" && envUrl.startsWith("http://"))
   ) {
-    return "https://janmind.onrender.com";
+    return "https://civicsathi.onrender.com";
   }
   return envUrl;
 }
@@ -23,8 +23,8 @@ export function getApiBaseUrl(): string {
 export const API_BASE_URL = getApiBaseUrl();
 
 const LS = {
-  officer: "janmind_muni_officer",
-  token: "janmind_muni_token",
+  officer: "civicsathi_muni_officer",
+  token: "civicsathi_muni_token",
 };
 
 export const client = new APIClient({
@@ -368,11 +368,11 @@ const DEFAULT_SETTINGS: MuniSettings = {
   theme: "system", compactMode: false, defaultCity: "vadodara",
   defaultMapMode: "health", notifications: { critical: true, assignments: true, riskChanges: true, dailyDigest: false },
 };
-export async function getMuniSettings(): Promise<MuniSettings> { return read("janmind_muni_settings", DEFAULT_SETTINGS); }
+export async function getMuniSettings(): Promise<MuniSettings> { return read("civicsathi_muni_settings", DEFAULT_SETTINGS); }
 export async function saveMuniSettings(patch: Partial<MuniSettings>): Promise<MuniSettings> {
   const current = await getMuniSettings();
   const next = { ...current, ...patch };
-  write("janmind_muni_settings", next);
+  write("civicsathi_muni_settings", next);
   return next;
 }
 

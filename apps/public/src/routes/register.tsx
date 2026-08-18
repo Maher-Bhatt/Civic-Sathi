@@ -15,16 +15,16 @@ export const Route = createFileRoute("/register")({
   }),
   head: () => ({
     meta: [
-      { title: "Create account — JANMIND Citizen Portal" },
+      { title: "Create account — CivicSathi Citizen Portal" },
       {
         name: "description",
         content:
-          "Create a JANMIND citizen account to report civic problems and follow their resolution.",
+          "Create a CivicSathi citizen account to report civic problems and follow their resolution.",
       },
-      { property: "og:title", content: "Create account — JANMIND Citizen Portal" },
+      { property: "og:title", content: "Create account — CivicSathi Citizen Portal" },
       {
         property: "og:description",
-        content: "Join JANMIND to report civic issues and track municipal response.",
+        content: "Join CivicSathi to report civic issues and track municipal response.",
       },
     ],
   }),

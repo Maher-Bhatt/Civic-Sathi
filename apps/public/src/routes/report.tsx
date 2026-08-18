@@ -16,13 +16,13 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/report")({
   head: () => ({
     meta: [
-      { title: "Report a civic problem — JANMIND" },
+      { title: "Report a civic problem — CivicSathi" },
       {
         name: "description",
         content:
-          "Describe the problem in your own words, add your location and a photo. JANMIND suggests the category and severity.",
+          "Describe the problem in your own words, add your location and a photo. CivicSathi suggests the category and severity.",
       },
-      { property: "og:title", content: "Report a civic problem — JANMIND" },
+      { property: "og:title", content: "Report a civic problem — CivicSathi" },
       {
         property: "og:description",
         content: "Describe a civic issue, pin the location, add evidence and track the response.",
@@ -74,7 +74,7 @@ function ReportPage() {
     <PageShell className="max-w-3xl">
       <div className="animate-rise space-y-2">
         <SectionLabel>{t('ui.new_report')}</SectionLabel>
-        <h1 className="text-2xl font-semibold sm:text-3xl">{t('ui.tell_janmind_what_happened')}</h1>
+        <h1 className="text-2xl font-semibold sm:text-3xl">{t('ui.tell_civicsathi_what_happened')}</h1>
         <p className="text-sm text-muted-foreground">
           {t('ui.you_don_t_need_to_pick_a_categ')}</p>
       </div>
@@ -175,7 +175,7 @@ function ReportPage() {
                 {draft.description || "Not provided"}
               </ReviewRow>
               <ReviewRow label={t('ui.suggested_category')} onEdit={() => setStep(2)}>
-                {draft.category ?? "JANMIND will suggest one"}
+                {draft.category ?? "CivicSathi will suggest one"}
               </ReviewRow>
               <ReviewRow label={t('ui.location')} onEdit={() => setStep(1)}>
                 {draft.location
@@ -195,7 +195,7 @@ function ReportPage() {
               </ReviewRow>
             </dl>
             <p className="text-xs leading-relaxed text-subtle">
-              {t('ui.janmind_will_analyse_your_desc')}</p>
+              {t('ui.civicsathi_will_analyse_your_desc')}</p>
           </div>
         )}
 

@@ -1,4 +1,4 @@
-# AGENTS.md — JANMIND Municipality Portal
+# AGENTS.md — CivicSathi Municipality Portal
 
 Notes for anyone (human or AI agent) working on this repo next.
 
@@ -29,7 +29,7 @@ Package manager is **Bun** (`bun.lock` is the lockfile of record).
 
 `src/services/api.ts` is the single integration point for the real backend.
 Every exported function currently reads/writes `localStorage` with keys
-prefixed `janmind_muni_*` (separate from citizen portal storage).
+prefixed `civicsathi_muni_*` (separate from citizen portal storage).
 
 To connect the real backend: replace function bodies in `api.ts` with real
 `fetch` calls using `import.meta.env.VITE_API_BASE_URL`. No component should

@@ -35,7 +35,7 @@ const STATUS_CHIP: Record<string, string> = {
 };
 
 export const Route = createFileRoute("/_auth/work-orders/")({
-  head: () => ({ meta: [{ title: "Work Orders — JANMIND" }] }),
+  head: () => ({ meta: [{ title: "Work Orders — CivicSathi" }] }),
   component: WorkOrdersPage,
 });
 

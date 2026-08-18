@@ -1,5 +1,5 @@
 """
-Run JANMIND Full Dataset ML Pipeline - Auto Mode (No Confirmation)
+Run CivicSathi Full Dataset ML Pipeline - Auto Mode (No Confirmation)
 Processes all 766,648 complaints
 Estimated time: 2-3 hours
 """
@@ -12,7 +12,7 @@ import traceback
 # Add parent directory to path
 sys.path.insert(0, str(Path(__file__).parent))
 
-from ml.pipeline import JANMINDPipeline
+from ml.pipeline import CivicSathiPipeline
 
 
 def print_header(text):
@@ -25,7 +25,7 @@ def print_header(text):
 def main():
     """Run the full pipeline with comprehensive logging"""
     
-    print_header("JANMIND FULL DATASET ML PIPELINE - AUTO MODE")
+    print_header("CivicSathi FULL DATASET ML PIPELINE - AUTO MODE")
     print(f"Start Time: {datetime.now()}")
     print(f"Dataset Size: 766,648 complaints")
     print(f"Estimated Duration: 2-3 hours")
@@ -34,7 +34,7 @@ def main():
     try:
         # Initialize pipeline
         data_dir = Path(__file__).parent / "data"
-        pipeline = JANMINDPipeline(data_dir)
+        pipeline = CivicSathiPipeline(data_dir)
         
         print("✓ Pipeline initialized")
         print()

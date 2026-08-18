@@ -15,15 +15,15 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/profile")({
   head: () => ({
     meta: [
-      { title: "Profile — JANMIND" },
+      { title: "Profile — CivicSathi" },
       {
         name: "description",
-        content: "Manage your JANMIND citizen profile, ward preference and notification settings.",
+        content: "Manage your CivicSathi citizen profile, ward preference and notification settings.",
       },
-      { property: "og:title", content: "Profile — JANMIND" },
+      { property: "og:title", content: "Profile — CivicSathi" },
       {
         property: "og:description",
-        content: "Your contact details and notification preferences on JANMIND.",
+        content: "Your contact details and notification preferences on CivicSathi.",
       },
     ],
   }),

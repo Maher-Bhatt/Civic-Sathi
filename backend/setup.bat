@@ -1,9 +1,9 @@
 @echo off
-REM JANMIND Backend - Automated Setup Script for Windows
+REM CivicSathi Backend - Automated Setup Script for Windows
 REM This script automates the complete backend setup process
 
 echo ========================================
-echo  JANMIND Backend Setup Automation
+echo  CivicSathi Backend Setup Automation
 echo ========================================
 echo.
 

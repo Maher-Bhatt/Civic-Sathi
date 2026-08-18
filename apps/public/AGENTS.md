@@ -1,4 +1,4 @@
-# AGENTS.md — JANMIND Citizen Portal
+# AGENTS.md — CivicSathi Citizen Portal
 
 Notes for anyone (human or AI agent) working on this repo next.
 

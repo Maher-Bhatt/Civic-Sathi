@@ -22,7 +22,7 @@ import { listAllUsers, createUser, updateUser, deleteUser, listAdminCities } fro
 import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/admin/users")({
-  head: () => ({ meta: [{ title: "User Management | JANMIND Admin" }] }),
+  head: () => ({ meta: [{ title: "User Management | CivicSathi Admin" }] }),
   component: UserManagementPage,
 });
 
@@ -85,14 +85,14 @@ function UserManagementPage() {
   const [users, setUsers]         = useState<UserRow[]>(() => {
     if (typeof window === "undefined") return [];
     try {
-      const raw = localStorage.getItem("janmind_admin_users");
+      const raw = localStorage.getItem("civicsathi_admin_users");
       if (raw) return JSON.parse(raw);
     } catch {}
     return [];
   });
   const [cities, setCities]       = useState<{ id: string; name: string }[]>([]);
   const [loading, setLoading]     = useState(() => {
-    if (typeof window !== "undefined" && localStorage.getItem("janmind_admin_users")) {
+    if (typeof window !== "undefined" && localStorage.getItem("civicsathi_admin_users")) {
       return false;
     }
     return true;

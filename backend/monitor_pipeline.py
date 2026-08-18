@@ -1,5 +1,5 @@
 """
-Monitor JANMIND Pipeline Execution
+Monitor CivicSathi Pipeline Execution
 Shows progress of ongoing pipeline run
 """
 
@@ -30,7 +30,7 @@ def check_file_progress(file_path):
 def main():
     """Monitor pipeline progress"""
     print("="*80)
-    print("JANMIND PIPELINE MONITOR")
+    print("CivicSathi PIPELINE MONITOR")
     print("="*80)
     print("\nMonitoring data/processed/ directory for pipeline progress...")
     print("Press Ctrl+C to stop monitoring\n")
@@ -39,7 +39,7 @@ def main():
     
     # Files to monitor
     files_to_check = [
-        "janmind_nlp.csv",
+        "civicsathi_nlp.csv",
         "pipeline_processed_full.csv",
         "pipeline_clusters_full.csv",
         "pipeline_temporal_full.csv",

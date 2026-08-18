@@ -7,7 +7,7 @@ export function AiCopilotWidget() {
     const { t } = useI18n();
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<{ role: "user" | "ai"; text: string }[]>([
-    { role: "ai", text: "Hello! I am your JANMIND AI Copilot. I can help you analyze project risks, review contractor performance, or summarize systemic issues. How can I help you today?" }
+    { role: "ai", text: "Hello! I am your CivicSathi AI Copilot. I can help you analyze project risks, review contractor performance, or summarize systemic issues. How can I help you today?" }
   ]);
   const [input, setInput] = useState("");
 
@@ -46,7 +46,7 @@ export function AiCopilotWidget() {
       <div className="flex items-center justify-between border-b border-[var(--glass-border)] bg-[var(--primary)] p-4 text-white">
         <div className="flex items-center gap-2 font-medium">
           <Sparkles className="h-5 w-5" />
-          <span>{t('ui.janmind_copilot')}</span>
+          <span>{t('ui.civicsathi_copilot')}</span>
         </div>
         <button onClick={() => setIsOpen(false)} className="rounded-full p-1 hover:bg-white/20 transition-colors">
           <X className="h-4 w-4" />

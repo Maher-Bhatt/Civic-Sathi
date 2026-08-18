@@ -17,8 +17,8 @@ interface ContractorAuthContextValue {
 
 const CTX = createContext<ContractorAuthContextValue | null>(null);
 
-const LS_KEY = "janmind.contractor_session";
-const CONTRACTORS_KEY = "janmind.contractors";
+const LS_KEY = "civicsathi.contractor_session";
+const CONTRACTORS_KEY = "civicsathi.contractors";
 
 const DEMO_SESSION: ContractorSession = {
   id: "session_ctr",

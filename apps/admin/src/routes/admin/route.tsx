@@ -64,7 +64,7 @@ function AdminDashboard() {
       `}>
         <div className="h-16 flex items-center px-6 border-b border-[var(--glass-border)]">
           <Shield className="w-6 h-6 mr-3 text-[var(--foreground)]" />
-          <span className="font-bold tracking-wide text-lg">{t('ui.janmind_admin')}</span>
+          <span className="font-bold tracking-wide text-lg">{t('ui.civicsathi_admin')}</span>
           <button 
             className="ml-auto lg:hidden p-2 text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
             onClick={() => setMobileMenuOpen(false)}

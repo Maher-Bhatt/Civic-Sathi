@@ -1,5 +1,5 @@
 {
-  "name": "janmind-monorepo",
+  "name": "civicsathi-monorepo",
   "private": true,
   "workspaces": [
     "apps/*",

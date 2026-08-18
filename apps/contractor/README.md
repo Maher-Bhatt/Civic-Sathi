@@ -2,7 +2,7 @@
 
 Build a premium, production-quality PUBLIC/CITIZEN PORTAL for:
 
-JANMIND
+CivicSathi
 
 Government Grievance Intelligence Platform
 
@@ -20,7 +20,7 @@ PRODUCT PURPOSE
 
 ==================================================
 
-JANMIND allows citizens to report civic problems and helps connect individual complaints into larger patterns.
+CivicSathi allows citizens to report civic problems and helps connect individual complaints into larger patterns.
 
 Citizens can:
 
@@ -74,7 +74,7 @@ Citizen writes:
 
 "There has been no water supply in our area for three days."
 
-JANMIND analyzes:
+CivicSathi analyzes:
 
 Category: Water Supply
 
@@ -490,7 +490,7 @@ Create a floating/glass navigation bar.
 
 Desktop:
 
-JANMIND logo
+CivicSathi logo
 
 Home
 
@@ -712,13 +712,13 @@ LANDING PAGE
 
 Hero:
 
-JANMIND
+CivicSathi
 
 "Make your city better, one report at a time."
 
 Supporting text:
 
-"Report civic problems with location and evidence. JANMIND helps connect individual complaints into larger patterns so public-service issues can be identified faster."
+"Report civic problems with location and evidence. CivicSathi helps connect individual complaints into larger patterns so public-service issues can be identified faster."
 
 Primary CTA:
 
@@ -762,7 +762,7 @@ Four steps:
 
 01 REPORT
 
-Tell JANMIND what happened.
+Tell CivicSathi what happened.
 
 02 LOCATION
 
@@ -802,7 +802,7 @@ Example:
 
 Do not force users to select a category first.
 
-JANMIND should suggest the category.
+CivicSathi should suggest the category.
 
 ==================================================
 
@@ -846,7 +846,7 @@ Allow:
 
 Explain:
 
-"Location helps JANMIND identify nearby reports and understand where civic problems are concentrated."
+"Location helps CivicSathi identify nearby reports and understand where civic problems are concentrated."
 
 ==================================================
 
@@ -932,7 +932,7 @@ After submitting:
 
 Create a polished full-screen or centered glass processing panel.
 
-JANMIND INTELLIGENCE
+CivicSathi INTELLIGENCE
 
 Analyzing your report...
 
@@ -984,7 +984,7 @@ Highlight "127" elegantly.
 
 Show:
 
-"JANMIND found other reports that may describe a similar civic issue nearby."
+"CivicSathi found other reports that may describe a similar civic issue nearby."
 
 CTA:
 
@@ -996,7 +996,7 @@ HOTSPOT VISUALIZATION
 
 ==================================================
 
-This is an important JANMIND feature.
+This is an important CivicSathi feature.
 
 If multiple similar complaints occur in one area:
 
@@ -1120,7 +1120,7 @@ Submitted
 
 ↓
 
-JANMIND analyzed
+CivicSathi analyzed
 
 ↓
 
@@ -1526,7 +1526,7 @@ Build the design system first, then implement the pages and interactions.
 
 Use reusable components and clean architecture.
 
-Make every interaction feel smooth, premium, and deliberate. Perform a visual refinement pass on the entire JANMIND public portal.
+Make every interaction feel smooth, premium, and deliberate. Perform a visual refinement pass on the entire CivicSathi public portal.
 
 Do NOT change the product functionality or routes.
 

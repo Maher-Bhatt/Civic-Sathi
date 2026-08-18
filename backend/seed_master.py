@@ -1,5 +1,5 @@
 """
-JANMIND Master Seed Script
+CivicSathi Master Seed Script
 ==========================
 Run this ONCE against your production Neon database to:
   1. Create Bengaluru and Vadodara cities
@@ -53,7 +53,7 @@ Session = sessionmaker(bind=engine)
 db = Session()
 
 print("=" * 60)
-print("JANMIND Master Seed Script")
+print("CivicSathi Master Seed Script")
 print("=" * 60)
 
 # ─────────────────────────────────────────────────────────────────
@@ -166,12 +166,12 @@ OFFICERS = [
     ("Sneha Desai",       "sneha.desai@vmc.gov.in",     "supervisor",   "vadodara",  "Sanitation"),
     ("Mihir Shah",        "mihir.shah@vmc.gov.in",      "municipality", "vadodara",  "Electricity"),
     # Frontend demo quick-login accounts
-    ("Demo Admin",        "admin@janmind.in",           "admin",        None,        None),
+    ("Demo Admin",        "admin@civicsathi.in",           "admin",        None,        None),
     ("Demo VMC Officer",  "officer@vmc.gov.in",         "officer",      "vadodara",  "Roads"),
     ("Demo BBMP Officer", "officer@bbmp.gov.in",        "officer",      "bengaluru", "Roads"),
     ("Demo Supervisor",   "supervisor@vmc.gov.in",      "supervisor",   "vadodara",  "Administration"),
     ("Demo Municipality", "municipality@vmc.gov.in",    "municipality", "vadodara",  "Administration"),
-    ("Demo Citizen",      "citizen@janmind.in",         "citizen",      "vadodara",  None),
+    ("Demo Citizen",      "citizen@civicsathi.in",         "citizen",      "vadodara",  None),
 ]
 
 for name, email, role, city, dept in OFFICERS:
@@ -182,7 +182,7 @@ for name, email, role, city, dept in OFFICERS:
             role=role,
             name=name,
             email=email,
-            password_hash=hash_password("Janmind@2026"),
+            password_hash=hash_password("CivicSathi@2026"),
             city=city,
             department=dept,
             ward="Admin",
@@ -191,13 +191,13 @@ for name, email, role, city, dept in OFFICERS:
         db.flush()
         print(f"  ✓ Created officer: {name} ({city})")
     else:
-        existing.password_hash = hash_password("Janmind@2026")
+        existing.password_hash = hash_password("CivicSathi@2026")
         existing.role = role
         db.commit()
         print(f"  · Officer updated: {name}")
 
 db.commit()
-print("  → Default password for all officers: Janmind@2026")
+print("  → Default password for all officers: CivicSathi@2026")
 
 # ─────────────────────────────────────────────────────────────────
 # 5. Sample Contractors
@@ -229,13 +229,13 @@ for company, contact, email, phone in CONTRACTORS:
             role="contractor",
             name=company,
             email=login_email,
-            password_hash=hash_password("Janmind@2026"),
+            password_hash=hash_password("CivicSathi@2026"),
             ward="Contractor",
         )
         db.add(login_user)
         db.flush()
     else:
-        login_user.password_hash = hash_password("Janmind@2026")
+        login_user.password_hash = hash_password("CivicSathi@2026")
         db.commit()
 
     c = Contractor(
@@ -274,7 +274,7 @@ for c in contractor_objs:
             db.add(reg)
 
 db.commit()
-print(f"  → Contractor login: <email>.login@contractor.com / Janmind@2026")
+print(f"  → Contractor login: <email>.login@contractor.com / CivicSathi@2026")
 
 # Add demo contractor account referenced by frontend quick-login
 demo_contractor_email = "contractor@bharat.in"
@@ -285,14 +285,14 @@ if not existing_demo:
         role="contractor",
         name="Demo Contractor",
         email=demo_contractor_email,
-        password_hash=hash_password("Janmind@2026"),
+        password_hash=hash_password("CivicSathi@2026"),
         ward="Contractor",
     )
     db.add(demo_contractor_user)
     db.commit()
     print(f"  ✓ Created demo contractor: {demo_contractor_email}")
 else:
-    existing_demo.password_hash = hash_password("Janmind@2026")
+    existing_demo.password_hash = hash_password("CivicSathi@2026")
     db.commit()
     print(f"  · Updated demo contractor: {demo_contractor_email}")
 
@@ -585,10 +585,10 @@ print(f"""
   │  Role    : admin (full access to everything)        │
   └─────────────────────────────────────────────────────┘
 
-  Officer default password : JANMIND@2026
+  Officer default password : CivicSathi@2026
   Contractor default login : <email>.login@contractor.com / CONTRACTOR@2026
 
-  Backend URL : https://janmind.onrender.com
+  Backend URL : https://civicsathi.onrender.com
   Admin Docs  : (disabled in production, use /docs on local)
 """)
 

@@ -52,7 +52,7 @@ def run_migration():
         if not user_vad:
             user_vad = User(
                 id=uuid4(), role="contractor", name="Vadodara Infra (Demo)",
-                email=email_vad, password_hash=hash_password("Janmind@2026"), ward="Contractor"
+                email=email_vad, password_hash=hash_password("CivicSathi@2026"), ward="Contractor"
             )
             db.add(user_vad)
             db.flush()
@@ -75,7 +75,7 @@ def run_migration():
         if not user_blr:
             user_blr = User(
                 id=uuid4(), role="contractor", name="BBMP Infra (Demo)",
-                email=email_blr, password_hash=hash_password("Janmind@2026"), ward="Contractor"
+                email=email_blr, password_hash=hash_password("CivicSathi@2026"), ward="Contractor"
             )
             db.add(user_blr)
             db.flush()

@@ -5,7 +5,7 @@ import { GlassCard } from "@/components/ui/glass-card";
 import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/login")({
-  head: () => ({ meta: [{ title: "Contractor Login - JANMIND" }] }),
+  head: () => ({ meta: [{ title: "Contractor Login - CivicSathi" }] }),
   component: ContractorLogin,
 });
 
@@ -36,7 +36,7 @@ function ContractorLogin() {
     <div className="min-h-screen flex items-center justify-center bg-[var(--background)] muni-page-enter p-4">
       <GlassCard className="w-full max-w-md p-8 glass-strong shadow-2xl">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2 tracking-tight">{t('ui.janmind')}</h1>
+          <h1 className="text-3xl font-bold text-[var(--foreground)] mb-2 tracking-tight">{t('ui.civicsathi')}</h1>
           <p className="text-[var(--muted-foreground)]">{t('ui.contractor_portal')}</p>
         </div>
 
@@ -92,7 +92,7 @@ function ContractorLogin() {
               type="button"
               onClick={() => {
                 setEmail("contractor@vadodara-infra.in");
-                setPassword("Janmind@2026");
+                setPassword("CivicSathi@2026");
               }}
               className="w-full flex items-center justify-between p-2 rounded-lg bg-[var(--surface)] hover:bg-[var(--surface-elevated)] border border-[var(--glass-border)] text-xs transition text-left"
             >
@@ -106,7 +106,7 @@ function ContractorLogin() {
               type="button"
               onClick={() => {
                 setEmail("contractor@bbmp-infra.in");
-                setPassword("Janmind@2026");
+                setPassword("CivicSathi@2026");
               }}
               className="w-full flex items-center justify-between p-2 rounded-lg bg-[var(--surface)] hover:bg-[var(--surface-elevated)] border border-[var(--glass-border)] text-xs transition text-left"
             >

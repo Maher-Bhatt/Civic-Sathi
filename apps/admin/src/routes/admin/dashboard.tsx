@@ -14,7 +14,7 @@ import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, CartesianGri
 import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/admin/dashboard")({
-  head: () => ({ meta: [{ title: "Admin Dashboard | JANMIND" }] }),
+  head: () => ({ meta: [{ title: "Admin Dashboard | CivicSathi" }] }),
   component: AdminDashboardContent,
 });
 
@@ -34,49 +34,49 @@ const DEMO_LOGINS = [
   {
     role: "Super Admin",
     portal: "Admin Portal",
-    url: "https://janmind-admin.vercel.app",
-    email: "admin@janmind.in",
-    pass: "Janmind@2026",
+    url: "https://civicsathi-admin.vercel.app",
+    email: "admin@civicsathi.in",
+    pass: "CivicSathi@2026",
     badge: "bg-red-500/20 text-red-400 border-red-500/30",
   },
   {
     role: "Municipal Officer (Vadodara)",
     portal: "Municipality Console",
-    url: "https://janmind-municipality.vercel.app",
+    url: "https://civicsathi-municipality.vercel.app",
     email: "officer@vmc.gov.in",
-    pass: "Janmind@2026",
+    pass: "CivicSathi@2026",
     badge: "bg-blue-500/20 text-blue-400 border-blue-500/30",
   },
   {
     role: "Municipal Officer (Bengaluru)",
     portal: "Municipality Console",
-    url: "https://janmind-municipality.vercel.app",
+    url: "https://civicsathi-municipality.vercel.app",
     email: "officer@bbmp.gov.in",
-    pass: "Janmind@2026",
+    pass: "CivicSathi@2026",
     badge: "bg-blue-500/20 text-blue-400 border-blue-500/30",
   },
   {
     role: "Municipal Supervisor",
     portal: "Municipality Console",
-    url: "https://janmind-municipality.vercel.app",
+    url: "https://civicsathi-municipality.vercel.app",
     email: "supervisor@vmc.gov.in",
-    pass: "Janmind@2026",
+    pass: "CivicSathi@2026",
     badge: "bg-orange-500/20 text-orange-400 border-orange-500/30",
   },
   {
     role: "Municipality Dept Head",
     portal: "Municipality Console",
-    url: "https://janmind-municipality.vercel.app",
+    url: "https://civicsathi-municipality.vercel.app",
     email: "municipality@vmc.gov.in",
-    pass: "Janmind@2026",
+    pass: "CivicSathi@2026",
     badge: "bg-purple-500/20 text-purple-400 border-purple-500/30",
   },
   {
     role: "Contractor Field Lead",
     portal: "Contractor Portal",
-    url: "https://janmind-contractor.vercel.app",
+    url: "https://civicsathi-contractor.vercel.app",
     email: "contractor@bharat.in",
-    pass: "Janmind@2026",
+    pass: "CivicSathi@2026",
     badge: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
   },
 ];
@@ -97,7 +97,7 @@ function AdminDashboardContent() {
   const [officerForm, setOfficerForm] = useState({
     name: "",
     email: "",
-    password: "Janmind@2026",
+    password: "CivicSathi@2026",
     role: "officer",
     city: "vadodara",
     department: "Roads",
@@ -111,7 +111,7 @@ function AdminDashboardContent() {
     email: "",
     phone: "",
     login_email: "",
-    login_password: "Janmind@2026",
+    login_password: "CivicSathi@2026",
   });
 
   useEffect(() => {
@@ -150,7 +150,7 @@ function AdminDashboardContent() {
       toast.success(`Officer ${officerForm.name} created successfully!`);
       setShowOfficerModal(false);
       setOfficerForm({
-        name: "", email: "", password: "Janmind@2026",
+        name: "", email: "", password: "CivicSathi@2026",
         role: "officer", city: "vadodara", department: "Roads", phone: "",
       });
       // Refresh stats
@@ -178,7 +178,7 @@ function AdminDashboardContent() {
       setShowContractorModal(false);
       setContractorForm({
         company_name: "", contact_person: "", email: "", phone: "",
-        login_email: "", login_password: "Janmind@2026",
+        login_email: "", login_password: "CivicSathi@2026",
       });
       getPlatformStats().then(setStats).catch(() => {});
     } catch (err: any) {

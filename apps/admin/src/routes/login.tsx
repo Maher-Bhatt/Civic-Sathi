@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/login")({
-  head: () => ({ meta: [{ title: "Admin Login | JANMIND" }] }),
+  head: () => ({ meta: [{ title: "Admin Login | CivicSathi" }] }),
   component: AdminLogin,
 });
 
@@ -46,7 +46,7 @@ function AdminLogin() {
           <div className="w-16 h-16 rounded-full bg-[var(--surface-elevated)] border border-[var(--glass-border)] flex items-center justify-center mb-4">
             <Shield className="w-8 h-8 text-[var(--foreground)]" />
           </div>
-          <h1 className="text-2xl font-bold tracking-tight mb-2">{t('ui.janmind_admin')}</h1>
+          <h1 className="text-2xl font-bold tracking-tight mb-2">{t('ui.civicsathi_admin')}</h1>
           <p className="text-[var(--muted-foreground)]">{t('ui.platform_administration')}</p>
         </div>
 
@@ -58,7 +58,7 @@ function AdminLogin() {
               type="text" inputMode="email" autoComplete="email"
               required
               className="ambient-field w-full"
-              placeholder={t('ui.admin_janmind_gov_in')}
+              placeholder={t('ui.admin_civicsathi_gov_in')}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               disabled={isLoading}
@@ -104,14 +104,14 @@ function AdminLogin() {
             <button
               type="button"
               onClick={() => {
-                setEmail("admin@janmind.in");
-                setPassword("Janmind@2026");
+                setEmail("admin@civicsathi.in");
+                setPassword("CivicSathi@2026");
               }}
               className="w-full flex items-center justify-between p-2 rounded-lg bg-[var(--surface)] hover:bg-[var(--surface-elevated)] border border-[var(--glass-border)] text-xs transition text-left"
             >
               <div>
                 <span className="font-semibold text-[var(--foreground)]">Super Admin</span>
-                <span className="block text-[11px] text-[var(--muted-foreground)] font-mono">admin@janmind.in</span>
+                <span className="block text-[11px] text-[var(--muted-foreground)] font-mono">admin@civicsathi.in</span>
               </div>
               <span className="text-[11px] px-2 py-0.5 rounded bg-primary/15 text-primary font-medium">Click to Fill</span>
             </button>

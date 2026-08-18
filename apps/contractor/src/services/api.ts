@@ -1,16 +1,16 @@
-import { APIClient, Endpoints } from '@janmind/api-client';
+import { APIClient, Endpoints } from '@civicsathi/api-client';
 import type { CityId } from "@/services/cities";
-import type { User } from '@janmind/api-client';
+import type { User } from '@civicsathi/api-client';
 
 
 export function getApiBaseUrl(): string {
   const envUrl = ((import.meta.env as any)?.VITE_API_BASE_URL as string | undefined)?.trim();
   if (
     !envUrl ||
-    envUrl.includes("janmind-backend.onrender.com") ||
+    envUrl.includes("civicsathi-backend.onrender.com") ||
     (typeof window !== "undefined" && window.location.protocol === "https:" && envUrl.startsWith("http://"))
   ) {
-    return "https://janmind.onrender.com";
+    return "https://civicsathi.onrender.com";
   }
   return envUrl;
 }
@@ -18,8 +18,8 @@ export function getApiBaseUrl(): string {
 export const API_BASE_URL = getApiBaseUrl();
 
 const LS = {
-  contractor: "janmind_contractor_user",
-  token: "janmind_contractor_token",
+  contractor: "civicsathi_contractor_user",
+  token: "civicsathi_contractor_token",
 };
 
 export const client = new APIClient({

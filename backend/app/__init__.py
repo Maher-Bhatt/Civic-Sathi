@@ -1,3 +1,3 @@
-"""JANMIND Backend Application Package"""
+"""CivicSathi Backend Application Package"""
 
 __version__ = "1.0.0"

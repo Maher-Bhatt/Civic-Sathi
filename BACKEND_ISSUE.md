@@ -29,7 +29,7 @@ Required variables that might be missing:
 
 ### Step 1: Check Render Logs
 1. Go to https://dashboard.render.com
-2. Click on your JANMIND backend service
+2. Click on your CivicSathi backend service
 3. Click "Logs" tab
 4. Look for error messages around the time you tried to create the admin
 
@@ -44,7 +44,7 @@ KeyError: 'DATABASE_URL'
 1. In Render dashboard, click "Environment" tab
 2. Verify these variables exist:
    - ✅ `DATABASE_URL` - Should start with `postgresql://` or `postgresql+psycopg://`
-   - ✅ `OFFICER_API_KEY` - Your key: `janmind_officer_key_2026_8f9d2e1a3b4c5d6e7f8g9h0i`
+   - ✅ `OFFICER_API_KEY` - Your key: `civicsathi_officer_key_2026_8f9d2e1a3b4c5d6e7f8g9h0i`
    - ✅ `JWT_SECRET` - Any secure random string
    - ✅ `ENVIRONMENT` - Should be `production`
 

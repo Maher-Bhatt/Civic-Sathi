@@ -49,6 +49,7 @@ class CitizenInfo(BaseModel):
     email: str
     phone: str
     ward: str
+    city: str | None = None
     role: str = "citizen"
     notifyStatus: bool = True
     notifyNearby: bool = True

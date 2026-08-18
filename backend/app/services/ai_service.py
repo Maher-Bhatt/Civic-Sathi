@@ -7,7 +7,7 @@ import httpx
 from typing import Any
 from app.core.config import settings
 
-logger = logging.getLogger("janmind.ai")
+logger = logging.getLogger("civicsathi.ai")
 
 
 class AIService:
@@ -63,7 +63,7 @@ class AIService:
             return self._local_complaint_heuristic(title, description, category_hint)
 
         system_prompt = (
-            "You are JANMIND Civic AI. Analyze municipal citizen complaints in India.\n"
+            "You are CivicSathi Civic AI. Analyze municipal citizen complaints in India.\n"
             "Respond ONLY with a JSON object strictly matching this schema:\n"
             "{\n"
             '  "category": "road_damage" | "water_supply" | "garbage_collection" | "drainage" | "street_lighting" | "electricity" | "sanitation",\n'
@@ -116,12 +116,12 @@ class AIService:
         """AI copilot response for municipal officers and contractors."""
         if not self.is_configured:
             return (
-                f"Hello! I am your JANMIND Copilot. Context: {context or 'Operations active'}. "
+                f"Hello! I am your CivicSathi Copilot. Context: {context or 'Operations active'}. "
                 "Triage queues are updated and contractor work orders are synchronized."
             )
 
         system_prompt = (
-            "You are JANMIND AI Copilot for Indian municipal officers and contractors. "
+            "You are CivicSathi AI Copilot for Indian municipal officers and contractors. "
             "Give brief, expert, actionable operational advice on civic complaints, contractor allocation, "
             "and SLA compliance."
         )
@@ -150,7 +150,7 @@ class AIService:
         except Exception as e:
             logger.warning(f"AI Copilot call error: {e}")
 
-        return "JANMIND Copilot: Operations are tracked in real-time. Triage queue and contractor work orders are synchronized."
+        return "CivicSathi Copilot: Operations are tracked in real-time. Triage queue and contractor work orders are synchronized."
 
     def _local_complaint_heuristic(self, title: str, description: str, hint: str | None) -> dict[str, Any]:
         """Local high-precision heuristic fallback."""

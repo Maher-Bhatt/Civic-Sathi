@@ -1,6 +1,6 @@
 {
-  "name": "JANMIND — Contractor Field Operations",
-  "short_name": "JANMIND Contractor",
+  "name": "CivicSathi — Contractor Field Operations",
+  "short_name": "CivicSathi Contractor",
   "description": "Field operations for contractors: view work orders, submit milestone proof, and manage repair jobs.",
   "start_url": "/",
   "id": "/contractor",

@@ -15,19 +15,19 @@
 
 **Find your OFFICER_API_KEY:**
 1. Go to https://dashboard.render.com
-2. Click on your "JANMIND backend" service
+2. Click on your "CivicSathi backend" service
 3. Click "Environment" tab
-4. Find `OFFICER_API_KEY` value (something like: `janmind_officer_key_...`)
+4. Find `OFFICER_API_KEY` value (something like: `civicsathi_officer_key_...`)
 
 **Create admin account:**
 
 ```bash
-curl -X POST https://janmind.onrender.com/api/v1/auth/admin-setup \
+curl -X POST https://civicsathi.onrender.com/api/v1/auth/admin-setup \
   -H "Content-Type: application/json" \
   -H "X-Officer-Key: YOUR_ACTUAL_OFFICER_API_KEY" \
   -d '{
     "name": "Admin User",
-    "email": "admin@janmind.com",
+    "email": "admin@civicsathi.com",
     "password": "YourPassword123",
     "role": "admin",
     "city": "bengaluru"
@@ -46,7 +46,7 @@ $key = "YOUR_ACTUAL_KEY_FROM_RENDER"
 
 $body = @{
     name = "Admin User"
-    email = "admin@janmind.com"  
+    email = "admin@civicsathi.com"  
     password = "Admin@123456"
     role = "admin"
     city = "bengaluru"
@@ -57,7 +57,7 @@ $headers = @{
     "X-Officer-Key" = $key
 }
 
-Invoke-RestMethod -Uri "https://janmind.onrender.com/api/v1/auth/admin-setup" -Method Post -Headers $headers -Body $body
+Invoke-RestMethod -Uri "https://civicsathi.onrender.com/api/v1/auth/admin-setup" -Method Post -Headers $headers -Body $body
 ```
 
 ## After Creating Admin:
@@ -84,13 +84,13 @@ Invoke-RestMethod -Uri "https://janmind.onrender.com/api/v1/auth/admin-setup" -M
 
 **Connection Error:**
 - Check if backend is deployed on Render
-- Try accessing: https://janmind.onrender.com/
+- Try accessing: https://civicsathi.onrender.com/
 
 ## Need Help?
 
 The `OFFICER_API_KEY` from your screenshot was:
 ```
-janmind_officer_key_2020_8f9d2c1a8b4c5d8e7f8a9h0i
+civicsathi_officer_key_2020_8f9d2c1a8b4c5d8e7f8a9h0i
 ```
 
 If this key doesn't work (401 error), it means Render has a different key set.

@@ -1,13 +1,13 @@
 # Backend diagnostic script
 Write-Host "============================================" -ForegroundColor Cyan
-Write-Host "   JANMIND Backend Diagnostics" -ForegroundColor Cyan
+Write-Host "   CivicSathi Backend Diagnostics" -ForegroundColor Cyan
 Write-Host "============================================" -ForegroundColor Cyan
 Write-Host ""
 
 # Test 1: Root endpoint
 Write-Host "Test 1: Checking root endpoint..." -ForegroundColor Yellow
 try {
-    $root = Invoke-RestMethod -Uri "https://janmind.onrender.com/" -Method Get
+    $root = Invoke-RestMethod -Uri "https://civicsathi.onrender.com/" -Method Get
     Write-Host "SUCCESS" -ForegroundColor Green
     Write-Host "  App: $($root.app)"
     Write-Host "  Version: $($root.version)"
@@ -21,7 +21,7 @@ Write-Host ""
 # Test 2: API docs (should be disabled in production)
 Write-Host "Test 2: Checking API docs..." -ForegroundColor Yellow
 try {
-    $docs = Invoke-WebRequest -Uri "https://janmind.onrender.com/docs" -Method Get
+    $docs = Invoke-WebRequest -Uri "https://civicsathi.onrender.com/docs" -Method Get
     Write-Host "Docs are enabled (Status: $($docs.StatusCode))" -ForegroundColor Yellow
 }
 catch {
@@ -49,7 +49,7 @@ $regHeaders = @{
 }
 
 try {
-    $regResult = Invoke-RestMethod -Uri "https://janmind.onrender.com/api/v1/auth/register" -Method Post -Headers $regHeaders -Body $regData
+    $regResult = Invoke-RestMethod -Uri "https://civicsathi.onrender.com/api/v1/auth/register" -Method Post -Headers $regHeaders -Body $regData
     Write-Host "SUCCESS - Registration endpoint is working" -ForegroundColor Green
     Write-Host "  Created user: $($regResult.citizen.name)"
 }
@@ -69,7 +69,7 @@ $loginData = @{
 } | ConvertTo-Json
 
 try {
-    $loginResult = Invoke-RestMethod -Uri "https://janmind.onrender.com/api/v1/auth/officer-login" -Method Post -Headers $regHeaders -Body $loginData
+    $loginResult = Invoke-RestMethod -Uri "https://civicsathi.onrender.com/api/v1/auth/officer-login" -Method Post -Headers $regHeaders -Body $loginData
     Write-Host "Unexpected success" -ForegroundColor Yellow
 }
 catch {
@@ -105,7 +105,7 @@ if ($key) {
     }
     
     try {
-        $adminResult = Invoke-RestMethod -Uri "https://janmind.onrender.com/api/v1/auth/admin-setup" -Method Post -Headers $adminHeaders -Body $adminData
+        $adminResult = Invoke-RestMethod -Uri "https://civicsathi.onrender.com/api/v1/auth/admin-setup" -Method Post -Headers $adminHeaders -Body $adminData
         Write-Host "SUCCESS - Admin created!" -ForegroundColor Green
         Write-Host "  Email: $testAdminEmail"
         Write-Host "  Role: $($adminResult.role)"

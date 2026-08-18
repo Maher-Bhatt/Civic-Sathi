@@ -6,7 +6,7 @@ export function ExplainabilityPanel({ issue }: { issue: SystemicIssue }) {
     const { t } = useI18n();
   return (
     <GlassCard elevation="raised" className="p-6">
-      <SectionLabel>{t('ui.why_janmind_flagged_this')}</SectionLabel>
+      <SectionLabel>{t('ui.why_civicsathi_flagged_this')}</SectionLabel>
       <p className="mt-3 text-sm leading-relaxed text-foreground">{issue.whyFlagged}</p>
       <p className="mt-2 text-xs text-muted-foreground">{t('ui.prototype_intelligence_data')}</p>
 

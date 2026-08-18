@@ -14,13 +14,13 @@ import { useI18n } from "@/lib/i18n";
 export const Route = createFileRoute("/notifications")({
   head: () => ({
     meta: [
-      { title: "Notifications — JANMIND" },
+      { title: "Notifications — CivicSathi" },
       {
         name: "description",
         content:
           "Status changes, officer assignments and resolution updates for your civic reports.",
       },
-      { property: "og:title", content: "Notifications — JANMIND" },
+      { property: "og:title", content: "Notifications — CivicSathi" },
       {
         property: "og:description",
         content: "Stay updated on every change to your civic complaints.",

@@ -58,7 +58,7 @@ export function RiskScorePanel({
 
   return (
     <GlassCard elevation="raised" className={cn("p-6", className)}>
-      <SectionLabel>{t('ui.janmind_prototype_risk_score')}</SectionLabel>
+      <SectionLabel>{t('ui.civicsathi_prototype_risk_score')}</SectionLabel>
       <div className="mt-4 flex flex-col items-center gap-6 sm:flex-row sm:items-start">
         <div className="relative shrink-0">
           <svg width="140" height="140" viewBox="0 0 120 120" aria-hidden>

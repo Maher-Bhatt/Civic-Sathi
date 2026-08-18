@@ -18,7 +18,7 @@ import { useI18n } from "@/lib/i18n";
 export const Route = createFileRoute("/analyzing")({
   head: () => ({
     meta: [
-      { title: "Analyzing your report — JANMIND" },
+      { title: "Analyzing your report — CivicSathi" },
     ],
   }),
   component: () => (
@@ -189,7 +189,7 @@ function AnalyzingPage() {
         <div className="animate-rise space-y-2">
           <SectionLabel className="text-warning">{t('ui.wait_a_moment')}</SectionLabel>
           <h1 className="text-2xl font-semibold sm:text-3xl">{t('ui.similar_issues_found_nearby')}</h1>
-          <p className="text-muted-foreground">{t('ui.janmind_has_detected_existing_')}</p>
+          <p className="text-muted-foreground">{t('ui.civicsathi_has_detected_existing_')}</p>
         </div>
         
         <div className="animate-rise mt-8 space-y-4">
@@ -299,7 +299,7 @@ function AnalyzingPage() {
       <GlassCard elevation="raised" className="animate-rise p-7 sm:p-9">
         <div className="flex items-center gap-2.5">
           <Sparkles className="h-4 w-4 animate-pulse text-primary" aria-hidden />
-          <SectionLabel>{t('ui.janmind_intelligence')}</SectionLabel>
+          <SectionLabel>{t('ui.civicsathi_intelligence')}</SectionLabel>
         </div>
         <h1 className="mt-4 text-xl font-semibold">{t('ui.analyzing_your_report')}</h1>
         <ul className="mt-7 space-y-3.5" aria-live="polite">
