@@ -59,16 +59,16 @@ export function InstallPwaButton({ className = "" }: { className?: string }) {
         onClick={handleInstallClick}
         type="button"
         title="Install Contractor App on Android / Desktop"
-        className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 border border-primary/30 bg-primary/10 text-primary hover:bg-primary/20 hover:border-primary/50 shadow-sm active:scale-95 ${className}`}
+        className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 hover:border-emerald-500/50 shadow-sm active:scale-95 ${className}`}
       >
-        <Smartphone className="w-3.5 h-3.5 text-primary animate-pulse" />
-        <span>📲 Install Android App</span>
+        <Smartphone className="w-3.5 h-3.5" />
+        <span>Install App</span>
       </button>
 
       {isPrompted && !deferredPrompt && (
         <div className="absolute right-0 top-full mt-2 w-64 p-3 bg-zinc-900 border border-zinc-700 rounded-lg shadow-xl text-xs text-zinc-300 z-50 animate-rise">
           <p className="font-semibold text-white mb-1">To install on Android:</p>
-          <p>Tap your browser's menu (⋮) and select <strong>"Add to Home screen"</strong> or <strong>"Install App"</strong>.</p>
+          <p>Tap your browser menu (⋮) and select <strong>"Add to Home screen"</strong> or <strong>"Install App"</strong>.</p>
         </div>
       )}
     </div>

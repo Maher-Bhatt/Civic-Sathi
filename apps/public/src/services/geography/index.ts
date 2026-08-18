@@ -183,13 +183,23 @@ export const CITY_COMPLAINTS_TOTAL: Record<CityId, number> = {
   vadodara: 12139,
 };
 
-/** Thresholds scale with the active time window so colours stay meaningful at 100k+ scale. */
-export function healthFromCount(total: number, time: TimeWindow = "30d"): AreaHealth {
-  const k = time === "7d" ? 0.35 : time === "all" ? 2.9 : 1;
-  if (total >= 1800 * k) return "critical";
-  if (total >= 1100 * k) return "high";
-  if (total >= 500 * k) return "moderate";
-  return "low";
+/** Thresholds scale with the active time window and city scale so Vadodara is evaluated on its own compact scale. */
+export function healthFromCount(total: number, time: TimeWindow = "30d", city: CityId = "vadodara"): AreaHealth {
+  const k = time === "7d" ? 0.35 : time === "all" ? 2.9 : 1.0;
+  
+  if (city === "vadodara") {
+    // Vadodara scale (compact city ~12k total volume, ~100-350 per locality in 30d)
+    if (total >= 280 * k) return "critical";
+    if (total >= 200 * k) return "high";
+    if (total >= 100 * k) return "moderate";
+    return "low";
+  } else {
+    // Bengaluru scale (tier-1 metropolis ~100k+ volume, ~1000-3000 per locality in 30d)
+    if (total >= 1800 * k) return "critical";
+    if (total >= 1100 * k) return "high";
+    if (total >= 500 * k) return "moderate";
+    return "low";
+  }
 }
 
 /** All prototype complaint points for a city — deterministic, de-identified spatial points for Leaflet. */
@@ -267,7 +277,7 @@ const emptyBreakdown = (): IssueBreakdown => ({
 /** Aggregated, privacy-safe activity per locality for the active filters scaled to the 100k+ dataset. */
 export function areaActivity(city: CityId, filters: MapFilters): AreaActivity[] {
   const areas = cityAreas(city);
-  const totalCityVolume = CITY_COMPLAINTS_TOTAL[city] || 100000;
+  const totalCityVolume = CITY_COMPLAINTS_TOTAL[city] || 12139;
   
   // Time factor based on window
   const timeFactor = filters.time === "7d" ? 0.125 : filters.time === "30d" ? 0.35 : 1.0;
@@ -317,7 +327,7 @@ export function areaActivity(city: CityId, filters: MapFilters): AreaActivity[] 
     const trendPct = prev7 === 0 ? (last7 > 0 ? 100 : 0) : Math.round(((last7 - prev7) / prev7) * 100);
     
     const topIssue = (ISSUE_KEYS.slice().sort((a, b) => counts[b] - counts[a])[0] as IssueKey) ?? "roads";
-    const health = healthFromCount(baseAreaTotal, filters.time);
+    const health = healthFromCount(baseAreaTotal, filters.time, city);
     
     const density = total / Math.max(1, Math.PI * (area.radiusMeters / 1000) ** 2);
     const risk = Math.max(0, Math.min(100, Math.round(density * 0.8 + Math.min(60, total * 0.02) + last7 * 0.05)));
@@ -329,6 +339,10 @@ export function areaActivity(city: CityId, filters: MapFilters): AreaActivity[] 
       { issue: "garbage", daysAgo: 4, health: "low" },
     ];
 
+    const isHotspot = city === "vadodara"
+      ? (risk >= 40 && total >= 80)
+      : (risk >= 55 && total >= 300);
+
     return {
       area,
       counts,
@@ -338,7 +352,7 @@ export function areaActivity(city: CityId, filters: MapFilters): AreaActivity[] 
       trendPct,
       health,
       topIssue,
-      hotspot: risk >= 55 && total >= 300,
+      hotspot: isHotspot,
       risk,
       recent: recentIssues,
     };

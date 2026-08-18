@@ -231,25 +231,42 @@ function CivicMapPage() {
 
       {/* city switcher + modes */}
       <div className="mt-6 space-y-3">
-        <div className="flex flex-wrap items-center gap-2">
-          {CITIES.map((c) => (
-            <button
-              key={c.id}
-              type="button"
-              onClick={() => setCityId(c.id)}
-              aria-pressed={cityId === c.id}
-              className={cn(
-                "press rounded-full border px-3.5 py-1.5 text-xs tracking-[0.08em] uppercase transition-all duration-200",
-                cityId === c.id
-                  ? "border-[color-mix(in_oklab,var(--primary)_45%,transparent)] bg-[color-mix(in_oklab,var(--primary)_16%,transparent)] text-foreground"
-                  : "border-[var(--glass-border)] bg-[var(--glass)] text-muted-foreground hover:-translate-y-0.5 hover:text-foreground",
-              )}
-            >
-              {c.name}
-            </button>
-          ))}
-          <span className="text-[0.66rem] tracking-[0.08em] text-subtle uppercase">
-            {geography.areas.length} {t('ui.localities')}</span>
+        <div className="flex flex-wrap items-center gap-2.5">
+          <button
+            type="button"
+            onClick={() => setCityId("vadodara")}
+            aria-pressed={cityId === "vadodara"}
+            className={cn(
+              "press flex items-center gap-2 rounded-xl border px-4 py-2 text-xs font-semibold tracking-wide transition-all duration-200 shadow-sm",
+              cityId === "vadodara"
+                ? "border-emerald-500/50 bg-emerald-500/15 text-emerald-300 shadow-[0_0_15px_rgba(16,185,129,0.15)]"
+                : "border-[var(--glass-border)] bg-[var(--glass)] text-muted-foreground hover:text-foreground",
+            )}
+          >
+            <span className="h-2 w-2 rounded-full bg-emerald-400" />
+            <span>Vadodara (VMC)</span>
+            <span className="text-[10px] font-normal opacity-75">· 24 Areas (5 Zones)</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setCityId("bengaluru")}
+            aria-pressed={cityId === "bengaluru"}
+            className={cn(
+              "press flex items-center gap-2 rounded-xl border px-4 py-2 text-xs font-semibold tracking-wide transition-all duration-200 shadow-sm",
+              cityId === "bengaluru"
+                ? "border-blue-500/50 bg-blue-500/15 text-blue-300 shadow-[0_0_15px_rgba(59,130,246,0.15)]"
+                : "border-[var(--glass-border)] bg-[var(--glass)] text-muted-foreground hover:text-foreground",
+            )}
+          >
+            <span className="h-2 w-2 rounded-full bg-blue-400" />
+            <span>Bengaluru (BBMP)</span>
+            <span className="text-[10px] font-normal opacity-75">· 35 Areas (8 Zones)</span>
+          </button>
+
+          <span className="ml-auto text-[0.7rem] text-muted-foreground hidden sm:inline-block">
+            {cityId === "vadodara" ? "Vadodara Municipal Scale (Normalized)" : "Bengaluru Metropolitan Scale"}
+          </span>
         </div>
 
         <div className="-mx-4 overflow-x-auto px-4 sm:mx-0 sm:px-0">
