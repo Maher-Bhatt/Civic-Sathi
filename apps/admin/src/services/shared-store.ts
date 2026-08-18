@@ -486,19 +486,19 @@ export function getCachedPlatformStats(): any {
     if (raw) return JSON.parse(raw);
   } catch {}
   return {
-    total_users: 35,
-    total_citizens: 22,
-    total_officers: 6,
-    total_contractors: 5,
-    total_admins: 4,
-    total_complaints: 112146,
-    open_complaints: 61400,
-    resolved_complaints: 50746,
-    total_issues: 42,
-    open_issues: 18,
-    total_tenders: 12,
-    active_work_orders: 8,
-    total_cities: 4,
+    total_users: 0,
+    total_citizens: 0,
+    total_officers: 0,
+    total_contractors: 0,
+    total_admins: 0,
+    total_complaints: 0,
+    open_complaints: 0,
+    resolved_complaints: 0,
+    total_issues: 0,
+    open_issues: 0,
+    total_tenders: 0,
+    active_work_orders: 0,
+    total_cities: 0,
   };
 }
 

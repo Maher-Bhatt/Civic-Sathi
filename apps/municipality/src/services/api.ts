@@ -160,12 +160,12 @@ export async function getDashboardKPIs(): Promise<DashboardKPIs> {
     };
   }
   return {
-    totalReports: 12144,
-    critical: 364,
-    active: 6661,
-    resolved: 5483,
-    emergingIssues: 12,
-    areaHotspots: 5,
+    totalReports: 0,
+    critical: 0,
+    active: 0,
+    resolved: 0,
+    emergingIssues: 0,
+    areaHotspots: 0,
   };
 }
 
