@@ -40,6 +40,7 @@ import {
   cityIssueBreakdown,
   complaintPoints,
   filterPoints,
+  getLocalityHeritage,
   nearestArea,
   searchAreas,
   type AreaActivity,
@@ -658,6 +659,17 @@ function AreaPanel({
         )}
 
         <AreaMiniCharts activity={activity} />
+
+        {getLocalityHeritage(area.id) && (
+          <div className="mt-4 p-3.5 rounded-2xl bg-gradient-to-r from-amber-500/10 via-orange-500/5 to-emerald-500/10 border border-orange-500/25 space-y-1">
+            <div className="flex items-center gap-1.5 text-[11px] font-bold text-amber-800 dark:text-amber-300 uppercase tracking-wider">
+              <span>🏛️ Locality Historic & Civic Heritage</span>
+            </div>
+            <p className="text-xs text-foreground/85 leading-relaxed">
+              {getLocalityHeritage(area.id)}
+            </p>
+          </div>
+        )}
 
         <div className="mt-4 border-t border-border pt-3">
           <p className="label-xs">{t('ui.recent_activity')}</p>

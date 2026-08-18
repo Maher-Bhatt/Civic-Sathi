@@ -11,22 +11,22 @@ interface ThemeContextValue {
 }
 
 const ThemeContext = createContext<ThemeContextValue>({
-  mode: "dark",
-  resolved: "dark",
+  mode: "light",
+  resolved: "light",
   setMode: () => {},
 });
 
-/** Inlined in the document head so the theme is applied before first paint. */
-export const themeInitScript = `(function(){try{var m=localStorage.getItem("${STORAGE_KEY}")||"dark";var d=m==="dark"||(m==="system"&&window.matchMedia("(prefers-color-scheme: dark)").matches);document.documentElement.classList.toggle("dark",d);document.documentElement.style.colorScheme=d?"dark":"light";}catch(e){document.documentElement.classList.add("dark");}})();`;
+/** Inlined in the document head so the theme is applied before first paint. Default: light */
+export const themeInitScript = `(function(){try{var m=localStorage.getItem("${STORAGE_KEY}")||"light";var d=m==="dark"||(m==="system"&&window.matchMedia("(prefers-color-scheme: dark)").matches);document.documentElement.classList.toggle("dark",d);document.documentElement.style.colorScheme=d?"dark":"light";}catch(e){document.documentElement.classList.remove("dark");}})();`;
 
 function systemPrefersDark() {
-  if (typeof window === "undefined") return true;
+  if (typeof window === "undefined") return false;
   return window.matchMedia("(prefers-color-scheme: dark)").matches;
 }
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [mode, setModeState] = useState<ThemeMode>("dark");
-  const [resolved, setResolved] = useState<"dark" | "light">("dark");
+  const [mode, setModeState] = useState<ThemeMode>("light");
+  const [resolved, setResolved] = useState<"dark" | "light">("light");
 
   const apply = useCallback((next: ThemeMode) => {
     const dark = next === "dark" || (next === "system" && systemPrefersDark());
@@ -36,7 +36,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   useEffect(() => {
-    const stored = (localStorage.getItem(STORAGE_KEY) as ThemeMode | null) ?? "dark";
+    const stored = (localStorage.getItem(STORAGE_KEY) as ThemeMode | null) ?? "light";
     setModeState(stored);
     apply(stored);
     const mq = window.matchMedia("(prefers-color-scheme: dark)");

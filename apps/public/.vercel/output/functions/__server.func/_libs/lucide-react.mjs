@@ -414,6 +414,32 @@ var Crosshair = createLucideIcon("crosshair", [
 * This source code is licensed under the ISC license.
 * See the LICENSE file in the root directory of this source tree.
 */
+var Crown = createLucideIcon("crown", [["path", {
+	d: "M11.562 3.266a.5.5 0 0 1 .876 0L15.39 8.87a1 1 0 0 0 1.516.294L21.183 5.5a.5.5 0 0 1 .798.519l-2.834 10.246a1 1 0 0 1-.956.734H5.81a1 1 0 0 1-.957-.734L2.02 6.02a.5.5 0 0 1 .798-.519l4.276 3.664a1 1 0 0 0 1.516-.294z",
+	key: "1vdc57"
+}], ["path", {
+	d: "M5 21h14",
+	key: "11awu3"
+}]]);
+/**
+* @license lucide-react v0.575.0 - ISC
+*
+* This source code is licensed under the ISC license.
+* See the LICENSE file in the root directory of this source tree.
+*/
+var Droplets = createLucideIcon("droplets", [["path", {
+	d: "M7 16.3c2.2 0 4-1.83 4-4.05 0-1.16-.57-2.26-1.71-3.19S7.29 6.75 7 5.3c-.29 1.45-1.14 2.84-2.29 3.76S3 11.1 3 12.25c0 2.22 1.8 4.05 4 4.05z",
+	key: "1ptgy4"
+}], ["path", {
+	d: "M12.56 6.6A10.97 10.97 0 0 0 14 3.02c.5 2.5 2 4.9 4 6.5s3 3.5 3 5.5a6.98 6.98 0 0 1-11.91 4.97",
+	key: "1sl1rz"
+}]]);
+/**
+* @license lucide-react v0.575.0 - ISC
+*
+* This source code is licensed under the ISC license.
+* See the LICENSE file in the root directory of this source tree.
+*/
 var FileText = createLucideIcon("file-text", [
 	["path", {
 		d: "M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z",
@@ -559,6 +585,38 @@ var Info = createLucideIcon("info", [
 	["path", {
 		d: "M12 8h.01",
 		key: "e9boi3"
+	}]
+]);
+/**
+* @license lucide-react v0.575.0 - ISC
+*
+* This source code is licensed under the ISC license.
+* See the LICENSE file in the root directory of this source tree.
+*/
+var Landmark = createLucideIcon("landmark", [
+	["path", {
+		d: "M10 18v-7",
+		key: "wt116b"
+	}],
+	["path", {
+		d: "M11.12 2.198a2 2 0 0 1 1.76.006l7.866 3.847c.476.233.31.949-.22.949H3.474c-.53 0-.695-.716-.22-.949z",
+		key: "1m329m"
+	}],
+	["path", {
+		d: "M14 18v-7",
+		key: "vav6t3"
+	}],
+	["path", {
+		d: "M18 18v-7",
+		key: "aexdmj"
+	}],
+	["path", {
+		d: "M3 22h18",
+		key: "8prr45"
+	}],
+	["path", {
+		d: "M6 18v-7",
+		key: "1ivflk"
 	}]
 ]);
 /**
@@ -834,6 +892,19 @@ var RotateCcw = createLucideIcon("rotate-ccw", [["path", {
 * This source code is licensed under the ISC license.
 * See the LICENSE file in the root directory of this source tree.
 */
+var Scroll = createLucideIcon("scroll", [["path", {
+	d: "M19 17V5a2 2 0 0 0-2-2H4",
+	key: "zz82l3"
+}], ["path", {
+	d: "M8 21h12a2 2 0 0 0 2-2v-1a1 1 0 0 0-1-1H11a1 1 0 0 0-1 1v1a2 2 0 1 1-4 0V5a2 2 0 1 0-4 0v2a1 1 0 0 0 1 1h3",
+	key: "1ph1d7"
+}]]);
+/**
+* @license lucide-react v0.575.0 - ISC
+*
+* This source code is licensed under the ISC license.
+* See the LICENSE file in the root directory of this source tree.
+*/
 var Search = createLucideIcon("search", [["path", {
 	d: "m21 21-4.34-4.34",
 	key: "14j7rj"
@@ -934,6 +1005,30 @@ var Trash2 = createLucideIcon("trash-2", [
 * This source code is licensed under the ISC license.
 * See the LICENSE file in the root directory of this source tree.
 */
+var Trees = createLucideIcon("trees", [
+	["path", {
+		d: "M10 10v.2A3 3 0 0 1 8.9 16H5a3 3 0 0 1-1-5.8V10a3 3 0 0 1 6 0Z",
+		key: "1l6gj6"
+	}],
+	["path", {
+		d: "M7 16v6",
+		key: "1a82de"
+	}],
+	["path", {
+		d: "M13 19v3",
+		key: "13sx9i"
+	}],
+	["path", {
+		d: "M12 19h8.3a1 1 0 0 0 .7-1.7L18 14h.3a1 1 0 0 0 .7-1.7L16 9h.2a1 1 0 0 0 .8-1.7L13 3l-1.4 1.5",
+		key: "1sj9kv"
+	}]
+]);
+/**
+* @license lucide-react v0.575.0 - ISC
+*
+* This source code is licensed under the ISC license.
+* See the LICENSE file in the root directory of this source tree.
+*/
 var TriangleAlert = createLucideIcon("triangle-alert", [
 	["path", {
 		d: "m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3",
@@ -1019,4 +1114,4 @@ var X = createLucideIcon("x", [["path", {
 	key: "d8bk6v"
 }]]);
 //#endregion
-export { FileText as A, Building2 as B, Layers as C, House as D, Image as E, CircleAlert as F, Activity as G, ArrowUpRight as H, ChevronRight as I, Check as L, Clock as M, CirclePlus as N, HardHat as O, CircleCheck as P, Camera as R, LoaderCircle as S, Inbox as T, ArrowRight as U, Bell as V, ArrowLeft as W, MicOff as _, TriangleAlert as a, Map as b, Smartphone as c, RotateCcw as d, RefreshCw as f, Mic as g, Minus as h, Upload as i, Crosshair as j, Globe as k, ShieldCheck as l, Plus as m, User as n, Trash2 as o, Radar as p, UserCheck as r, Sparkles as s, X as t, Search as u, MessageSquareText as v, Info as w, MapPin as x, Menu as y, CalendarDays as z };
+export { House as A, CircleAlert as B, MapPin as C, Info as D, Landmark as E, Crown as F, Building2 as G, Check as H, Crosshair as I, ArrowRight as J, Bell as K, Clock as L, Globe as M, FileText as N, Inbox as O, Droplets as P, CirclePlus as R, Map as S, Layers as T, Camera as U, ChevronRight as V, CalendarDays as W, Activity as X, ArrowLeft as Y, Minus as _, TriangleAlert as a, MessageSquareText as b, Sparkles as c, Search as d, Scroll as f, Plus as g, Radar as h, Upload as i, HardHat as j, Image as k, Smartphone as l, RefreshCw as m, User as n, Trees as o, RotateCcw as p, ArrowUpRight as q, UserCheck as r, Trash2 as s, X as t, ShieldCheck as u, Mic as v, LoaderCircle as w, Menu as x, MicOff as y, CircleCheck as z };

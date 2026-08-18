@@ -5,9 +5,12 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
- * JANMIND Indian Civic Design System
- * Palette: Saffron (#FF9933) + India Green (#138808) + Ashoka Navy
- * Fonts: Inter (Latin) + Noto Sans Devanagari (Hindi/Gujarati)
+ * =========================================================================
+ * JANMIND: Indian Civic & Cultural Design System (Neo-Glassmorphism Edition)
+ * Palette: Saffron/Bhagwa (#FF6F00) + India Green (#0E8A4B) + Ashoka Chakra Navy (#0A369D)
+ * Accents: Marigold Haldi Gold (#F59E0B) + Jaipur Rose (#E11D48) + Royal Peacock (#0F766E)
+ * Canvas: Pearl Sandalwood / Ivory Silk with Multi-Layer Specular Glass
+ * =========================================================================
  */
 
 @theme inline {
@@ -19,7 +22,7 @@
   --radius-3xl: calc(var(--radius) + 12px);
   --radius-4xl: calc(var(--radius) + 16px);
 
-  --font-sans: "Inter", "Noto Sans Devanagari", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Inter", "Noto Sans Devanagari", "Noto Sans Gujarati", "Noto Sans Kannada", ui-sans-serif, system-ui, sans-serif;
 
   --color-background: var(--background);
   --color-background-secondary: var(--background-secondary);
@@ -48,6 +51,15 @@
   --color-glass-border: var(--glass-border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+
+  /* Indian Accent Colors */
+  --color-saffron: var(--saffron);
+  --color-india-green: var(--india-green);
+  --color-ashoka-blue: var(--ashoka-blue);
+  --color-marigold: var(--marigold);
+  --color-jaipur-rose: var(--jaipur-rose);
+  --color-peacock: var(--peacock);
+
   --color-chart-1: var(--primary);
   --color-chart-2: var(--saffron);
   --color-chart-3: var(--warning);
@@ -58,106 +70,128 @@
   --shadow-glass-lg: var(--shadow-lift);
 }
 
-/* -- LIGHT MODE ? Ivory + India Green primary -- */
+/* -------------------------------------------------------------------------
+   LIGHT THEME (Default): Luminous Indian Silk Ivory + Rich Jewel Tones
+   ------------------------------------------------------------------------- */
 :root {
-  --radius: 0.75rem;
+  --radius: 0.85rem;
 
-  /* India flag inspired palette */
-  --saffron:       #FF9933;   /* Indian saffron */
-  --india-green:   #138808;   /* Indian flag green */
-  --ashoka-blue:   #0047AB;   /* Ashoka Chakra blue */
-  --ivory:         #FFF8F0;   /* warm ivory ? feels like parchment */
+  /* Authentic Indian Jewel Palette */
+  --saffron:       #FF6F00;   /* Royal Bhagwa / Indian Saffron */
+  --saffron-light: #FFF2E5;   /* Saffron mist */
+  --saffron-glow:  rgba(255, 111, 0, 0.22);
+  --india-green:   #0E8A4B;   /* Ashoka Emerald / India Green */
+  --green-light:   #E8F7EE;   /* Mint/Emerald mist */
+  --green-glow:    rgba(14, 138, 75, 0.20);
+  --ashoka-blue:   #0A369D;   /* 24-Spoke Chakra Navy */
+  --blue-light:    #EDF3FF;   /* Celestial blue mist */
+  --marigold:      #F59E0B;   /* Haldi / Marigold Gold */
+  --jaipur-rose:   #E11D48;   /* Jaipur Palace Terracotta / Gulabi */
+  --peacock:       #0F766E;   /* Royal Peacock Teal */
 
-  --background:           #FFF8F0;   /* warm ivory */
-  --background-secondary: #FFF1E0;
-  --surface:              rgb(255 248 240 / 0.85);
-  --surface-elevated:     rgb(255 255 255 / 0.95);
-  --glass:                rgb(255 248 240 / 0.65);
-  --glass-strong:         rgb(255 255 255 / 0.82);
-  --glass-border:         rgb(255 153 51 / 0.22);  /* saffron tinted border */
+  /* Canvas: Sandalwood Silk + Warm Ivory */
+  --background:           #FAF6F0;   /* Sandalwood Pearl Ivory */
+  --background-secondary: #F4ECE1;   /* Warm Terracotta Mist */
+  
+  /* Crazy Liquid Glass Surfaces */
+  --surface:              rgba(255, 255, 255, 0.78);
+  --surface-elevated:     rgba(255, 255, 255, 0.94);
+  --glass:                rgba(255, 255, 255, 0.72);
+  --glass-strong:         rgba(255, 255, 255, 0.88);
+  --glass-border:         rgba(255, 111, 0, 0.20);  /* subtle saffron-tinted refraction */
+  --glass-border-green:   rgba(14, 138, 75, 0.20);
 
-  --foreground:           #1A0A00;  /* deep warm black */
-  --card:                 rgb(255 255 255 / 0.82);
-  --card-foreground:      #1A0A00;
-  --popover:              #FFF8F0;
-  --popover-foreground:   #1A0A00;
+  --foreground:           #1C130D;   /* Deep Sandalwood Charcoal */
+  --card:                 rgba(255, 255, 255, 0.82);
+  --card-foreground:      #1C130D;
+  --popover:              rgba(255, 255, 255, 0.96);
+  --popover-foreground:   #1C130D;
 
-  /* India Green as primary */
-  --primary:              #138808;
+  /* Primary: Bold India Green for Action & Progress */
+  --primary:              #0E8A4B;
   --primary-foreground:   #FFFFFF;
-  /* Saffron as accent */
-  --secondary-accent:     #FF9933;
-  --secondary:            #FFF1E0;
-  --secondary-foreground: #1A0A00;
+  
+  /* Saffron Accent */
+  --secondary-accent:     #FF6F00;
+  --secondary:            #FFF2E5;
+  --secondary-foreground: #7C2D12;
 
-  --muted:                #FFF1E0;
-  --muted-foreground:     #6B4A2A;
-  --subtle-foreground:    #9B7050;
+  --muted:                #F5EBE1;
+  --muted-foreground:     #785840;
+  --subtle-foreground:    #A37A58;
 
-  --accent:               #FFF1E0;
-  --accent-foreground:    #1A0A00;
+  --accent:               #FFF4E6;
+  --accent-foreground:    #9A3412;
 
-  --critical:  #D32F2F;   /* red alert */
-  --warning:   #F57C00;   /* orange warning */
-  --success:   #2E7D32;   /* deep green success */
-  --destructive:             #D32F2F;
-  --destructive-foreground:  #FFFFFF;
+  --critical:             #DC2626;   /* Alert Red */
+  --warning:              #EA580C;   /* Warm Orange Warning */
+  --success:              #16A34A;   /* Green Success */
+  --destructive:          #DC2626;
+  --destructive-foreground: #FFFFFF;
 
-  --border:       rgb(26 10 0 / 0.14);
-  --input:        rgb(26 10 0 / 0.16);
-  --ring:         #138808;
+  --border:               rgba(120, 88, 64, 0.16);
+  --input:                rgba(120, 88, 64, 0.18);
+  --ring:                 #FF6F00;
 
-  --shadow-soft: 0 1px 3px rgb(26 10 0 / 0.08), 0 8px 24px -12px rgb(26 10 0 / 0.18);
-  --shadow-lift: 0 2px 6px rgb(26 10 0 / 0.10), 0 18px 40px -16px rgb(26 10 0 / 0.26);
-  --ambient-1: rgb(19 136 8 / 0.12);   /* green glow */
-  --ambient-2: rgb(255 153 51 / 0.14); /* saffron glow */
+  /* Specular Light Soft Shadows */
+  --shadow-soft: 0 4px 20px -2px rgba(120, 88, 64, 0.08), 0 2px 6px -1px rgba(0, 0, 0, 0.04), inset 0 1px 1px 0 rgba(255, 255, 255, 0.9);
+  --shadow-lift: 0 16px 36px -6px rgba(255, 111, 0, 0.10), 0 6px 16px -2px rgba(14, 138, 75, 0.08), inset 0 1.5px 1.5px 0 rgba(255, 255, 255, 1);
+  
+  --ambient-1: rgba(255, 111, 0, 0.14);  /* Warm Saffron Sun Glow */
+  --ambient-2: rgba(14, 138, 75, 0.12);  /* Emerald Prosperity Glow */
+  --ambient-3: rgba(10, 54, 157, 0.08);  /* Royal Ashoka Blue Aura */
 }
 
-/* -- DARK MODE ? Deep Navy + Saffron/Green accents -- */
+/* -------------------------------------------------------------------------
+   DARK THEME: Midnight Peacock Navy + Electric Saffron & Emerald Fire
+   ------------------------------------------------------------------------- */
 .dark {
-  --background:           #0D1117;  /* deep navy-charcoal */
-  --background-secondary: #111827;
-  --surface:              #161D2B;
-  --surface-elevated:     #1E2738;
-  --glass:                rgb(255 255 255 / 0.04);
-  --glass-strong:         rgb(255 255 255 / 0.07);
-  --glass-border:         rgb(255 153 51 / 0.18);  /* saffron border in dark */
+  --background:           #0A0F18;   /* Deep Midnight Indigo */
+  --background-secondary: #0F1726;
+  --surface:              rgba(18, 27, 44, 0.78);
+  --surface-elevated:     rgba(24, 36, 58, 0.92);
+  --glass:                rgba(255, 255, 255, 0.05);
+  --glass-strong:         rgba(255, 255, 255, 0.09);
+  --glass-border:         rgba(255, 140, 0, 0.22);
+  --glass-border-green:   rgba(34, 197, 94, 0.22);
 
-  --foreground:           #F5E6D0;  /* warm cream text */
-  --card:                 #161D2B;
-  --card-foreground:      #F5E6D0;
-  --popover:              #161D2B;
-  --popover-foreground:   #F5E6D0;
+  --foreground:           #FBF5ED;   /* Warm Ivory Moonlight */
+  --card:                 rgba(18, 27, 44, 0.78);
+  --card-foreground:      #FBF5ED;
+  --popover:              rgba(18, 27, 44, 0.96);
+  --popover-foreground:   #FBF5ED;
 
-  /* Brighter India Green for dark mode */
-  --primary:              #22C55E;  /* vivid green ? visible on dark */
-  --primary-foreground:   #0D1117;
-  --secondary-accent:     #FFAA44;  /* warm saffron for dark */
-  --secondary:            #1E2738;
-  --secondary-foreground: #F5E6D0;
+  --primary:              #22C55E;   /* Vivid Emerald */
+  --primary-foreground:   #061E10;
+  --secondary-accent:     #FF9933;   /* Bright Saffron */
+  --secondary:            #1E293B;
+  --secondary-foreground: #FBF5ED;
 
-  --muted:                #1E2738;
-  --muted-foreground:     #A08060;
-  --subtle-foreground:    #705840;
+  --muted:                #1E293B;
+  --muted-foreground:     #B59A7A;
+  --subtle-foreground:    #826B50;
 
-  --accent:               #1E2738;
-  --accent-foreground:    #F5E6D0;
+  --accent:               #1E293B;
+  --accent-foreground:    #FBF5ED;
 
-  --critical:  #FF5252;  /* bright red on dark */
-  --warning:   #FFB300;  /* amber warning */
-  --success:   #4CAF50;  /* medium green */
-  --destructive:             #FF5252;
-  --destructive-foreground:  #0D1117;
+  --critical:             #EF4444;
+  --warning:              #F59E0B;
+  --success:              #22C55E;
+  --destructive:          #EF4444;
+  --destructive-foreground: #FFFFFF;
 
-  --border:  rgb(255 153 51 / 0.12);
-  --input:   rgb(255 153 51 / 0.14);
-  --ring:    #22C55E;
+  --border:               rgba(255, 153, 51, 0.16);
+  --input:                rgba(255, 153, 51, 0.18);
+  --ring:                 #22C55E;
 
-  --shadow-soft: 0 1px 2px rgb(0 0 0 / 0.5), 0 10px 28px -14px rgb(0 0 0 / 0.7);
-  --shadow-lift: 0 2px 6px rgb(0 0 0 / 0.5), 0 22px 48px -18px rgb(0 0 0 / 0.8);
-  --ambient-1: rgb(34 197 94 / 0.10);   /* green glow */
-  --ambient-2: rgb(255 170 68 / 0.10);  /* saffron glow */
+  --shadow-soft: 0 4px 20px -2px rgba(0, 0, 0, 0.5), inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
+  --shadow-lift: 0 20px 48px -8px rgba(0, 0, 0, 0.75), 0 0 24px -4px rgba(255, 140, 0, 0.18);
+  
+  --ambient-1: rgba(34, 197, 94, 0.12);
+  --ambient-2: rgba(255, 140, 0, 0.14);
+  --ambient-3: rgba(59, 130, 246, 0.10);
 }
+
 @layer base {
   * {
     border-color: var(--color-border);
@@ -174,14 +208,20 @@
     font-feature-settings: "cv11", "ss01";
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
+    background-image: 
+      radial-gradient(ellipse 80% 50% at 50% -10%, rgba(255, 111, 0, 0.07), transparent),
+      radial-gradient(ellipse 60% 40% at 90% 40%, rgba(14, 138, 75, 0.06), transparent),
+      radial-gradient(ellipse 50% 40% at 10% 80%, rgba(10, 54, 157, 0.05), transparent);
+    background-attachment: fixed;
   }
 
   ::selection {
-    background: color-mix(in oklab, var(--primary) 28%, transparent);
+    background: rgba(255, 111, 0, 0.25);
+    color: #1C130D;
   }
 
   :focus-visible {
-    outline: 2px solid color-mix(in oklab, var(--primary) 75%, transparent);
+    outline: 2px solid var(--primary);
     outline-offset: 2px;
   }
 
@@ -192,18 +232,51 @@
   }
 }
 
+/* -------------------------------------------------------------------------
+   CRAZY NEO-GLASS UTILITY CLASSES
+   ------------------------------------------------------------------------- */
 @utility glass {
   background: var(--glass);
   border: 1px solid var(--glass-border);
-  backdrop-filter: blur(18px) saturate(140%);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
   box-shadow: var(--shadow-soft);
 }
 
 @utility glass-strong {
   background: var(--glass-strong);
-  border: 1px solid var(--glass-border);
-  backdrop-filter: blur(24px) saturate(150%);
-  box-shadow: var(--shadow-soft);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(32px) saturate(200%);
+  -webkit-backdrop-filter: blur(32px) saturate(200%);
+  box-shadow: var(--shadow-lift);
+}
+
+@utility glass-aurora {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.85) 0%, rgba(255, 244, 230, 0.70) 50%, rgba(235, 252, 240, 0.75) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(28px) saturate(190%);
+  box-shadow: 0 16px 40px -8px rgba(255, 111, 0, 0.09), 0 6px 18px 0 rgba(14, 138, 75, 0.06), inset 0 1px 1px 0 rgba(255, 255, 255, 1);
+}
+
+@utility glass-saffron {
+  background: linear-gradient(135deg, rgba(255, 111, 0, 0.08) 0%, rgba(255, 248, 238, 0.85) 100%);
+  border: 1px solid rgba(255, 111, 0, 0.32);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 8px 30px -4px rgba(255, 111, 0, 0.12), inset 0 1px 0 0 rgba(255, 255, 255, 0.9);
+}
+
+@utility glass-emerald {
+  background: linear-gradient(135deg, rgba(14, 138, 75, 0.08) 0%, rgba(240, 253, 244, 0.85) 100%);
+  border: 1px solid rgba(14, 138, 75, 0.30);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 8px 30px -4px rgba(14, 138, 75, 0.12), inset 0 1px 0 0 rgba(255, 255, 255, 0.9);
+}
+
+@utility glass-peacock {
+  background: linear-gradient(135deg, rgba(10, 54, 157, 0.07) 0%, rgba(240, 247, 255, 0.85) 100%);
+  border: 1px solid rgba(10, 54, 157, 0.28);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 8px 30px -4px rgba(10, 54, 157, 0.10), inset 0 1px 0 0 rgba(255, 255, 255, 0.9);
 }
 
 @utility solid-surface {
@@ -217,7 +290,7 @@
   line-height: 1rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  font-weight: 500;
+  font-weight: 600;
   color: var(--subtle-foreground);
 }
 
@@ -234,8 +307,9 @@
     pointer-events: none;
     background:
       radial-gradient(60% 55% at 18% 12%, var(--ambient-1), transparent 70%),
-      radial-gradient(50% 45% at 82% 0%, var(--ambient-2), transparent 72%);
-    filter: blur(20px);
+      radial-gradient(50% 45% at 82% 0%, var(--ambient-2), transparent 72%),
+      radial-gradient(45% 40% at 50% 30%, var(--ambient-3), transparent 75%);
+    filter: blur(35px);
   }
 }
 
@@ -260,14 +334,74 @@
   &:hover {
     transform: translateY(-2px);
     box-shadow: var(--shadow-lift);
-    border-color: color-mix(in oklab, var(--glass-border) 100%, var(--foreground) 8%);
+    border-color: rgba(255, 111, 0, 0.38);
   }
 }
 
+/* -------------------------------------------------------------------------
+   INDIAN CIVIC & CULTURAL MOTIFS
+   ------------------------------------------------------------------------- */
+.jm-tricolor-bar {
+  height: 3px;
+  background: linear-gradient(90deg, #FF6F00 0%, #FF9933 33%, #FFFFFF 50%, #16A34A 66%, #0E8A4B 100%);
+  border-radius: 9999px;
+}
+
+.jm-chakra-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.25rem 0.65rem;
+  border-radius: 9999px;
+  background: linear-gradient(135deg, rgba(255, 111, 0, 0.12) 0%, rgba(14, 138, 75, 0.12) 100%);
+  border: 1px solid rgba(255, 111, 0, 0.3);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #7C2D12;
+}
+.dark .jm-chakra-badge {
+  color: #FDBA74;
+  border-color: rgba(255, 153, 51, 0.35);
+}
+
+.jm-indian-gradient-text {
+  background: linear-gradient(135deg, #EA580C 0%, #D97706 35%, #0E8A4B 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.dark .jm-indian-gradient-text {
+  background: linear-gradient(135deg, #FB923C 0%, #FBBF24 40%, #4ADE80 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.jm-heritage-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1.25rem;
+  background: rgba(255, 255, 255, 0.82);
+  border: 1px solid rgba(255, 111, 0, 0.22);
+  backdrop-filter: blur(28px) saturate(180%);
+  box-shadow: 0 12px 36px -6px rgba(255, 111, 0, 0.08), 0 4px 12px 0 rgba(0, 0, 0, 0.03);
+  transition: all 300ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.jm-heritage-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(255, 111, 0, 0.45);
+  box-shadow: 0 20px 48px -8px rgba(255, 111, 0, 0.16), 0 6px 18px 0 rgba(14, 138, 75, 0.08);
+}
+.dark .jm-heritage-card {
+  background: rgba(18, 27, 44, 0.82);
+  border-color: rgba(255, 153, 51, 0.25);
+}
+
+/* Animations */
 @keyframes jm-rise {
   from {
     opacity: 0;
-    transform: translateY(14px);
+    transform: translateY(16px);
   }
   to {
     opacity: 1;
@@ -275,456 +409,36 @@
   }
 }
 
-@keyframes jm-fade {
+@keyframes jm-spin-slow {
   from {
-    opacity: 0;
+    transform: rotate(0deg);
   }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes jm-pulse-ring {
-  0% {
-    transform: scale(0.7);
-    opacity: 0.55;
-  }
-  70% {
-    transform: scale(2.1);
-    opacity: 0;
-  }
-  100% {
-    transform: scale(2.1);
-    opacity: 0;
-  }
-}
-
-@keyframes jm-drift {
-  0%,
-  100% {
-    transform: translate3d(0, 0, 0);
-  }
-  50% {
-    transform: translate3d(0, -4px, 0);
-  }
-}
-
-@keyframes jm-sweep {
-  0% {
-    transform: translateX(-100%);
-  }
-  100% {
-    transform: translateX(220%);
-  }
-}
-
-@utility animate-rise {
-  animation: jm-rise 600ms cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-@utility animate-fade {
-  animation: jm-fade 500ms ease-out both;
-}
-
-@utility animate-drift {
-  animation: jm-drift 6s ease-in-out infinite;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
-}
-
-/* --------------------------------------------------- Leaflet integration */
-
-.jm-map {
-  position: relative;
-  z-index: 0;
-}
-
-.jm-map .leaflet-container {
-  height: 100%;
-  width: 100%;
-  background: var(--background-secondary);
-  font-family: var(--font-sans);
-  outline: none;
-}
-
-.jm-map .leaflet-tile-pane {
-  filter: saturate(0.72) contrast(1.02);
-}
-
-.jm-map .leaflet-control-attribution {
-  background: var(--glass-strong);
-  color: var(--subtle-foreground);
-  border: 1px solid var(--glass-border);
-  border-radius: 0.5rem;
-  backdrop-filter: blur(12px);
-  font-size: 0.6rem;
-  padding: 2px 6px;
-  margin: 6px;
-}
-
-.jm-map .leaflet-control-attribution a {
-  color: var(--muted-foreground);
-}
-
-.jm-map .leaflet-marker-icon:focus-visible {
-  outline: 2px solid color-mix(in oklab, var(--primary) 75%, transparent);
-  outline-offset: 2px;
-  border-radius: 999px;
-}
-
-/* Ward polygon tooltip - glass, premium styling */
-.jm-map .leaflet-tooltip.jm-ward-tooltip {
-  background: var(--glass-strong) !important;
-  border: 1px solid var(--glass-border) !important;
-  border-radius: 0.75rem !important;
-  color: var(--foreground) !important;
-  box-shadow: var(--shadow-lift) !important;
-  backdrop-filter: blur(24px) saturate(150%) !important;
-  -webkit-backdrop-filter: blur(24px) saturate(150%) !important;
-  font-size: 0.75rem !important;
-  line-height: 1.5 !important;
-  padding: 10px 14px !important;
-  font-family: var(--font-sans) !important;
-}
-
-.jm-map .leaflet-tooltip.jm-ward-tooltip::before {
-  display: none !important;
-}
-
-.jm-map .leaflet-interactive {
-  cursor: pointer;
-  transition: fill-opacity 180ms ease-out;
-}
-
-.jm-cluster {
-  display: grid;
-  place-items: center;
-  border-radius: 999px;
-  background: color-mix(in oklab, var(--jm-c) 28%, transparent);
-  border: 1px solid color-mix(in oklab, var(--jm-c) 62%, transparent);
-  box-shadow: 0 6px 18px -8px rgb(0 0 0 / 0.5);
-  color: var(--foreground);
-  backdrop-filter: blur(6px);
-  transition:
-    transform 200ms cubic-bezier(0.22, 1, 0.36, 1),
-    background-color 200ms ease-out;
-  cursor: pointer;
-}
-
-.jm-cluster:hover {
-  transform: scale(1.08);
-  background: color-mix(in oklab, var(--jm-c) 40%, transparent);
-}
-
-.jm-dot {
-  display: block;
-  height: 12px;
-  width: 12px;
-  border-radius: 999px;
-  background: color-mix(in oklab, var(--jm-c) 72%, transparent);
-  border: 1px solid color-mix(in oklab, var(--jm-c) 90%, transparent);
-  box-shadow: 0 4px 12px -6px rgb(0 0 0 / 0.6);
-  transition: transform 180ms cubic-bezier(0.22, 1, 0.36, 1);
-  cursor: pointer;
-}
-
-.jm-dot:hover {
-  transform: scale(1.35);
-}
-
-.jm-tip-sub {
-  color: var(--muted-foreground);
-  font-size: 0.66rem;
-}
-
-.jm-cluster-count {
-  font-size: 0.72rem;
-  font-weight: 600;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: 0.01em;
-}
-
-.jm-pin {
-  display: grid;
-  place-items: center;
-  height: 28px;
-  width: 28px;
-  border-radius: 999px;
-  background: color-mix(in oklab, var(--primary) 88%, transparent);
-  border: 2px solid color-mix(in oklab, var(--background) 70%, transparent);
-  box-shadow: var(--shadow-lift);
-  transition: transform 200ms cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.jm-pin:hover {
-  transform: scale(1.1);
-}
-
-.jm-pin-dot {
-  height: 7px;
-  width: 7px;
-  border-radius: 999px;
-  background: var(--primary-foreground);
-}
-
-/* ------------------------------------------------ municipality portal */
-
-.filter-input {
-  width: 100%;
-  border-radius: 0.75rem;
-  border: 1px solid var(--glass-border);
-  background: var(--glass);
-  padding: 0.625rem 0.875rem;
-  font-size: 0.875rem;
-  outline: none;
-  transition: border-color 180ms ease-out;
-}
-
-.filter-input:focus-visible {
-  border-color: color-mix(in oklab, var(--primary) 50%, var(--glass-border));
-}
-
-.action-btn {
-  border-radius: 0.75rem;
-  border: 1px solid var(--glass-border);
-  background: var(--glass);
-  padding: 0.5rem 1rem;
-  font-size: 0.6875rem;
-  font-weight: 500;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  transition: transform 180ms ease-out, background-color 180ms ease-out;
-}
-
-.action-btn:hover {
-  background: var(--glass-strong);
-}
-
-.action-btn.primary {
-  background: var(--primary);
-  border-color: transparent;
-  color: var(--primary-foreground);
-}
-
-.action-btn.primary:hover {
-  filter: brightness(1.08);
-}
-
-.muni-page-enter {
-  animation: jm-rise 500ms cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-@keyframes jm-drawer-in {
-  from {
-    opacity: 0;
-    transform: translateX(100%);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-
-/* ------------------------------------------------ crazy civic map FX */
-
-@keyframes jm-scan {
-  0% {
-    transform: translateY(-100%);
-    opacity: 0;
-  }
-  15% {
-    opacity: 0.6;
-  }
-  85% {
-    opacity: 0.6;
-  }
-  100% {
-    transform: translateY(200%);
-    opacity: 0;
-  }
-}
-
-@keyframes jm-glow-pulse {
-  0%,
-  100% {
-    box-shadow:
-      0 0 0 0 color-mix(in oklab, var(--primary) 0%, transparent),
-      var(--shadow-soft);
-  }
-  50% {
-    box-shadow:
-      0 0 28px 2px color-mix(in oklab, var(--primary) 22%, transparent),
-      var(--shadow-lift);
-  }
-}
-
-@keyframes jm-border-spin {
   to {
     transform: rotate(360deg);
   }
 }
 
-@keyframes jm-stat-pop {
-  0% {
-    transform: scale(0.6);
-    opacity: 0;
-  }
-  60% {
-    transform: scale(1.08);
-  }
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
+.animate-spin-slow {
+  animation: jm-spin-slow 24s linear infinite;
 }
 
-@keyframes jm-hotspot-beat {
-  0%,
-  100% {
-    transform: scale(1);
-    box-shadow: 0 0 0 0 color-mix(in oklab, var(--jm-c) 40%, transparent);
-  }
-  50% {
-    transform: scale(1.12);
-    box-shadow: 0 0 18px 4px color-mix(in oklab, var(--jm-c) 35%, transparent);
-  }
+.animate-rise {
+  animation: jm-rise 450ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-@keyframes jm-panel-slide {
-  from {
-    opacity: 0;
-    transform: translateY(24px) scale(0.97);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
+/* Tooltip styles */
+.jm-ward-tooltip {
+  background: rgba(255, 255, 255, 0.95) !important;
+  color: #1C130D !important;
+  border: 1px solid rgba(255, 111, 0, 0.35) !important;
+  border-radius: 0.75rem !important;
+  padding: 0.55rem 0.8rem !important;
+  box-shadow: 0 12px 32px rgba(255, 111, 0, 0.15) !important;
+  backdrop-filter: blur(20px) !important;
 }
-
-@keyframes jm-mode-flash {
-  0% {
-    filter: brightness(1.4);
-  }
-  100% {
-    filter: brightness(1);
-  }
+.dark .jm-ward-tooltip {
+  background: rgba(18, 27, 44, 0.95) !important;
+  color: #FBF5ED !important;
+  border-color: rgba(255, 153, 51, 0.35) !important;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6) !important;
 }
-
-.jm-map-scan {
-  background: linear-gradient(
-    180deg,
-    transparent 0%,
-    color-mix(in oklab, var(--primary) 30%, transparent) 50%,
-    transparent 100%
-  );
-  animation: jm-scan 2.4s ease-in-out infinite;
-}
-
-.jm-map-frame {
-  position: relative;
-}
-
-.jm-map-frame::before {
-  content: "";
-  position: absolute;
-  inset: -1px;
-  z-index: 10;
-  border-radius: inherit;
-  padding: 1px;
-  background: conic-gradient(
-    from 0deg,
-    color-mix(in oklab, var(--primary) 60%, transparent),
-    transparent 30%,
-    color-mix(in oklab, var(--warning) 50%, transparent) 55%,
-    transparent 75%,
-    color-mix(in oklab, var(--primary) 60%, transparent)
-  );
-  -webkit-mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  pointer-events: none;
-  opacity: 0.55;
-  animation: jm-border-spin 8s linear infinite;
-}
-
-.jm-map-shell.jm-map-loading {
-  min-height: 12rem;
-}
-
-.jm-glitch-text {
-  text-shadow:
-    0 0 20px color-mix(in oklab, var(--primary) 25%, transparent),
-    0 0 40px color-mix(in oklab, var(--primary) 10%, transparent);
-}
-
-.jm-mode-active {
-  animation: jm-mode-flash 400ms ease-out;
-}
-
-.jm-stat-card {
-  transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.jm-stat-card:hover {
-  transform: translateY(-3px) scale(1.02);
-  animation: jm-glow-pulse 1.8s ease-in-out infinite;
-}
-
-.jm-stat-pop {
-  display: inline-block;
-  animation: jm-stat-pop 600ms cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-.jm-chart-card {
-  overflow: hidden;
-  position: relative;
-}
-
-.jm-chart-card::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    105deg,
-    transparent 40%,
-    color-mix(in oklab, var(--primary) 8%, transparent) 50%,
-    transparent 60%
-  );
-  transform: translateX(-100%);
-  animation: jm-sweep 4s ease-in-out infinite;
-  pointer-events: none;
-}
-
-.jm-hotspot-pulse {
-  animation: jm-hotspot-beat 1.6s ease-in-out infinite;
-}
-
-.jm-panel-enter {
-  animation: jm-panel-slide 500ms cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-.jm-panel-glow {
-  box-shadow:
-    0 0 0 1px color-mix(in oklab, var(--primary) 20%, transparent),
-    0 20px 50px -20px color-mix(in oklab, var(--primary) 30%, transparent);
-}
-
-.jm-bar-cell {
-  transition: opacity 200ms ease-out;
-}
-
-.jm-bar-cell:hover {
-  opacity: 0.75;
-}
-

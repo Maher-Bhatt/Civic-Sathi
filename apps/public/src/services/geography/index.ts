@@ -564,3 +564,32 @@ export function areaDailyTrend(areaId: string, filters: MapFilters): DailyTrendP
     };
   });
 }
+
+/** Researched historical civic heritage notes for mapped localities */
+export function getLocalityHeritage(areaId: string): string | null {
+  const HERITAGE_NOTES: Record<string, string> = {
+    // Vadodara
+    "vad-alkapuri": "Established as the prime royal and diplomatic avenue connecting Sayajigunj to the Gaekwad estates.",
+    "vad-mandvi": "16th-century fortified citadel center where Mughal trade corridors intersected with royal Gaekwad governance.",
+    "vad-sayajigunj": "Conceived around the Maharaja Sayajirao University (MSU) and Sayaji Baug 113-acre botanical park.",
+    "vad-fatehgunj": "Historic military cantonment sector converted into Baroda's premier academic and cultural quarter.",
+    "vad-karelibaug": "Home to the historic Kirti Mandir cenotaph honoring ancestors of the Gaekwad Maratha dynasty.",
+    "vad-gotri": "Originally a farming hamlet transformed into a major residential corridor with ancient stepwells.",
+    "vad-manjalpur": "South Baroda's largest historic township expanded under late 20th-century VMC urban planning.",
+    "vad-makarpura": "Site of the Makarpura Palace built in 1870 by Khanderao Gaekwad as an Italian-style summer residence.",
+
+    // Bengaluru
+    "blr-whitefield": "Founded in 1882 as a farming colony granted by the Maharaja of Mysore, now Asia's tech nexus.",
+    "blr-malleshwaram": "Planned in 1898 following the Great Plague with broad tree-lined avenues and the 17th-century Kadu Malleshwara temple.",
+    "blr-basavanagudi": "Home to the 1537 Bull Temple built by Kempe Gowda I, honoring Nandi on the granite ridge of Bugle Rock.",
+    "blr-indiranagar": "Established in the early 1970s as a defense and BDA residential suburb along Old Airport Road.",
+    "blr-shivajinagar": "Historic 1809 British Cantonment marketplace and home to the 1927 heritage Russell Market.",
+    "blr-yelahanka": "Ancient 12th-century Hoysala capital and ancestral home of Bengaluru's founder Kempe Gowda I.",
+    "blr-bellandur": "Part of the ancient 10th-century Chola cascade water network feeding 28 downstream wetlands.",
+    "blr-hebbal": "Engineered in 1537 by Kempe Gowda with a historic earthen dam creating Hebbal Lake.",
+    "blr-electronic-city": "Conceived in 1978 by R.K. Baliga as India's premier high-tech electronic oasis.",
+  };
+
+  return HERITAGE_NOTES[areaId] || null;
+}
+
