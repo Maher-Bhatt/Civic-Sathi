@@ -162,7 +162,12 @@ export async function getLiveActivity(): Promise<LiveActivity[]> {
 /* --------------------------------------------------------- systemic issues */
 
 export async function getSystemicIssues(city?: CityId): Promise<SystemicIssue[]> {
-  return client.get<SystemicIssue[]>('/api/v1/issues' + (city ? `?city=${city}` : ''));
+  try {
+    const res = await client.get<SystemicIssue[]>('/api/v1/issues' + (city ? `?city=${city}` : ''));
+    return Array.isArray(res) ? res : [];
+  } catch {
+    return [];
+  }
 }
 
 export async function getSystemicIssue(id: string): Promise<SystemicIssue | null> {
@@ -182,8 +187,12 @@ export async function assignIssueDepartment(id: string, department: Department):
 }
 
 export async function getCivicIssues(): Promise<any[]> {
-  const res = await client.get<any[]>('/api/v1/issues');
-  return res || [];
+  try {
+    const res = await client.get<any[]>('/api/v1/issues');
+    return Array.isArray(res) ? res : [];
+  } catch {
+    return [];
+  }
 }
 
 /* -------------------------------------------------------------- complaints */

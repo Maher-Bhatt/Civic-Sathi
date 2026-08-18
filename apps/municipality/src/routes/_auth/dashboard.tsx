@@ -29,7 +29,6 @@ import {
   cityDailyTrend,
   cityHealthDistribution,
   cityIssueBreakdown,
-  complaintPoints,
   DEFAULT_FILTERS,
   type AreaHealth,
   type ComplaintPoint,
@@ -56,15 +55,23 @@ function MuniDashboardPage() {
   const { data, isLoading: loading } = useQuery({
     queryKey: ["muni-dashboard", city],
     queryFn: async () => {
-      const [k, i, l, h, c] = await Promise.all([
-        getDashboardKPIs(),
-        getSystemicIssues(city),
-        getLiveActivity(),
-        getHotspotRankings(),
-        getCivicIssues(),
-      ]);
-      return { kpis: k, issues: i.slice(0, 4), live: l, hotspots: h.slice(0, 3), civicIssues: c };
-    }
+      try {
+        const [k, i, l, h, c] = await Promise.all([
+          getDashboardKPIs(),
+          getSystemicIssues(city),
+          getLiveActivity(),
+          getHotspotRankings(),
+          getCivicIssues(),
+        ]);
+        return { kpis: k, issues: Array.isArray(i) ? i.slice(0, 4) : [], live: l, hotspots: Array.isArray(h) ? h.slice(0, 3) : [], civicIssues: Array.isArray(c) ? c : [] };
+      } catch {
+        return {
+          kpis: { totalReports: 0, critical: 0, active: 0, resolved: 0, emergingIssues: 0, areaHotspots: 0 },
+          issues: [], live: [], hotspots: [], civicIssues: []
+        };
+      }
+    },
+    retry: 1,
   });
 
   const kpis = data?.kpis;
