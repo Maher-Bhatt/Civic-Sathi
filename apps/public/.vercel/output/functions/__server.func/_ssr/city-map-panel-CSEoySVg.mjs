@@ -3,11 +3,11 @@ import { n as require_react } from "../_libs/@radix-ui/react-compose-refs+[...].
 import { r as require_jsx_runtime } from "../_libs/react+tanstack__react-query.mjs";
 import { S as MapPin } from "../_libs/lucide-react.mjs";
 import { n as CITIES } from "./cities-CP3Vvkkz.mjs";
-import { D as useI18n, E as cn } from "./router-BECM0GLq.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/city-map-panel-DPHYqeYO.js
+import { D as useI18n, E as cn } from "./router-hbYygTvF.mjs";
+//#region node_modules/.nitro/vite/services/ssr/assets/city-map-panel-CSEoySVg.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
-var CityMap = (0, import_react.lazy)(() => import("./city-map-kOqbdmL7.mjs").then((m) => ({ default: m.CityMap })));
+var CityMap = (0, import_react.lazy)(() => import("./city-map-4SwleDOj.mjs").then((m) => ({ default: m.CityMap })));
 function MapSkeleton({ className }) {
 	const { t } = useI18n();
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {

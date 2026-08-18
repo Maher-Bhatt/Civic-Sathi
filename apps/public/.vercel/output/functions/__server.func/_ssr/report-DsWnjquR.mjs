@@ -5,11 +5,11 @@ import { C as LoaderCircle, D as Image, G as ArrowLeft, I as CircleAlert, M as C
 import { v as useNavigate } from "../_libs/@tanstack/react-router+[...].mjs";
 import { i as saveDraft, n as emptyDraft, r as loadDraft } from "./report-draft-BNrUyQJo.mjs";
 import { a as clustersForCity, c as nearestWardOrArea, o as getCity, s as nearestCity } from "./cities-CP3Vvkkz.mjs";
-import { C as uploadComplaintPhoto, D as useI18n, E as cn, c as GlassButton, d as SectionLabel, l as GlassCard, n as AuthGate, p as analyzeComplaintPhoto, u as PageShell } from "./router-BECM0GLq.mjs";
-import { n as ClientCityMap, t as CitySelector } from "./city-map-panel-DPHYqeYO.mjs";
+import { C as uploadComplaintPhoto, D as useI18n, E as cn, c as GlassButton, d as SectionLabel, l as GlassCard, n as AuthGate, p as analyzeComplaintPhoto, u as PageShell } from "./router-hbYygTvF.mjs";
+import { n as ClientCityMap, t as CitySelector } from "./city-map-panel-CSEoySVg.mjs";
 import { n as GlassTextarea } from "./glass-input-C05CvLHo.mjs";
 import { t as ISSUE_TYPES } from "./types-DzMfRmJh.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/report-cz3mtTAH.js
+//#region node_modules/.nitro/vite/services/ssr/assets/report-DsWnjquR.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
 function LocationPicker({ location, marker, city, onChange }) {

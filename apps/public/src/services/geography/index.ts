@@ -178,24 +178,32 @@ export interface AreaActivity {
   recent: Array<{ issue: IssueKey; daysAgo: number; health: AreaHealth }>;
 }
 
-/** Thresholds scale with the active time window so colours stay meaningful. */
+export const CITY_COMPLAINTS_TOTAL: Record<CityId, number> = {
+  bengaluru: 100002,
+  vadodara: 12139,
+};
+
+/** Thresholds scale with the active time window so colours stay meaningful at 100k+ scale. */
 export function healthFromCount(total: number, time: TimeWindow = "30d"): AreaHealth {
-  const k = time === "7d" ? 0.28 : time === "all" ? 3.4 : 1;
-  if (total >= 78 * k) return "critical";
-  if (total >= 46 * k) return "high";
-  if (total >= 20 * k) return "moderate";
+  const k = time === "7d" ? 0.35 : time === "all" ? 2.9 : 1;
+  if (total >= 1800 * k) return "critical";
+  if (total >= 1100 * k) return "high";
+  if (total >= 500 * k) return "moderate";
   return "low";
 }
 
-/** All prototype complaint points for a city — deterministic, de-identified. */
+/** All prototype complaint points for a city — deterministic, de-identified spatial points for Leaflet. */
 function buildPoints(city: CityId): ComplaintPoint[] {
   const points: ComplaintPoint[] = [];
-  for (const a of cityAreas(city)) {
+  const areas = cityAreas(city);
+  const pointsPerArea = city === "bengaluru" ? 120 : 60;
+  
+  for (const a of areas) {
     const r = rng(`pts:${a.id}`);
-    const base = 6 + Math.floor(r() ** 2.1 * 210);
+    const base = Math.floor(pointsPerArea * (0.7 + r() * 0.6));
     for (let i = 0; i < base; i++) {
       const issue = ISSUE_KEYS[Math.floor(r() * ISSUE_KEYS.length)]!;
-      const daysAgo = Math.floor(r() ** 2 * 180);
+      const daysAgo = Math.floor(r() ** 1.8 * 365);
       const angle = r() * Math.PI * 2;
       const dist = Math.sqrt(r()) * a.radiusMeters * 0.82;
       const mPerDegLng = M_PER_DEG_LAT * Math.cos((a.center[0] * Math.PI) / 180);
@@ -203,8 +211,8 @@ function buildPoints(city: CityId): ComplaintPoint[] {
         id: `${a.id}-${i}`,
         areaId: a.id,
         issue,
-        health: (["low", "low", "moderate", "moderate", "high", "critical"] as AreaHealth[])[
-          Math.floor(r() * 6)
+        health: (["low", "moderate", "moderate", "high", "critical"] as AreaHealth[])[
+          Math.floor(r() * 5)
         ]!,
         daysAgo,
         // rounded to ~50m so no exact private location is ever published
@@ -256,52 +264,92 @@ const emptyBreakdown = (): IssueBreakdown => ({
   other: 0,
 });
 
-/** Aggregated, privacy-safe activity per locality for the active filters. */
+/** Aggregated, privacy-safe activity per locality for the active filters scaled to the 100k+ dataset. */
 export function areaActivity(city: CityId, filters: MapFilters): AreaActivity[] {
-  const points = filterPoints(complaintPoints(city), filters);
-  const all = complaintPoints(city);
-  const byArea = new Map<string, ComplaintPoint[]>();
-  for (const p of points) {
-    const list = byArea.get(p.areaId);
-    if (list) list.push(p);
-    else byArea.set(p.areaId, [p]);
-  }
+  const areas = cityAreas(city);
+  const totalCityVolume = CITY_COMPLAINTS_TOTAL[city] || 100000;
+  
+  // Time factor based on window
+  const timeFactor = filters.time === "7d" ? 0.125 : filters.time === "30d" ? 0.35 : 1.0;
+  
+  // Category weights
+  const categoryWeights: Record<IssueKey, number> = {
+    roads: 0.28,
+    water: 0.22,
+    garbage: 0.20,
+    drainage: 0.14,
+    lighting: 0.10,
+    other: 0.06,
+  };
+  
+  // Locality weight multiplier
+  let weightsSum = 0;
+  const areaWeights = areas.map((a, idx) => {
+    const r = rng(`weight:${a.id}`);
+    // High activity areas (first third get higher weight)
+    const baseWeight = idx < Math.ceil(areas.length / 3) ? (1.5 + r() * 1.2) : (0.6 + r() * 0.7);
+    weightsSum += baseWeight;
+    return { area: a, weight: baseWeight };
+  });
 
-  return cityAreas(city).map((area) => {
-    const list = byArea.get(area.id) ?? [];
+  const cityActiveVolume = Math.round(totalCityVolume * timeFactor);
+
+  const activities: AreaActivity[] = areaWeights.map(({ area, weight }) => {
+    const r = rng(`meta:${area.id}:${filters.time}`);
+    const areaProportion = weight / weightsSum;
+    let baseAreaTotal = Math.max(1, Math.round(cityActiveVolume * areaProportion));
+    
+    // Issue breakdown
     const counts = emptyBreakdown();
-    for (const p of list) counts[p.issue] += 1;
-    const total = list.length;
-    const last7 = list.filter((p) => p.daysAgo <= 7).length;
-    const prev7 = all.filter(
-      (p) => p.areaId === area.id && p.daysAgo > 7 && p.daysAgo <= 14,
-    ).length;
-    const trendPct =
-      prev7 === 0 ? (last7 > 0 ? 100 : 0) : Math.round(((last7 - prev7) / prev7) * 100);
-    const topIssue =
-      (ISSUE_KEYS.slice().sort((a, b) => counts[b] - counts[a])[0] as IssueKey) ?? "other";
-    const health = healthFromCount(total, filters.time);
+    for (const k of ISSUE_KEYS) {
+      const catFactor = categoryWeights[k] * (0.8 + r() * 0.4);
+      counts[k] = Math.round(baseAreaTotal * catFactor);
+    }
+    
+    // Filter by specific issue if applied
+    let total = baseAreaTotal;
+    if (filters.issue !== "all") {
+      total = counts[filters.issue] || 0;
+    }
+    
+    const last7 = Math.round(total * (filters.time === "7d" ? 1.0 : filters.time === "30d" ? 0.36 : 0.125));
+    const prev7 = Math.round(last7 * (0.85 + r() * 0.3));
+    const trendPct = prev7 === 0 ? (last7 > 0 ? 100 : 0) : Math.round(((last7 - prev7) / prev7) * 100);
+    
+    const topIssue = (ISSUE_KEYS.slice().sort((a, b) => counts[b] - counts[a])[0] as IssueKey) ?? "roads";
+    const health = healthFromCount(baseAreaTotal, filters.time);
+    
     const density = total / Math.max(1, Math.PI * (area.radiusMeters / 1000) ** 2);
-    const risk = Math.max(0, Math.min(100, Math.round(density * 5 + total * 0.5 + last7 * 2)));
-    const r = rng(`meta:${area.id}`);
+    const risk = Math.max(0, Math.min(100, Math.round(density * 0.8 + Math.min(60, total * 0.02) + last7 * 0.05)));
+    
+    const recentIssues: Array<{ issue: IssueKey; daysAgo: number; health: AreaHealth }> = [
+      { issue: topIssue, daysAgo: 0, health },
+      { issue: "roads", daysAgo: 1, health: "high" },
+      { issue: "water", daysAgo: 2, health: "moderate" },
+      { issue: "garbage", daysAgo: 4, health: "low" },
+    ];
+
     return {
       area,
       counts,
       total,
-      resolved: Math.round(total * (0.28 + r() * 0.34)),
+      resolved: Math.round(total * (0.65 + r() * 0.2)),
       last7,
       trendPct,
       health,
       topIssue,
-      hotspot: risk >= 62 && total >= 20,
+      hotspot: risk >= 55 && total >= 300,
       risk,
-      recent: list
-        .slice()
-        .sort((a, b) => a.daysAgo - b.daysAgo)
-        .slice(0, 4)
-        .map((p) => ({ issue: p.issue, daysAgo: p.daysAgo, health: p.health })),
+      recent: recentIssues,
     };
   });
+
+  // Filter by health if specified
+  if (filters.health !== "all") {
+    return activities.filter((a) => a.health === filters.health);
+  }
+
+  return activities;
 }
 
 /* ----------------------------------------------------------- clustering */
@@ -412,20 +460,20 @@ const ISSUE_CHART_COLORS: Record<IssueKey, string> = {
   other: "var(--muted-foreground)",
 };
 
-/** Deterministic 7-day report trend for charts. */
+/** Deterministic 7-day report trend for charts scaled with total volume. */
 export function cityDailyTrend(city: CityId, filters: MapFilters): DailyTrendPoint[] {
-  const points = filterPoints(complaintPoints(city), filters);
+  const acts = areaActivity(city, filters);
+  const totalLast7 = acts.reduce((sum, a) => sum + a.last7, 0);
+  const dailyBase = Math.round(totalLast7 / 7);
   const labels = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-  const buckets = [0, 0, 0, 0, 0, 0, 0];
-  for (const p of points) {
-    if (p.daysAgo > 6) continue;
-    buckets[6 - p.daysAgo]! += 1;
-  }
+  const weights = [0.92, 1.05, 1.12, 1.08, 0.98, 0.88, 0.97];
   const r = rng(`trend:${city}:${filters.time}:${filters.issue}`);
-  return labels.map((day, i) => ({
-    day,
-    reports: buckets[i]! + Math.floor(r() * 4),
-  }));
+  
+  return labels.map((day, i) => {
+    const jitter = 0.9 + r() * 0.2;
+    const reports = Math.max(1, Math.round(dailyBase * (weights[i] || 1.0) * jitter));
+    return { day, reports };
+  });
 }
 
 /** Issue breakdown across all localities for bar/pie charts. */
@@ -464,12 +512,19 @@ export function areaDailyTrend(areaId: string, filters: MapFilters): DailyTrendP
   const city = cityAreas("vadodara").some((a) => a.id === areaId)
     ? ("vadodara" as CityId)
     : ("bengaluru" as CityId);
-  const points = filterPoints(complaintPoints(city), filters).filter((p) => p.areaId === areaId);
+  const acts = areaActivity(city, filters);
+  const act = acts.find((a) => a.area.id === areaId);
+  const last7 = act?.last7 ?? 100;
+  const dailyBase = Math.round(last7 / 7);
   const labels = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-  const buckets = [0, 0, 0, 0, 0, 0, 0];
-  for (const p of points) {
-    if (p.daysAgo > 6) continue;
-    buckets[6 - p.daysAgo]! += 1;
-  }
-  return labels.map((day, i) => ({ day, reports: buckets[i]! }));
+  const weights = [0.95, 1.08, 1.10, 1.05, 0.96, 0.89, 0.97];
+  const r = rng(`areatrend:${areaId}:${filters.time}`);
+  
+  return labels.map((day, i) => {
+    const jitter = 0.88 + r() * 0.24;
+    return {
+      day,
+      reports: Math.max(1, Math.round(dailyBase * (weights[i] || 1.0) * jitter)),
+    };
+  });
 }

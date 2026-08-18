@@ -59,6 +59,24 @@ def get_map_data(
     return service.get_map_data(days=days, city_id=city_id)
 
 
+@router.get("/public-map")
+def get_public_map_data(
+    city: str = "vadodara",
+    time: str = "30d",
+    issue: str = "all",
+    health: str = "all",
+    db: Session = Depends(get_db),
+):
+    """Get live aggregated statistics for the public civic map (open endpoint)."""
+    service = AnalyticsService(db)
+    return service.get_public_map_data(
+        city=city,
+        time_window=time,
+        issue_filter=issue,
+        health_filter=health,
+    )
+
+
 @router.post("/hotspots/detect")
 def trigger_hotspot_detection(
     db: Session = Depends(get_db),

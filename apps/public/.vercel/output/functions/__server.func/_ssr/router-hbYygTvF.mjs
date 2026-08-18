@@ -6,7 +6,7 @@ import { r as require_jsx_runtime } from "../_libs/react+tanstack__react-query.m
 import { A as Globe, C as LoaderCircle, E as Inbox, H as Bell, O as House, P as CirclePlus, a as TriangleAlert, b as Menu, j as FileText, n as User, t as X, x as Map } from "../_libs/lucide-react.mjs";
 import { g as Link, l as useRouterState, v as useNavigate } from "../_libs/@tanstack/react-router+[...].mjs";
 import { t as Slot } from "../_libs/radix-ui__react-slot.mjs";
-import { a as router_exports } from "./router-BECM0GLq2.mjs";
+import { a as router_exports } from "./router-hbYygTvF2.mjs";
 //#region node_modules/.nitro/vite/services/ssr/assets/i18n-BgZsT7gt.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();

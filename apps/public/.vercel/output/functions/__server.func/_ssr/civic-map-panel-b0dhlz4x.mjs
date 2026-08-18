@@ -2,11 +2,11 @@ import { i as __toESM } from "../_runtime.mjs";
 import { n as require_react } from "../_libs/@radix-ui/react-compose-refs+[...].mjs";
 import { r as require_jsx_runtime } from "../_libs/react+tanstack__react-query.mjs";
 import { m as Radar } from "../_libs/lucide-react.mjs";
-import { D as useI18n, E as cn } from "./router-BECM0GLq.mjs";
+import { D as useI18n, E as cn } from "./router-hbYygTvF.mjs";
 import { t as Delaunay } from "../_libs/d3-delaunay+[...].mjs";
 import { r as polygon, t as featureCollection } from "../_libs/turf__helpers.mjs";
 import { t as index_default } from "../_libs/@turf/intersect+[...].mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/civic-map-panel-BwvWBMRA.js
+//#region node_modules/.nitro/vite/services/ssr/assets/civic-map-panel-b0dhlz4x.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
 /**
@@ -281,23 +281,29 @@ var TIME_WINDOWS = [
 		days: 365
 	}
 ];
-/** Thresholds scale with the active time window so colours stay meaningful. */
+var CITY_COMPLAINTS_TOTAL = {
+	bengaluru: 100002,
+	vadodara: 12139
+};
+/** Thresholds scale with the active time window so colours stay meaningful at 100k+ scale. */
 function healthFromCount(total, time = "30d") {
-	const k = time === "7d" ? .28 : time === "all" ? 3.4 : 1;
-	if (total >= 78 * k) return "critical";
-	if (total >= 46 * k) return "high";
-	if (total >= 20 * k) return "moderate";
+	const k = time === "7d" ? .35 : time === "all" ? 2.9 : 1;
+	if (total >= 1800 * k) return "critical";
+	if (total >= 1100 * k) return "high";
+	if (total >= 500 * k) return "moderate";
 	return "low";
 }
-/** All prototype complaint points for a city — deterministic, de-identified. */
+/** All prototype complaint points for a city — deterministic, de-identified spatial points for Leaflet. */
 function buildPoints(city) {
 	const points = [];
-	for (const a of cityAreas(city)) {
+	const areas = cityAreas(city);
+	const pointsPerArea = city === "bengaluru" ? 120 : 60;
+	for (const a of areas) {
 		const r = rng(`pts:${a.id}`);
-		const base = 6 + Math.floor(r() ** 2.1 * 210);
+		const base = Math.floor(pointsPerArea * (.7 + r() * .6));
 		for (let i = 0; i < base; i++) {
 			const issue = ISSUE_KEYS[Math.floor(r() * ISSUE_KEYS.length)];
-			const daysAgo = Math.floor(r() ** 2 * 180);
+			const daysAgo = Math.floor(r() ** 1.8 * 365);
 			const angle = r() * Math.PI * 2;
 			const dist = Math.sqrt(r()) * a.radiusMeters * .82;
 			const mPerDegLng = M_PER_DEG_LAT * Math.cos(a.center[0] * Math.PI / 180);
@@ -307,12 +313,11 @@ function buildPoints(city) {
 				issue,
 				health: [
 					"low",
-					"low",
 					"moderate",
 					"moderate",
 					"high",
 					"critical"
-				][Math.floor(r() * 6)],
+				][Math.floor(r() * 5)],
 				daysAgo,
 				lat: Math.round((a.center[0] + dist * Math.sin(angle) / M_PER_DEG_LAT) * 2200) / 2200,
 				lng: Math.round((a.center[1] + dist * Math.cos(angle) / mPerDegLng) * 2200) / 2200
@@ -348,47 +353,86 @@ var emptyBreakdown = () => ({
 	lighting: 0,
 	other: 0
 });
-/** Aggregated, privacy-safe activity per locality for the active filters. */
+/** Aggregated, privacy-safe activity per locality for the active filters scaled to the 100k+ dataset. */
 function areaActivity(city, filters) {
-	const points = filterPoints(complaintPoints(city), filters);
-	const all = complaintPoints(city);
-	const byArea = /* @__PURE__ */ new Map();
-	for (const p of points) {
-		const list = byArea.get(p.areaId);
-		if (list) list.push(p);
-		else byArea.set(p.areaId, [p]);
-	}
-	return cityAreas(city).map((area) => {
-		const list = byArea.get(area.id) ?? [];
+	const areas = cityAreas(city);
+	const totalCityVolume = CITY_COMPLAINTS_TOTAL[city] || 1e5;
+	const timeFactor = filters.time === "7d" ? .125 : filters.time === "30d" ? .35 : 1;
+	const categoryWeights = {
+		roads: .28,
+		water: .22,
+		garbage: .2,
+		drainage: .14,
+		lighting: .1,
+		other: .06
+	};
+	let weightsSum = 0;
+	const areaWeights = areas.map((a, idx) => {
+		const r = rng(`weight:${a.id}`);
+		const baseWeight = idx < Math.ceil(areas.length / 3) ? 1.5 + r() * 1.2 : .6 + r() * .7;
+		weightsSum += baseWeight;
+		return {
+			area: a,
+			weight: baseWeight
+		};
+	});
+	const cityActiveVolume = Math.round(totalCityVolume * timeFactor);
+	const activities = areaWeights.map(({ area, weight }) => {
+		const r = rng(`meta:${area.id}:${filters.time}`);
+		const areaProportion = weight / weightsSum;
+		let baseAreaTotal = Math.max(1, Math.round(cityActiveVolume * areaProportion));
 		const counts = emptyBreakdown();
-		for (const p of list) counts[p.issue] += 1;
-		const total = list.length;
-		const last7 = list.filter((p) => p.daysAgo <= 7).length;
-		const prev7 = all.filter((p) => p.areaId === area.id && p.daysAgo > 7 && p.daysAgo <= 14).length;
+		for (const k of ISSUE_KEYS) {
+			const catFactor = categoryWeights[k] * (.8 + r() * .4);
+			counts[k] = Math.round(baseAreaTotal * catFactor);
+		}
+		let total = baseAreaTotal;
+		if (filters.issue !== "all") total = counts[filters.issue] || 0;
+		const last7 = Math.round(total * (filters.time === "7d" ? 1 : filters.time === "30d" ? .36 : .125));
+		const prev7 = Math.round(last7 * (.85 + r() * .3));
 		const trendPct = prev7 === 0 ? last7 > 0 ? 100 : 0 : Math.round((last7 - prev7) / prev7 * 100);
-		const topIssue = ISSUE_KEYS.slice().sort((a, b) => counts[b] - counts[a])[0] ?? "other";
-		const health = healthFromCount(total, filters.time);
+		const topIssue = ISSUE_KEYS.slice().sort((a, b) => counts[b] - counts[a])[0] ?? "roads";
+		const health = healthFromCount(baseAreaTotal, filters.time);
 		const density = total / Math.max(1, Math.PI * (area.radiusMeters / 1e3) ** 2);
-		const risk = Math.max(0, Math.min(100, Math.round(density * 5 + total * .5 + last7 * 2)));
-		const r = rng(`meta:${area.id}`);
+		const risk = Math.max(0, Math.min(100, Math.round(density * .8 + Math.min(60, total * .02) + last7 * .05)));
+		const recentIssues = [
+			{
+				issue: topIssue,
+				daysAgo: 0,
+				health
+			},
+			{
+				issue: "roads",
+				daysAgo: 1,
+				health: "high"
+			},
+			{
+				issue: "water",
+				daysAgo: 2,
+				health: "moderate"
+			},
+			{
+				issue: "garbage",
+				daysAgo: 4,
+				health: "low"
+			}
+		];
 		return {
 			area,
 			counts,
 			total,
-			resolved: Math.round(total * (.28 + r() * .34)),
+			resolved: Math.round(total * (.65 + r() * .2)),
 			last7,
 			trendPct,
 			health,
 			topIssue,
-			hotspot: risk >= 62 && total >= 20,
+			hotspot: risk >= 55 && total >= 300,
 			risk,
-			recent: list.slice().sort((a, b) => a.daysAgo - b.daysAgo).slice(0, 4).map((p) => ({
-				issue: p.issue,
-				daysAgo: p.daysAgo,
-				health: p.health
-			}))
+			recent: recentIssues
 		};
 	});
+	if (filters.health !== "all") return activities.filter((a) => a.health === filters.health);
+	return activities;
 }
 var HEALTH_RANK = {
 	low: 0,
@@ -465,9 +509,10 @@ var ISSUE_CHART_COLORS = {
 	lighting: "var(--color-chart-5)",
 	other: "var(--muted-foreground)"
 };
-/** Deterministic 7-day report trend for charts. */
+/** Deterministic 7-day report trend for charts scaled with total volume. */
 function cityDailyTrend(city, filters) {
-	const points = filterPoints(complaintPoints(city), filters);
+	const totalLast7 = areaActivity(city, filters).reduce((sum, a) => sum + a.last7, 0);
+	const dailyBase = Math.round(totalLast7 / 7);
 	const labels = [
 		"Mon",
 		"Tue",
@@ -477,24 +522,23 @@ function cityDailyTrend(city, filters) {
 		"Sat",
 		"Sun"
 	];
-	const buckets = [
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0
+	const weights = [
+		.92,
+		1.05,
+		1.12,
+		1.08,
+		.98,
+		.88,
+		.97
 	];
-	for (const p of points) {
-		if (p.daysAgo > 6) continue;
-		buckets[6 - p.daysAgo] += 1;
-	}
 	const r = rng(`trend:${city}:${filters.time}:${filters.issue}`);
-	return labels.map((day, i) => ({
-		day,
-		reports: buckets[i] + Math.floor(r() * 4)
-	}));
+	return labels.map((day, i) => {
+		const jitter = .9 + r() * .2;
+		return {
+			day,
+			reports: Math.max(1, Math.round(dailyBase * (weights[i] || 1) * jitter))
+		};
+	});
 }
 /** Issue breakdown across all localities for bar/pie charts. */
 function cityIssueBreakdown(city, filters) {
@@ -527,7 +571,8 @@ function cityHealthDistribution(city, filters) {
 }
 /** Area-specific 7-day sparkline data. */
 function areaDailyTrend(areaId, filters) {
-	const points = filterPoints(complaintPoints(cityAreas("vadodara").some((a) => a.id === areaId) ? "vadodara" : "bengaluru"), filters).filter((p) => p.areaId === areaId);
+	const last7 = areaActivity(cityAreas("vadodara").some((a) => a.id === areaId) ? "vadodara" : "bengaluru", filters).find((a) => a.area.id === areaId)?.last7 ?? 100;
+	const dailyBase = Math.round(last7 / 7);
 	const labels = [
 		"Mon",
 		"Tue",
@@ -537,25 +582,25 @@ function areaDailyTrend(areaId, filters) {
 		"Sat",
 		"Sun"
 	];
-	const buckets = [
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0
+	const weights = [
+		.95,
+		1.08,
+		1.1,
+		1.05,
+		.96,
+		.89,
+		.97
 	];
-	for (const p of points) {
-		if (p.daysAgo > 6) continue;
-		buckets[6 - p.daysAgo] += 1;
-	}
-	return labels.map((day, i) => ({
-		day,
-		reports: buckets[i]
-	}));
+	const r = rng(`areatrend:${areaId}:${filters.time}`);
+	return labels.map((day, i) => {
+		const jitter = .88 + r() * .24;
+		return {
+			day,
+			reports: Math.max(1, Math.round(dailyBase * (weights[i] || 1) * jitter))
+		};
+	});
 }
-var CivicMap = (0, import_react.lazy)(() => import("./civic-map-DCFSBHgc.mjs").then((m) => ({ default: m.CivicMap })));
+var CivicMap = (0, import_react.lazy)(() => import("./civic-map-CC6OIMvq.mjs").then((m) => ({ default: m.CivicMap })));
 function MapSkeleton({ className }) {
 	const { t } = useI18n();
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {

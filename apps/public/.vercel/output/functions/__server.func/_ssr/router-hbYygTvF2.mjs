@@ -4,8 +4,8 @@ import { n as QueryClientProvider, r as require_jsx_runtime } from "../_libs/rea
 import { c as HeadContent, d as createRouter, f as Outlet, g as Link, h as createRootRouteWithContext, m as createFileRoute, p as lazyRouteComponent, s as Scripts, y as useRouter } from "../_libs/@tanstack/react-router+[...].mjs";
 import { t as QueryClient } from "../_libs/tanstack__query-core.mjs";
 import { t as Toaster } from "../_libs/sonner.mjs";
-import { T as I18nProvider, o as parseRedirect, s as AuthProvider } from "./router-BECM0GLq.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/router-BECM0GLq.js
+import { T as I18nProvider, o as parseRedirect, s as AuthProvider } from "./router-hbYygTvF.mjs";
+//#region node_modules/.nitro/vite/services/ssr/assets/router-hbYygTvF.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
 var __defProp = Object.defineProperty;
@@ -248,7 +248,7 @@ function RootComponent() {
 		children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(I18nProvider, { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ThemeProvider, { children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(AuthProvider, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Outlet, {}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Toaster$1, { position: "top-center" })] }) }) })
 	});
 }
-var $$splitComponentImporter$9 = () => import("./routes-CoQAnOGN.mjs");
+var $$splitComponentImporter$9 = () => import("./routes-BjnOzCoa.mjs");
 var Route$9 = createFileRoute("/")({
 	head: () => ({ meta: [
 		{ title: "JANMIND — Report civic problems, see the bigger pattern" },
@@ -291,7 +291,7 @@ var Route$7 = createFileRoute("/complaints")({
 	] }),
 	component: lazyRouteComponent($$splitComponentImporter$7, "component")
 });
-var $$splitComponentImporter$6 = () => import("./login-BGe72d7F.mjs");
+var $$splitComponentImporter$6 = () => import("./login-DlwXGU_G.mjs");
 var Route$6 = createFileRoute("/login")({
 	validateSearch: (search) => ({ redirect: parseRedirect(search["redirect"]) }),
 	head: () => ({ meta: [
@@ -311,7 +311,7 @@ var Route$6 = createFileRoute("/login")({
 	] }),
 	component: lazyRouteComponent($$splitComponentImporter$6, "component")
 });
-var $$splitComponentImporter$5 = () => import("./map-CrSytvqA.mjs");
+var $$splitComponentImporter$5 = () => import("./map-B_c1QCg6.mjs");
 var Route$5 = createFileRoute("/map")({
 	head: () => ({ meta: [
 		{ title: "Civic Map — locality civic activity | JANMIND" },
@@ -376,7 +376,7 @@ var Route$3 = createFileRoute("/profile")({
 	] }),
 	component: lazyRouteComponent($$splitComponentImporter$3, "component")
 });
-var $$splitComponentImporter$2 = () => import("./register-CgxJfVos.mjs");
+var $$splitComponentImporter$2 = () => import("./register-C2bhbGCU.mjs");
 var Route$2 = createFileRoute("/register")({
 	validateSearch: (search) => ({ redirect: parseRedirect(search["redirect"]) }),
 	head: () => ({ meta: [
@@ -396,7 +396,7 @@ var Route$2 = createFileRoute("/register")({
 	] }),
 	component: lazyRouteComponent($$splitComponentImporter$2, "component")
 });
-var $$splitComponentImporter$1 = () => import("./report-cz3mtTAH.mjs");
+var $$splitComponentImporter$1 = () => import("./report-DsWnjquR.mjs");
 var Route$1 = createFileRoute("/report")({
 	head: () => ({ meta: [
 		{ title: "Report a civic problem — JANMIND" },
@@ -415,7 +415,7 @@ var Route$1 = createFileRoute("/report")({
 	] }),
 	component: lazyRouteComponent($$splitComponentImporter$1, "component")
 });
-var $$splitComponentImporter = () => import("./complaint._id-B2Znv9j8.mjs");
+var $$splitComponentImporter = () => import("./complaint._id-B4XVHJCX.mjs");
 var Route = createFileRoute("/complaint/$id")({
 	head: () => ({ meta: [
 		{ title: "Complaint details — JANMIND" },

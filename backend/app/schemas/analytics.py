@@ -68,3 +68,30 @@ class MapDataResponse(BaseModel):
     """Map data response"""
     ward_polygons: list[WardPolygon]
     issue_markers: list[IssueMarker]
+
+
+class PublicLocalityActivity(BaseModel):
+    """Locality activity for public civic map"""
+    id: str
+    name: str
+    city: str
+    total: int
+    last7: int = 0
+    trend_pct: int = 0
+    health: str
+    top_issue: str
+    risk: int
+    resolved: int = 0
+
+
+class PublicMapResponse(BaseModel):
+    """Public civic map aggregated statistics response"""
+    city: str
+    time: str
+    total_reports: int
+    last7_days: int
+    localities_mapped: int
+    health_distribution: dict[str, int]
+    issue_breakdown: dict[str, int]
+    daily_trends: list[DailyTrend]
+    areas: list[dict[str, Any]]
