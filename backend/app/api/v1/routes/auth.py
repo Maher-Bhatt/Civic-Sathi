@@ -224,8 +224,9 @@ def citizen_register(
             id=str(user.id),
             name=user.name,
             email=user.email,
-            phone=user.phone,
+            phone=user.phone or "",
             ward=user.ward or "Unassigned",
+            role=user.role,
             notifyStatus=True,
             notifyNearby=True,
         )
@@ -269,6 +270,7 @@ def citizen_login(
             email=user.email,
             phone=user.phone or "",
             ward=user.ward or "Unassigned",
+            role=user.role,
             notifyStatus=True,
             notifyNearby=True,
         )

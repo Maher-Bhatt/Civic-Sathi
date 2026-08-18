@@ -21,26 +21,30 @@ class SubmittedBy(BaseModel):
 
 class ComplaintCreate(BaseModel):
     """Schema for creating a new complaint"""
-    title: str = Field(..., min_length=5, max_length=120)
-    description: str = Field(..., min_length=20, max_length=2500)
+    title: str | None = Field(None, min_length=2, max_length=120)
+    description: str = Field(..., min_length=1, max_length=2500)
+    category: str | None = None
     category_hint: str | None = None
     address_text: str | None = Field(None, max_length=500)
-    ward_number: int | None = Field(None, ge=1, le=100)
+    ward_number: int | None = Field(None, ge=1, le=500)
     lat: float | None = Field(None, ge=-90, le=90)
     lng: float | None = Field(None, ge=-180, le=180)
+    city_id: str | None = None
+    city: str | None = None
+    photo: str | None = None
     submitted_by: SubmittedBy | None = None
     
-    @field_validator("title", "description")
+    @field_validator("description")
     @classmethod
     def trim_whitespace(cls, v: str) -> str:
         """Trim whitespace from text fields"""
         return v.strip()
     
     @model_validator(mode="after")
-    def validate_location(self):
-        """Ensure either ward_number or lat/lng is provided"""
-        if not self.ward_number and not (self.lat and self.lng):
-            raise ValueError("Either ward_number or both lat and lng must be provided")
+    def validate_title_and_location(self):
+        """Auto-populate title if missing and ensure description exists"""
+        if not self.title:
+            self.title = self.description[:50] + ("..." if len(self.description) > 50 else "")
         return self
 
 
@@ -66,10 +70,10 @@ class ComplaintResponse(BaseModel):
     public_id: str
     title: str
     description: str | None = None
-    status: ComplaintStatus
-    category: ComplaintCategory
+    status: str
+    category: str
     department: str
-    priority: Priority
+    priority: str
     severity_score: int
     risk_score: int
     ward_number: int | None = None
@@ -90,9 +94,9 @@ class ComplaintListItem(BaseModel):
     id: UUID
     public_id: str
     title: str
-    status: ComplaintStatus
-    category: ComplaintCategory
-    priority: Priority
+    status: str
+    category: str
+    priority: str
     risk_score: int
     ward_number: int | None
     created_at: datetime

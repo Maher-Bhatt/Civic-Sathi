@@ -30,9 +30,20 @@ class ComplaintService:
             complaint_data: Complaint input data
         """
         # Get or create department
-        # We need to guess department for now, since ML runs later.
         from app.models.user import Department, Ward
-        department = self.db.query(Department).first() # Fallback
+        from app.models.procurement import City
+        from sqlalchemy import func as sqlfunc
+        
+        category_slug = complaint_data.category or complaint_data.category_hint or "general"
+        department = None
+        if category_slug:
+            clean_cat = category_slug.strip().lower().replace(" ", "_").replace("-", "_")
+            department = self.db.query(Department).filter(
+                (sqlfunc.lower(Department.slug) == clean_cat) |
+                (sqlfunc.lower(Department.name).like(f"%{clean_cat}%"))
+            ).first()
+        if not department:
+            department = self.db.query(Department).first()
         
         # Get ward if provided
         ward = None
@@ -40,27 +51,50 @@ class ComplaintService:
             ward = self.db.query(Ward).filter(
                 Ward.ward_number == complaint_data.ward_number
             ).first()
+
+        # Resolve valid city_id
+        city_id = None
+        if complaint_data.city_id:
+            try:
+                c = self.db.get(City, UUID(complaint_data.city_id))
+                if c: city_id = c.id
+            except Exception:
+                pass
+        if not city_id and complaint_data.city:
+            c = self.db.query(City).filter(sqlfunc.lower(City.name) == complaint_data.city.strip().lower()).first()
+            if c: city_id = c.id
+        if not city_id and ward and getattr(ward, "city_id", None):
+            city_id = ward.city_id
+        if not city_id:
+            default_city = self.db.query(City).first()
+            if default_city:
+                city_id = default_city.id
+            else:
+                # If table is completely empty, create default city
+                default_city = City(name="Vadodara", state_code="GJ")
+                self.db.add(default_city)
+                self.db.flush()
+                city_id = default_city.id
             
         # Generate public ID using Postgres sequence
         next_num = self.repo.get_next_public_id_number()
         year = datetime.now(timezone.utc).year
         public_id = f"JN-{year}-{next_num:05d}"
         
-        # We assign basic things immediately, let the job handle ML
         priority = "medium"
         
         # Create complaint
         complaint = Complaint(
             public_id_seq=next_num,
             public_id=public_id,
-            title=complaint_data.title,
+            title=complaint_data.title or (complaint_data.description[:50] + "..."),
             description=complaint_data.description,
-            category=department.slug, # temp, job will fix
-            department_id=department.id,
+            category=department.slug if department else "general",
+            department_id=department.id if department else None,
             status=ComplaintStatus.RECEIVED.value,
             priority=priority,
             ward_id=ward.id if ward else None,
-            city_id=ward.city_id if ward and hasattr(ward, 'city_id') else department.id, # Needs proper city_id! Wait, we get city_id from user context.
+            city_id=city_id,
             lat=complaint_data.lat,
             lng=complaint_data.lng,
             address_text=complaint_data.address_text,

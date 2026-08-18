@@ -3,7 +3,7 @@
 from uuid import UUID
 from fastapi import APIRouter, Depends, status, Request
 from sqlalchemy.orm import Session
-
+from sqlalchemy import select
 from app.core.database import get_db
 from app.core.security import get_current_officer
 from app.schemas.complaint import (

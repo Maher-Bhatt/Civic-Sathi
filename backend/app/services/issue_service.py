@@ -293,3 +293,28 @@ class IssueService:
             root_causes=root_causes,
             recommendations=recommendations,
         )
+
+    def update_issue(self, issue_id: UUID, patch_data: dict):
+        """Update systemic issue status, department, etc."""
+        issue = self.issue_repo.get_by_id(issue_id)
+        if not issue:
+            raise NotFoundException("Issue not found")
+        
+        if "status" in patch_data and patch_data["status"] is not None:
+            issue.status = str(patch_data["status"]).lower()
+        if "title" in patch_data and patch_data["title"] is not None:
+            issue.title = patch_data["title"]
+        if "summary" in patch_data and patch_data["summary"] is not None:
+            issue.summary = patch_data["summary"]
+        if "department" in patch_data and patch_data["department"] is not None:
+            from app.models.user import Department
+            dept_name = str(patch_data["department"])
+            dept = self.db.query(Department).filter(
+                (Department.name.ilike(f"%{dept_name}%")) | (Department.slug == dept_name.lower())
+            ).first()
+            if dept:
+                issue.department_id = dept.id
+        
+        self.db.commit()
+        self.db.refresh(issue)
+        return self.get_issue(issue_id)

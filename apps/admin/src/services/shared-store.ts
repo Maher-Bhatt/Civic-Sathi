@@ -592,6 +592,8 @@ export async function createCity(name: string, stateCode: string): Promise<any> 
   });
 }
 export async function adminLogout(): Promise<void> {
-  localStorage.removeItem(LS_TOKEN);
-  localStorage.removeItem(LS_USER);
+  if (typeof window !== "undefined") {
+    localStorage.removeItem(LS_TOKEN);
+    localStorage.removeItem(LS_USER);
+  }
 }

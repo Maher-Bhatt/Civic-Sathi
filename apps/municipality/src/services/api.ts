@@ -102,7 +102,8 @@ export async function getMuniOfficer(): Promise<Officer | null> {
   const refreshFromServer = async () => {
     try {
       const me = await api.auth.me();
-      if (me && ['officer', 'supervisor', 'admin', 'municipality'].includes((me as any).role || '')) {
+      const roleLower = String((me as any)?.role || '').toLowerCase();
+      if (me && ['officer', 'supervisor', 'admin', 'municipality'].includes(roleLower)) {
         const officer: Officer = {
           id: (me as any).id,
           name: (me as any).name,

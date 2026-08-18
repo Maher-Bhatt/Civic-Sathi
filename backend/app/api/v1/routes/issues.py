@@ -34,6 +34,17 @@ def get_issue(
     return service.get_issue(issue_id)
 
 
+@router.patch("/{issue_id}", response_model=IssueDetailResponse, dependencies=[Depends(get_current_officer)])
+def update_issue(
+    issue_id: UUID,
+    patch_data: dict,
+    db: Session = Depends(get_db),
+):
+    """Update issue status or department (officer only)"""
+    service = IssueService(db)
+    return service.update_issue(issue_id, patch_data)
+
+
 @router.post("/rebuild", response_model=RebuildIssuesResponse, dependencies=[Depends(get_current_officer)])
 def rebuild_issues(db: Session = Depends(get_db)):
     """Rebuild issue clusters from complaints (officer only)"""
