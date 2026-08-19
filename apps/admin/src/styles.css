@@ -1248,3 +1248,131 @@ body::after {
 @media (max-width: 760px) { .civic-admin-city-lanes { grid-template-columns: 1fr; } .civic-admin-city-lane__header { flex-direction: column; } .civic-admin-stage-track { grid-template-columns: repeat(2, minmax(0, 1fr)); } .civic-admin-stage-card { min-height: 7.1rem; } }
 @media (max-width: 430px) { .civic-admin-stage-track { grid-template-columns: 1fr; } .civic-admin-city-lane__summary { grid-template-columns: 1fr 1fr; } .civic-admin-city-lane__summary > div:last-child { grid-column: span 2; } }
 @media (prefers-reduced-motion: reduce) { .civic-admin-pulse-dot, .civic-admin-stage-connector span, .civic-admin-stage-card--critical .civic-admin-pipeline-node, .civic-admin-city-health--critical span { animation: none; } }
+
+
+/* Admin portal v4: deep glass command shell. Keeps the super-admin surface dark from chrome to content. */
+body:has(.civic-admin-shell) {
+  background: #050b19;
+  color-scheme: dark;
+}
+.civic-admin-shell {
+  --background: #050b19;
+  --background-secondary: #08142a;
+  --surface: #0b1b35;
+  --surface-elevated: #10284a;
+  --glass: rgb(8 22 45 / 0.62);
+  --glass-strong: rgb(10 27 54 / 0.78);
+  --glass-border: rgb(132 182 235 / 0.22);
+  --card: rgb(9 25 50 / 0.72);
+  --card-foreground: #edf6ff;
+  --foreground: #edf6ff;
+  --muted-foreground: #9db6d3;
+  --subtle-foreground: #7693b5;
+  --primary: #4db7a7;
+  --primary-foreground: #04111d;
+  --ring: #f1ae55;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 8% 2%, rgb(200 107 24 / 0.16), transparent 26rem),
+    radial-gradient(circle at 92% 8%, rgb(14 118 110 / 0.17), transparent 28rem),
+    linear-gradient(135deg, #050b19 0%, #08142a 48%, #050b19 100%);
+}
+.civic-admin-shell::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: .34;
+  background-image:
+    linear-gradient(rgb(117 174 226 / .08) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(117 174 226 / .08) 1px, transparent 1px),
+    radial-gradient(circle at 70% 12%, transparent 0 5rem, rgb(241 174 85 / .10) 5.05rem 5.1rem, transparent 5.15rem 11rem, rgb(77 183 167 / .08) 11.05rem 11.1rem, transparent 11.15rem);
+  background-size: 48px 48px, 48px 48px, auto;
+  mask-image: linear-gradient(180deg, #000 0%, rgb(0 0 0 / .9) 55%, transparent 100%);
+}
+.civic-admin-sidebar {
+  background: linear-gradient(180deg, rgb(10 28 56 / .90), rgb(5 15 31 / .82)) !important;
+  border-color: rgb(132 182 235 / .20) !important;
+  box-shadow: 18px 0 56px -38px rgb(0 0 0 / .95), inset -1px 0 0 rgb(255 255 255 / .04);
+  backdrop-filter: blur(26px) saturate(145%);
+  -webkit-backdrop-filter: blur(26px) saturate(145%);
+}
+.civic-admin-sidebar > div:first-child {
+  background: linear-gradient(90deg, rgb(241 174 85 / .07), transparent 72%);
+  border-color: rgb(132 182 235 / .15) !important;
+}
+.civic-admin-sidebar nav a {
+  border: 1px solid transparent;
+  color: #8faaca;
+  transition: transform 180ms cubic-bezier(.22,1,.36,1), background 180ms ease, border-color 180ms ease, color 180ms ease, box-shadow 180ms ease;
+}
+.civic-admin-sidebar nav a:hover,
+.civic-admin-sidebar nav a.civic-admin-nav-active,
+.civic-admin-sidebar nav a[data-status="active"],
+.civic-admin-sidebar nav a[aria-current="page"] {
+  color: #f2f7ff;
+  background: linear-gradient(100deg, rgb(77 183 167 / .16), rgb(241 174 85 / .08)) !important;
+  border-color: rgb(132 182 235 / .24) !important;
+  box-shadow: inset 3px 0 0 #4db7a7, 0 10px 26px -20px rgb(77 183 167 / .72);
+  transform: translateX(2px);
+}
+.civic-admin-sidebar > div:last-child {
+  border-color: rgb(132 182 235 / .15) !important;
+}
+.civic-admin-sidebar > div:last-child > div {
+  background: rgb(8 22 45 / .62) !important;
+  border-color: rgb(132 182 235 / .18) !important;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / .05);
+}
+.civic-admin-topbar {
+  background: linear-gradient(180deg, rgb(8 22 45 / .78), rgb(6 16 34 / .62)) !important;
+  border-color: rgb(132 182 235 / .18) !important;
+  box-shadow: 0 16px 42px -32px rgb(0 0 0 / .95), inset 0 1px 0 rgb(255 255 255 / .05);
+  backdrop-filter: blur(24px) saturate(145%);
+  -webkit-backdrop-filter: blur(24px) saturate(145%);
+}
+.civic-admin-content {
+  position: relative;
+  z-index: 1;
+}
+.civic-admin-shell .glass,
+.civic-admin-shell .glass-card,
+.civic-admin-shell .solid-surface {
+  background: linear-gradient(145deg, rgb(12 33 64 / .70), rgb(5 17 37 / .60)) !important;
+  border-color: rgb(132 182 235 / .18) !important;
+  color: var(--foreground);
+  box-shadow: 0 22px 58px -38px rgb(0 0 0 / .94), inset 0 1px 0 rgb(255 255 255 / .055);
+  backdrop-filter: blur(22px) saturate(140%);
+  -webkit-backdrop-filter: blur(22px) saturate(140%);
+}
+.civic-admin-shell .glass-strong {
+  background: linear-gradient(145deg, rgb(15 40 76 / .82), rgb(7 21 43 / .70)) !important;
+  border-color: rgb(132 182 235 / .22) !important;
+  color: var(--foreground);
+  box-shadow: 0 26px 72px -42px rgb(0 0 0 / .98), inset 0 1px 0 rgb(255 255 255 / .07);
+  backdrop-filter: blur(26px) saturate(150%);
+  -webkit-backdrop-filter: blur(26px) saturate(150%);
+}
+.civic-admin-shell .civic-admin-command-center {
+  margin: -1rem;
+  min-height: calc(100vh - 4rem);
+}
+.civic-admin-shell input,
+.civic-admin-shell select,
+.civic-admin-shell textarea {
+  color: #edf6ff;
+  background: rgb(3 13 29 / .66) !important;
+  border-color: rgb(132 182 235 / .22) !important;
+}
+.civic-admin-shell input::placeholder,
+.civic-admin-shell textarea::placeholder { color: #718bad; }
+@media (max-width: 1023px) {
+  .civic-admin-sidebar { box-shadow: 24px 0 80px -36px rgb(0 0 0 / .98); }
+  .civic-admin-shell .civic-admin-command-center { margin: -.75rem; min-height: calc(100vh - 3.5rem); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .civic-admin-sidebar nav a { transition: none; }
+}

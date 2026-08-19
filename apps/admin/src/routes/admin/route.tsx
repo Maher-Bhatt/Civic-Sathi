@@ -54,9 +54,9 @@ function AdminDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-[var(--background)] text-[var(--foreground)] flex">
+    <div className="civic-admin-shell min-h-screen bg-[var(--background)] text-[var(--foreground)] flex">
       {/* Sidebar */}
-      <aside className={`
+<aside className={`civic-admin-sidebar
         fixed inset-y-0 left-0 z-50 w-64 glass-strong border-r border-[var(--glass-border)]
         transform transition-transform duration-200 ease-in-out lg:translate-x-0
         ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}
@@ -81,7 +81,7 @@ function AdminDashboard() {
               onClick={() => setMobileMenuOpen(false)}
               className="flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-colors hover:bg-[var(--surface-elevated)]"
               activeProps={{
-                className: "bg-[var(--surface-elevated)] border border-[var(--glass-border)] text-[var(--foreground)]",
+                className: "civic-admin-nav-active bg-[var(--surface-elevated)] border border-[var(--glass-border)] text-[var(--foreground)]",
               }}
               inactiveProps={{
                 className: "text-[var(--muted-foreground)]",
@@ -114,7 +114,7 @@ function AdminDashboard() {
 
       {/* Main Content */}
       <main className="flex-1 lg:pl-64 min-w-0 flex flex-col min-h-screen relative">
-        <header className="h-16 glass sticky top-0 z-40 border-b border-[var(--glass-border)] flex items-center px-4 lg:px-8">
+        <header className="civic-admin-topbar h-16 glass sticky top-0 z-40 border-b border-[var(--glass-border)] flex items-center px-4 lg:px-8">
           <button
             className="lg:hidden p-2 mr-4 text-[var(--muted-foreground)] hover:text-[var(--foreground)] rounded-md hover:bg-[var(--surface-elevated)]"
             onClick={() => setMobileMenuOpen(true)}
@@ -124,7 +124,7 @@ function AdminDashboard() {
           <div className="flex-1"></div>
         </header>
 
-        <div className="flex-1 p-4 lg:p-8 w-full max-w-7xl mx-auto">
+        <div className="civic-admin-content flex-1 p-4 lg:p-8 w-full max-w-7xl mx-auto">
           <Outlet />
         </div>
       </main>
