@@ -1,6 +1,6 @@
 """Small, idempotent data repairs needed to keep city-scoped production views correct."""
 
-from sqlalchemy import func
+from sqlalchemy import and_, func, not_, or_
 from sqlalchemy.orm import Session
 from uuid import uuid4
 
@@ -41,29 +41,43 @@ def ensure_historical_city_separation(db: Session) -> int:
         "banaswadi", "mahadevapura", "c.v. raman nagar", "koramangala",
     }
 
-    complaints = db.query(Complaint).all()
-    updated = 0
-    for complaint in complaints:
-        address = (complaint.address_text or "").lower()
-        city_id = None
-        if any(token in address for token in vadodara_tokens) or (
-            complaint.lat is not None and complaint.lng is not None
-            and 21.95 <= float(complaint.lat) <= 22.55
-            and 72.85 <= float(complaint.lng) <= 73.55
-        ):
-            city_id = vadodara.id
-        elif any(token in address for token in bengaluru_tokens) or (
-            complaint.lat is not None and complaint.lng is not None
-            and 12.70 <= float(complaint.lat) <= 13.25
-            and 77.30 <= float(complaint.lng) <= 77.85
-        ):
-            city_id = bengaluru.id
-        elif complaint.city_id is None:
-            city_id = bengaluru.id
+    # Do not materialize the full complaint table here. The production database
+    # contains 100k+ rows, and loading them as ORM objects caused Render's free
+    # instance to exit with status 137 during startup. Use SQL bulk updates so
+    # memory remains bounded and the repair is safe to rerun on every deploy.
+    address = func.lower(Complaint.address_text)
+    vadodara_address = or_(*[
+        address.like(f"%{token}%") for token in vadodara_tokens
+    ])
+    bengaluru_address = or_(*[
+        address.like(f"%{token}%") for token in bengaluru_tokens
+    ])
+    vadodara_coordinates = and_(
+        Complaint.lat.between(21.95, 22.55),
+        Complaint.lng.between(72.85, 73.55),
+    )
+    bengaluru_coordinates = and_(
+        Complaint.lat.between(12.70, 13.25),
+        Complaint.lng.between(77.30, 77.85),
+    )
+    vadodara_signal = or_(vadodara_address, vadodara_coordinates)
+    bengaluru_signal = or_(bengaluru_address, bengaluru_coordinates)
 
-        if city_id is not None and complaint.city_id != city_id:
-            complaint.city_id = city_id
-            updated += 1
+    updated = 0
+    updated += db.query(Complaint).filter(
+        vadodara_signal,
+        or_(Complaint.city_id.is_(None), Complaint.city_id != vadodara.id),
+    ).update({Complaint.city_id: vadodara.id}, synchronize_session=False)
+    updated += db.query(Complaint).filter(
+        not_(vadodara_signal),
+        bengaluru_signal,
+        or_(Complaint.city_id.is_(None), Complaint.city_id != bengaluru.id),
+    ).update({Complaint.city_id: bengaluru.id}, synchronize_session=False)
+    updated += db.query(Complaint).filter(
+        Complaint.city_id.is_(None),
+        not_(vadodara_signal),
+        not_(bengaluru_signal),
+    ).update({Complaint.city_id: bengaluru.id}, synchronize_session=False)
 
     if updated:
         db.commit()
