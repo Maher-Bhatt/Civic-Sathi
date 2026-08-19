@@ -63,13 +63,17 @@ export function MuniSidebar({
           mobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0",
         )}
       >
-        <div className="flex h-16 items-center justify-between border-b border-[var(--glass-border)] px-4">
-          {!collapsed && (
-            <div>
-              <p className="text-sm font-semibold tracking-tight">{t('ui.civicsathi')}</p>
-              <p className="text-[0.65rem] text-muted-foreground">{t('ui.municipal_intelligence')}</p>
-            </div>
-          )}
+                <div className="flex h-16 items-center justify-between border-b border-[var(--glass-border)] px-4">
+          <div className={cn("flex min-w-0 items-center gap-2.5", collapsed && "mx-auto")}>
+            <span className="civic-brand-logo-mark civic-brand-logo-mark--internal" aria-hidden="true"><img src="/brand/civic-sathi-logo.png" alt="" /></span>
+            {!collapsed && (
+              <div className="min-w-0">
+                <p className="truncate text-sm font-semibold tracking-tight">{t('ui.civicsathi')}</p>
+                <p className="truncate text-[0.65rem] text-muted-foreground">{t('ui.municipal_intelligence')}</p>
+              </div>
+            )}
+          </div>
+
           <button
             type="button"
             onClick={onToggle}

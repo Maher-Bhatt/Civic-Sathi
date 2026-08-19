@@ -782,3 +782,66 @@ body::after {
 .civic-architecture-rule { height: 1px; background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--civic-city-accent) 55%, transparent) 18%, color-mix(in srgb, var(--civic-teal-600) 46%, transparent) 82%, transparent); }
 .civic-city-chip { display: inline-flex; align-items: center; gap: .45rem; border: 1px solid color-mix(in srgb, var(--civic-city-accent) 28%, var(--glass-border)); border-radius: 9999px; padding: .35rem .7rem; background: color-mix(in srgb, var(--civic-city-accent-soft) 26%, transparent); color: var(--civic-ink); font-size: .7rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
 @media (max-width: 640px), (prefers-reduced-motion: reduce) { .civic-city-shell { background-attachment: scroll; } }
+
+
+/* Responsive heritage refresh: visible city atmosphere with readable internal surfaces. */
+.civic-city-shell {
+  background-image:
+    linear-gradient(180deg, color-mix(in srgb, var(--civic-paper) 58%, transparent), color-mix(in srgb, var(--civic-sand-100) 76%, transparent) 42%, color-mix(in srgb, var(--civic-sand-100) 94%, transparent) 100%),
+    var(--civic-city-atmosphere),
+    linear-gradient(135deg, var(--civic-sand-100), var(--civic-paper));
+  background-position: center top;
+  background-size: cover;
+}
+.civic-city-shell::before { opacity: 0.28; }
+.civic-atmosphere-panel {
+  border-color: color-mix(in srgb, var(--civic-city-accent) 38%, var(--glass-border));
+  background: linear-gradient(135deg, color-mix(in srgb, var(--civic-city-accent) 18%, transparent), transparent 48%), color-mix(in srgb, var(--civic-paper) 72%, transparent);
+  box-shadow: 0 28px 64px -24px color-mix(in srgb, var(--civic-city-accent) 42%, transparent), inset 0 1px 0 color-mix(in srgb, white 70%, transparent);
+}
+.civic-brand-logo-mark {
+  display: inline-flex;
+  width: 2.6rem;
+  height: 2.6rem;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--civic-city-accent) 34%, var(--glass-border));
+  border-radius: 0.9rem;
+  background: color-mix(in srgb, var(--civic-paper) 82%, transparent);
+  box-shadow: 0 8px 18px -10px color-mix(in srgb, var(--civic-city-accent) 46%, transparent);
+}
+.civic-brand-logo-mark img { width: 100%; height: 100%; object-fit: contain; }
+.civic-brand-logo-mark--internal { width: 2.8rem; height: 2.8rem; border-radius: 1rem; }
+@media (min-width: 1024px) {
+  .civic-city-shell { background-size: 120% auto, cover, cover; background-position: center top, center top, center top; }
+  .civic-atmosphere-panel { backdrop-filter: blur(22px) saturate(138%); }
+}
+@media (max-width: 767px) {
+  .civic-city-shell { background-size: auto 58rem, auto 58rem, cover; background-position: center top, 50% 4.5rem, center top; }
+  .civic-city-shell::before { opacity: 0.18; }
+  .civic-atmosphere-panel { background: linear-gradient(150deg, color-mix(in srgb, var(--civic-city-accent) 16%, transparent), transparent 54%), color-mix(in srgb, var(--civic-paper) 78%, transparent); backdrop-filter: blur(16px) saturate(130%); }
+  .civic-brand-logo-mark { width: 2.25rem; height: 2.25rem; border-radius: 0.75rem; }
+}
+
+
+
+/* Final atmosphere visibility pass: architecture remains legible inside glass surfaces. */
+.civic-atmosphere-panel {
+  background-image:
+    linear-gradient(135deg, color-mix(in srgb, var(--civic-city-accent) 18%, transparent), color-mix(in srgb, var(--civic-paper) 58%, transparent) 62%),
+    var(--civic-city-atmosphere);
+  background-position: center, center;
+  background-size: cover, cover;
+}
+@media (max-width: 767px) {
+  .civic-atmosphere-panel {
+    background-image:
+      linear-gradient(150deg, color-mix(in srgb, var(--civic-city-accent) 16%, transparent), color-mix(in srgb, var(--civic-paper) 68%, transparent) 64%),
+      var(--civic-city-atmosphere);
+    background-position: center, 50% 26%;
+    background-size: cover, auto 38rem;
+  }
+}
+

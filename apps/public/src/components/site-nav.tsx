@@ -59,7 +59,7 @@ export function SiteNav() {
     <header className="fixed inset-x-0 top-0 z-50 px-3 pt-3 sm:px-5 sm:pt-4">
       <nav aria-label={t("ui.primary")} className={cn("mx-auto flex max-w-6xl items-center gap-2 rounded-2xl border border-[var(--glass-border)] px-3 py-2.5 transition-all duration-300 sm:px-4", scrolled ? "bg-[var(--glass-strong)] shadow-[var(--shadow-lift)] backdrop-blur-2xl" : "bg-[var(--glass)] shadow-[var(--shadow-soft)] backdrop-blur-xl")}>
         <Link to="/" className="group flex min-h-10 shrink-0 items-center gap-2.5 pr-2" aria-label={t("ui.civicsathi_home", "Civic Sathi home")}>
-          <span className="civic-heritage-mark" aria-hidden="true" />
+          <span className="civic-brand-logo-mark" aria-hidden="true"><img src="/brand/civic-sathi-logo.png" alt="" /></span>
           <span className="hidden text-[0.9rem] font-bold tracking-[0.12em] text-[var(--civic-indigo-950)] sm:inline dark:text-foreground">Civic Sathi</span>
         </Link>
 

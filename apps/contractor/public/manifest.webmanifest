@@ -13,14 +13,14 @@
   "theme_color": "#234A84",
   "categories": ["government", "business", "productivity"],
   "icons": [
-    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
-    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
-    { "src": "/icon-maskable-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
-    { "src": "/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+    { "src": "/brand/civic-sathi-app-icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/brand/civic-sathi-app-icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/brand/civic-sathi-app-icon-maskable-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "/brand/civic-sathi-app-icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
   ],
   "shortcuts": [
-    { "name": "Work orders", "short_name": "Work orders", "url": "/contractor/work-orders", "icons": [{ "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" }] },
-    { "name": "Tenders", "short_name": "Tenders", "url": "/contractor/tenders", "icons": [{ "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" }] },
-    { "name": "Performance", "short_name": "Performance", "url": "/contractor/performance", "icons": [{ "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" }] }
+    { "name": "Work orders", "short_name": "Work orders", "url": "/contractor/work-orders", "icons": [{ "src": "/brand/civic-sathi-app-icon-192.png", "sizes": "192x192", "type": "image/png" }] },
+    { "name": "Tenders", "short_name": "Tenders", "url": "/contractor/tenders", "icons": [{ "src": "/brand/civic-sathi-app-icon-192.png", "sizes": "192x192", "type": "image/png" }] },
+    { "name": "Performance", "short_name": "Performance", "url": "/contractor/performance", "icons": [{ "src": "/brand/civic-sathi-app-icon-192.png", "sizes": "192x192", "type": "image/png" }] }
   ]
 }
