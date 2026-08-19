@@ -64,7 +64,15 @@ class ComplaintService:
         # to a new complaint, because that can leak another municipality's ward.
         ward = None
 
-        severity_slug = (complaint_data.severity or "moderate").strip().lower()
+        severity_slug = (complaint_data.severity or "").strip().lower()
+        if not severity_slug:
+            description_lower = complaint_data.description.lower()
+            if any(term in description_lower for term in ("life-threatening", "dangerous", "accident", "collapsed", "overflowing into homes")):
+                severity_slug = "high"
+            elif any(term in description_lower for term in ("urgent", "blocked", "overflowing", "no water", "unsafe")):
+                severity_slug = "moderate"
+            else:
+                severity_slug = "low"
         severity_score = {
             "critical": 100,
             "high": 80,
