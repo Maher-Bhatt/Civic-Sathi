@@ -116,26 +116,6 @@ function ContractorLogin() {
                 Click to Fill
               </span>
             </button>
-            <button
-              type="button"
-              onClick={() => {
-                setEmail("contractor@janmind.in");
-                setPassword("Janmind@2026");
-              }}
-              className="w-full flex items-center justify-between p-2 rounded-lg bg-[var(--surface)] hover:bg-[var(--surface-elevated)] border border-[var(--glass-border)] text-xs transition text-left"
-            >
-              <div>
-                <span className="font-semibold text-[var(--foreground)]">
-                  Verified Contractor Lead
-                </span>
-                <span className="block text-[11px] text-[var(--muted-foreground)] font-mono">
-                  contractor@janmind.in
-                </span>
-              </div>
-              <span className="text-[11px] px-2 py-0.5 rounded bg-amber-500/15 text-amber-700 dark:text-amber-400 font-medium">
-                Click to Fill
-              </span>
-            </button>
           </div>
         </div>
 
