@@ -10,12 +10,12 @@ from app.models.user import User
 
 
 def ensure_historical_city_separation(db: Session) -> int:
-    """Assign historical complaints to the city indicated by address or coordinates.
+    """Assign every complaint to the city indicated by address or coordinates.
 
-    The imported grievance files do not have a reliable city column, so the repair
-    uses explicit city names, known locality names, and city bounding boxes. Web
-    submissions already carrying a city remain untouched because they are not
-    marked as historical.
+    Imported rows and older web-test rows can carry a stale city assignment, so
+    the repair uses explicit city names, known locality names, and city bounding
+    boxes for all complaints. Rows without a reliable signal retain their current
+    city assignment rather than being guessed across municipalities.
     """
     vadodara = db.query(City).filter(func.lower(City.name) == "vadodara").first()
     if not vadodara:
@@ -41,9 +41,9 @@ def ensure_historical_city_separation(db: Session) -> int:
         "banaswadi", "mahadevapura", "c.v. raman nagar", "koramangala",
     }
 
-    historical = db.query(Complaint).filter(Complaint.source == "historical").all()
+    complaints = db.query(Complaint).all()
     updated = 0
-    for complaint in historical:
+    for complaint in complaints:
         address = (complaint.address_text or "").lower()
         city_id = None
         if any(token in address for token in vadodara_tokens) or (
