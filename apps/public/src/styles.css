@@ -541,3 +541,120 @@ body::after {
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
 }
+
+
+/* -------------------------------------------------------------------------
+   Civic Sathi city atmosphere layer — shared across all portals.
+   Architecture and civic-data cues stay subordinate to content.
+   ------------------------------------------------------------------------- */
+:root {
+  --civic-architecture-line: rgba(16, 27, 61, 0.10);
+  --civic-city-accent: #C86B18;
+  --civic-city-accent-soft: #F1D2A8;
+  --civic-city-atmosphere: url('/city-atmosphere/vadodara-civic-atmosphere.webp');
+}
+
+.dark {
+  --civic-architecture-line: rgba(214, 226, 245, 0.12);
+  --civic-city-accent: #E0A25B;
+  --civic-city-accent-soft: #6E573F;
+}
+
+.civic-city-shell {
+  position: relative;
+  isolation: isolate;
+  overflow-x: clip;
+  background-image:
+    linear-gradient(180deg, color-mix(in srgb, var(--civic-paper) 88%, transparent), color-mix(in srgb, var(--civic-sand-100) 96%, transparent) 45%, var(--civic-sand-100)),
+    var(--civic-city-atmosphere);
+  background-position: center top;
+  background-size: cover;
+  background-attachment: fixed;
+}
+
+.civic-city-shell::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.42;
+  background:
+    linear-gradient(90deg, transparent 0 6%, var(--civic-architecture-line) 6.1% 6.2%, transparent 6.3% 93.7%, var(--civic-architecture-line) 93.8% 93.9%, transparent 94%),
+    repeating-linear-gradient(0deg, transparent 0 5.2rem, var(--civic-architecture-line) 5.25rem 5.32rem, transparent 5.38rem 10.5rem);
+  mask-image: linear-gradient(180deg, black, transparent 74%);
+}
+
+.civic-city-shell[data-city="bengaluru"] {
+  --civic-city-accent: #0E766E;
+  --civic-city-accent-soft: #B7DDD5;
+  --civic-city-atmosphere: url('/city-atmosphere/bengaluru-civic-atmosphere.webp');
+}
+
+.dark .civic-city-shell {
+  background-image:
+    linear-gradient(180deg, color-mix(in srgb, var(--civic-indigo-950) 92%, transparent), color-mix(in srgb, var(--civic-sand-100) 96%, transparent)),
+    var(--civic-city-atmosphere);
+}
+
+.civic-atmosphere-panel {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--civic-city-accent) 28%, var(--glass-border));
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--civic-city-accent) 12%, transparent), transparent 42%),
+    color-mix(in srgb, var(--civic-paper) 86%, transparent);
+  box-shadow: 0 24px 56px -20px color-mix(in srgb, var(--civic-city-accent) 28%, transparent);
+  backdrop-filter: blur(24px) saturate(135%);
+}
+
+.civic-atmosphere-panel::after {
+  content: "";
+  position: absolute;
+  inset: auto -12% -46% 38%;
+  height: 18rem;
+  pointer-events: none;
+  opacity: 0.38;
+  background: radial-gradient(ellipse, color-mix(in srgb, var(--civic-city-accent) 28%, transparent), transparent 68%);
+  filter: blur(22px);
+}
+
+.civic-architecture-rule {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--civic-city-accent) 55%, transparent) 18%, color-mix(in srgb, var(--civic-teal-600) 46%, transparent) 82%, transparent);
+}
+
+.civic-data-rail {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.65rem;
+  padding: 0.65rem;
+  border: 1px solid color-mix(in srgb, var(--civic-city-accent) 20%, var(--glass-border));
+  border-radius: 1rem;
+  background: color-mix(in srgb, var(--civic-paper) 76%, transparent);
+  backdrop-filter: blur(18px);
+}
+
+.civic-city-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  border: 1px solid color-mix(in srgb, var(--civic-city-accent) 30%, var(--glass-border));
+  border-radius: 9999px;
+  padding: 0.35rem 0.7rem;
+  color: var(--civic-ink);
+  background: color-mix(in srgb, var(--civic-city-accent-soft) 30%, transparent);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 640px) {
+  .civic-city-shell { background-attachment: scroll; }
+  .civic-data-rail { grid-template-columns: 1fr; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .civic-city-shell, .civic-atmosphere-panel { background-attachment: scroll; }
+}

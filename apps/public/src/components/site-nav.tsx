@@ -94,6 +94,6 @@ export function MobileTabBar() {
   return <nav aria-label={t("ui.mobile")} className="fixed inset-x-0 bottom-0 z-50 border-t border-[var(--glass-border)] bg-[var(--glass-strong)] pb-[env(safe-area-inset-bottom)] shadow-[0_-10px_30px_rgba(16,27,61,0.12)] backdrop-blur-2xl sm:hidden"><ul className="mx-auto flex max-w-md items-stretch">{mobileTabs.map(({ to, tKey, defaultLabel, icon: Icon }) => { const active = pathname === to || (to !== "/" && pathname.startsWith(to)); return <li key={to} className="flex-1"><Link to={to} className={cn("flex min-h-14 flex-col items-center justify-center gap-1 py-2 text-[0.62rem] font-semibold tracking-[0.06em] uppercase transition-colors", active ? "text-primary" : "text-subtle")}><Icon className="h-[19px] w-[19px]" aria-hidden />{t(tKey, defaultLabel)}</Link></li>; })}</ul></nav>;
 }
 
-export function PageShell({ children, className }: { children: React.ReactNode; className?: string }) {
-  return <div className="ambient-field min-h-screen"><SiteNav /><main className={cn("mx-auto w-full max-w-6xl px-4 pt-28 pb-28 sm:px-6 sm:pb-20", className)}>{children}</main><MobileTabBar /></div>;
+export function PageShell({ children, className, dataCity }: { children: React.ReactNode; className?: string; dataCity?: string }) {
+  return <div data-city={dataCity} className="ambient-field civic-city-shell min-h-screen"><SiteNav /><main className={cn("mx-auto w-full max-w-6xl px-4 pt-28 pb-28 sm:px-6 sm:pb-20", className)}>{children}</main><MobileTabBar /></div>;
 }

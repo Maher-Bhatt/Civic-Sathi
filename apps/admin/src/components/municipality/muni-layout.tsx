@@ -8,7 +8,7 @@ export function MuniLayout({ children }: { children: React.ReactNode }) {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <div className="ambient-field min-h-screen bg-background">
+    <div data-city="vadodara" className="ambient-field civic-city-shell min-h-screen bg-background">
       <MuniSidebar
         collapsed={collapsed}
         onToggle={() => setCollapsed((c) => !c)}

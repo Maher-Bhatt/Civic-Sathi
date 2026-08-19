@@ -17,6 +17,7 @@ import { DEFAULT_FILTERS, areaActivity, nearestArea, type ComplaintPoint, type I
 import { getDefaultCity, setPreferredCity, type CityId } from "@/services/cities";
 import { useI18n } from "@/lib/i18n";
 import { getPublicCityAggregate } from "@/services/api";
+import { getCityVisuals } from "@civicsathi/visual-system";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -81,6 +82,7 @@ function Landing() {
   const { t } = useI18n();
     const [cityId, setCityId] = useState<CityId>(() => getDefaultCity());
   const [cityAggregate, setCityAggregate] = useState<any>(null);
+  const cityVisuals = useMemo(() => getCityVisuals(cityId), [cityId]);
 
   useEffect(() => {
     let cancelled = false;
@@ -109,23 +111,28 @@ function Landing() {
   };
 
   return (
-    <PageShell className="pt-24 sm:pt-32">
+    <PageShell dataCity={cityId} className="pt-24 sm:pt-32">
       {/* Hero Section */}
-      <section className="grid items-center gap-10 lg:grid-cols-[1.05fr_1fr] lg:gap-14">
+      <section className="civic-atmosphere-panel grid items-center gap-10 rounded-[2rem] p-5 sm:p-8 lg:grid-cols-[1.05fr_1fr] lg:gap-14 lg:p-10">
         <div className="animate-rise space-y-7">
           {/* Indian Civic Trust Badge */}
-          <div className="inline-flex items-center gap-2 rounded-full border border-orange-500/30 bg-gradient-to-r from-orange-500/10 via-amber-500/10 to-emerald-500/10 px-3.5 py-1.5 backdrop-blur-xl shadow-sm">
-            <span className="flex h-2 w-2 rounded-full bg-orange-500 animate-pulse" />
-            <span className="text-[0.68rem] tracking-[0.14em] font-bold text-orange-950 dark:text-orange-200 uppercase">
-              🇮🇳 {t("home.hero.badge", "National Civic Intelligence")} · સત્યમેવ જયતે
+          <div className="civic-city-chip w-fit">
+            <span className="h-2 w-2 rounded-full bg-[var(--civic-city-accent)] animate-pulse" aria-hidden="true" />
+            <span className="text-[0.68rem] tracking-[0.14em] font-bold uppercase">
+              {cityVisuals.authority} · {t("home.hero.badge", "Civic intelligence")}
             </span>
           </div>
 
           <div className="space-y-5">
-            <h1 className="text-3xl leading-[1.08] font-extrabold sm:text-5xl lg:text-[3.35rem] text-[var(--foreground)]">
-              Transforming your city's civic health with{" "}
-              <span className="jm-indian-gradient-text">intelligent action.</span>
+            <h1 className="max-w-2xl text-3xl leading-[1.05] font-extrabold sm:text-5xl lg:text-[3.55rem] text-[var(--foreground)]">
+              {t("home.hero.title", "Civic intelligence for")} {" "}
+              <span className="jm-indian-gradient-text">{cityVisuals.cityName}.</span>
             </h1>
+            <div className="flex flex-wrap items-center gap-2 text-xs font-semibold text-[var(--civic-muted)]">
+              <span className="civic-city-chip"><MapPin className="h-3.5 w-3.5" aria-hidden />{cityVisuals.vernacularName}</span>
+              <span>{cityVisuals.epithet}</span>
+            </div>
+            <div className="civic-architecture-rule" aria-hidden="true" />
             <p className="max-w-xl text-[0.98rem] leading-relaxed text-muted-foreground">
               {t(
                 "home.hero.desc",
@@ -138,7 +145,8 @@ function Landing() {
             <GlassButton
               asChild
               size="lg"
-              className="w-full sm:w-auto bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white shadow-lg shadow-orange-600/20 border border-orange-400/40"
+              style={{ backgroundColor: cityVisuals.accent, boxShadow: `0 14px 30px ${cityVisuals.accent}33` }}
+              className="w-full border border-white/25 text-white hover:brightness-110 sm:w-auto"
             >
               <Link to="/report">
                 <Sparkles className="h-4 w-4 mr-1 text-amber-200" />
@@ -151,21 +159,16 @@ function Landing() {
             </GlassButton>
           </div>
 
-          <div className="flex items-center gap-4 text-xs text-subtle">
-            <span className="flex items-center gap-1.5">
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-              100% Privacy Protected
-            </span>
-            <span className="flex items-center gap-1.5">
-              <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
-              Municipality & Contractor Linked
-            </span>
+          <div className="civic-data-rail text-xs text-subtle">
+            <span className="flex items-center gap-1.5"><span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />{t("home.trust.privacy", "Privacy protected")}</span>
+            <span className="flex items-center gap-1.5"><span className="h-1.5 w-1.5 rounded-full bg-amber-500" />{t("home.trust.linked", "Municipality linked")}</span>
+            <span className="flex items-center gap-1.5"><span className="h-1.5 w-1.5 rounded-full bg-[var(--civic-teal-600)]" />{cityVisuals.landmarkCue}</span>
           </div>
         </div>
 
         {/* Home Hero Map with Neo-Glassmorphism */}
         <div className="animate-rise [animation-delay:120ms]">
-          <GlassCard elevation="raised" className="overflow-hidden p-4 space-y-3 border-orange-500/30 bg-gradient-to-br from-white/90 via-amber-50/50 to-emerald-50/40 dark:from-slate-900/90 dark:via-slate-900/70 dark:to-slate-800/70 shadow-2xl">
+          <GlassCard elevation="raised" className="civic-atmosphere-panel overflow-hidden rounded-[1.6rem] p-4 space-y-3 border-[var(--glass-border)] shadow-2xl">
             {/* Multi-City Equal Switcher */}
             <div className="flex items-center justify-between gap-2 px-1 pb-1">
               <div className="flex items-center gap-1.5 p-1 rounded-2xl bg-white/70 dark:bg-black/30 border border-orange-500/25 shadow-sm">
@@ -178,7 +181,7 @@ function Landing() {
                       : "text-muted-foreground hover:text-foreground"
                   }`}
                 >
-                  🏛️ Vadodara (VMC)
+                  Vadodara · VMC
                 </button>
                 <button
                   type="button"
@@ -189,7 +192,7 @@ function Landing() {
                       : "text-muted-foreground hover:text-foreground"
                   }`}
                 >
-                  🌸 Bengaluru (BBMP)
+                  Bengaluru · BBMP
                 </button>
               </div>
 
@@ -210,7 +213,7 @@ function Landing() {
             />
             <div className="flex items-center justify-between gap-3 px-1.5 pt-1.5 pb-0.5">
               <p className="text-[0.7rem] tracking-[0.08em] font-semibold text-amber-900 dark:text-amber-200 uppercase">
-                {cityId === "vadodara" ? "વડોદરા લાઈવ વોર્ડ કવરેજ" : "ಬೆಂಗಳೂರು ಲೈವ್ ವಾರ್ಡ್ ಮಾಹಿತಿ"}
+                {cityVisuals.dataLine} · {cityVisuals.civicSignal}
               </p>
               <Link
                 to="/map"

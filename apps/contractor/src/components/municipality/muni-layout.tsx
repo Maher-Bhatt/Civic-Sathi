@@ -2,13 +2,15 @@ import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { MuniSidebar } from "./muni-sidebar";
 import { MuniHeader } from "./muni-header";
+import { useContractorAuth } from "@/lib/contractor-auth";
 
 export function MuniLayout({ children }: { children: React.ReactNode }) {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { contractor } = useContractorAuth();
 
   return (
-    <div className="ambient-field min-h-screen bg-background">
+    <div data-city={contractor?.city ?? "vadodara"} className="ambient-field civic-city-shell min-h-screen bg-background">
       <MuniSidebar
         collapsed={collapsed}
         onToggle={() => setCollapsed((c) => !c)}
