@@ -20,6 +20,7 @@ import { GlassCard, SectionLabel } from "@/components/ui/glass-card";
 import { LoadingState } from "@/components/ui/states";
 import { listAllUsers, createUser, updateUser, deleteUser, listAdminCities } from "@/services/shared-store";
 import { useI18n } from "@/lib/i18n";
+import { useAdminAuth } from "@/lib/admin-auth";
 
 export const Route = createFileRoute("/admin/users")({
   head: () => ({ meta: [{ title: "User Management | Civic Sathi Admin" }] }),
@@ -82,6 +83,8 @@ const EMPTY_FORM: FormState = {
 
 function UserManagementPage() {
     const { t } = useI18n();
+    const { admin } = useAdminAuth();
+
   const [users, setUsers]         = useState<UserRow[]>(() => {
     if (typeof window === "undefined") return [];
     try {
