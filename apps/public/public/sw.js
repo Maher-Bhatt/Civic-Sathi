@@ -1,5 +1,17 @@
-const CACHE = "civic-sathi-shell-v1";
-const SHELL = ["/", "/manifest.webmanifest", "/icon-192.png", "/icon-512.png"];
+const CACHE = "civic-sathi-shell-v2";
+const SHELL = [
+  "/",
+  "/manifest.webmanifest",
+  "/favicon.ico",
+  "/icon-192.png",
+  "/icon-512.png",
+  "/icon-maskable-192.png",
+  "/icon-maskable-512.png",
+  "/brand/civic-sathi-app-icon-192.png",
+  "/brand/civic-sathi-app-icon-512.png",
+  "/brand/civic-sathi-app-icon-maskable-192.png",
+  "/brand/civic-sathi-app-icon-maskable-512.png",
+];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(SHELL)).then(() => self.skipWaiting()));

@@ -10,6 +10,8 @@ import { LocationPicker } from "@/components/location-picker";
 import { PhotoUploader } from "@/components/photo-uploader";
 import { VoiceInput } from "@/components/voice-input";
 import { emptyDraft, loadDraft, saveDraft, type ReportDraft } from "@/lib/report-draft";
+import { analyzeComplaint } from "@/services/api";
+import type { AnalysisResult } from "@/services/types";
 
 import { useI18n } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
@@ -50,6 +52,9 @@ function ReportPage() {
   const [step, setStep] = useState(0);
   const [draft, setDraft] = useState<ReportDraft>(emptyDraft);
   const [hydrated, setHydrated] = useState(false);
+  const [reviewAnalysis, setReviewAnalysis] = useState<AnalysisResult | null>(null);
+  const [reviewAnalysisLoading, setReviewAnalysisLoading] = useState(false);
+  const [reviewAnalysisError, setReviewAnalysisError] = useState(false);
 
   useEffect(() => {
     setDraft(loadDraft());
@@ -64,6 +69,50 @@ function ReportPage() {
       return next;
     });
   }, [language]);
+
+  useEffect(() => {
+    if (step !== 3 || draft.description.trim().length <= 12) {
+      setReviewAnalysis(null);
+      setReviewAnalysisLoading(false);
+      setReviewAnalysisError(false);
+      return;
+    }
+
+    let cancelled = false;
+    setReviewAnalysisLoading(true);
+    setReviewAnalysisError(false);
+    void analyzeComplaint({
+      description: draft.description,
+      location: draft.location,
+      imageCategory: draft.category,
+      language: draft.language || language,
+    })
+      .then((analysis) => {
+        if (!cancelled) setReviewAnalysis(analysis);
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setReviewAnalysis(null);
+          setReviewAnalysisError(true);
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setReviewAnalysisLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [
+    draft.category,
+    draft.description,
+    draft.language,
+    draft.location?.area,
+    draft.location?.lat,
+    draft.location?.lng,
+    language,
+    step,
+  ]);
 
   const update = (patch: Partial<ReportDraft>) =>
     setDraft((d) => {
@@ -186,8 +235,22 @@ function ReportPage() {
                 {draft.description || t("ui.not_provided", "Not provided")}
               </ReviewRow>
               <ReviewRow label={t('ui.suggested_category')} onEdit={() => setStep(2)}>
-                {draft.category ?? t('ui.civicsathi_will_suggest_category', 'Civic Sathi will suggest a category during analysis.')}
+                {reviewAnalysisLoading
+                  ? t("ui.analyzing", "Analyzing…")
+                  : reviewAnalysis?.category ??
+                    draft.category ??
+                    t("ui.civicsathi_will_suggest_category", "Civic Sathi will suggest a category during analysis.")}
               </ReviewRow>
+              <ReviewRow label={t("ui.severity", "Severity")} onEdit={() => setStep(0)}>
+                {reviewAnalysisLoading
+                  ? t("ui.analyzing", "Analyzing…")
+                  : reviewAnalysis?.severity ?? t("ui.available_after_analysis", "Available after analysis")}
+              </ReviewRow>
+              {reviewAnalysis?.interpretedText && (
+                <ReviewRow label={t("ui.ai_interpretation", "Municipal interpretation")} onEdit={() => setStep(0)}>
+                  {reviewAnalysis.interpretedText}
+                </ReviewRow>
+              )}
               <ReviewRow label={t('ui.location')} onEdit={() => setStep(1)}>
                 {draft.location
                   ? `${draft.location.area} (${draft.location.lat.toFixed(4)}, ${draft.location.lng.toFixed(4)})`
@@ -206,7 +269,10 @@ function ReportPage() {
               </ReviewRow>
             </dl>
             <p className="text-xs leading-relaxed text-subtle">
-              {t('ui.civicsathi_will_analyse_your_desc')}</p>
+              {reviewAnalysisError
+                ? t("ui.analysis_preview_unavailable", "Live analysis preview is unavailable right now. It will be retried securely when you submit.")
+                : t("ui.civicsathi_will_analyse_your_desc")}
+            </p>
           </div>
         )}
 

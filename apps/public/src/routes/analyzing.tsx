@@ -30,12 +30,12 @@ export const Route = createFileRoute("/analyzing")({
 });
 
 const STAGES = [
-  "Understanding complaint",
-  "Detecting civic category",
-  "Evaluating severity",
-  "Checking location",
-  "Scanning for duplicate reports",
-  "Preparing your report",
+  { key: "ui.analysis_stage_understanding", fallback: "Understanding complaint" },
+  { key: "ui.analysis_stage_category", fallback: "Detecting civic category" },
+  { key: "ui.analysis_stage_severity", fallback: "Evaluating severity" },
+  { key: "ui.analysis_stage_location", fallback: "Checking location" },
+  { key: "ui.analysis_stage_duplicates", fallback: "Scanning for duplicate reports" },
+  { key: "ui.analysis_stage_preparing", fallback: "Preparing your report" },
 ];
 
 function AnalyzingPage() {
@@ -343,7 +343,7 @@ function AnalyzingPage() {
                   i < stage ? "text-foreground" : "text-muted-foreground",
                 )}
               >
-                {s}
+                {t(s.key, s.fallback)}
               </span>
             </li>
           ))}
