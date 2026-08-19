@@ -158,7 +158,13 @@
   --ambient-1: rgb(34 197 94 / 0.10);   /* green glow */
   --ambient-2: rgb(255 170 68 / 0.10);  /* saffron glow */
 }
+/* Abstracted stepwell geometry and Ashoka-inspired radial rhythm. */
+.civic-heritage-shell { background-image: radial-gradient(circle at 8% 10%, color-mix(in oklab, var(--saffron) 10%, transparent), transparent 28%), radial-gradient(circle at 92% 86%, color-mix(in oklab, var(--india-green) 8%, transparent), transparent 30%); }
+.civic-heritage-shell::before { content: ""; position: fixed; inset: 0 0 0 auto; width: min(34vw, 26rem); pointer-events: none; opacity: .055; background: repeating-conic-gradient(from 0deg at 70% 18%, var(--saffron) 0deg 2deg, transparent 2deg 15deg); mask-image: radial-gradient(circle at 70% 18%, #000 0 16%, transparent 62%); z-index: 0; }
+.civic-heritage-mark { width: 1.85rem; height: 1.85rem; flex: 0 0 auto; border: 1px solid color-mix(in oklab, var(--saffron) 62%, var(--glass-border)); border-radius: 999px; background: repeating-conic-gradient(from 0deg, var(--saffron) 0deg 4deg, transparent 4deg 18deg); box-shadow: inset 0 0 0 5px var(--glass-strong), 0 0 0 1px color-mix(in oklab, var(--india-green) 30%, transparent); }
+
 @layer base {
+
   * {
     border-color: var(--color-border);
   }

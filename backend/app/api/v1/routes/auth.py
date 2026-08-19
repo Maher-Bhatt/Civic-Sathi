@@ -30,6 +30,7 @@ class MeOut(BaseModel):
     city: Optional[str] = None
     department: Optional[str] = None
     ward: Optional[str] = None
+    designation: Optional[str] = None
 
 
 @router.get("/me", response_model=MeOut)
@@ -56,6 +57,7 @@ def get_me(
         city=user.city,
         department=user.department,
         ward=user.ward,
+        designation=user.designation,
     )
 
 
@@ -103,10 +105,17 @@ def officer_login(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Access denied - officer role required"
         )
-        
 
+    def normalize_context(value: str | None) -> str:
+        return (value or "").strip().lower().replace("_", " ").replace("-", " ")
+
+    if login_data.city and user.city and normalize_context(login_data.city) != normalize_context(user.city):
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="This officer account is assigned to a different city")
+    if login_data.designation and user.designation and normalize_context(login_data.designation) != normalize_context(user.designation):
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Select the designation assigned to this officer account")
 
     # Create access token
+
     access_token = create_access_token(
         data={"sub": str(user.id), "email": user.email, "role": user.role}
     )

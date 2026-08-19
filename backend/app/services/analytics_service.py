@@ -284,3 +284,104 @@ class AnalyticsService:
             "resolved_total": resolved_count,
             "areas": []
         }
+
+    def get_authoritative_map_data(
+        self,
+        city: str = "vadodara",
+        time_window: str = "30d",
+        issue_filter: str = "all",
+        health_filter: str = "all",
+    ) -> dict:
+        """Return bounded, city-scoped map aggregates from persisted complaints."""
+        from datetime import datetime, timedelta, timezone
+        from sqlalchemy import Numeric, and_, case, func
+        from app.models.complaint import Complaint
+        from app.models.procurement import City
+
+        now = datetime.now(timezone.utc)
+        city_slug = city.strip().lower()
+        city_record = self.db.query(City).filter(func.lower(City.name) == city_slug).first()
+        city_id = city_record.id if city_record else None
+        filters = [Complaint.city_id == city_id] if city_id else []
+        if time_window == "7d":
+            filters.append(Complaint.created_at >= now - timedelta(days=7))
+        elif time_window == "30d":
+            filters.append(Complaint.created_at >= now - timedelta(days=30))
+
+        issue_aliases = {
+            "roads": "road_damage",
+            "water": "water_supply",
+            "garbage": "garbage_collection",
+            "drainage": "drainage",
+            "lighting": "street_lighting",
+        }
+        requested_issue = issue_aliases.get(issue_filter, issue_filter)
+        if requested_issue and requested_issue != "all":
+            filters.append(Complaint.category.ilike(f"%{requested_issue}%"))
+        base = and_(*filters) if filters else True
+
+        def health_case(avg_risk):
+            return case(
+                (avg_risk >= 80, "critical"),
+                (avg_risk >= 60, "high"),
+                (avg_risk >= 35, "moderate"),
+                else_="low",
+            )
+
+        avg_risk = func.avg(Complaint.risk_score)
+        lat_cell = func.round(Complaint.lat.cast(Numeric), 2)
+        lng_cell = func.round(Complaint.lng.cast(Numeric), 2)
+        rows = self.db.query(
+            lat_cell.label("lat_cell"),
+            lng_cell.label("lng_cell"),
+            Complaint.category,
+            func.count(Complaint.id).label("count"),
+            func.avg(Complaint.lat).label("lat"),
+            func.avg(Complaint.lng).label("lng"),
+            avg_risk.label("avg_risk"),
+            func.sum(case((Complaint.status.in_(["resolved", "closed"]), 1), else_=0)).label("resolved"),
+            func.max(Complaint.created_at).label("last_seen"),
+        ).filter(and_(base, Complaint.lat.isnot(None), Complaint.lng.isnot(None))).group_by(
+            lat_cell,
+            lng_cell,
+            Complaint.category,
+        ).limit(2500).all()
+
+        points = []
+        for row in rows:
+            risk = int(round(float(row.avg_risk or 0)))
+            health = "critical" if risk >= 80 else "high" if risk >= 60 else "moderate" if risk >= 35 else "low"
+            if health_filter != "all" and health != health_filter:
+                continue
+            last_seen = row.last_seen
+            days_ago = max(0, (now - last_seen).days) if last_seen else 999
+            points.append({
+                "id": f"{row.lat_cell}:{row.lng_cell}:{row.category}",
+                "lat": float(row.lat or 0),
+                "lng": float(row.lng or 0),
+                "category": row.category or "other",
+                "count": int(row.count or 0),
+                "resolved": int(row.resolved or 0),
+                "risk": risk,
+                "health": health,
+                "days_ago": days_ago,
+            })
+
+        total = sum(point["count"] for point in points)
+        resolved = sum(point["resolved"] for point in points)
+        health_distribution = {key: sum(point["count"] for point in points if point["health"] == key) for key in ("low", "moderate", "high", "critical")}
+        trend_rows = self.db.query(
+            func.date_trunc("day", Complaint.created_at).label("dt"),
+            func.count(Complaint.id).label("count"),
+        ).filter(and_(base, Complaint.created_at >= now - timedelta(days=7))).group_by("dt").order_by("dt").all()
+        daily_trends = [{"date": str(row.dt)[:10], "count": int(row.count or 0)} for row in trend_rows]
+        return {
+            "city": city_slug,
+            "time": time_window,
+            "total_reports": total,
+            "resolved_total": resolved,
+            "health_distribution": health_distribution,
+            "daily_trends": daily_trends,
+            "points": points,
+            "source": "backend-complaints",
+        }

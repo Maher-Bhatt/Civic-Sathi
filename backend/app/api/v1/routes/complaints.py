@@ -5,7 +5,7 @@ from sqlalchemy import func as sqlfunc
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
-from app.core.security import get_current_officer, get_current_user
+from app.core.security import get_current_user, require_officer_permission
 from app.models.procurement import City
 from app.models.user import User
 from app.schemas.complaint import (
@@ -120,9 +120,9 @@ def update_complaint_status(
     complaint_id: UUID,
     status_update: ComplaintStatusUpdate,
     db: Session = Depends(get_db),
-    current_officer: dict = Depends(get_current_officer),
+    current_officer = Depends(require_officer_permission("complaints.update")),
 ):
-    """Update complaint status (officer only)."""
+    """Update complaint status for designations permitted to operate the queue."""
     service = ComplaintService(db)
     return service.update_status(complaint_id, status_update.status)
 
@@ -132,8 +132,8 @@ def get_similar_complaints(
     complaint_id: UUID,
     limit: int = Query(5, ge=1, le=20),
     db: Session = Depends(get_db),
-    current_officer: dict = Depends(get_current_officer),
+    current_officer = Depends(require_officer_permission("complaints.read")),
 ):
-    """Get similar complaints (officer only)."""
+    """Get similar complaints for an authorized municipal operator."""
     service = ComplaintService(db)
     return service.get_similar_complaints(complaint_id, limit)

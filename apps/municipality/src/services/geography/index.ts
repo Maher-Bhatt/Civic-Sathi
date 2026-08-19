@@ -162,12 +162,17 @@ export interface ComplaintPoint {
   /** Privacy-safe: coarse coordinate inside the locality catchment only. */
   lat: number;
   lng: number;
+  /** Number of persisted complaints represented by this aggregate point. */
+  count?: number;
+  /** Number of those persisted complaints resolved or closed. */
+  resolved?: number;
 }
 
 export interface AreaActivity {
   area: CivicArea;
   counts: IssueBreakdown;
   total: number;
+  critical: number;
   resolved: number;
   last7: number;
   trendPct: number;
@@ -269,31 +274,40 @@ export function areaActivity(city: CityId, filters: MapFilters, rawPoints: Compl
 
   return cityAreas(city).map((area) => {
     const list = byArea.get(area.id) ?? [];
+    const weight = (point: ComplaintPoint) => Math.max(1, Number(point.count ?? 1));
     const counts = emptyBreakdown();
-    for (const p of list) counts[p.issue] += 1;
-    const total = list.length;
-    const last7 = list.filter((p) => p.daysAgo <= 7).length;
-    const prev7 = all.filter(
-      (p) => p.areaId === area.id && p.daysAgo > 7 && p.daysAgo <= 14,
-    ).length;
+    for (const p of list) counts[p.issue] += weight(p);
+    const total = list.reduce((sum, point) => sum + weight(point), 0);
+    const last7 = list.filter((p) => p.daysAgo <= 7).reduce((sum, point) => sum + weight(point), 0);
+    const prev7 = all
+      .filter((p) => p.areaId === area.id && p.daysAgo > 7 && p.daysAgo <= 14)
+      .reduce((sum, point) => sum + weight(point), 0);
     const trendPct =
       prev7 === 0 ? (last7 > 0 ? 100 : 0) : Math.round(((last7 - prev7) / prev7) * 100);
     const topIssue =
       (ISSUE_KEYS.slice().sort((a, b) => counts[b] - counts[a])[0] as IssueKey) ?? "other";
-    const health = healthFromCount(total, filters.time);
-    const density = total / Math.max(1, Math.PI * (area.radiusMeters / 1000) ** 2);
-    const risk = Math.max(0, Math.min(100, Math.round(density * 5 + total * 0.5 + last7 * 2)));
-    const r = rng(`meta:${area.id}`);
+    const severityRisk = total === 0
+      ? 0
+      : Math.round(list.reduce((sum, point) => sum + ({ low: 15, moderate: 45, high: 72, critical: 92 }[point.health] ?? 15) * weight(point), 0) / total);
+    const volumeRisk = Math.min(100, Math.round(total / 12));
+    const risk = Math.min(100, Math.round(severityRisk * 0.72 + volumeRisk * 0.28));
+    const health: AreaHealth = risk >= 82 ? "critical" : risk >= 62 ? "high" : risk >= 38 ? "moderate" : "low";
+    const critical = list.reduce(
+      (sum, point) => sum + ((point.health === "critical") ? weight(point) : 0),
+      0,
+    );
+    const resolved = list.reduce((sum, point) => sum + Math.min(weight(point), Number(point.resolved ?? 0)), 0);
     return {
       area,
       counts,
       total,
-      resolved: Math.round(total * (0.28 + r() * 0.34)),
+      critical,
+      resolved,
       last7,
       trendPct,
       health,
       topIssue,
-      hotspot: risk >= 62 && total >= 20,
+      hotspot: risk >= 62 && total >= 12,
       risk,
       recent: list
         .slice()
@@ -321,14 +335,15 @@ const RANK_HEALTH: AreaHealth[] = ["low", "moderate", "high", "critical"];
 /** Grid clustering: coarse when zoomed out, individual points when zoomed in. */
 export function clusterPoints(points: ComplaintPoint[], zoom: number): PointCluster[] {
   if (zoom >= 16) {
-    return points.map((p) => ({
-      id: p.id,
-      lat: p.lat,
-      lng: p.lng,
-      count: 1,
-      health: p.health,
-      areaId: p.areaId,
-    }));
+          return points.map((p) => ({
+        id: p.id,
+        lat: p.lat,
+        lng: p.lng,
+        count: Math.max(1, Number(p.count ?? 1)),
+        health: p.health,
+        areaId: p.areaId,
+      }));
+
   }
   const cell =
     zoom >= 15 ? 0.004 : zoom >= 14 ? 0.008 : zoom >= 13 ? 0.016 : zoom >= 12 ? 0.03 : 0.06;
@@ -342,14 +357,15 @@ export function clusterPoints(points: ComplaintPoint[], zoom: number): PointClus
     if (b) {
       b.lat += p.lat;
       b.lng += p.lng;
-      b.n += 1;
-      b.rankSum += HEALTH_RANK[p.health];
+              b.n += Math.max(1, Number(p.count ?? 1));
+        b.rankSum += HEALTH_RANK[p.health] * Math.max(1, Number(p.count ?? 1));
+
     } else {
       buckets.set(key, {
         lat: p.lat,
         lng: p.lng,
-        n: 1,
-        rankSum: HEALTH_RANK[p.health],
+        n: Math.max(1, Number(p.count ?? 1)),
+        rankSum: HEALTH_RANK[p.health] * Math.max(1, Number(p.count ?? 1)),
         areaId: p.areaId,
       });
     }
@@ -418,7 +434,7 @@ export function cityDailyTrend(city: CityId, filters: MapFilters, rawPoints: Com
   const buckets = [0, 0, 0, 0, 0, 0, 0];
   for (const p of points) {
     if (p.daysAgo > 6) continue;
-    buckets[6 - p.daysAgo]! += 1;
+    buckets[6 - p.daysAgo]! += Math.max(1, Number(p.count ?? 1));
   }
   return labels.map((day, i) => ({
     day,
@@ -465,7 +481,7 @@ export function areaDailyTrend(areaId: string, filters: MapFilters, rawPoints: C
   const buckets = [0, 0, 0, 0, 0, 0, 0];
   for (const p of points) {
     if (p.daysAgo > 6) continue;
-    buckets[6 - p.daysAgo]! += 1;
+    buckets[6 - p.daysAgo]! += Math.max(1, Number(p.count ?? 1));
   }
   return labels.map((day, i) => ({ day, reports: buckets[i]! }));
 }

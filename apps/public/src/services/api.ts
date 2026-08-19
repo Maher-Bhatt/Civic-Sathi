@@ -15,7 +15,6 @@ import {
   CATEGORY_KEYWORDS,
   SEVERITY_KEYWORDS,
   DEMO_USER,
-  NEARBY_REPORTS,
 } from "./mockData";
 
 export function getApiBaseUrl(): string {
@@ -320,10 +319,26 @@ export async function getComplaint(id: string): Promise<Complaint> {
   return normalizeComplaint(res);
 }
 
+const BACKEND_CATEGORY_TO_UI: Record<string, IssueCategory> = {
+  road_damage: "Road Damage",
+  water_supply: "Water Supply",
+  garbage_collection: "Garbage Collection",
+  drainage: "Drainage",
+  street_lighting: "Street Lighting",
+  electricity: "Electricity",
+  sanitation: "Sanitation",
+};
+
+function backendSeverity(score: unknown, priority?: string): Severity {
+  const value = Number(score ?? 0);
+  if (value >= 9 || priority === "urgent") return "Critical";
+  if (value >= 7 || priority === "high") return "High";
+  if (value >= 5 || priority === "medium") return "Moderate";
+  return "Low";
+}
+
 export async function analyzeComplaint(input: any): Promise<AnalysisResult> {
   const description = String(input.description ?? "").trim();
-  const category = (input.imageCategory as IssueCategory | null) || detectCategory(description);
-  const severity = detectSeverity(description);
   const location = input.location ?? {
     lat: 22.3072,
     lng: 73.1812,
@@ -331,23 +346,26 @@ export async function analyzeComplaint(input: any): Promise<AnalysisResult> {
     area: "Vadodara",
     city: "Vadodara",
   };
-  const hasDirectSignal = CATEGORY_KEYWORDS.some((entry) =>
-    entry.category === category && entry.words.some((word) => description.toLowerCase().includes(word)),
-  );
-  const summary = `${category} report classified as ${severity.toLowerCase()} severity from the submitted description. Backend analysis will check duplicate patterns after registration.`;
-
+  const response = await api.ai.analyzeComplaint({
+    title: input.title || "Civic report",
+    description,
+    category_hint: input.imageCategory || null,
+  });
+  const category = BACKEND_CATEGORY_TO_UI[String(response.category || "sanitation")] || "Sanitation";
+  const severity = backendSeverity(response.severity_score, response.priority);
+  const confidence = response.source === "model" ? "High" : "Medium";
   return {
     category,
     severity,
-    confidence: hasDirectSignal ? "High" : "Medium",
+    confidence,
     location,
     relatedCount: 0,
     nearbyCount: 0,
     radiusMeters: 500,
     hotspot: false,
     relatedSamples: [],
-    summary,
-    recommendedAction: `Route to the ${category.toLowerCase()} department for field verification.`,
+    summary: String(response.summary || `${category} report classified by Civic Sathi backend analysis.`),
+    recommendedAction: String(response.suggested_action || `Route to the ${category.toLowerCase()} department for field verification.`),
   } as AnalysisResult;
 }
 
@@ -360,52 +378,45 @@ export async function uploadComplaintPhoto(file: File): Promise<string> {
   });
 }
 
-export async function analyzeComplaintPhoto(fileName: string): Promise<ImageAnalysis> {
-  const n = fileName.toLowerCase();
-  if (n.includes("garbage") || n.includes("waste"))
-    return {
-      detected: "Garbage accumulation",
-      category: "Garbage Collection",
-      confidence: "High",
-    } as any;
-  if (n.includes("water") || n.includes("tap") || n.includes("leak"))
-    return {
-      detected: "Water leak / supply issue",
-      category: "Water Supply",
-      confidence: "High",
-    } as any;
+export async function analyzeComplaintPhoto(dataUrl: string, description?: string): Promise<ImageAnalysis> {
+  const response = await api.ai.analyzeImage({ data_url: dataUrl, description });
   return {
-    detected: "Civic issue requiring review",
-    category: "Sanitation",
-    confidence: "Low",
-  } as any;
+    detected: String(response.detected || "Image received; manual municipal verification required"),
+    category: BACKEND_CATEGORY_TO_UI[String(response.category || "sanitation")] || "Sanitation",
+    confidence: (response.confidence === "High" || response.confidence === "Medium" ? response.confidence : "Low"),
+    evidence: String(response.evidence || "No visual evidence note was returned."),
+    safetyNote: String(response.safety_note || "Field verification is required."),
+    source: String(response.source || "backend"),
+  } as ImageAnalysis;
 }
 
 export async function analyzeImage(
   file: File,
 ): Promise<{ detected: string; category: string; confidence: string }> {
-  const name = file.name.toLowerCase();
-  if (name.includes("garbage") || name.includes("waste"))
-    return {
-      detected: "Overflowing waste container",
-      category: "Garbage Collection",
-      confidence: "High",
-    } as any;
-  if (name.includes("water") || name.includes("leak"))
-    return {
-      detected: "Dry public water point",
-      category: "Water Supply",
-      confidence: "Medium",
-    } as any;
-  return {
-    detected: "Civic issue requiring review",
-    category: "Sanitation",
-    confidence: "Low",
-  } as any;
+  const dataUrl = await uploadComplaintPhoto(file);
+  return analyzeComplaintPhoto(dataUrl);
 }
 
-export async function getNearbyComplaints(): Promise<NearbyReport[]> {
-  return NEARBY_REPORTS as any;
+export async function getNearbyComplaints(location?: LocationInfo): Promise<NearbyReport[]> {
+  try {
+    const res = await api.complaints.list({ limit: 100, city: location?.city });
+    const list = res?.items ?? res?.data ?? res;
+    const lat = Number(location?.lat ?? 22.3072);
+    const lng = Number(location?.lng ?? 73.1812);
+    return (Array.isArray(list) ? list : [])
+      .map((raw: any) => normalizeComplaint(raw))
+      .filter((complaint) => complaint.location.lat !== 0 && complaint.location.lng !== 0)
+      .map((complaint) => ({
+        id: complaint.id,
+        category: complaint.category,
+        severity: complaint.severity,
+        x: Math.max(0, Math.min(1, 0.5 + (complaint.location.lng - lng) * 18)),
+        y: Math.max(0, Math.min(1, 0.5 - (complaint.location.lat - lat) * 18)),
+        ageHours: Math.max(0, Math.round((Date.now() - new Date(complaint.createdAt).getTime()) / 3_600_000)),
+      }));
+  } catch {
+    return [];
+  }
 }
 
 export async function getNotifications(): Promise<AppNotification[]> {

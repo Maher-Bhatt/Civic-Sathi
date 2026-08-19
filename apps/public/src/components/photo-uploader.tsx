@@ -39,7 +39,7 @@ export function PhotoUploader({
       onPhoto(dataUrl);
       setProgress(100);
       setAnalyzing(true);
-      const result = await analyzeComplaintPhoto(file.name);
+      const result = await analyzeComplaintPhoto(dataUrl);
       setAnalysis(result);
     } catch {
       setError("We couldn't process that image. Try another photo.");
@@ -195,8 +195,13 @@ export function PhotoUploader({
               <dd className="mt-1 text-sm font-medium">{analysis.confidence}</dd>
             </div>
           </dl>
+          {analysis.evidence && <p className="text-xs text-subtle">Visual evidence: {analysis.evidence}</p>}
+          {analysis.safetyNote && <p className="text-xs text-warning">{analysis.safetyNote}</p>}
           <p className="text-xs text-subtle">
-            {t('ui.this_is_an_ai_assisted_suggest')}</p>
+            {analysis.source === "vision-model"
+              ? "Vision-assisted suggestion from the Civic Sathi backend. Confirm before submitting."
+              : "Image received by the Civic Sathi backend; manual verification is required before action."}
+          </p>
           <div className="flex flex-wrap gap-2">
             <GlassButton
               size="sm"

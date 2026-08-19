@@ -135,8 +135,9 @@ function RootShell({ children }: { children: ReactNode }) {
           }
         ` }} />
       </head>
-      <body>
+            <body className="civic-heritage-shell">
         {children}
+
         <Scripts />
       </body>
     </html>

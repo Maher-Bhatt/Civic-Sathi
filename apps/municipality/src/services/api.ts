@@ -172,9 +172,8 @@ export async function getMuniOfficer(): Promise<Officer | null> {
   };
 
   if (cached) {
-    // Refresh in background, don't await
-    refreshFromServer();
-    return cached;
+    const fresh = await refreshFromServer();
+    return fresh ?? cached;
   }
 
   return refreshFromServer();
@@ -252,6 +251,19 @@ export async function assignIssueDepartment(
   department: Department,
 ): Promise<SystemicIssue> {
   return updateSystemicIssue(id, { status: "Assigned", department });
+}
+
+export async function getAuthoritativeMapData(
+  city: CityId,
+  filters: { time?: string; issue?: string; health?: string } = {},
+): Promise<any> {
+  const params = new URLSearchParams({
+    city,
+    time: filters.time || "30d",
+    issue: filters.issue || "all",
+    health: filters.health || "all",
+  });
+  return client.get<any>(`/api/v1/analytics/public-map?${params.toString()}`);
 }
 
 export async function getCivicIssues(city?: CityId): Promise<any[]> {

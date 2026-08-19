@@ -69,7 +69,7 @@ def get_public_map_data(
 ):
     """Get live aggregated statistics for the public civic map (open endpoint)."""
     service = AnalyticsService(db)
-    return service.get_public_map_data(
+    return service.get_authoritative_map_data(
         city=city,
         time_window=time,
         issue_filter=issue,

@@ -31,24 +31,34 @@ class AIService:
             # Groq API key
             self.provider = "groq"
             self.base_url = "https://api.groq.com/openai/v1"
-            # Use lower/lightweight model so limits can't be reached
             self.model = os.getenv("LLM_MODEL") or getattr(settings, "llm_model", None) or "llama-3.1-8b-instant"
+            self.vision_model = os.getenv("VISION_MODEL") or "meta-llama/llama-4-scout-17b-16e-instruct"
+
         elif self.api_key and self.api_key.startswith("xai-"):
             # xAI Grok API key
             self.provider = "xai"
             self.base_url = "https://api.x.ai/v1"
             self.model = os.getenv("GROK_MODEL") or "grok-beta"
+            self.vision_model = os.getenv("VISION_MODEL") or "grok-2-vision-1212"
+
         else:
             self.provider = "groq" if (self.api_key and "gsk" in self.api_key) else "custom"
             self.base_url = getattr(settings, "llm_base_url", "https://api.groq.com/openai/v1").rstrip("/")
             self.model = getattr(settings, "llm_model", "llama-3.1-8b-instant")
+            self.vision_model = os.getenv("VISION_MODEL") or getattr(settings, "vision_model", None) or "llama-4-scout-17b-16e-instruct"
 
     @property
     def is_configured(self) -> bool:
         """Return True if an LLM API key is configured."""
         return bool(self.api_key and self.api_key.strip())
 
+    @property
+    def vision_configured(self) -> bool:
+        """Return True when a provider and vision model are configured."""
+        return self.is_configured and bool(self.vision_model)
+
     async def analyze_complaint(
+
         self,
         title: str,
         description: str,
@@ -112,7 +122,87 @@ class AIService:
 
         return self._local_complaint_heuristic(title, description, category_hint)
 
+    async def analyze_image(self, data_url: str, description: str | None = None) -> dict[str, Any]:
+        """Analyze image pixels through an OpenAI-compatible vision endpoint."""
+        if not self.vision_configured:
+            return self._manual_image_review(description)
+
+        system_prompt = (
+            "You are Civic Sathi Vision, a careful civic-infrastructure image reviewer in India. "
+            "Inspect the actual image pixels and respond only with JSON. Do not infer a category from a filename. "
+            "If the image is unclear, say so and lower confidence. Use exactly one category from: "
+            "road_damage, water_supply, garbage_collection, drainage, street_lighting, electricity, sanitation. "
+            "Return {detected, category, confidence, evidence, safety_note}."
+        )
+        user_text = (
+            "Review this citizen evidence photo. Describe only visible civic conditions, explain the visual evidence, "
+            "and recommend a category. Citizen context: " + (description or "not provided")
+        )
+        try:
+            async with httpx.AsyncClient(timeout=20.0) as client:
+                response = await client.post(
+                    f"{self.base_url}/chat/completions",
+                    headers={
+                        "Authorization": f"Bearer {self.api_key}",
+                        "Content-Type": "application/json",
+                    },
+                    json={
+                        "model": self.vision_model,
+                        "messages": [
+                            {"role": "system", "content": system_prompt},
+                            {"role": "user", "content": [
+                                {"type": "text", "text": user_text},
+                                {"type": "image_url", "image_url": {"url": data_url, "detail": "auto"}},
+                            ]},
+                        ],
+                        "temperature": 0.1,
+                        "response_format": {"type": "json_object"},
+                    },
+                )
+                if response.status_code == 200:
+                    payload = response.json()
+                    parsed = json.loads(payload["choices"][0]["message"]["content"])
+                    allowed = {"road_damage", "water_supply", "garbage_collection", "drainage", "street_lighting", "electricity", "sanitation"}
+                    category = str(parsed.get("category", "sanitation")).lower().strip()
+                    if category not in allowed:
+                        category = "sanitation"
+                    confidence = str(parsed.get("confidence", "Low")).title()
+                    if confidence not in {"Low", "Medium", "High"}:
+                        confidence = "Low"
+                    return {
+                        "detected": str(parsed.get("detected") or "Civic condition visible; verify during field inspection"),
+                        "category": category,
+                        "confidence": confidence,
+                        "evidence": str(parsed.get("evidence") or "The vision model did not provide a detailed evidence note."),
+                        "safety_note": str(parsed.get("safety_note") or "Do not treat this suggestion as a safety clearance."),
+                    }
+                logger.warning("Vision API returned status %s: %s", response.status_code, response.text[:300])
+        except Exception as exc:
+            logger.warning("Vision analysis failed: %s", exc)
+        return self._manual_image_review(description)
+
+    def _manual_image_review(self, description: str | None = None) -> dict[str, Any]:
+        """Honest fallback when a vision provider is unavailable; never pretend to see pixels."""
+        text = (description or "").lower()
+        category = "sanitation"
+        if any(word in text for word in ("pothole", "road", "footpath")):
+            category = "road_damage"
+        elif any(word in text for word in ("drain", "waterlogging", "flood", "overflow")):
+            category = "drainage"
+        elif any(word in text for word in ("leak", "tap", "pipeline", "no water")):
+            category = "water_supply"
+        elif any(word in text for word in ("garbage", "waste", "trash", "dump")):
+            category = "garbage_collection"
+        return {
+            "detected": "Image received; manual municipal verification required",
+            "category": category,
+            "confidence": "Low",
+            "evidence": "No vision provider was available, so no claim is made about image pixels.",
+            "safety_note": "A field inspector must verify the condition before action.",
+        }
+
     async def copilot_chat(self, message: str, context: str | None = None) -> str:
+
         """AI copilot response for municipal officers and contractors."""
         if not self.is_configured:
             return (

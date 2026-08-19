@@ -369,34 +369,10 @@ export async function getContractorPerformance() {
       } catch {}
       return { ...current, reviews };
     }
-    return {
-      company_name: "Bharat Infra Ltd",
-      public_rating: 4.7,
-      ai_rating: 4.9,
-      officer_rating: 4.8,
-      overall_rating: 4.8,
-      total_reviews_count: 32,
-      ai_insights: [
-        "99.2% on-time milestone delivery across current work orders",
-        "0 defect claims during 1-year guarantee period",
-        "Excellent citizen feedback on dust and noise suppression",
-      ],
-      reviews: [],
-    };
-  } catch {
-    return {
-      company_name: "Bharat Infra Ltd",
-      public_rating: 4.7,
-      ai_rating: 4.9,
-      officer_rating: 4.8,
-      overall_rating: 4.8,
-      total_reviews_count: 32,
-      ai_insights: [
-        "99.2% on-time milestone delivery across current work orders",
-        "0 defect claims during 1-year guarantee period",
-        "Excellent citizen feedback on dust and noise suppression",
-      ],
-      reviews: [],
-    };
+    throw new Error("No live contractor performance record is available for this account yet.");
+  } catch (error) {
+    throw error instanceof Error
+      ? error
+      : new Error("The contractor performance service is unavailable. Please retry.");
   }
 }

@@ -126,20 +126,75 @@ def verify_officer_key(
         )
 
 
+OFFICER_ROLES = {"officer", "supervisor", "admin", "municipality"}
+
+# Designation-level permissions are intentionally explicit. The broad legacy
+# roles (admin, supervisor, municipality) retain full operational access, while
+# ordinary officers are constrained by their persisted designation.
+DESIGNATION_PERMISSIONS: dict[str, set[str]] = {
+    "Ward Officer": {"dashboard.read", "map.read", "complaints.read", "complaints.update", "alerts.read"},
+    "Field Inspector": {"dashboard.read", "map.read", "complaints.read", "complaints.update", "areas.read", "work_orders.inspect"},
+    "Triage Officer": {"dashboard.read", "map.read", "complaints.read", "issues.read", "triage.review"},
+    "Municipal Supervisor": {"*"},
+    "Chief Engineer": {"dashboard.read", "map.read", "complaints.read", "tenders.manage", "work_orders.manage", "work_orders.inspect", "analytics.read"},
+    "Commissioner": {"*"},
+    "Department Head": {"*"},
+}
+
+
 def get_current_officer(token_data: dict = Depends(verify_token)) -> dict:
-    """
-    Get current officer from JWT token.
-    Verifies role is officer/supervisor/admin/municipality.
-    """
+    """Get the verified JWT payload for any authenticated officer role."""
     role = token_data.get("role")
-    if role not in ["officer", "supervisor", "admin", "municipality"]:
+    if role not in OFFICER_ROLES:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="Access denied - officer role required"
+            detail="Access denied - officer role required",
         )
     return token_data
 
+
+def get_current_officer_user(
+    token_data: dict = Depends(verify_token),
+    db=Depends(get_db),
+):
+    """Resolve the current officer to the authoritative database User row."""
+    from app.models.user import User
+
+    if token_data.get("role") not in OFFICER_ROLES:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access denied - officer role required",
+        )
+    user = db.query(User).filter(User.id == token_data.get("sub")).first()
+    if not user or user.role not in OFFICER_ROLES:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Officer account not found")
+    return user
+
+
+def officer_has_permission(user, permission: str) -> bool:
+    """Return whether a persisted officer designation may perform an action."""
+    if getattr(user, "role", None) in {"admin", "supervisor", "municipality"}:
+        return True
+    designation = str(getattr(user, "designation", "") or "").strip()
+    permissions = DESIGNATION_PERMISSIONS.get(designation, {"dashboard.read", "map.read", "complaints.read"})
+    return "*" in permissions or permission in permissions
+
+
+def require_officer_permission(permission: str):
+    """FastAPI dependency factory for designation-aware officer authorization."""
+    def dependency(user=Depends(get_current_officer_user)):
+        if not officer_has_permission(user, permission):
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail=f"Your designation does not permit: {permission}",
+            )
+        return user
+
+    return dependency
+
+
 def get_current_user(token_data: dict = Depends(verify_token), db = Depends(get_db)):
+
     from app.models.user import User
     user = db.query(User).filter(User.id == token_data.get("sub")).first()
     if not user:

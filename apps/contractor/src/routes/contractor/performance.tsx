@@ -67,17 +67,11 @@ function ContractorPerformance() {
   if (error) return <ErrorState description={error?.message ?? "Error loading performance scorecard."} />;
   if (!data) return null;
 
-  const pubRating = Number(data.public_rating || 4.7);
-  const aiRating = Number(data.ai_rating || 4.9);
-  const offRating = Number(data.officer_rating || 4.8);
-  const overall = Number(data.overall_rating || (pubRating * 0.35 + aiRating * 0.35 + offRating * 0.30).toFixed(1));
-
-  const historyData = [
-    { name: "Q1", score: +(overall - 0.4).toFixed(1) },
-    { name: "Q2", score: +(overall - 0.2).toFixed(1) },
-    { name: "Q3", score: +(overall - 0.1).toFixed(1) },
-    { name: "Q4 (Current)", score: overall },
-  ];
+  const pubRating = data.public_rating == null ? null : Number(data.public_rating);
+  const aiRating = data.ai_rating == null ? null : Number(data.ai_rating);
+  const offRating = data.officer_rating == null ? null : Number(data.officer_rating);
+  const overall = data.overall_rating == null ? null : Number(data.overall_rating);
+  const historyData = Array.isArray(data.history) ? data.history : [];
 
   const reviews = Array.isArray(data.reviews) ? data.reviews : [];
 
@@ -98,8 +92,9 @@ function ContractorPerformance() {
         <div className="flex items-center gap-3 px-4 py-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400">
           <ShieldCheck className="h-5 w-5 shrink-0" />
           <div className="text-xs">
-            <span className="font-semibold block">Class-A Verified Contractor</span>
-            <span>Active across Vadodara & Bengaluru</span>
+                        <span className="font-semibold block">{data.verification_status || "Verification status unavailable"}</span>
+            <span>{Array.isArray(data.service_areas) && data.service_areas.length > 0 ? data.service_areas.join(" · ") : "Service-area data unavailable"}</span>
+
           </div>
         </div>
       </div>
@@ -120,7 +115,7 @@ function ContractorPerformance() {
             </div>
 
             <div className="flex items-baseline gap-2 mt-2">
-              <span className="text-4xl font-extrabold text-[var(--foreground)]">{pubRating.toFixed(1)}</span>
+              <span className="text-4xl font-extrabold text-[var(--foreground)]">{pubRating == null ? "Unavailable" : pubRating.toFixed(1)}</span>
               <span className="text-sm text-[var(--muted-foreground)]">/ 5.0</span>
             </div>
 
@@ -128,11 +123,11 @@ function ContractorPerformance() {
               {[1, 2, 3, 4, 5].map((s) => (
                 <Star
                   key={s}
-                  className={`h-4 w-4 ${s <= Math.round(pubRating) ? "fill-amber-500" : "text-gray-300 dark:text-gray-700"}`}
+                  className={`h-4 w-4 ${s <= Math.round(pubRating ?? 0) ? "fill-amber-500" : "text-gray-300 dark:text-gray-700"}`}
                 />
               ))}
               <span className="text-xs text-[var(--muted-foreground)] ml-2">
-                ({data.total_reviews_count || 32} verified reviews)
+                ({data.total_reviews_count ?? 0} verified reviews)
               </span>
             </div>
 
@@ -143,7 +138,8 @@ function ContractorPerformance() {
 
           <div className="mt-5 pt-3 border-t border-[var(--glass-border)] flex items-center justify-between text-xs">
             <span className="text-[var(--muted-foreground)]">Citizen Satisfaction:</span>
-            <span className="font-semibold text-emerald-600 dark:text-emerald-400">96.4% Positive</span>
+                        <span className="font-semibold text-[var(--muted-foreground)]">{data.public_satisfaction_pct == null ? "Unavailable" : `${data.public_satisfaction_pct}%`}</span>
+
           </div>
         </GlassCard>
 
@@ -161,7 +157,7 @@ function ContractorPerformance() {
             </div>
 
             <div className="flex items-baseline gap-2 mt-2">
-              <span className="text-4xl font-extrabold text-[var(--foreground)]">{aiRating.toFixed(1)}</span>
+              <span className="text-4xl font-extrabold text-[var(--foreground)]">{aiRating == null ? "Unavailable" : aiRating.toFixed(1)}</span>
               <span className="text-sm text-[var(--muted-foreground)]">/ 5.0</span>
             </div>
 
@@ -169,7 +165,7 @@ function ContractorPerformance() {
               {[1, 2, 3, 4, 5].map((s) => (
                 <Star
                   key={s}
-                  className={`h-4 w-4 ${s <= Math.round(aiRating) ? "fill-blue-500" : "text-gray-300 dark:text-gray-700"}`}
+                  className={`h-4 w-4 ${s <= Math.round(aiRating ?? 0) ? "fill-blue-500" : "text-gray-300 dark:text-gray-700"}`}
                 />
               ))}
               <span className="text-xs text-[var(--muted-foreground)] ml-2">Algorithmic SLA</span>
@@ -182,7 +178,8 @@ function ContractorPerformance() {
 
           <div className="mt-5 pt-3 border-t border-[var(--glass-border)] flex items-center justify-between text-xs">
             <span className="text-[var(--muted-foreground)]">Defect Recurrence Rate:</span>
-            <span className="font-semibold text-emerald-600 dark:text-emerald-400">0.8% (Benchmark &lt; 5%)</span>
+                        <span className="font-semibold text-[var(--muted-foreground)]">{data.defect_recurrence_pct == null ? "Unavailable" : `${data.defect_recurrence_pct}%`}</span>
+
           </div>
         </GlassCard>
 
@@ -200,7 +197,7 @@ function ContractorPerformance() {
             </div>
 
             <div className="flex items-baseline gap-2 mt-2">
-              <span className="text-4xl font-extrabold text-[var(--foreground)]">{offRating.toFixed(1)}</span>
+              <span className="text-4xl font-extrabold text-[var(--foreground)]">{offRating == null ? "Unavailable" : offRating.toFixed(1)}</span>
               <span className="text-sm text-[var(--muted-foreground)]">/ 5.0</span>
             </div>
 
@@ -208,7 +205,7 @@ function ContractorPerformance() {
               {[1, 2, 3, 4, 5].map((s) => (
                 <Star
                   key={s}
-                  className={`h-4 w-4 ${s <= Math.round(offRating) ? "fill-emerald-500" : "text-gray-300 dark:text-gray-700"}`}
+                  className={`h-4 w-4 ${s <= Math.round(offRating ?? 0) ? "fill-emerald-500" : "text-gray-300 dark:text-gray-700"}`}
                 />
               ))}
               <span className="text-xs text-[var(--muted-foreground)] ml-2">Official Sign-Offs</span>
@@ -221,7 +218,8 @@ function ContractorPerformance() {
 
           <div className="mt-5 pt-3 border-t border-[var(--glass-border)] flex items-center justify-between text-xs">
             <span className="text-[var(--muted-foreground)]">First-Time Pass Rate:</span>
-            <span className="font-semibold text-emerald-600 dark:text-emerald-400">97.5%</span>
+                        <span className="font-semibold text-[var(--muted-foreground)]">{data.first_time_pass_rate_pct == null ? "Unavailable" : `${data.first_time_pass_rate_pct}%`}</span>
+
           </div>
         </GlassCard>
       </div>
@@ -233,12 +231,13 @@ function ContractorPerformance() {
           <SectionLabel className="mb-4">Composite Civic Sathi Trust Index</SectionLabel>
           <div className="relative w-44 h-44 rounded-full border-8 border-emerald-500 flex items-center justify-center bg-[var(--surface)] shadow-xl">
             <div className="flex flex-col items-center">
-              <span className="text-5xl font-extrabold text-emerald-500">{overall.toFixed(1)}</span>
+              <span className="text-5xl font-extrabold text-emerald-500">{overall == null ? "Unavailable" : overall.toFixed(1)}</span>
               <span className="text-[11px] text-[var(--muted-foreground)] uppercase tracking-widest mt-1">Out of 5.0</span>
             </div>
           </div>
           <div className="mt-6 px-4 py-1.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-semibold text-xs border border-emerald-500/20">
-            Top 2% Contractor Tier in Gujarat
+                        {data.rank_label || "Performance tier unavailable"}
+
           </div>
           <p className="text-xs text-[var(--muted-foreground)] mt-3">
             Formula: 35% Public + 35% AI SLA + 30% Municipal Officer
@@ -253,12 +252,9 @@ function ContractorPerformance() {
               <SectionLabel>AI Quality Audit & Recommendations</SectionLabel>
             </div>
 
-            <div className="space-y-3">
-              {(data.ai_insights || [
-                "99.2% on-time milestone delivery across current work orders",
-                "0 defect claims during 1-year guarantee period",
-                "Excellent citizen feedback on dust and noise suppression"
-              ]).map((insight: string, idx: number) => (
+                        <div className="space-y-3">
+              {(Array.isArray(data.ai_insights) && data.ai_insights.length > 0 ? data.ai_insights : ["No AI-generated performance insight is available from the backend yet."]).map((insight: string, idx: number) => (
+
                 <div
                   key={idx}
                   className="flex items-start gap-3 p-3 rounded-lg bg-[var(--surface)] border border-[var(--glass-border)] text-xs"
@@ -273,10 +269,11 @@ function ContractorPerformance() {
           <div className="mt-6 p-4 rounded-xl bg-purple-500/10 border border-purple-500/20 text-xs flex items-center gap-3">
             <Bot className="h-6 w-6 text-purple-500 shrink-0" />
             <div>
-              <span className="font-semibold text-[var(--foreground)] block">AI Bidding Advantage Active</span>
+                            <span className="font-semibold text-[var(--foreground)] block">Tender eligibility is backend-controlled</span>
               <span className="text-[var(--muted-foreground)]">
-                Because your AI score is above 4.8, your bids receive a 5% technical weight bonus in open municipal tenders.
+                Civic Sathi does not infer bidding bonuses from a scorecard. Eligibility and award decisions follow the live tender rules.
               </span>
+
             </div>
           </div>
         </GlassCard>

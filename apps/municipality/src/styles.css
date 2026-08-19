@@ -753,3 +753,43 @@ body::after {
 @media (prefers-reduced-motion: reduce) {
   body::after { opacity: 0.09; }
 }
+
+/* Civic heritage layer: abstracted from stepwell geometry and the Ashoka Chakra, not a literal illustration. */
+.civic-heritage-shell {
+  background-image:
+    radial-gradient(circle at 8% 10%, color-mix(in oklab, var(--saffron) 10%, transparent), transparent 28%),
+    radial-gradient(circle at 92% 86%, color-mix(in oklab, var(--india-green) 8%, transparent), transparent 30%);
+}
+.civic-heritage-shell::before {
+  content: "";
+  position: fixed;
+  inset: 0 0 0 auto;
+  width: min(34vw, 26rem);
+  pointer-events: none;
+  opacity: 0.055;
+  background: repeating-conic-gradient(from 0deg at 70% 18%, var(--saffron) 0deg 2deg, transparent 2deg 15deg);
+  mask-image: radial-gradient(circle at 70% 18%, #000 0 16%, transparent 62%);
+  z-index: 0;
+}
+.civic-heritage-strip {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+.civic-heritage-strip::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--saffron), var(--india-green), transparent);
+  opacity: 0.75;
+}
+.civic-heritage-mark {
+  width: 1.85rem;
+  height: 1.85rem;
+  flex: 0 0 auto;
+  border: 1px solid color-mix(in oklab, var(--saffron) 62%, var(--glass-border));
+  border-radius: 999px;
+  background: repeating-conic-gradient(from 0deg, var(--saffron) 0deg 4deg, transparent 4deg 18deg);
+  box-shadow: inset 0 0 0 5px var(--glass-strong), 0 0 0 1px color-mix(in oklab, var(--india-green) 30%, transparent);
+}

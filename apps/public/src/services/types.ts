@@ -85,6 +85,9 @@ export interface ImageAnalysis {
   detected: string;
   category: IssueCategory;
   confidence: "Low" | "Medium" | "High";
+  evidence?: string;
+  safetyNote?: string;
+  source?: string;
 }
 
 export interface NearbyReport {

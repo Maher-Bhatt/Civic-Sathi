@@ -22,9 +22,6 @@ import {
   TIME_WINDOWS,
   areaActivity,
   areaDailyTrend,
-  cityDailyTrend,
-  cityHealthDistribution,
-  complaintPoints,
   filterPoints,
   nearestArea,
   type AreaActivity,
@@ -33,7 +30,7 @@ import {
   type IssueKey,
   type MapFilters,
 } from "@/services/geography";
-import { getCivicIssues } from "@/services/api";
+import { getAuthoritativeMapData } from "@/services/api";
 import { cn } from "@/lib/utils";
 import { DEFAULT_COMPLAINT_FILTERS } from "@/services/types";
 import { useI18n } from "@/lib/i18n";
@@ -81,14 +78,18 @@ function MuniMapPage() {
   const [selectedAreaId, setSelectedAreaId] = useState<string | null>(null);
   const [filterOpen, setFilterOpen] = useState(false);
   const [complaintFilters, setComplaintFilters] = useState(DEFAULT_COMPLAINT_FILTERS);
-  const [civicIssues, setCivicIssues] = useState<any[]>([]);
+  const [mapData, setMapData] = useState<any | null>(null);
 
   useEffect(() => {
-    getCivicIssues(city).then(setCivicIssues);
-  }, [city]);
+    let active = true;
+    getAuthoritativeMapData(city, { time: filters.time, issue: filters.issue })
+      .then((data) => { if (active) setMapData(data); })
+      .catch(() => { if (active) setMapData(null); });
+    return () => { active = false; };
+  }, [city, filters.time, filters.issue]);
 
   const allPoints: ComplaintPoint[] = useMemo(() => {
-    return civicIssues.map((ci) => {
+    return (mapData?.points ?? []).map((ci: any) => {
       let issue: IssueKey = "other";
       const cat = (ci.category || "").toLowerCase();
       if (cat.includes("water")) issue = "water";
@@ -97,18 +98,17 @@ function MuniMapPage() {
       else if (cat.includes("drainage")) issue = "drainage";
       else if (cat.includes("light")) issue = "lighting";
 
-      let health: AreaHealth = "low";
-      const sev = (ci.severity || "").toLowerCase();
-      if (sev === "critical") health = "critical";
-      else if (sev === "high") health = "high";
-      else if (sev === "moderate") health = "moderate";
+      const backendHealth = String(ci.health || "low").toLowerCase();
+      const health: AreaHealth = backendHealth === "critical" || backendHealth === "high" || backendHealth === "moderate"
+        ? backendHealth
+        : Number(ci.risk ?? 0) >= 80 ? "critical"
+        : Number(ci.risk ?? 0) >= 60 ? "high"
+        : Number(ci.risk ?? 0) >= 35 ? "moderate"
+        : "low";
 
       const lat = Number(ci.lat) || 0;
       const lng = Number(ci.lng) || 0;
-      const createdAt = ci.createdAt || ci.created_at;
-      const daysAgo = createdAt
-        ? Math.max(0, Math.floor((Date.now() - new Date(createdAt).getTime()) / 86_400_000))
-        : 0;
+      const daysAgo = Number(ci.days_ago ?? 999);
       return {
         id: String(ci.id),
         areaId: nearestArea(city, lat, lng)?.id ?? String(ci.area || ""),
@@ -117,15 +117,30 @@ function MuniMapPage() {
         daysAgo,
         lat,
         lng,
+        count: Number(ci.count ?? 1),
+        resolved: Number(ci.resolved ?? 0),
       };
     });
-  }, [civicIssues, city]);
+  }, [mapData, city]);
 
   const activities = useMemo(() => areaActivity(city, filters, allPoints), [city, filters, allPoints]);
   const points = useMemo(() => filterPoints(allPoints, filters), [allPoints, filters]);
   const selected = activities.find((a) => a.area.id === selectedAreaId);
-  const trendData = useMemo(() => cityDailyTrend(city, filters, allPoints), [city, filters, allPoints]);
-  const healthData = useMemo(() => cityHealthDistribution(city, filters, allPoints), [city, filters, allPoints]);
+  const trendData = useMemo(() => {
+    const daily = Array.isArray(mapData?.daily_trends) ? mapData.daily_trends : [];
+    const labels = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+    const byDay = new Map(daily.map((item: any) => [String(item.date).slice(5), Number(item.count ?? 0)]));
+    return labels.map((day) => ({ day, reports: byDay.get(day) ?? 0 }));
+  }, [mapData]);
+  const healthData = useMemo(() => {
+    const distribution = mapData?.health_distribution ?? {};
+    return AREA_HEALTH_ORDER.map((health) => ({
+      health,
+      label: AREA_HEALTH_LABEL[health],
+      count: Number(distribution[health] ?? 0),
+      fill: AREA_HEALTH_HEX[health],
+    })).filter((entry) => entry.count > 0);
+  }, [mapData]);
   const areaTrend = useMemo(
     () => (selected ? areaDailyTrend(selected.area.id, filters, allPoints) : []),
     [selected, filters, allPoints],
@@ -222,7 +237,7 @@ function MuniMapPage() {
               <p className="mt-3 text-sm text-muted-foreground">
                 {t('ui.click_an_area_to_view_operatio')}</p>
               <p className="mt-2 text-xs text-subtle">
-                {t('ui.prototype_area_boundaries_not_')}</p>
+                Data is grouped from persisted complaints and shown inside approximate locality catchments; it is not an official ward boundary.</p>
             </GlassCard>
           )}
         </div>
@@ -275,7 +290,7 @@ function AreaDetailPanel({
         </div>
         <div>
           <dt className="label-xs">{t('ui.critical')}</dt>
-          <dd className="font-semibold tabular-nums">{Math.round(total * 0.08)}</dd>
+          <dd className="font-semibold tabular-nums">{activity.critical}</dd>
         </div>
         <div>
           <dt className="label-xs">{t('ui.7_day_trend')}</dt>

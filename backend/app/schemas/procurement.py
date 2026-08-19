@@ -137,11 +137,11 @@ class ContractorProfileResponse(BaseModel):
     contact_person: str
     email: str
     phone: str
-    public_rating: float = 4.5
-    ai_rating: float = 4.8
-    officer_rating: float = 4.6
-    overall_rating: float = 4.63
-    total_reviews_count: int = 24
+    public_rating: Optional[float] = None
+    ai_rating: Optional[float] = None
+    officer_rating: Optional[float] = None
+    overall_rating: Optional[float] = None
+    total_reviews_count: int = 0
     ai_insights: Optional[List[str]] = None
     
     class Config:

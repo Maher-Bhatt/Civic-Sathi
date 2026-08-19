@@ -12,6 +12,11 @@ function normaliseAuthResponse(raw: any): AuthResponse {
 export class Endpoints {
   constructor(private client: APIClient) {}
 
+  ai = {
+    analyzeComplaint: (data: any) => this.client.post<any>('/api/v1/ai/analyze-complaint', data),
+    analyzeImage: (data: any) => this.client.post<any>('/api/v1/ai/analyze-image', data),
+  };
+
   auth = {
     loginOfficer: async (data: any): Promise<AuthResponse> => {
       const raw = await this.client.post<any>('/api/v1/auth/officer-login', data);

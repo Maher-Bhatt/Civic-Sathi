@@ -1,14 +1,14 @@
 from fastapi import APIRouter, Depends, HTTPException, Body
 from sqlalchemy.orm import Session
-from sqlalchemy import select, and_
+from sqlalchemy import func, select, and_
 from typing import List, Optional
 from uuid import UUID
 from pydantic import BaseModel
 
 from app.core.database import get_db
-from app.core.security import get_current_officer, get_current_user
+from app.core.security import get_current_user, officer_has_permission, require_officer_permission
 from app.models.procurement import (
-    Tender, Bid, WorkOrder,
+    Tender, Bid, WorkOrder, City,
     TenderStatus, BidStatus, WorkOrderStatus,
     Contractor, ContractorCityRegistration, RegistrationStatus,
     FieldEvidence, Inspection, InspectionResult,
@@ -28,6 +28,18 @@ from app.schemas.procurement import (
 )
 
 router = APIRouter()
+
+
+def enforce_city_scope(db: Session, user: User, city_id: UUID) -> UUID:
+    """Keep ordinary municipality accounts inside their persisted city."""
+    if user.role in {"admin", "supervisor", "municipality", "contractor"}:
+        return city_id
+    if not user.city:
+        raise HTTPException(status_code=403, detail="This account has no assigned city")
+    city = db.query(City).filter(func.lower(City.name) == user.city.strip().lower()).first()
+    if not city or city.id != city_id:
+        raise HTTPException(status_code=403, detail="This account cannot access another city")
+    return city_id
 
 
 # ── Pydantic body schemas used inline ─────────────────────────────────────────
@@ -86,7 +98,7 @@ def _enrich_work_order(db: Session, wo: WorkOrder) -> dict:
 def create_tender(
     tender_in: TenderCreate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_officer),
+    current_user: User = Depends(require_officer_permission("tenders.manage")),
 ):
     """(Officer Only) Create a new procurement tender."""
     tender = Tender(
@@ -112,6 +124,7 @@ def list_tenders(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
+    city_id = enforce_city_scope(db, current_user, city_id)
     """
     List tenders.
     Contractors only see PUBLISHED/CLOSED tenders in cities where they are APPROVED.
@@ -216,7 +229,7 @@ def submit_bid(
 def list_bids(
     tender_id: UUID,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_officer),
+    current_user: User = Depends(require_officer_permission("tenders.manage")),
 ):
     """(Officer Only) View submitted bids."""
     tender = db.get(Tender, tender_id)
@@ -235,7 +248,7 @@ def award_bid(
     tender_id: UUID,
     bid_id: UUID,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_officer),
+    current_user: User = Depends(require_officer_permission("tenders.manage")),
 ):
     """(Officer Only) Award a bid and auto-generate a Work Order."""
     tender = db.get(Tender, tender_id)
@@ -285,6 +298,7 @@ def list_work_orders(
     current_user: User = Depends(get_current_user),
 ):
     """List work orders based on role, enriched with Tender + Contractor data."""
+    city_id = enforce_city_scope(db, current_user, city_id)
     if current_user.role == "contractor":
         contractor = db.execute(
             select(Contractor).where(Contractor.auth_user_id == str(current_user.id))
@@ -315,13 +329,17 @@ def get_work_order(
     if not work_order:
         raise HTTPException(status_code=404, detail="Work Order not found")
 
-    # Ownership check: contractors may only see their own work orders
+    # Ownership and city checks: contractors see only their records; municipal users stay in their city.
     if current_user.role == "contractor":
         contractor = db.execute(
             select(Contractor).where(Contractor.auth_user_id == str(current_user.id))
         ).scalar_one_or_none()
         if not contractor or work_order.contractor_id != contractor.id:
             raise HTTPException(status_code=403, detail="Access denied")
+    else:
+        tender = db.get(Tender, work_order.tender_id)
+        if tender:
+            enforce_city_scope(db, current_user, tender.city_id)
 
     return WorkOrderResponse(**_enrich_work_order(db, work_order))
 
@@ -365,6 +383,8 @@ def update_work_order_status(
                 detail=f"Contractors cannot transition from {work_order.status} to {body.status}",
             )
     elif current_user.role in ("officer", "supervisor", "admin", "municipality"):
+        if not officer_has_permission(current_user, "work_orders.manage"):
+            raise HTTPException(status_code=403, detail="Your designation cannot transition work orders")
         allowed_list = officer_transitions.get(work_order.status, [])
         if body.status not in allowed_list:
             raise HTTPException(
@@ -392,6 +412,9 @@ def submit_evidence(
     if not work_order:
         raise HTTPException(status_code=404, detail="Work Order not found")
 
+    if current_user.role != "contractor":
+        raise HTTPException(status_code=403, detail="Only contractors can submit field evidence")
+
     # Verify contractor ownership
     if current_user.role == "contractor":
         contractor = db.execute(
@@ -417,7 +440,7 @@ def submit_inspection(
     work_order_id: UUID,
     inspection_in: InspectionCreate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_officer),
+    current_user: User = Depends(require_officer_permission("work_orders.inspect")),
 ):
     """(Officer Only) Inspect field evidence. If PASS, auto-resolves the linked Civic Issue and Complaints."""
     work_order = db.get(WorkOrder, work_order_id)
@@ -486,10 +509,11 @@ def list_contractors(
     contractors = db.query(Contractor).all()
     results = []
     for c in contractors:
-        pub = c.public_rating or 4.5
-        ai = c.ai_rating or 4.8
-        off = c.officer_rating or 4.6
-        overall = round((pub * 0.35) + (ai * 0.35) + (off * 0.30), 2)
+        pub = c.public_rating
+        ai = c.ai_rating
+        off = c.officer_rating
+        scores = [score for score in (pub, ai, off) if score is not None]
+        overall = round(sum(scores) / len(scores), 2) if scores else None
         results.append(
             ContractorProfileResponse(
                 id=c.id,
@@ -501,12 +525,8 @@ def list_contractors(
                 ai_rating=ai,
                 officer_rating=off,
                 overall_rating=overall,
-                total_reviews_count=c.total_reviews_count or 24,
-                ai_insights=c.ai_insights or [
-                    "High SLA adherence on road resurfacing (98.4%)",
-                    "Defect liability claim rate below 1.2%",
-                    "Rapid milestone completion in Central Zone"
-                ]
+                total_reviews_count=c.total_reviews_count or 0,
+                ai_insights=c.ai_insights or [],
             )
         )
     return results
@@ -521,10 +541,11 @@ def get_contractor_profile(
     c = db.get(Contractor, contractor_id)
     if not c:
         raise HTTPException(status_code=404, detail="Contractor not found")
-    pub = c.public_rating or 4.5
-    ai = c.ai_rating or 4.8
-    off = c.officer_rating or 4.6
-    overall = round((pub * 0.35) + (ai * 0.35) + (off * 0.30), 2)
+    pub = c.public_rating
+    ai = c.ai_rating
+    off = c.officer_rating
+    scores = [score for score in (pub, ai, off) if score is not None]
+    overall = round(sum(scores) / len(scores), 2) if scores else None
     return ContractorProfileResponse(
         id=c.id,
         company_name=c.company_name,
@@ -535,12 +556,8 @@ def get_contractor_profile(
         ai_rating=ai,
         officer_rating=off,
         overall_rating=overall,
-        total_reviews_count=c.total_reviews_count or 24,
-        ai_insights=c.ai_insights or [
-            "Consistent on-time delivery across public tenders",
-            "Zero safety audit violations in current quarter",
-            "Strong community feedback on cleanliness"
-        ]
+        total_reviews_count=c.total_reviews_count or 0,
+        ai_insights=c.ai_insights or [],
     )
 
 

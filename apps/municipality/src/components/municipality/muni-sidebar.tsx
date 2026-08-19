@@ -98,13 +98,17 @@ export function MuniSidebar({
           mobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0",
         )}
       >
-        <div className="flex h-16 items-center justify-between border-b border-[var(--glass-border)] px-4">
+                <div className="civic-heritage-strip flex h-16 items-center justify-between border-b border-[var(--glass-border)] px-4">
           {!collapsed && (
-            <div>
-              <p className="text-sm font-semibold tracking-tight">{t('ui.civicsathi')}</p>
-              <p className="text-[0.65rem] text-muted-foreground">{t('ui.municipal_intelligence')}</p>
+            <div className="flex items-center gap-2.5">
+              <span className="civic-heritage-mark" aria-hidden="true" />
+              <div>
+                <p className="text-sm font-semibold tracking-tight">{t('ui.civicsathi')}</p>
+                <p className="text-[0.65rem] text-muted-foreground">{t('ui.municipal_intelligence')}</p>
+              </div>
             </div>
           )}
+
           <button
             type="button"
             onClick={onToggle}
@@ -151,7 +155,8 @@ export function MuniSidebar({
 
         {!collapsed && (
           <div className="border-t border-[var(--glass-border)] p-4">
-            <p className="text-[0.65rem] text-muted-foreground">{t('ui.prototype_intelligence_data')}</p>
+                        <p className="text-[0.65rem] text-muted-foreground">Live civic operations · {officer?.city || "City"}</p>
+
           </div>
         )}
       </aside>

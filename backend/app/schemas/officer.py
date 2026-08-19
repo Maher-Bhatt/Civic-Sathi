@@ -4,9 +4,11 @@ from pydantic import BaseModel, EmailStr
 
 
 class OfficerLoginRequest(BaseModel):
-    """Officer login request"""
+    """Officer login request with optional UI context for validation."""
     email: EmailStr
     password: str
+    city: str | None = None
+    designation: str | None = None
 
 
 class OfficerLoginResponse(BaseModel):
