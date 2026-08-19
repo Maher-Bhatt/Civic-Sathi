@@ -89,9 +89,14 @@ class JobService:
             analysis = ComplaintAnalysis(complaint_id=complaint.id)
             self.db.add(analysis)
             
-        analysis.language = ml_result.language
-        analysis.cleaned_text = ml_result.cleaned_text
-        analysis.entities_json = [e.model_dump() for e in ml_result.entities]
+        existing_entities = analysis.entities_json if isinstance(analysis.entities_json, list) else []
+        preserved_ai_metadata = [
+            item for item in existing_entities
+            if isinstance(item, dict) and item.get("label") in {"ai_interpretation", "municipality_action"}
+        ]
+        analysis.language = analysis.language or ml_result.language
+        analysis.cleaned_text = analysis.cleaned_text or ml_result.cleaned_text
+        analysis.entities_json = [e.model_dump() for e in ml_result.entities] + preserved_ai_metadata
         analysis.keywords_json = ml_result.keywords
         analysis.embedding_model = ml_result.embedding_model
         analysis.embedding_vector = ml_result.embedding_vector

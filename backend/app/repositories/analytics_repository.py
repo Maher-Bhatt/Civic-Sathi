@@ -47,12 +47,12 @@ class AnalyticsRepository:
 
         unresolved = self.db.execute(
             select(func.count(Complaint.id))
-            .where(and_(cf, Complaint.status.in_(["received", "in_review", "assigned"])))
+            .where(and_(cf, Complaint.status.notin_(["resolved", "rejected", "closed"])))
         ).scalar() or 0
 
         critical_issues = self.db.execute(
-            select(func.count(IssueCluster.id))
-            .where(and_(isf, IssueCluster.risk_level == "critical"))
+            select(func.count(Complaint.id))
+            .where(and_(cf, Complaint.risk_score >= 80))
         ).scalar() or 0
 
         return {

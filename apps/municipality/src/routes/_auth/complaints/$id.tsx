@@ -155,6 +155,24 @@ function ComplaintDetailPage() {
             </dl>
           </GlassCard>
 
+          {(complaint.interpretedText || complaint.suggestedAction || complaint.language) && (
+            <GlassCard elevation="raised" className="border-l-4 border-l-[var(--civic-teal-600)] p-6">
+              <SectionLabel>Backend AI interpretation</SectionLabel>
+              <p className="mt-3 text-sm leading-relaxed text-foreground">
+                {complaint.interpretedText || "The citizen's original report is available for officer review."}
+              </p>
+              {complaint.suggestedAction && (
+                <div className="mt-4 rounded-xl bg-[color-mix(in_oklab,var(--civic-teal-600)_8%,transparent)] p-3">
+                  <div className="label-xs">Suggested municipal action</div>
+                  <p className="mt-1 text-sm leading-relaxed">{complaint.suggestedAction}</p>
+                </div>
+              )}
+              {complaint.language && (
+                <p className="mt-3 text-xs text-muted-foreground">Detected report language: {complaint.language.toUpperCase()}</p>
+              )}
+            </GlassCard>
+          )}
+
           {complaint.aiAnalysis && (
             <GlassCard elevation="raised" className="p-6">
               <SectionLabel>{t('ui.ai_intelligence_analysis')}</SectionLabel>

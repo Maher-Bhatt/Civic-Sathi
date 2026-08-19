@@ -15,6 +15,7 @@ class ComplaintTextAnalysisRequest(BaseModel):
     title: str = Field(default="Civic report", max_length=120)
     description: str = Field(..., min_length=1, max_length=2500)
     category_hint: str | None = None
+    language: str | None = Field(default=None, max_length=20)
 
 
 class ImageAnalysisRequest(BaseModel):
@@ -45,6 +46,7 @@ async def analyze_complaint_text(
         request.title,
         request.description,
         request.category_hint,
+        request.language,
     )
     return {"source": "model" if ai_service.is_configured else "backend-heuristic", **result}
 

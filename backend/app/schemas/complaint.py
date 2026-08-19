@@ -34,6 +34,9 @@ class ComplaintCreate(BaseModel):
     city_id: str | None = None
     city: str | None = None
     photo: str | None = None
+    language: str | None = Field(None, max_length=20)
+    ai_interpreted_text: str | None = Field(None, max_length=1000)
+    ai_suggested_action: str | None = Field(None, max_length=1000)
     submitted_by: SubmittedBy | None = None
     submitted_by_name: str | None = None
     submitted_by_phone: str | None = None
@@ -60,6 +63,8 @@ class ComplaintAnalysisResponse(BaseModel):
     similar_count: int = 0
     possible_duplicate: bool = False
     confidence_score: float | None = None
+    interpreted_text: str | None = None
+    suggested_action: str | None = None
 
 
 class ComplaintLinks(BaseModel):
@@ -114,6 +119,9 @@ class ComplaintListItem(BaseModel):
     address_text: str | None = None
     created_at: datetime
     updated_at: datetime | None = None
+    language: str | None = None
+    interpreted_text: str | None = None
+    suggested_action: str | None = None
 
     class Config:
         from_attributes = True

@@ -350,6 +350,7 @@ export async function analyzeComplaint(input: any): Promise<AnalysisResult> {
     title: input.title || "Civic report",
     description,
     category_hint: input.imageCategory || null,
+    language: input.language || null,
   });
   const category = BACKEND_CATEGORY_TO_UI[String(response.category || "sanitation")] || "Sanitation";
   const severity = backendSeverity(response.severity_score, response.priority);
@@ -366,6 +367,8 @@ export async function analyzeComplaint(input: any): Promise<AnalysisResult> {
     relatedSamples: [],
     summary: String(response.summary || `${category} report classified by Civic Sathi backend analysis.`),
     recommendedAction: String(response.suggested_action || `Route to the ${category.toLowerCase()} department for field verification.`),
+    interpretedText: String(response.interpreted_text || response.summary || "The municipality will review the report details."),
+    language: String(response.language || input.language || "en"),
   } as AnalysisResult;
 }
 

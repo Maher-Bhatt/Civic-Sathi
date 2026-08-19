@@ -150,6 +150,26 @@ class ComplaintService:
 
         complaint = self.repo.create(complaint)
 
+        # Preserve the backend AI interpretation for municipal officers. These
+        # metadata entries live in the existing JSONB analysis payload so this
+        # repair does not require a destructive schema migration.
+        if complaint_data.language or complaint_data.ai_interpreted_text or complaint_data.ai_suggested_action:
+            metadata = []
+            if complaint_data.ai_interpreted_text:
+                metadata.append({"text": complaint_data.ai_interpreted_text, "label": "ai_interpretation"})
+            if complaint_data.ai_suggested_action:
+                metadata.append({"text": complaint_data.ai_suggested_action, "label": "municipality_action"})
+            self.db.add(ComplaintAnalysis(
+                complaint_id=complaint.id,
+                language=complaint_data.language,
+                cleaned_text=complaint_data.ai_interpreted_text or complaint.description,
+                entities_json=metadata,
+                keywords_json=[],
+                confidence_score=1.0 if complaint_data.ai_interpreted_text else None,
+                ai_status="AI_ROUTED" if metadata else "PENDING",
+            ))
+            self.db.commit()
+
         from app.services.job_service import JobService
         JobService(self.db).create_analysis_job(complaint.id)
 
@@ -306,13 +326,31 @@ class ComplaintService:
         """Convert complaint model to a privacy-aware response schema."""
         analysis_response = None
         if complaint.analysis:
+            raw_entities = complaint.analysis.entities_json or []
+            if isinstance(raw_entities, dict):
+                raw_entities = []
+            ai_metadata = {
+                str(item.get("label")): str(item.get("text"))
+                for item in raw_entities
+                if isinstance(item, dict) and item.get("label") in {"ai_interpretation", "municipality_action"}
+            }
+            public_entities = [
+                EntityResult(**item)
+                for item in raw_entities
+                if isinstance(item, dict)
+                and item.get("label") not in {"ai_interpretation", "municipality_action"}
+                and item.get("text")
+                and item.get("label")
+            ]
             analysis_response = ComplaintAnalysisResponse(
                 language=complaint.analysis.language,
                 keywords=complaint.analysis.keywords_json or [],
-                entities=[EntityResult(**e) for e in (complaint.analysis.entities_json or [])],
+                entities=public_entities,
                 similar_count=0,
                 possible_duplicate=False,
                 confidence_score=complaint.analysis.confidence_score,
+                interpreted_text=ai_metadata.get("ai_interpretation") or complaint.analysis.cleaned_text,
+                suggested_action=ai_metadata.get("municipality_action"),
             )
 
         links = None
@@ -368,6 +406,14 @@ class ComplaintService:
             ward_match = re.search(r"\bward\s*[-#]?\s*(\d{1,3})\b", complaint.address_text, re.IGNORECASE)
             if ward_match:
                 ward_number = int(ward_match.group(1))
+        analysis_entities = complaint.analysis.entities_json if complaint.analysis else []
+        if isinstance(analysis_entities, dict):
+            analysis_entities = []
+        ai_metadata = {
+            str(item.get("label")): str(item.get("text"))
+            for item in analysis_entities
+            if isinstance(item, dict) and item.get("label") in {"ai_interpretation", "municipality_action"}
+        }
         return ComplaintListItem(
             id=complaint.id,
             public_id=complaint.public_id,
@@ -385,6 +431,9 @@ class ComplaintService:
             address_text=complaint.address_text,
             created_at=complaint.created_at,
             updated_at=complaint.updated_at,
+            language=complaint.analysis.language if complaint.analysis else None,
+            interpreted_text=ai_metadata.get("ai_interpretation") or (complaint.analysis.cleaned_text if complaint.analysis else None),
+            suggested_action=ai_metadata.get("municipality_action"),
         )
 
     def _calculate_distance(self, lat1: float, lng1: float, lat2: float, lng2: float) -> float:

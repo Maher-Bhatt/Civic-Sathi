@@ -184,15 +184,17 @@ export async function getMuniOfficer(): Promise<Officer | null> {
 export async function getDashboardKPIs(): Promise<DashboardKPIs> {
   const data = await client.get<any>("/api/v1/analytics/summary");
   if (data) {
-    const total = data.total_complaints || 0;
+    const total = Number(data.total_complaints ?? 0);
     const statusDist = data.status_distribution || {};
+    const resolved = Number(statusDist.resolved ?? 0);
+    const active = Number(data.unresolved_complaints ?? Math.max(0, total - resolved));
     return {
       totalReports: total,
-      critical: data.critical_issues || Math.round(total * 0.03),
-      active: data.unresolved_complaints || total - (statusDist.resolved || 0),
-      resolved: statusDist.resolved || 0,
-      emergingIssues: data.total_issues || 0,
-      areaHotspots: data.hotspot_count || 0,
+      critical: Number(data.risk_distribution?.critical ?? data.critical_issues ?? 0),
+      active,
+      resolved,
+      emergingIssues: Number(data.total_issues ?? 0),
+      areaHotspots: Number(data.hotspot_count ?? 0),
     };
   }
   return {
@@ -380,6 +382,9 @@ function normalizeMuniComplaint(raw: any, fallbackCity: CityId): MuniComplaint {
     lng: Number(raw.lng ?? 0),
     createdAt,
     updatedAt: raw.updatedAt || raw.updated_at || createdAt,
+    language: raw.language || raw.analysis?.language || undefined,
+    interpretedText: raw.interpreted_text || raw.analysis?.interpreted_text || undefined,
+    suggestedAction: raw.suggested_action || raw.analysis?.suggested_action || undefined,
     timeline: Array.isArray(raw.timeline)
       ? raw.timeline
       : [{ label: "Report Received", at: createdAt }],

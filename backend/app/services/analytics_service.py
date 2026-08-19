@@ -49,6 +49,7 @@ class AnalyticsService:
             received=status_dist.get('received', 0),
             in_review=status_dist.get('in_review', 0),
             assigned=status_dist.get('assigned', 0),
+            in_progress=status_dist.get('in_progress', 0),
             resolved=status_dist.get('resolved', 0),
             rejected=status_dist.get('rejected', 0),
         )
@@ -328,11 +329,17 @@ class AnalyticsService:
                 else_="low",
             )
 
+        # Complaint has persisted numeric severity/risk fields plus a priority
+        # string; it does not have a Complaint.severity ORM column. Referencing
+        # a non-existent column here caused every public-map request to return
+        # HTTP 500 and forced clients toward misleading fallback visuals.
         severity_risk = case(
-            (Complaint.severity == "critical", 95),
-            (Complaint.severity == "high", 75),
-            (Complaint.severity == "moderate", 48),
-            (Complaint.severity == "low", 18),
+            (func.lower(func.coalesce(Complaint.priority, "")) == "critical", 95),
+            (func.lower(func.coalesce(Complaint.priority, "")) == "high", 75),
+            (func.lower(func.coalesce(Complaint.priority, "")) == "medium", 48),
+            (Complaint.severity_score >= 80, 95),
+            (Complaint.severity_score >= 60, 75),
+            (Complaint.severity_score >= 35, 48),
             else_=func.coalesce(Complaint.risk_score, 20),
         )
         avg_risk = func.avg(func.greatest(func.coalesce(Complaint.risk_score, 20), severity_risk))

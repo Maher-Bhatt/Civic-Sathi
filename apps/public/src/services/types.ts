@@ -79,6 +79,9 @@ export interface AnalysisResult {
   hotspot: boolean;
   relatedSamples: string[];
   summary: string;
+  recommendedAction?: string;
+  interpretedText?: string;
+  language?: string;
 }
 
 export interface ImageAnalysis {

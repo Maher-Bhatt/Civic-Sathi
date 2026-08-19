@@ -17,9 +17,10 @@ import {
   getLiveActivity,
   getSystemicIssues,
   getHotspotRankings,
+    getAuthoritativeMapData,
   startLiveSimulation,
   stopLiveSimulation,
-  getCivicIssues,
+
 } from "@/services/api";
 import { useMuniAuth } from "@/lib/muni-auth";
 import {
@@ -30,6 +31,7 @@ import {
   cityHealthDistribution,
   cityIssueBreakdown,
   DEFAULT_FILTERS,
+  nearestArea,
   type AreaHealth,
   type ComplaintPoint,
   type IssueKey,
@@ -56,18 +58,24 @@ function MuniDashboardPage() {
     queryKey: ["muni-dashboard", city],
     queryFn: async () => {
       try {
-        const [k, i, l, h, c] = await Promise.all([
+        const [k, i, l, h, mapData] = await Promise.all([
           getDashboardKPIs(),
           getSystemicIssues(city),
           getLiveActivity(),
           getHotspotRankings(),
-          getCivicIssues(),
+          getAuthoritativeMapData(city),
         ]);
-        return { kpis: k, issues: Array.isArray(i) ? i.slice(0, 4) : [], live: l, hotspots: Array.isArray(h) ? h.slice(0, 3) : [], civicIssues: Array.isArray(c) ? c : [] };
+        return {
+          kpis: k,
+          issues: Array.isArray(i) ? i.slice(0, 4) : [],
+          live: l,
+          hotspots: Array.isArray(h) ? h.slice(0, 3) : [],
+          mapPoints: Array.isArray(mapData?.points) ? mapData.points : [],
+        };
       } catch {
         return {
           kpis: { totalReports: 0, critical: 0, active: 0, resolved: 0, emergingIssues: 0, areaHotspots: 0 },
-          issues: [], live: [], hotspots: [], civicIssues: []
+          issues: [], live: [], hotspots: [], mapPoints: [],
         };
       }
     },
@@ -77,77 +85,42 @@ function MuniDashboardPage() {
   const kpis = data?.kpis;
   const issues = data?.issues || [];
   const hotspots = data?.hotspots || [];
-  const civicIssues = data?.civicIssues || [];
+  const mapPoints = data?.mapPoints || [];
 
   const points: ComplaintPoint[] = useMemo(() => {
-    if (civicIssues && civicIssues.length > 0) {
-      return (civicIssues as any[]).map((ci: any) => {
-        let issue: IssueKey = "other";
-        const cat = (ci.category || "").toLowerCase();
-        if (cat.includes("water")) issue = "water";
-        else if (cat.includes("road") || cat.includes("pothole")) issue = "roads";
-        else if (cat.includes("garbage") || cat.includes("waste")) issue = "garbage";
-        else if (cat.includes("drainage")) issue = "drainage";
-        else if (cat.includes("light")) issue = "lighting";
-
-        let health: AreaHealth = "low";
-        const sev = (ci.severity || "").toLowerCase();
-        if (sev === "critical") health = "critical";
-        else if (sev === "high") health = "high";
-        else if (sev === "moderate") health = "moderate";
-
-        return {
-          id: String(ci.id),
-          areaId: String(ci.area || ""),
-          issue,
-          health,
-          daysAgo: 0,
-          lat: Number(ci.lat) || 0,
-          lng: Number(ci.lng) || 0,
-        };
-      });
-    }
-
-    // Synthesize real-world complaint distribution from 12,144 database reports across city areas
-    const areas = city === "vadodara" 
-      ? ["vad-alkapuri", "vad-manjalpur", "vad-gotri", "vad-karelibaug", "vad-sayajigunj", "vad-akota", "vad-sama", "vad-fatehgunj", "vad-gorwa", "vad-subhanpura", "vad-makarpura", "vad-harni"]
-      : ["blr-koramangala", "blr-indiranagar", "blr-whitefield", "blr-hsr-layout", "blr-jayanagar", "blr-marathahalli", "blr-electronic-city", "blr-malleshwaram"];
-
-    const categories: IssueKey[] = ["lighting", "garbage", "drainage", "water", "roads"];
-    const healthLevels: AreaHealth[] = ["low", "moderate", "high", "critical"];
-
-    const pts: ComplaintPoint[] = [];
-    let ptId = 1;
-
-    areas.forEach((areaId, aIdx) => {
-      // Hotspots in major commercial/central areas
-      const isHotspot = aIdx < 3;
-      const countForArea = isHotspot ? 90 : 35;
-
-      for (let i = 0; i < countForArea; i++) {
-        const issue = categories[(i + aIdx) % categories.length]!;
-        const health = isHotspot && i % 3 === 0 
-          ? "critical" 
-          : isHotspot && i % 2 === 0 
-          ? "high" 
-          : i % 4 === 0 
-          ? "moderate" 
-          : "low";
-        
-        pts.push({
-          id: `pt-${ptId++}`,
-          areaId,
-          issue,
-          health,
-          daysAgo: i % 7,
-          lat: 0,
-          lng: 0,
-        });
-      }
+    return (mapPoints as any[]).flatMap((point: any) => {
+      const lat = Number(point.lat);
+      const lng = Number(point.lng);
+      if (!Number.isFinite(lat) || !Number.isFinite(lng) || (lat === 0 && lng === 0)) return [];
+      const category = String(point.category || "").toLowerCase();
+      const issue: IssueKey = category.includes("water")
+        ? "water"
+        : category.includes("road") || category.includes("pothole")
+          ? "roads"
+          : category.includes("garbage") || category.includes("waste")
+            ? "garbage"
+            : category.includes("drainage")
+              ? "drainage"
+              : category.includes("light")
+                ? "lighting"
+                : "other";
+      const health = (["low", "moderate", "high", "critical"] as AreaHealth[]).includes(point.health)
+        ? point.health as AreaHealth
+        : "low";
+      const area = nearestArea(city, lat, lng);
+      return [{
+        id: String(point.id),
+        areaId: area?.id ?? `${city}-unassigned`,
+        issue,
+        health,
+        daysAgo: Math.max(0, Number(point.days_ago ?? 0)),
+        lat,
+        lng,
+        count: Math.max(1, Number(point.count ?? 1)),
+        resolved: Math.max(0, Number(point.resolved ?? 0)),
+      }];
     });
-
-    return pts;
-  }, [civicIssues, city]);
+  }, [city, mapPoints]);
 
   const activities = useMemo(() => areaActivity(city, DEFAULT_FILTERS, points), [city, points]);
   const trendData = useMemo(() => cityDailyTrend(city, DEFAULT_FILTERS, points), [city, points]);

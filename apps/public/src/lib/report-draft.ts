@@ -6,6 +6,7 @@ export interface ReportDraft {
   location: LocationInfo | null;
   marker: { lat: number; lng: number } | null;
   city: CityId;
+  language: "en" | "hi" | "gu" | "kn";
   photo: string | null;
   category: IssueCategory | null;
   severity: Severity | null;
@@ -20,6 +21,7 @@ export const emptyDraft: ReportDraft = {
   location: null,
   marker: null,
   city: "vadodara",
+  language: "en",
   photo: null,
   category: null,
   severity: null,

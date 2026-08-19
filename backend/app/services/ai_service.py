@@ -57,20 +57,33 @@ class AIService:
         """Return True when a provider and vision model are configured."""
         return self.is_configured and bool(self.vision_model)
 
-    async def analyze_complaint(
+    @staticmethod
+    def _detect_language(text: str, requested: str | None = None) -> str:
+        if requested and requested.strip().lower() in {"en", "hi", "gu", "kn"}:
+            return requested.strip().lower()
+        if any("\u0900" <= char <= "\u097f" for char in text):
+            return "hi"
+        if any("\u0a80" <= char <= "\u0aff" for char in text):
+            return "gu"
+        if any("\u0c80" <= char <= "\u0cff" for char in text):
+            return "kn"
+        return "en"
 
+    async def analyze_complaint(
         self,
         title: str,
         description: str,
-        category_hint: str | None = None
+        category_hint: str | None = None,
+        language: str | None = None,
     ) -> dict[str, Any]:
         """
         Analyze a citizen's complaint for structured categorization,
         severity assessment (1-10), risk score (1-100), and municipal department routing.
         """
+        detected_language = self._detect_language(f"{title} {description}", language)
         if not self.is_configured:
-            logger.info("AI API key not configured; using local heuristic engine.")
-            return self._local_complaint_heuristic(title, description, category_hint)
+            logger.info("AI API key not configured; using local multilingual heuristic engine.")
+            return self._local_complaint_heuristic(title, description, category_hint, detected_language)
 
         system_prompt = (
             "You are Civic Sathi Civic AI. Analyze municipal citizen complaints in India.\n"
@@ -81,12 +94,22 @@ class AIService:
             '  "risk_score": <int 1-100>,\n'
             '  "priority": "low" | "medium" | "high" | "urgent",\n'
             '  "department_slug": "roads" | "water_supply" | "sanitation" | "drainage" | "electricity" | "public_works",\n'
+            '  "language": "en" | "hi" | "gu" | "kn",\n'
+            '  "interpreted_text": "<plain-English explanation of what the citizen is reporting>",\n'
             '  "summary": "<short 1-sentence summary>",\n'
             '  "suggested_action": "<operational recommendation for municipality/contractor>"\n'
             "}"
         )
 
-        user_content = f"Complaint Title: {title}\nComplaint Description: {description}\nCategory Hint: {category_hint or 'None'}"
+        user_content = (
+            f"Complaint Title: {title}\n"
+            f"Complaint Description: {description}\n"
+            f"Category Hint: {category_hint or 'None'}\n"
+            f"Requested/input language: {detected_language}. Detect the actual language. "
+            "Understand Hindi, Gujarati, Kannada, English, and mixed-language text. "
+            "Write interpreted_text, summary, and suggested_action in clear English for municipal officers, "
+            "while preserving the citizen's meaning and not inventing facts."
+        )
 
         try:
             async with httpx.AsyncClient(timeout=10.0) as client:
@@ -120,7 +143,7 @@ class AIService:
         except Exception as e:
             logger.warning(f"AI API call failed: {e}; using heuristic fallback.")
 
-        return self._local_complaint_heuristic(title, description, category_hint)
+        return self._local_complaint_heuristic(title, description, category_hint, detected_language)
 
     async def analyze_image(self, data_url: str, description: str | None = None) -> dict[str, Any]:
         """Analyze image pixels through an OpenAI-compatible vision endpoint."""
@@ -242,30 +265,31 @@ class AIService:
 
         return "Civic Sathi Copilot: Operations are tracked in real-time. Triage queue and contractor work orders are synchronized."
 
-    def _local_complaint_heuristic(self, title: str, description: str, hint: str | None) -> dict[str, Any]:
-        """Local high-precision heuristic fallback."""
+    def _local_complaint_heuristic(self, title: str, description: str, hint: str | None, language: str | None = None) -> dict[str, Any]:
+        """Deterministic multilingual fallback used only when the model provider is unavailable."""
         text = f"{title} {description} {hint or ''}".lower()
-        if any(w in text for w in ["pothole", "road", "tar", "asphalt", "crater", "footpath", "divider"]):
+        detected_language = language or self._detect_language(text)
+        if any(w in text for w in ["pothole", "road", "tar", "asphalt", "crater", "footpath", "divider", "सड़क", "सड़क", "गड्ढा", "રસ્તો", "ખાડો", "ರಸ್ತೆ", "ಗುಂಡಿ"]):
             category = "road_damage"
             dept = "roads"
             priority = "high" if "pothole" in text or "accident" in text else "medium"
-        elif any(w in text for w in ["water", "leak", "pipeline", "tanker", "tap", "drinking", "sewage"]):
+        elif any(w in text for w in ["water", "leak", "pipeline", "tanker", "tap", "drinking", "sewage", "पानी", "जल", "नल", "लीक", "પાણી", "નળ", "લીક", "ನೀರು", "ನಳ", "ಸೋರಿಕೆ"]):
             category = "water_supply"
             dept = "water_supply"
             priority = "high" if "leak" in text or "no water" in text else "medium"
-        elif any(w in text for w in ["garbage", "trash", "waste", "dump", "bin", "litter", "debris"]):
+        elif any(w in text for w in ["garbage", "trash", "waste", "dump", "bin", "litter", "debris", "कचरा", "कूड़ा", "कूड़ा", "गंदगी", "કચરો", "ગંદકી", "કચરાપેટી", "ಕಸ", "ತ್ಯಾಜ್ಯ"]):
             category = "garbage_collection"
             dept = "sanitation"
             priority = "medium"
-        elif any(w in text for w in ["drain", "drainage", "waterlogging", "flood", "clog", "overflow", "gutter"]):
+        elif any(w in text for w in ["drain", "drainage", "waterlogging", "flood", "clog", "overflow", "gutter", "नाली", "जलभराव", "बाढ़", "ओवरफ्लो", "ગટર", "ડ્રેનેજ", "પાણી ભરાવું", "ಚರಂಡಿ", "ನೀರು ನಿಲ್ಲಿಕೆ"]):
             category = "drainage"
             dept = "drainage"
             priority = "urgent" if "flood" in text or "overflow" in text else "high"
-        elif any(w in text for w in ["light", "dark", "pole", "wire", "lamp", "blackout", "fixture"]):
+        elif any(w in text for w in ["light", "dark", "pole", "wire", "lamp", "blackout", "fixture", "बत्ती", "रोशनी", "खंभा", "બત્તી", "લાઇટ", "વીજળી", "ದೀಪ", "ಬೆಳಕು", "ವಿದ್ಯುತ್"]):
             category = "street_lighting"
             dept = "electricity"
             priority = "medium"
-        elif any(w in text for w in ["power", "voltage", "electric", "transformer", "shock"]):
+        elif any(w in text for w in ["power", "voltage", "electric", "transformer", "shock", "बिजली", "वोल्टेज", "ट्रांसफॉर्मर", "झटका", "વીજળી", "વોલ્ટેજ", "ટ્રાન્સફોર્મર", "વીજ શોક", "ವೋಲ್ಟೇಜ್", "ಟ್ರಾನ್ಸ್‌ಫಾರ್ಮರ್", "ವಿದ್ಯುತ್ ಆಘಾತ"]):
             category = "electricity"
             dept = "electricity"
             priority = "urgent" if "shock" in text or "transformer" in text else "high"
@@ -283,8 +307,10 @@ class AIService:
             "risk_score": risk,
             "priority": priority,
             "department_slug": dept,
-            "summary": f"Civic issue reported: {title}",
-            "suggested_action": f"Dispatch municipal inspection team for {category.replace('_', ' ')}."
+            "language": detected_language,
+            "interpreted_text": f"Citizen reports a {category.replace('_', ' ')} issue: {description[:300]}",
+            "summary": f"Citizen reports a {category.replace('_', ' ')} issue.",
+            "suggested_action": f"Dispatch the {dept.replace('_', ' ')} inspection team to verify and route the {category.replace('_', ' ')} complaint."
         }
 
 

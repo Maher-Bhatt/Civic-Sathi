@@ -10,7 +10,7 @@ import { LocationPicker } from "@/components/location-picker";
 import { PhotoUploader } from "@/components/photo-uploader";
 import { VoiceInput } from "@/components/voice-input";
 import { emptyDraft, loadDraft, saveDraft, type ReportDraft } from "@/lib/report-draft";
-import { detectCategory } from "@/services/api";
+
 import { useI18n } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
@@ -46,7 +46,7 @@ const steps = [
 
 function ReportPage() {
   const navigate = useNavigate();
-  const { t } = useI18n();
+  const { t, language } = useI18n();
   const [step, setStep] = useState(0);
   const [draft, setDraft] = useState<ReportDraft>(emptyDraft);
   const [hydrated, setHydrated] = useState(false);
@@ -55,6 +55,15 @@ function ReportPage() {
     setDraft(loadDraft());
     setHydrated(true);
   }, []);
+
+  useEffect(() => {
+    setDraft((current) => {
+      if (current.language === language) return current;
+      const next = { ...current, language };
+      saveDraft(next);
+      return next;
+    });
+  }, [language]);
 
   const update = (patch: Partial<ReportDraft>) =>
     setDraft((d) => {
@@ -123,6 +132,7 @@ function ReportPage() {
             />
             <div className="flex items-center gap-3 pt-2">
               <VoiceInput
+                lang={({ en: "en-IN", hi: "hi-IN", gu: "gu-IN", kn: "kn-IN" } as const)[language]}
                 onResult={(text) => {
                   const newDesc = draft.description ? `${draft.description} ${text}` : text;
                   update({ description: newDesc });
@@ -176,7 +186,7 @@ function ReportPage() {
                 {draft.description || "Not provided"}
               </ReviewRow>
               <ReviewRow label={t('ui.suggested_category')} onEdit={() => setStep(2)}>
-                {draft.category ?? (draft.description.trim() ? detectCategory(draft.description) : "Civic Sathi will suggest one")}
+                {draft.category ?? t('ui.civicsathi_will_suggest_category', 'Civic Sathi will suggest a category during analysis.')}
               </ReviewRow>
               <ReviewRow label={t('ui.location')} onEdit={() => setStep(1)}>
                 {draft.location

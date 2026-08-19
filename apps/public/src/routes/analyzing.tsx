@@ -69,6 +69,7 @@ function AnalyzingPage() {
         description: draft.description,
         location: draft.location,
         imageCategory: draft.category,
+        language: draft.language,
       });
       setResult(analysis);
 
@@ -107,6 +108,9 @@ function AnalyzingPage() {
       ward_number: wardNumberMatch ? Number(wardNumberMatch[0]) : undefined,
       address_text: safeLocation.area,
       photo: draft.photo,
+      language: draft.language,
+      ai_interpreted_text: analysis.interpretedText || analysis.summary,
+      ai_suggested_action: analysis.recommendedAction,
     });
 
     setComplaint(created);
@@ -142,6 +146,9 @@ function AnalyzingPage() {
       ward_number: wardNumberMatch ? Number(wardNumberMatch[0]) : undefined,
       address_text: safeLocation.area,
       photo: draftData.photo,
+      language: draftData.language,
+      ai_interpreted_text: result.interpretedText || result.summary,
+      ai_suggested_action: result.recommendedAction,
     });
 
     setComplaint(created);

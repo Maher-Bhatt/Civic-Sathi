@@ -9,6 +9,7 @@ class StatusDistribution(BaseModel):
     received: int = 0
     in_review: int = 0
     assigned: int = 0
+    in_progress: int = 0
     resolved: int = 0
     rejected: int = 0
 

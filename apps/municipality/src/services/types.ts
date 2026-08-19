@@ -107,6 +107,9 @@ export interface MuniComplaint {
   assignedTo?: string;
   clusterId?: string;
   similarity?: number;
+  language?: string;
+  interpretedText?: string;
+  suggestedAction?: string;
   aiAnalysis?: {
     category: IssueCategory;
     severity: Severity;
