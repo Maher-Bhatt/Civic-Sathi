@@ -8,6 +8,7 @@ from typing import Sequence, Union
 
 from alembic import op
 import sqlalchemy as sa
+from sqlalchemy import inspect as sa_inspect
 from sqlalchemy.dialects import postgresql
 
 
@@ -29,6 +30,12 @@ def _timestamps():
 
 
 def upgrade() -> None:
+    # The application previously used Base.metadata.create_all() at startup.
+    # If that path already materialized the reputation schema, record this
+    # revision as applied without attempting duplicate CREATE TABLE statements.
+    if sa_inspect(op.get_bind()).has_table("civic_profiles"):
+        return
+
     op.create_table(
         "civic_profiles",
         _uuid("id"),

@@ -8,6 +8,7 @@ from typing import Sequence, Union
 
 from alembic import op
 import sqlalchemy as sa
+from sqlalchemy import inspect as sa_inspect
 from sqlalchemy.dialects import postgresql
 
 
@@ -18,10 +19,17 @@ depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade() -> None:
-    op.add_column("complaints", sa.Column("rejection_reason", sa.Text(), nullable=True))
-    op.add_column("complaints", sa.Column("rejected_by_name", sa.String(length=255), nullable=True))
-    op.add_column("complaints", sa.Column("rejected_at", sa.DateTime(timezone=True), nullable=True))
-    op.add_column("complaints", sa.Column("timeline_json", postgresql.JSONB(), nullable=True))
+    existing_columns = {
+        column["name"] for column in sa_inspect(op.get_bind()).get_columns("complaints")
+    }
+    if "rejection_reason" not in existing_columns:
+        op.add_column("complaints", sa.Column("rejection_reason", sa.Text(), nullable=True))
+    if "rejected_by_name" not in existing_columns:
+        op.add_column("complaints", sa.Column("rejected_by_name", sa.String(length=255), nullable=True))
+    if "rejected_at" not in existing_columns:
+        op.add_column("complaints", sa.Column("rejected_at", sa.DateTime(timezone=True), nullable=True))
+    if "timeline_json" not in existing_columns:
+        op.add_column("complaints", sa.Column("timeline_json", postgresql.JSONB(), nullable=True))
 
 
 def downgrade() -> None:
