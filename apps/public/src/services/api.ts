@@ -75,6 +75,17 @@ function write<T>(key: string, value: T) {
   } catch {}
 }
 
+export async function getPublicCityAggregate(city: "vadodara" | "bengaluru") {
+  return client.get<{
+    city: string;
+    total_reports: number;
+    last7_days: number;
+    aggregate_points: number;
+    daily_trends: Array<{ date: string; count: number }>;
+    points: Array<{ id: string; lat: number; lng: number; category: string; health: string; days_ago: number; count: number; resolved: number }>;
+  }>(`/api/v1/analytics/public-map?city=${encodeURIComponent(city)}&time=30d&issue=all&health=all`);
+}
+
 export async function listPublicContractors() {
   try {
     return await api.contractors.list();

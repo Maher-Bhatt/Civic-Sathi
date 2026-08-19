@@ -17,10 +17,7 @@ import {
   getLiveActivity,
   getSystemicIssues,
   getHotspotRankings,
-    getAuthoritativeMapData,
-  startLiveSimulation,
-  stopLiveSimulation,
-
+  getAuthoritativeMapData,
 } from "@/services/api";
 import { useMuniAuth } from "@/lib/muni-auth";
 import {
@@ -51,7 +48,7 @@ function MuniDashboardPage() {
     const { t } = useI18n();
   const { officer } = useMuniAuth();
   const city = officer?.city ?? "vadodara";
-  const [live, setLive] = useState<LiveActivity[]>([]);
+  const [liveOverride] = useState<LiveActivity[] | null>(null);
   const [mapMode] = useState<MapMode>("health");
 
   const { data, isLoading: loading } = useQuery({
@@ -122,15 +119,13 @@ function MuniDashboardPage() {
     });
   }, [city, mapPoints]);
 
+  const live = liveOverride ?? data?.live ?? [];
   const activities = useMemo(() => areaActivity(city, DEFAULT_FILTERS, points), [city, points]);
   const trendData = useMemo(() => cityDailyTrend(city, DEFAULT_FILTERS, points), [city, points]);
   const issueData = useMemo(() => cityIssueBreakdown(city, DEFAULT_FILTERS, points), [city, points]);
   const healthData = useMemo(() => cityHealthDistribution(city, DEFAULT_FILTERS, points), [city, points]);
 
-  useEffect(() => {
-    startLiveSimulation(setLive);
-    return () => stopLiveSimulation();
-  }, [city]);
+  
 
   if (loading || !kpis) {
     return <LoadingState message="Loading municipal intelligence..." />;
@@ -245,8 +240,7 @@ function MuniDashboardPage() {
           {hotspots.map((h: any) => (
             <Link
               key={h.issueId}
-              to={"/issues/$id" as any}
-              params={{ id: h.issueId } as any}
+              to={h.issueId ? ("/issues/$id" as any) : ("/map" as any)}
               className="lift glass flex flex-wrap items-center gap-4 rounded-2xl p-4 transition-all duration-200"
             >
               <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--surface-elevated)] text-sm font-semibold">

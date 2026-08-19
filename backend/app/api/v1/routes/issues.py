@@ -6,6 +6,9 @@ from sqlalchemy.orm import Session
 
 from app.core.database import get_db
 from app.core.security import get_current_officer
+from app.models.user import User
+from app.models.procurement import City
+from sqlalchemy import func
 from app.schemas.issue import IssueDetailResponse, RebuildIssuesResponse
 from app.services.issue_service import IssueService
 
@@ -18,10 +21,17 @@ def list_issues(
     status: str | None = None,
     ward: int | None = None,
     db: Session = Depends(get_db),
+    current: dict = Depends(get_current_officer),
 ):
     """List systemic issues (officer only)"""
+    city_id = None
+    if current.get("role") != "admin":
+        user = db.get(User, UUID(current["sub"]))
+        if user and user.city:
+            city = db.query(City).filter(func.lower(City.name) == user.city.strip().lower()).first()
+            city_id = city.id if city else None
     service = IssueService(db)
-    return service.list_issues(risk=risk, status=status, ward=ward)
+    return service.list_issues(risk=risk, status=status, ward=ward, city_id=city_id)
 
 
 @router.get("/{issue_id}", response_model=IssueDetailResponse, dependencies=[Depends(get_current_officer)])

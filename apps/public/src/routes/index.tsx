@@ -7,15 +7,16 @@ import {
   MessageSquareText,
   Sparkles,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { PageShell } from "@/components/site-nav";
 import { GlassCard, SectionLabel } from "@/components/ui/glass-card";
 import { GlassButton } from "@/components/ui/glass-button";
 import { ClientCivicMap } from "@/components/civic-map-panel";
 import { CityHeritagePanel } from "@/components/city-heritage-panel";
-import { DEFAULT_FILTERS, areaActivity } from "@/services/geography";
+import { DEFAULT_FILTERS, areaActivity, nearestArea, type ComplaintPoint, type IssueKey, type AreaHealth } from "@/services/geography";
 import { getDefaultCity, setPreferredCity, type CityId } from "@/services/cities";
 import { useI18n } from "@/lib/i18n";
+import { getPublicCityAggregate } from "@/services/api";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -70,7 +71,29 @@ const steps = [
 
 function Landing() {
   const { t } = useI18n();
-  const [cityId, setCityId] = useState<CityId>(() => getDefaultCity());
+    const [cityId, setCityId] = useState<CityId>(() => getDefaultCity());
+  const [cityAggregate, setCityAggregate] = useState<any>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    setCityAggregate(null);
+    getPublicCityAggregate(cityId)
+      .then((value) => { if (!cancelled) setCityAggregate(value); })
+      .catch(() => { if (!cancelled) setCityAggregate(null); });
+    return () => { cancelled = true; };
+  }, [cityId]);
+
+  const publicPoints: ComplaintPoint[] = useMemo(() => (cityAggregate?.points ?? []).flatMap((point: any) => {
+    const lat = Number(point.lat);
+    const lng = Number(point.lng);
+    if (!Number.isFinite(lat) || !Number.isFinite(lng)) return [];
+    const category = String(point.category ?? "").toLowerCase();
+    const issue: IssueKey = category.includes("water") ? "water" : category.includes("road") ? "roads" : category.includes("garbage") ? "garbage" : category.includes("drainage") ? "drainage" : category.includes("light") ? "lighting" : "other";
+    const health = (["low", "moderate", "high", "critical"] as AreaHealth[]).includes(point.health) ? point.health as AreaHealth : "low";
+    const area = nearestArea(cityId, lat, lng);
+    return [{ id: String(point.id), areaId: area?.id ?? `${cityId}-unassigned`, issue, health, daysAgo: Math.max(0, Number(point.days_ago ?? 0)), lat, lng, count: Math.max(1, Number(point.count ?? 1)), resolved: Math.max(0, Number(point.resolved ?? 0)) }];
+  }), [cityAggregate, cityId]);
+  const publicActivities = useMemo(() => areaActivity(cityId, DEFAULT_FILTERS, publicPoints), [cityId, publicPoints]);
 
   const handleCitySelect = (c: CityId) => {
     setCityId(c);
@@ -163,15 +186,15 @@ function Landing() {
               </div>
 
               <span className="text-[11px] font-semibold text-amber-900 dark:text-amber-300">
-                {cityId === "vadodara" ? "24 Areas · ~2.2M Pop" : "35 Areas · ~13.6M Pop"}
+                {cityAggregate ? `${Number(cityAggregate.aggregate_points ?? 0).toLocaleString("en-IN")} ${t("home.map.clusters", "live map clusters")}` : t("home.map.loading", "Loading live city data…")}
               </span>
             </div>
 
             <ClientCivicMap
               cityId={cityId}
               mode="health"
-              activities={areaActivity(cityId, DEFAULT_FILTERS)}
-              points={[]}
+              activities={publicActivities}
+              points={publicPoints}
               selectedAreaId={null}
               onSelectArea={() => {}}
               compact
@@ -317,10 +340,10 @@ function Landing() {
         <SectionLabel>{t("stats.label", "Civic Live Intelligence")}</SectionLabel>
         <dl className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
           {[
-            ["112,141+", "Complaints Monitored", "📋"],
-            ["15.8M+", "Citizens Protected", "👥"],
-            ["< 24h", "First Municipal Dispatch", "⚡"],
-            ["2 Mega Cities", "VMC & BBMP Integrated", "🏛️"],
+            [cityAggregate ? Number(cityAggregate.total_reports ?? 0).toLocaleString("en-IN") : "—", t("stats.city_reports", "Reports in selected city · 30 days"), "📋"],
+            [cityAggregate ? Number(cityAggregate.last7_days ?? 0).toLocaleString("en-IN") : "—", t("stats.last7_reports", "Reports in the last 7 days"), "📈"],
+            [cityAggregate ? Number(cityAggregate.aggregate_points ?? 0).toLocaleString("en-IN") : "—", t("stats.aggregate_points", "Live map clusters"), "📍"],
+            [cityId === "vadodara" ? "VMC" : "BBMP", t("stats.city_scope", "Selected municipal authority"), "🏛️"],
           ].map(([v, k, icon]) => (
             <GlassCard key={k} className="p-4 border-orange-500/20 bg-white/70 dark:bg-slate-900/60">
               <dd className="text-xl font-bold text-[var(--foreground)] flex items-center gap-2">

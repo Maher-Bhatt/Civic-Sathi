@@ -30,7 +30,7 @@ function ContractorProfile() {
         const data = await getContractor(contractorAuth.id);
         setContractor(data);
       } catch (err: any) {
-        // getContractor not yet implemented — fall back silently
+        setError(err instanceof Error ? err : new Error("Contractor details could not be loaded from the backend."));
       } finally {
         setLoading(false);
       }
@@ -47,9 +47,11 @@ function ContractorProfile() {
   const displayId = contractor?.id ?? contractorAuth?.id ?? "";
   const displayPhone = contractor?.phone ?? "";
   const displayAddress = contractor?.address ?? "";
-  const displayRegNum = contractor?.registrationNumber ?? "—";
-  const displayGSTIN = contractor?.gstin ?? "—";
+  const displayRegNum = contractor?.registrationNumber ?? "";
+  const displayGSTIN = contractor?.gstin ?? "";
+  const displayPan = (contractor as any)?.pan ?? "";
   const displayContactPerson = contractor?.contactPerson ?? contractorAuth?.name ?? "";
+  const unavailable = t('ui.unavailable', 'Unavailable — not provided by backend');
 
   return (
     <div className="max-w-4xl mx-auto space-y-6 animate-fade">
@@ -85,7 +87,7 @@ function ContractorProfile() {
               <Phone className="text-[var(--muted-foreground)] shrink-0 mt-0.5" size={16} />
               <div>
                 <div className="text-[var(--muted-foreground)] text-xs">{t('ui.phone')}</div>
-                <div className="text-[var(--foreground)] text-sm">{displayPhone || "—"}</div>
+                <div className="text-[var(--foreground)] text-sm">{displayPhone || unavailable}</div>
               </div>
             </div>
             
@@ -101,7 +103,7 @@ function ContractorProfile() {
               <MapPin className="text-[var(--muted-foreground)] shrink-0 mt-0.5" size={16} />
               <div>
                 <div className="text-[var(--muted-foreground)] text-xs">{t('ui.address')}</div>
-                <div className="text-[var(--foreground)] text-sm leading-relaxed">{displayAddress || "—"}</div>
+                <div className="text-[var(--foreground)] text-sm leading-relaxed">{displayAddress || unavailable}</div>
               </div>
             </div>
           </GlassCard>
@@ -135,25 +137,25 @@ function ContractorProfile() {
               <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-[var(--surface)] border border-[var(--glass-border)] rounded-lg gap-2">
                 <div>
                   <div className="text-[var(--muted-foreground)] text-xs mb-1">{t('ui.registration_number')}</div>
-                  <div className="text-[var(--foreground)] font-mono">{displayRegNum}</div>
+                  <div className="text-[var(--foreground)] font-mono">{displayRegNum || unavailable}</div>
                 </div>
-                <span className="text-[10px] uppercase tracking-widest text-[var(--primary)] bg-[var(--primary)]/10 px-2 py-1 rounded">{t('ui.active')}</span>
+                <span className="text-[10px] uppercase tracking-widest text-[var(--primary)] bg-[var(--primary)]/10 px-2 py-1 rounded">{displayRegNum ? t('ui.active') : t('ui.pending_verification', 'Pending verification')}</span>
               </div>
               
               <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-[var(--surface)] border border-[var(--glass-border)] rounded-lg gap-2">
                 <div>
                   <div className="text-[var(--muted-foreground)] text-xs mb-1">{t('ui.gstin')}</div>
-                  <div className="text-[var(--foreground)] font-mono">{displayGSTIN}</div>
+                  <div className="text-[var(--foreground)] font-mono">{displayGSTIN || unavailable}</div>
                 </div>
-                <span className="text-[10px] uppercase tracking-widest text-[var(--success)] bg-[var(--success)]/10 px-2 py-1 rounded">{t('ui.verified')}</span>
+                <span className="text-[10px] uppercase tracking-widest text-[var(--success)] bg-[var(--success)]/10 px-2 py-1 rounded">{displayGSTIN ? t('ui.verified') : t('ui.pending_verification', 'Pending verification')}</span>
               </div>
               
               <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-[var(--surface)] border border-[var(--glass-border)] rounded-lg gap-2">
                 <div>
                   <div className="text-[var(--muted-foreground)] text-xs mb-1">{t('ui.pan')}</div>
-                  <h3 className="font-medium text-[var(--foreground)]">{displayName} {t('ui.user')}</h3>
+                  <h3 className="font-medium text-[var(--foreground)]">{displayPan || unavailable}</h3>
                 </div>
-                <span className="text-[10px] uppercase tracking-widest text-[var(--success)] bg-[var(--success)]/10 px-2 py-1 rounded">{t('ui.verified')}</span>
+                <span className="text-[10px] uppercase tracking-widest text-[var(--success)] bg-[var(--success)]/10 px-2 py-1 rounded">{displayPan ? t('ui.verified') : t('ui.pending_verification', 'Pending verification')}</span>
               </div>
             </div>
           </GlassCard>

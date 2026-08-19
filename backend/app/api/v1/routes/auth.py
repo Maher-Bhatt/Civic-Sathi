@@ -13,6 +13,7 @@ from app.core.security import (
 from app.schemas.officer import OfficerLoginRequest, OfficerLoginResponse, OfficerInfo
 from app.schemas.citizen import CitizenRegisterRequest, CitizenLoginRequest, CitizenAuthResponse, CitizenInfo
 from app.models.user import User
+from app.models.audit import AuditLog
 from uuid import uuid4, UUID
 from pydantic import BaseModel, EmailStr, Field
 
@@ -114,8 +115,20 @@ def officer_login(
     if login_data.designation and user.designation and normalize_context(login_data.designation) != normalize_context(user.designation):
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Select the designation assigned to this officer account")
 
-    # Create access token
+    # Record a durable authentication event for the admin audit trail.
+    db.add(AuditLog(
+        actor_id=str(user.id),
+        actor_name=user.name,
+        actor_role=user.role,
+        action="LOGIN_SUCCESS",
+        entity_type="auth",
+        entity_id=str(user.id),
+        entity_label=user.email,
+        reason="Successful authenticated session",
+    ))
+    db.commit()
 
+    # Create access token
     access_token = create_access_token(
         data={"sub": str(user.id), "email": user.email, "role": user.role}
     )

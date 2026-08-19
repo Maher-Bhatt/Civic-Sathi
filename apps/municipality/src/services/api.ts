@@ -17,6 +17,7 @@ import type {
   alertPriority,
 } from "./types";
 import { DEFAULT_COMPLAINT_FILTERS } from "./types";
+import { nearestArea } from "@/services/geography";
 // Mocks removed
 
 export function getApiBaseUrl(): string {
@@ -226,8 +227,9 @@ export async function getLiveActivity(): Promise<LiveActivity[]> {
 
 export async function getSystemicIssues(city?: CityId): Promise<SystemicIssue[]> {
   try {
-    const res = await client.get<SystemicIssue[]>("/api/v1/issues" + (city ? `?city=${city}` : ""));
-    return Array.isArray(res) ? res : [];
+    const res = await client.get<SystemicIssue[] | { items?: SystemicIssue[] }>("/api/v1/issues" + (city ? `?city=${city}` : ""));
+    if (Array.isArray(res)) return res;
+    return Array.isArray(res?.items) ? res.items : [];
   } catch {
     return [];
   }
@@ -659,8 +661,33 @@ export async function getTrendAnalysis() {
 export async function getHotspotRankings() {
   const officer = await getMuniOfficer();
   if (!officer?.city) return [];
-  const areas = await getAreaOverviews(officer.city);
-  return areas.filter((area: any) => area.risk >= 40).sort((a: any, b: any) => b.risk - a.risk);
+  const map = await getAuthoritativeMapData(officer.city);
+  const grouped = new Map<string, any>();
+  for (const point of Array.isArray(map?.points) ? map.points : []) {
+    const area = nearestArea(officer.city, Number(point.lat), Number(point.lng));
+    const key = area?.id ?? `${officer.city}-unassigned`;
+    const row = grouped.get(key) ?? { name: area?.name ?? "Unassigned area", reports: 0, riskWeighted: 0, counts: {}, area: area?.name ?? "Unassigned area" };
+    const reports = Math.max(1, Number(point.count ?? 1));
+    row.reports += reports;
+    row.riskWeighted += Number(point.risk ?? 0) * reports;
+    const category = String(point.category ?? "Other");
+    row.counts[category] = (row.counts[category] ?? 0) + reports;
+    grouped.set(key, row);
+  }
+  return Array.from(grouped.values())
+    .map((row: any, index: number) => ({
+      issueId: "",
+      rank: index + 1,
+      category: Object.entries(row.counts).sort((a: any, b: any) => b[1] - a[1])[0]?.[0] ?? "Other",
+      area: row.area,
+      reports: row.reports,
+      risk: Math.round(row.riskWeighted / Math.max(1, row.reports)),
+      trend: 0,
+    }))
+    .filter((row: any) => row.reports > 0)
+    .sort((a: any, b: any) => b.risk - a.risk || b.reports - a.reports)
+    .slice(0, 10)
+    .map((row: any, index: number) => ({ ...row, rank: index + 1 }));
 }
 export async function getAnalyticsData(city: CityId) {
   const data = await client.get<any>("/api/v1/analytics/summary?days=30");

@@ -208,7 +208,7 @@ class IssueService:
         
         return issue
     
-    def list_issues(self, risk: str | None = None, status: str | None = None, ward: int | None = None):
+    def list_issues(self, risk: str | None = None, status: str | None = None, ward: int | None = None, city_id: UUID | None = None):
         """List issues with filters"""
         from app.schemas.common import RiskLevel
         
@@ -219,7 +219,7 @@ class IssueService:
             except ValueError:
                 pass
         
-        issues = self.issue_repo.list_issues(risk=risk_enum, status=status, ward=ward)
+        issues = self.issue_repo.list_issues(risk=risk_enum, status=status, ward=ward, city_id=city_id)
         
         from app.schemas.issue import IssueListItem
         from app.schemas.common import Coordinates

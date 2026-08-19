@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MessageSquare, X, Send, Sparkles } from "lucide-react";
 import { GlassCard } from "@/components/ui/glass-card";
 import { useI18n } from "@/lib/i18n";
+import { getDashboardKPIs, getHotspotRankings } from "@/services/api";
+import { useMuniAuth } from "@/lib/muni-auth";
 
 export function AiCopilotWidget() {
     const { t } = useI18n();
@@ -10,6 +12,17 @@ export function AiCopilotWidget() {
     { role: "ai", text: "Hello! I am your Civic Sathi AI Copilot. I can help you analyze project risks, review contractor performance, or summarize systemic issues. How can I help you today?" }
   ]);
   const [input, setInput] = useState("");
+  const [snapshot, setSnapshot] = useState<{ total: number; active: number; critical: number; resolved: number; issues: Array<{ title?: string; category?: string; risk_score?: number; complaint_count?: number }> } | null>(null);
+  const [loadingSnapshot, setLoadingSnapshot] = useState(false);
+  const { officer } = useMuniAuth();
+
+  useEffect(() => {
+    if (!isOpen || snapshot || loadingSnapshot) return;
+    setLoadingSnapshot(true);
+    Promise.all([getDashboardKPIs(), getHotspotRankings()])
+      .then(([kpis, issues]) => setSnapshot({ total: kpis.totalReports, active: kpis.active, critical: kpis.critical, resolved: kpis.resolved, issues: issues.slice(0, 5) as any[] }))
+      .finally(() => setLoadingSnapshot(false));
+  }, [isOpen, snapshot, loadingSnapshot, officer?.city]);
 
   const handleSend = () => {
     if (!input.trim()) return;
@@ -17,16 +30,19 @@ export function AiCopilotWidget() {
     const currentInput = input;
     setInput("");
     
-    // Simulate AI response
-    setTimeout(() => {
-      setMessages(prev => [
-        ...prev,
-        { 
-          role: "ai", 
-          text: `Based on current analytics, the issues related to "${currentInput}" show a 15% increase in the last 7 days. I recommend prioritizing work orders in the central ward to mitigate risk.` 
-        }
-      ]);
-    }, 1000);
+    const query = currentInput.toLowerCase();
+    const response = loadingSnapshot
+      ? "I am loading the live city snapshot. Please ask again in a moment."
+      : !snapshot
+        ? "The live city snapshot is unavailable. I will not invent a priority or risk estimate; please refresh and try again."
+        : query.includes("priority") || query.includes("priorit")
+          ? snapshot.issues.length > 0
+            ? `Evidence-based priority list for ${officer?.city ?? "this city"}: ${snapshot.issues.map((issue, index) => `${index + 1}. ${issue.title ?? issue.category ?? "Civic hotspot"} near ${issue.area ?? "an unassigned area"} (${Number(issue.reports ?? issue.complaint_count ?? 0).toLocaleString("en-IN")} reports; risk ${Number(issue.risk ?? issue.risk_score ?? 0)})`).join("; ")} Review the linked issue records before dispatching work.`
+            : "No authoritative hotspot aggregates are available for this city yet. Review the complaint queue before assigning priority."
+          : query.includes("risk") || query.includes("critical")
+            ? `Current ${officer?.city ?? "city"} snapshot: ${snapshot.critical.toLocaleString("en-IN")} critical reports, ${snapshot.active.toLocaleString("en-IN")} active reports, ${snapshot.resolved.toLocaleString("en-IN")} resolved, and ${snapshot.total.toLocaleString("en-IN")} total. These are backend counts; a human officer should confirm the operational response.`
+            : `I can summarize the live ${officer?.city ?? "city"} snapshot, create a priority list, or explain risk counts. Current totals are ${snapshot.total.toLocaleString("en-IN")} reports and ${snapshot.active.toLocaleString("en-IN")} active. Ask about priority or risk for evidence-based guidance.`;
+    setMessages(prev => [...prev, { role: "ai", text: response }]);
   };
 
   if (!isOpen) {

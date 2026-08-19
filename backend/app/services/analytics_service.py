@@ -394,6 +394,8 @@ class AnalyticsService:
             "city": city_slug,
             "time": time_window,
             "total_reports": total,
+            "last7_days": sum(item["count"] for item in daily_trends),
+            "aggregate_points": len(points),
             "resolved_total": resolved,
             "health_distribution": health_distribution,
             "daily_trends": daily_trends,

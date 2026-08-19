@@ -150,7 +150,11 @@ function AuditLogsPage() {
               {filteredLogs.length === 0 && (
                 <tr>
                   <td colSpan={5} className="py-12 text-center text-[var(--muted-foreground)]">
-                    {t('ui.no_audit_logs_match_your_crite')}</td>
+                    <div className="mx-auto max-w-md space-y-2">
+                      <p className="font-semibold">{t('ui.no_audit_logs_match_your_crite')}</p>
+                      <p className="text-xs leading-relaxed">{t('ui.audit_logs_explain_empty', 'No persisted platform events match these filters yet. Successful sign-ins and administrative changes will be recorded here automatically.')}</p>
+                      <button type="button" onClick={() => window.location.reload()} className="text-xs font-semibold text-primary hover:underline">{t('ui.refresh', 'Refresh')}</button>
+                    </div></td>
                 </tr>
               )}
             </tbody>

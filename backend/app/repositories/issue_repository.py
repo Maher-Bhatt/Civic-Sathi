@@ -5,6 +5,7 @@ from sqlalchemy import select, func, and_
 from sqlalchemy.orm import Session, joinedload
 
 from app.models.issue import IssueCluster, IssueComplaint, RootCause
+from app.models.complaint import Complaint
 from app.models.recommendation import Recommendation
 from app.schemas.common import RiskLevel, ComplaintCategory
 
@@ -38,11 +39,17 @@ class IssueRepository:
         risk: RiskLevel | None = None,
         status: str | None = None,
         ward: int | None = None,
+        city_id: UUID | None = None,
     ) -> list[IssueCluster]:
         """List issues with filters"""
         query = select(IssueCluster)
         
         filters = []
+        if city_id:
+            query = query.join(IssueComplaint, IssueCluster.id == IssueComplaint.issue_id).join(
+                Complaint, IssueComplaint.complaint_id == Complaint.id
+            )
+            filters.append(Complaint.city_id == city_id)
         if risk:
             filters.append(IssueCluster.risk_level == risk.value)
         if status:
@@ -56,7 +63,7 @@ class IssueRepository:
         if filters:
             query = query.where(and_(*filters))
         
-        query = query.order_by(IssueCluster.risk_score.desc(), IssueCluster.created_at.desc())
+        query = query.distinct().order_by(IssueCluster.risk_score.desc(), IssueCluster.created_at.desc())
         
         return list(self.db.execute(query).scalars())
     

@@ -17,11 +17,11 @@ def _resolve_officer_city(token: dict, db: Session) -> str | None:
     """
     Return the city UUID string for the current officer.
     Looks up the User row to get the city name, then resolves it to a City UUID.
-    Falls back to None (no city filter) for admin/supervisor roles.
+    Falls back to None (no city filter) only for true super-admin users.
     """
     role = token.get("role", "")
-    if role in ("admin", "supervisor"):
-        return None  # admins see all data
+    if role == "admin":
+        return None  # only super admins see platform-wide analytics
 
     user = db.get(User, UUID(token["sub"]))
     if not user or not user.city:

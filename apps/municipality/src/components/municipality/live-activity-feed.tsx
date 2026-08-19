@@ -21,10 +21,14 @@ export function LiveActivityFeed({
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-40" />
             <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
           </span>
-          {t('ui.prototype_simulation')}</span>
+          {t('ui.live_backend_activity', 'Live backend activity')}</span>
       </div>
       <ul className="mt-4 space-y-3">
-        {activities.slice(0, 6).map((a, i) => (
+        {activities.length === 0 ? (
+          <li className="rounded-xl border border-dashed border-[var(--glass-border)] bg-[var(--glass)] p-4 text-sm text-muted-foreground">
+            {t('ui.no_recent_backend_activity', 'No recent backend activity is available for this city yet.')}
+          </li>
+        ) : activities.slice(0, 6).map((a, i) => (
           <li
             key={a.id}
             className="animate-rise rounded-xl border border-[var(--glass-border)] bg-[var(--glass)] p-3"
