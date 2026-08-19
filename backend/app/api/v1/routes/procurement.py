@@ -32,7 +32,12 @@ router = APIRouter()
 
 def _scorecard_for_contractor(db: Session, contractor: Contractor) -> dict:
     """Return only evidence-backed ratings; empty tables stay explicitly unavailable."""
-    reviews = db.query(ContractorReview).filter(ContractorReview.contractor_id == contractor.id).all()
+    # A rating without a work order cannot be audited against delivered civic work.
+    # Legacy showcase rows are retained for audit history but excluded from public scorecards.
+    reviews = db.query(ContractorReview).filter(
+        ContractorReview.contractor_id == contractor.id,
+        ContractorReview.work_order_id.isnot(None),
+    ).all()
     by_type: dict[ReviewAuthorType, list[float]] = {ReviewAuthorType.PUBLIC: [], ReviewAuthorType.AI: [], ReviewAuthorType.OFFICER: []}
     for review in reviews:
         if review.rating is not None:
@@ -576,6 +581,11 @@ def submit_contractor_rating(
     c = db.get(Contractor, contractor_id)
     if not c:
         raise HTTPException(status_code=404, detail="Contractor not found")
+    if not review_in.work_order_id:
+        raise HTTPException(status_code=422, detail="A rating must reference a completed or inspected work order")
+    work_order = db.get(WorkOrder, review_in.work_order_id)
+    if not work_order or work_order.contractor_id != contractor_id:
+        raise HTTPException(status_code=422, detail="The referenced work order does not belong to this contractor")
     
     author_type = ReviewAuthorType.OFFICER if current_user.role in ["officer", "supervisor", "municipality", "admin"] else ReviewAuthorType.PUBLIC
     
@@ -617,7 +627,8 @@ def list_contractor_ratings(
 ):
     """Get all public and officer reviews for a contractor."""
     reviews = db.query(ContractorReview).filter(
-        ContractorReview.contractor_id == contractor_id
+        ContractorReview.contractor_id == contractor_id,
+        ContractorReview.work_order_id.isnot(None),
     ).order_by(ContractorReview.created_at.desc()).all()
     return reviews
 
