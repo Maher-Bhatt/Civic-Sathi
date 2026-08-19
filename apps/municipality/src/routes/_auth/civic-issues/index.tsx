@@ -7,6 +7,7 @@ import { SeverityBadge, StatusBadge } from "@/components/municipality/status-bad
 import { safeFormat } from "@/lib/safe-format";
 import { MapPin, Users } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
+import { useMuniAuth } from "@/lib/muni-auth";
 
 export const Route = createFileRoute("/_auth/civic-issues/")({
   head: () => ({ meta: [{ title: "Civic Issues — Municipal Intelligence" }] }),
@@ -15,14 +16,17 @@ export const Route = createFileRoute("/_auth/civic-issues/")({
 
 function CivicIssuesPage() {
     const { t } = useI18n();
+    const { officer } = useMuniAuth();
+    const city = officer?.city ?? "vadodara";
   const [issues, setIssues] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getCivicIssues()
+    setLoading(true);
+    getCivicIssues(city)
       .then(setIssues)
       .finally(() => setLoading(false));
-  }, []);
+  }, [city]);
 
   if (loading) return <LoadingState message="Loading civic issues..." />;
 

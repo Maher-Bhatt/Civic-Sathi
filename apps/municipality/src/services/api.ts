@@ -264,14 +264,27 @@ export async function getCivicIssues(city?: CityId): Promise<any[]> {
 
   try {
     const complaints = await getMuniComplaints(city ? { city } : undefined);
+    const impactBySeverity: Record<string, number> = {
+      Critical: 100,
+      High: 80,
+      Moderate: 60,
+      Low: 35,
+    };
     return complaints.map((complaint) => ({
       id: complaint.id,
+      title: `${complaint.category} issue near ${complaint.area}`,
+      description: complaint.description,
       category: complaint.category,
       severity: complaint.severity,
+      status: complaint.status,
+      reportCount: 1,
+      impactScore: impactBySeverity[complaint.severity] ?? 35,
+      firstReportedAt: complaint.createdAt,
+      createdAt: complaint.createdAt,
+      ward: complaint.ward,
+      area: complaint.area,
       lat: complaint.lat,
       lng: complaint.lng,
-      area: complaint.area,
-      createdAt: complaint.createdAt,
     }));
   } catch {
     return [];

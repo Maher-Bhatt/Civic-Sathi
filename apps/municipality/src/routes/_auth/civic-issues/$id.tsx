@@ -8,6 +8,7 @@ import { ErrorState, LoadingState } from "@/components/ui/states";
 import { SeverityBadge, StatusBadge } from "@/components/municipality/status-badge";
 import { getCivicIssues } from "@/services/api";
 import { useI18n } from "@/lib/i18n";
+import { useMuniAuth } from "@/lib/muni-auth";
 
 export const Route = createFileRoute("/_auth/civic-issues/$id")({
   head: ({ params }: { params: any }) => ({
@@ -18,6 +19,8 @@ export const Route = createFileRoute("/_auth/civic-issues/$id")({
 
 function CivicIssueDetailPage() {
     const { t } = useI18n();
+    const { officer } = useMuniAuth();
+    const city = officer?.city ?? "vadodara";
   const { id } = Route.useParams() as any;
   const [issue, setIssue] = useState<any>(null);
   const [allIssues, setAllIssues] = useState<any[]>([]);
@@ -26,7 +29,7 @@ function CivicIssueDetailPage() {
   const [merging, setMerging] = useState(false);
 
   useEffect(() => {
-    getCivicIssues()
+    getCivicIssues(city)
       .then((issues) => {
         setAllIssues(issues);
         const found = issues.find((i) => i.id === id);
@@ -35,19 +38,18 @@ function CivicIssueDetailPage() {
       })
       .catch(() => setError(true))
       .finally(() => setLoading(false));
-  }, [id]);
+  }, [id, city]);
 
   if (loading) return <LoadingState message="Loading civic issue..." />;
   if (error || !issue) return <ErrorState description="Civic issue not found." onRetry={() => window.location.reload()} />;
 
   const handleMerge = () => {
-    // In a real implementation, this would call a backend endpoint to merge the issues
-    toast.success("Issue merged successfully.");
+    toast.info("Issue merging is available after a backend systemic-issue cluster is created.");
     setMerging(false);
   };
 
   const handleSplit = () => {
-    toast.success("Complaint split into new Civic Issue.");
+    toast.info("Complaint splitting requires a backend civic-issue cluster.");
   };
 
   return (
@@ -99,26 +101,14 @@ function CivicIssueDetailPage() {
             </div>
             
             <div className="space-y-3">
-              {/* Mocking linked complaints display for the UI requirement */}
               <div className="flex items-center justify-between p-3 rounded-lg border border-[var(--glass-border)] bg-[var(--glass)]">
                 <div>
-                  <Link to="/complaints/$id" params={{ id: "JN-2026-00001" }} className="text-sm font-medium text-primary hover:underline">{t('ui.jn_2026_00001')}</Link>
+                  <Link to="/complaints/$id" params={{ id: String(issue.id) }} className="text-sm font-medium text-primary hover:underline">{String(issue.id)}</Link>
                   <p className="text-xs text-muted-foreground mt-0.5">{t('ui.primary_reporter')}</p>
                 </div>
                 <button onClick={handleSplit} className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1.5 px-2 py-1 rounded bg-[var(--glass-strong)] transition-colors">
                   <Split className="w-3 h-3" /> {t('ui.split')}</button>
               </div>
-              
-              {issue.reportCount > 1 && (
-                <div className="flex items-center justify-between p-3 rounded-lg border border-[var(--glass-border)] bg-[var(--glass)]">
-                  <div>
-                    <Link to="/complaints/$id" params={{ id: "JN-2026-00002" }} className="text-sm font-medium text-primary hover:underline">{t('ui.jn_2026_00002')}</Link>
-                    <p className="text-xs text-muted-foreground mt-0.5">{t('ui.citizen_confirmation')}</p>
-                  </div>
-                  <button onClick={handleSplit} className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1.5 px-2 py-1 rounded bg-[var(--glass-strong)] transition-colors">
-                    <Split className="w-3 h-3" /> {t('ui.split')}</button>
-                </div>
-              )}
             </div>
           </GlassCard>
         </div>
@@ -152,7 +142,11 @@ function CivicIssueDetailPage() {
             <SectionLabel className="flex items-center gap-2"><ShieldAlert className="w-4 h-4" /> {t('ui.work_execution')}</SectionLabel>
             <p className="mt-3 text-sm text-muted-foreground">
               {t('ui.this_civic_issue_is_ready_to_b')}</p>
-            <button className="action-btn w-full mt-4 bg-primary text-primary-foreground hover:bg-primary/90">
+            <button
+              type="button"
+              onClick={() => toast.info("Work package creation requires an approved backend civic issue.")}
+              className="action-btn w-full mt-4 bg-primary text-primary-foreground hover:bg-primary/90"
+            >
               {t('ui.create_work_package')}</button>
           </GlassCard>
         </div>
