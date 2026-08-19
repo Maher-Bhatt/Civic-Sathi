@@ -318,6 +318,23 @@ const STATUS_TO_BACKEND: Record<string, string> = {
   Closed: "resolved",
 };
 
+function isComplaintInCity(raw: any, city: CityId): boolean {
+  const requested = String(city).toLowerCase().replace(/[_-]+/g, " ").trim();
+  if (requested === "all") return true;
+  const address = String(raw?.address_text ?? raw?.area ?? raw?.title ?? "").toLowerCase();
+  const lat = Number(raw?.lat);
+  const lng = Number(raw?.lng);
+  const isBengaluru = requested === "bengaluru" || requested === "bangalore";
+  const isVadodara = requested === "vadodara" || requested === "baroda";
+  const bengaluruAddress = /bengaluru|bangalore|indiranagar|yelahanka|electronic city|whitefield|hsr layout|jayanagar|basavanagudi|vijayanagar|marathahalli|btm layout|malleshwaram|hebbal|peenya|bommanahalli|kengeri|rajajinagar|shivajinagar|bellandur|banaswadi|mahadevapura|koramangala/.test(address);
+  const vadodaraAddress = /vadodara|baroda|gotri|manjalpur|bhayli|atladara|vasna|fatehgunj|sevasi|sayajigunj|karelibaug|alkapuri|makarpura|waghodia|akota|tarsali|harni|ajwa/.test(address);
+  const bengaluruCoordinates = Number.isFinite(lat) && Number.isFinite(lng) && lat >= 12.70 && lat <= 13.25 && lng >= 77.30 && lng <= 77.85;
+  const vadodaraCoordinates = Number.isFinite(lat) && Number.isFinite(lng) && lat >= 21.95 && lat <= 22.55 && lng >= 72.85 && lng <= 73.55;
+  if (isBengaluru) return !vadodaraAddress && !vadodaraCoordinates;
+  if (isVadodara) return !bengaluruAddress && !bengaluruCoordinates;
+  return true;
+}
+
 function normalizeMuniComplaint(raw: any, fallbackCity: CityId): MuniComplaint {
   const score = Number(raw.severity_score ?? raw.risk_score ?? 0);
   const severity =
@@ -382,7 +399,11 @@ export async function getMuniComplaints(
 
   const res = await api.complaints.list(query);
   const items = res?.items ?? res?.data ?? res;
-  const normalized = (Array.isArray(items) ? items : []).map((item) =>
+  const requestedCity = (filters?.city && filters.city !== "all" ? filters.city : "all") as CityId;
+  const cityScopedItems = (Array.isArray(items) ? items : []).filter((item) =>
+    isComplaintInCity(item, requestedCity),
+  );
+  const normalized = cityScopedItems.map((item) =>
     normalizeMuniComplaint(
       item,
       (filters?.city === "all" ? "vadodara" : filters?.city || "vadodara") as CityId,
