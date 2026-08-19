@@ -1028,3 +1028,12 @@ export interface CivicIssueReport {
   linkedAt: string;
   linkedBy: string;
 }
+
+
+export interface CivicRolePerformance {
+  role: string;
+  subject_name: string;
+  score: number;
+  metrics: Record<string, unknown>;
+  achievements: Array<{ code: string; name: string; description: string; awarded_at?: string | null }>;
+}

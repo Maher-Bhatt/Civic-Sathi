@@ -4,7 +4,7 @@ import re
 from sqlalchemy.orm import Session
 
 from app.models.complaint import Complaint, ComplaintAnalysis
-from app.models.user import Ward, Department
+from app.models.user import Ward, Department, User
 from app.repositories.complaint_repository import ComplaintRepository
 from app.schemas.complaint import ComplaintCreate, ComplaintResponse, ComplaintAnalysisResponse, ComplaintLinks
 from app.schemas.common import ComplaintStatus, EntityResult
@@ -150,7 +150,25 @@ class ComplaintService:
 
         complaint = self.repo.create(complaint)
 
-        # Preserve the backend AI interpretation for municipal officers. These
+        # Start the civic identity loop from the persisted complaint itself. The
+        # ledger key is stable, so profile reconciliation cannot double-award it.
+        if submitted_by_id:
+            from app.services.reputation_service import award_xp
+            award_xp(
+                self.db,
+                self.db.get(User, submitted_by_id),
+                amount=5,
+                action="report_submitted",
+                reason="Genuine civic report entered the platform",
+                source_type="complaint",
+                source_id=str(complaint.id),
+                idempotency_key=f"report:{complaint.id}",
+                metadata={"public_id": complaint.public_id},
+            )
+            self.db.commit()
+
+        # Preserve the backend AI interpretation for municipal officers.
+        # These
         # metadata entries live in the existing JSONB analysis payload so this
         # repair does not require a destructive schema migration.
         if complaint_data.language or complaint_data.ai_interpreted_text or complaint_data.ai_suggested_action:

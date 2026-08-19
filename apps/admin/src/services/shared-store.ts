@@ -1012,3 +1012,15 @@ export async function adminLogout(): Promise<void> {
     localStorage.removeItem(LS_USER);
   }
 }
+
+
+/** Fetch server-authoritative reputation health for the private command center. */
+export async function getReputationSummary(): Promise<{
+  profiles: number;
+  xp_granted_last_24h: number;
+  impact_events_last_24h: number;
+  open_review_flags: number;
+  generated_at: string;
+}> {
+  return adminApiFetch<any>("/api/v1/admin/reputation/summary");
+}

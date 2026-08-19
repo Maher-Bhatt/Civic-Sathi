@@ -9,6 +9,7 @@ import {
   createUser,
   createRealContractor,
   getCommandCenterSnapshot,
+  getReputationSummary,
 } from "@/services/shared-store";
 import { GlassCard, SectionLabel } from "@/components/ui/glass-card";
 import {
@@ -80,6 +81,7 @@ function AdminDashboardContent() {
   const [refreshNonce, setRefreshNonce] = useState(0);
   const [activeCity, setActiveCity] = useState<"all" | "vadodara" | "bengaluru">("all");
   const [refreshCountdown, setRefreshCountdown] = useState(30);
+  const [reputationSummary, setReputationSummary] = useState<any>(null);
 
   // Quick Action Modal states
   const [showOfficerModal, setShowOfficerModal] = useState(false);
@@ -116,10 +118,17 @@ function AdminDashboardContent() {
           getCommandCenterSnapshot(),
           listRealWorkOrders(),
         ]);
+        let liveReputation = null;
+        try {
+          liveReputation = await getReputationSummary();
+        } catch {
+          // Reputation telemetry is additive; command-center core data remains available if it is not provisioned yet.
+        }
         if (isMounted) {
           setSnapshot(liveSnapshot);
           if (liveSnapshot?.platform) setStats(liveSnapshot.platform);
           if (liveWorkOrders) setWOs(liveWorkOrders.filter((wo: any) => LIVE_CITY_NAMES.has(String(wo?.city ?? "").trim().toLowerCase())).slice(0, 8));
+          setReputationSummary(liveReputation);
           setSnapshotError(null);
           setLastRefresh(new Date());
           setRefreshCountdown(Number(liveSnapshot?.refresh_after_seconds ?? 30));
@@ -349,6 +358,27 @@ function AdminDashboardContent() {
           </div>
         </div>
       </section>
+
+      <GlassCard className="civic-admin-command-card mt-5 border-[var(--civic-teal-600)]/30 p-5">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            <SectionLabel>Reputation fabric</SectionLabel>
+            <h2 className="mt-2 text-lg font-semibold">Trust signals, not vanity counts</h2>
+            <p className="mt-1 max-w-2xl text-xs leading-5 text-[var(--muted-foreground)]">Rewards are backed by persisted verified events. Open review flags remain reviewable and do not automatically punish a citizen.</p>
+          </div>
+          <a href="/admin/audit-logs" className="text-xs font-semibold text-[var(--primary)] hover:underline">Open governance trail →</a>
+        </div>
+        {!reputationSummary ? <DataState icon={ShieldAlert} title="Reputation telemetry pending" detail="The new reputation tables will appear here after the backend schema is provisioned." /> : (
+          <div className="mt-5 grid gap-3 sm:grid-cols-4">
+            {[
+              ["Profiles", reputationSummary.profiles ?? 0, "civic identities"],
+              ["XP / 24h", reputationSummary.xp_granted_last_24h ?? 0, "server grants"],
+              ["Impact / 24h", reputationSummary.impact_events_last_24h ?? 0, "verified outcomes"],
+              ["Open reviews", reputationSummary.open_review_flags ?? 0, "needs governance"],
+            ].map(([label, value, hint]) => <div className="rounded-xl border border-[var(--glass-border)]/70 bg-[var(--surface)]/50 p-4" key={String(label)}><p className="text-[10px] uppercase tracking-[0.14em] text-[var(--muted-foreground)]">{label}</p><p className="mt-1 text-2xl font-semibold">{Number(value).toLocaleString("en-IN")}</p><p className="mt-1 text-[10px] text-[var(--muted-foreground)]">{hint}</p></div>)}
+          </div>
+        )}
+      </GlassCard>
 
       {/* Stats grid */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">

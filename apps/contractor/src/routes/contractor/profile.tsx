@@ -1,8 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useContractorAuth } from "@/lib/contractor-auth";
-import { getContractor } from "@/services/api";
-import { Contractor } from "@/services/types";
+import { getContractor, getMyCivicRolePerformance } from "@/services/api";
+import { Contractor, CivicRolePerformance } from "@/services/types";
 import { GlassCard, SectionLabel } from "@/components/ui/glass-card";
 import { LoadingState, ErrorState } from "@/components/ui/states";
 import { Building, MapPin, Phone, Mail, FileText, CheckCircle2 } from "lucide-react";
@@ -19,6 +19,8 @@ function ContractorProfile() {
   const [contractor, setContractor] = useState<Contractor | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
+  const [performance, setPerformance] = useState<CivicRolePerformance | null>(null);
+  const [performanceError, setPerformanceError] = useState("");
 
   useEffect(() => {
     async function loadData() {
@@ -37,6 +39,15 @@ function ContractorProfile() {
     }
     loadData();
   }, [contractorAuth]);
+
+  useEffect(() => {
+    if (!contractorAuth?.id) return;
+    let active = true;
+    void getMyCivicRolePerformance()
+      .then((data) => { if (active) setPerformance(data); })
+      .catch(() => { if (active) setPerformanceError("Live Civic Reputation is temporarily unavailable."); });
+    return () => { active = false; };
+  }, [contractorAuth?.id]);
 
   if (loading) return <LoadingState message="Loading profile..." />;
   if (error) return <ErrorState description={error?.message ?? "Error loading profile."} />;
@@ -162,6 +173,31 @@ function ContractorProfile() {
         </div>
         
       </div>
+
+      <GlassCard className="p-6 glass-strong space-y-5">
+        <div className="flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <SectionLabel>Civic Reputation</SectionLabel>
+            <h2 className="mt-2 text-xl font-semibold">Verified execution quality</h2>
+          </div>
+          {performance ? <div className="text-right"><p className="text-3xl font-semibold">{performance.score}/100</p><p className="text-xs text-[var(--muted-foreground)]">Private role view</p></div> : null}
+        </div>
+        {performanceError ? <p className="rounded-xl border border-[var(--glass-border)] px-4 py-3 text-sm text-[var(--muted-foreground)]" role="status">{performanceError}</p> : null}
+        {!performance && !performanceError ? <p className="text-sm text-[var(--muted-foreground)]">Loading verified contractor metrics…</p> : null}
+        {performance ? (
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+            <PerformanceMetric label="Work orders" value={performance.metrics.work_orders ?? 0} />
+            <PerformanceMetric label="Completed" value={performance.metrics.completed ?? 0} />
+            <PerformanceMetric label="Rework" value={performance.metrics.rework ?? 0} />
+            <PerformanceMetric label="Data status" value={performance.metrics.data_status ? "Live" : "—"} />
+          </div>
+        ) : null}
+        <p className="text-xs text-[var(--muted-foreground)]">Reputation is quality-adjusted: raw work-order quantity does not determine recognition. Inspection pass rate, evidence quality, on-time completion, and citizen-confirmed quality are added as verified workflow events become available.</p>
+      </GlassCard>
     </div>
   );
+}
+
+function PerformanceMetric({ label, value }: { label: string; value: unknown }) {
+  return <div className="rounded-xl border border-[var(--glass-border)] bg-[var(--surface)] p-4"><p className="text-xs text-[var(--muted-foreground)]">{label}</p><p className="mt-1 text-xl font-semibold">{String(value)}</p></div>;
 }

@@ -2,7 +2,7 @@
 
 from fastapi import APIRouter
 
-from app.api.v1.routes import health, complaints, issues, analytics, auth, procurement, triage, cities, admin, ai
+from app.api.v1.routes import health, complaints, issues, analytics, auth, procurement, triage, cities, admin, ai, reputation
 
 router = APIRouter()
 
@@ -16,3 +16,4 @@ router.include_router(procurement.router, prefix="/procurement", tags=["procurem
 router.include_router(analytics.router, prefix="/analytics", tags=["analytics"])
 router.include_router(triage.router, prefix="/ai/triage", tags=["triage"])
 router.include_router(ai.router, prefix="/ai", tags=["ai"])
+router.include_router(reputation.router, prefix="/reputation", tags=["reputation"])

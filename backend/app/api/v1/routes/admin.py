@@ -1203,3 +1203,145 @@ def create_audit_log(
     db.commit()
     db.refresh(log)
     return _audit_out(log)
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Civic reputation administration
+# ─────────────────────────────────────────────────────────────────────────────
+
+class ReputationConfigPatch(BaseModel):
+    value_json: dict[str, Any]
+
+
+@router.get("/reputation/summary")
+def reputation_summary(
+    db: Session = Depends(get_db),
+    current: dict = Depends(require_admin),
+):
+    from app.models.reputation import CivicReputationFlag, CivicProfile, XPTransaction, CivicImpactEvent
+    since = datetime.now(timezone.utc) - __import__("datetime").timedelta(days=1)
+    return {
+        "profiles": int(db.query(func.count(CivicProfile.id)).scalar() or 0),
+        "xp_granted_last_24h": int(db.query(func.coalesce(func.sum(XPTransaction.amount), 0)).filter(XPTransaction.at >= since, XPTransaction.status == "granted").scalar() or 0),
+        "impact_events_last_24h": int(db.query(func.count(CivicImpactEvent.id)).filter(CivicImpactEvent.at >= since).scalar() or 0),
+        "open_review_flags": int(db.query(func.count(CivicReputationFlag.id)).filter(CivicReputationFlag.status == "open").scalar() or 0),
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+    }
+
+
+@router.get("/reputation/ledger")
+def reputation_ledger(
+    user_id: str | None = None,
+    source_type: str | None = None,
+    status_filter: str | None = Query(None, alias="status"),
+    limit: int = Query(50, ge=1, le=200),
+    offset: int = Query(0, ge=0),
+    db: Session = Depends(get_db),
+    current: dict = Depends(require_admin),
+):
+    from app.models.reputation import XPTransaction
+    query = db.query(XPTransaction).order_by(XPTransaction.at.desc())
+    if user_id:
+        query = query.filter(XPTransaction.user_id == UUID(user_id))
+    if source_type:
+        query = query.filter(XPTransaction.source_type == source_type)
+    if status_filter:
+        query = query.filter(XPTransaction.status == status_filter)
+    rows = query.offset(offset).limit(limit).all()
+    return {
+        "items": [{
+            "id": str(row.id), "user_id": str(row.user_id), "amount": row.amount, "action": row.action,
+            "reason": row.reason, "source_type": row.source_type, "source_id": row.source_id,
+            "status": row.status, "verification_status": row.verification_status, "at": row.at,
+        } for row in rows],
+        "limit": limit,
+        "offset": offset,
+    }
+
+
+@router.get("/reputation/config")
+def get_reputation_config(
+    db: Session = Depends(get_db),
+    current: dict = Depends(require_admin),
+):
+    from app.services.reputation_service import DEFAULT_RULES
+    from app.models.reputation import CivicRewardConfig
+    row = db.query(CivicRewardConfig).filter(CivicRewardConfig.key == "default").first()
+    return {"key": "default", "value_json": row.value_json if row else DEFAULT_RULES, "version": row.version if row else 0, "active": row.active if row else True}
+
+
+@router.patch("/reputation/config")
+def update_reputation_config(
+    patch: ReputationConfigPatch,
+    db: Session = Depends(get_db),
+    current: dict = Depends(require_admin),
+):
+    from app.models.reputation import CivicRewardConfig
+    actor_id = UUID(current.get("sub"))
+    row = db.query(CivicRewardConfig).filter(CivicRewardConfig.key == "default").first()
+    if not row:
+        row = CivicRewardConfig(key="default", value_json=patch.value_json, version=1, active=True, updated_by_id=actor_id)
+        db.add(row)
+    else:
+        row.value_json = patch.value_json
+        row.version = int(row.version or 0) + 1
+        row.updated_by_id = actor_id
+    db.add(AuditLog(
+        actor_id=str(actor_id), actor_name="Super Admin", actor_role="admin",
+        action="reputation_config_updated", entity_type="civic_reward_config", entity_id="default",
+        new_value=str(patch.value_json), reason="Admin-edited civic reputation rules",
+    ))
+    db.commit()
+    return {"key": row.key, "value_json": row.value_json, "version": row.version, "active": row.active}
+
+
+@router.post("/reputation/ledger/{transaction_id}/revoke")
+def revoke_reputation_transaction(
+    transaction_id: UUID,
+    reason: str = Query(..., min_length=3, max_length=500),
+    db: Session = Depends(get_db),
+    current: dict = Depends(require_admin),
+):
+    from app.models.reputation import XPTransaction, CivicProfile
+    transaction = db.get(XPTransaction, transaction_id)
+    if not transaction or transaction.status != "granted":
+        raise HTTPException(status_code=404, detail="Active reward transaction not found")
+    reversal_key = f"reversal:{transaction.id}"
+    if db.query(XPTransaction).filter(XPTransaction.idempotency_key == reversal_key).first():
+        return {"success": True, "already_reversed": True}
+    transaction.status = "reversed"
+    profile = db.query(CivicProfile).filter(CivicProfile.user_id == transaction.user_id).first()
+    if profile:
+        profile.xp_total = max(0, int(profile.xp_total or 0) - max(0, int(transaction.amount or 0)))
+    reversal = XPTransaction(
+        user_id=transaction.user_id, amount=-abs(int(transaction.amount or 0)), action="reward_revoked",
+        reason=reason, source_type="xp_reversal", source_id=str(transaction.id), idempotency_key=reversal_key,
+        status="reversed", verification_status="reviewed", metadata_json={"original_transaction_id": str(transaction.id)},
+    )
+    db.add(reversal)
+    actor_id = UUID(current.get("sub"))
+    db.add(AuditLog(
+        actor_id=str(actor_id), actor_name="Super Admin", actor_role="admin",
+        action="reputation_reward_revoked", entity_type="xp_transaction", entity_id=str(transaction.id),
+        previous_value=str(transaction.amount), new_value="0", reason=reason,
+    ))
+    db.commit()
+    return {"success": True, "reversed_transaction_id": str(transaction.id), "reversal_id": str(reversal.id)}
+
+
+@router.post("/reputation/reconcile")
+def reconcile_reputation(
+    limit: int = Query(500, ge=1, le=5000),
+    city: str | None = None,
+    db: Session = Depends(get_db),
+    current: dict = Depends(require_admin),
+):
+    from app.services.reputation_service import reconcile_all_citizens
+    result = reconcile_all_citizens(db, limit=limit, city_name=city)
+    db.add(AuditLog(
+        actor_id=str(current.get("sub")), actor_name="Super Admin", actor_role="admin",
+        action="reputation_reconciled", entity_type="civic_reputation", entity_id="batch",
+        new_value=str(result), reason="Bounded server-side reputation reconciliation",
+    ))
+    db.commit()
+    return {"success": True, **result}

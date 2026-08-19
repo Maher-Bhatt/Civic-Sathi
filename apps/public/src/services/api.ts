@@ -10,6 +10,8 @@ import type {
   ImageAnalysis,
   NearbyReport,
   AppNotification,
+  ReputationMe,
+  CivicProfileSummary,
 } from "./types";
 import {
   CATEGORY_KEYWORDS,
@@ -483,4 +485,30 @@ export async function linkToCivicIssue(
   linkedBy: string,
 ): Promise<any> {
   return { success: true };
+}
+
+
+export async function getMyCivicReputation(): Promise<ReputationMe> {
+  return client.get<ReputationMe>("/api/v1/reputation/me");
+}
+
+export async function updateCivicReputationPreferences(patch: Partial<CivicProfileSummary>): Promise<CivicProfileSummary> {
+  return client.patch<CivicProfileSummary>("/api/v1/reputation/me/preferences", patch);
+}
+
+export async function confirmComplaintResolution(complaintId: string) {
+  return client.post<{
+    success: boolean;
+    xp_awarded: number;
+    impact_awarded: number;
+    message: string;
+    profile: CivicProfileSummary;
+  }>(`/api/v1/reputation/complaints/${encodeURIComponent(complaintId)}/confirm-resolution`, {});
+}
+
+export async function getCityCivicImpact(city: string) {
+  return client.get<{
+    city: import("./types").CityImpact;
+    top_contributors: Array<{ display_name: string; impact_score: number; reputation_score: number }>;
+  }>(`/api/v1/reputation/city/${encodeURIComponent(city)}`);
 }

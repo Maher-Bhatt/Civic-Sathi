@@ -112,3 +112,87 @@ export interface AppNotification {
   kind: "received" | "assigned" | "status" | "resolution";
   read: boolean;
 }
+
+
+export interface ReputationBadge {
+  code: string;
+  name: string;
+  description: string;
+  awarded_at?: string | null;
+  revoked_at?: string | null;
+}
+
+export interface ReputationTransaction {
+  id: string;
+  amount: number;
+  action: string;
+  reason: string;
+  source_type: string;
+  source_id?: string | null;
+  status: string;
+  verification_status: string;
+  at: string;
+}
+
+export interface ImpactEvent {
+  id: string;
+  event_type: string;
+  impact_points: number;
+  source_type: string;
+  source_id?: string | null;
+  verification_status: string;
+  at: string;
+}
+
+export interface CivicMission {
+  code: string;
+  title: string;
+  description: string;
+  category?: string | null;
+  progress: number;
+  target: number;
+  xp_reward: number;
+  completed: boolean;
+  city_name?: string | null;
+  ends_at?: string | null;
+}
+
+export interface CivicProfileSummary {
+  user_id: string;
+  role: string;
+  xp_total: number;
+  impact_score: number;
+  reputation_score: number;
+  level: number;
+  level_name: string;
+  current_level_xp: number;
+  next_level_xp: number;
+  level_progress_pct: number;
+  streak_days: number;
+  display_mode: "initials" | "first_name" | "alias";
+  leaderboard_opt_in: boolean;
+  sharing_opt_in: boolean;
+  animation_enabled: boolean;
+  reward_notifications_enabled: boolean;
+  verified_contributions: number;
+  resolutions_supported: number;
+}
+
+export interface CityImpact {
+  city_name: string;
+  contributing_citizens: number;
+  reports: number;
+  verified_reports: number;
+  resolved_reports: number;
+  impact_points: number;
+  milestone?: string | null;
+}
+
+export interface ReputationMe {
+  profile: CivicProfileSummary;
+  badges: ReputationBadge[];
+  missions: CivicMission[];
+  transactions: ReputationTransaction[];
+  impact_events: ImpactEvent[];
+  city_impact: CityImpact[];
+}

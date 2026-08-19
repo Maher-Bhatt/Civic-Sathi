@@ -376,3 +376,8 @@ export async function getContractorPerformance() {
       : new Error("The contractor performance service is unavailable. Please retry.");
   }
 }
+
+
+export async function getMyCivicRolePerformance() {
+  return client.get<import("./types").CivicRolePerformance>("/api/v1/reputation/performance/me");
+}

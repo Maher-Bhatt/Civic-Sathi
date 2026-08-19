@@ -13,6 +13,17 @@ from app.models.procurement import (
 )
 from app.models.job import AnalysisJob
 from app.models.sla import SLARule
+from app.models.reputation import (
+    CivicProfile,
+    XPTransaction,
+    CivicImpactEvent,
+    CivicAchievement,
+    UserAchievement,
+    CivicMission,
+    MissionProgress,
+    CivicRewardConfig,
+    CivicReputationFlag,
+)
 
 __all__ = [
     "Base",
@@ -39,6 +50,15 @@ __all__ = [
     "Inspection",
         "AnalysisJob",
     "SLARule",
+    "CivicProfile",
+    "XPTransaction",
+    "CivicImpactEvent",
+    "CivicAchievement",
+    "UserAchievement",
+    "CivicMission",
+    "MissionProgress",
+    "CivicRewardConfig",
+    "CivicReputationFlag",
     "ContractorReview"
 
 ]

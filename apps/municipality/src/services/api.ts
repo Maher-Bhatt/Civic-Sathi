@@ -771,3 +771,8 @@ export async function officerSearch(query: string) {
 }
 export function startLiveSimulation(onUpdate: (activity: LiveActivity[]) => void) {}
 export function stopLiveSimulation() {}
+
+
+export async function getMyCivicRolePerformance() {
+  return client.get<import("./types").CivicRolePerformance>("/api/v1/reputation/performance/me");
+}
