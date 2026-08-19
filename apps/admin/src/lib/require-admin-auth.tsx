@@ -8,15 +8,15 @@ export function AdminAuthGate({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (ready && !admin) {
-      window.location.replace("/login");
+    if (ready && (!admin || admin.isSuperAdmin !== true)) {
+      window.location.replace("/login?reason=super-admin-required");
     }
   }, [ready, admin]);
 
-  if (!ready || !admin) {
+  if (!ready || !admin || admin.isSuperAdmin !== true) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
-        <LoadingState message={ready ? "Redirecting to admin sign in..." : "Loading admin session..."} />
+        <LoadingState message={ready ? "Private super-admin access required..." : "Loading secure admin session..."} />
       </div>
     );
   }

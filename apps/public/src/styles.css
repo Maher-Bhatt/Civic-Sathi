@@ -859,3 +859,15 @@ body::after {
   }
 }
 
+
+
+/* Professional Civic Sathi brand lockup: transparent symbol, deliberate wordmark, no app-icon tile. */
+.civic-brand-lockup { display: inline-grid; width: 2.35rem; height: 2.35rem; flex: 0 0 auto; place-items: center; padding: .12rem; }
+.civic-brand-lockup img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 5px 8px color-mix(in srgb, var(--civic-indigo-950) 18%, transparent)); }
+.civic-brand-wordmark { display: inline-flex; align-items: baseline; white-space: nowrap; color: var(--civic-indigo-950); font-size: .94rem; font-weight: 700; letter-spacing: .12em; line-height: 1; }
+.civic-brand-wordmark span { font-weight: 700; }
+.civic-brand-wordmark strong { color: var(--civic-city-accent); font-weight: 850; }
+.civic-brand-lockup--internal { width: 2.55rem; height: 2.55rem; }
+.civic-brand-wordmark--internal { font-size: .88rem; letter-spacing: .08em; }
+.dark .civic-brand-wordmark { color: var(--foreground); }
+@media (max-width: 767px) { .civic-brand-lockup { width: 2.2rem; height: 2.2rem; } .civic-brand-wordmark { font-size: .78rem; letter-spacing: .08em; } }

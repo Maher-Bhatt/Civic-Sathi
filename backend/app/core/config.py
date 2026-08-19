@@ -39,7 +39,11 @@ class Settings(BaseSettings):
     # Security
     officer_api_key: str = Field(..., description="API key for officer endpoints")
     jwt_secret: str = Field(default="civicsathi_super_secret_dev_key_2026", description="Secret key for JWT generation")
-    
+    super_admin_emails: str = Field(
+        default="admin@janmind.in,maherbhatt01@gmail.com",
+        description="Comma-separated email allowlist for private super-admin operations",
+    )
+
     # AI / LLM Configuration (Groq, Grok / xAI, etc.)
     groq_api_key: str | None = Field(default=None, description="Groq API key")
     xai_api_key: str | None = Field(default=None, description="xAI API key for Grok models")
@@ -67,7 +71,12 @@ class Settings(BaseSettings):
         return [origin.strip() for origin in v.split(",") if origin.strip()]
     
     @property
+    def super_admin_email_set(self) -> set[str]:
+        return {email.strip().lower() for email in self.super_admin_emails.split(",") if email.strip()}
+
+    @property
     def is_production(self) -> bool:
+
         """Check if running in production"""
         return self.environment == "production"
     

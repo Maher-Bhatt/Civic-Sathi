@@ -171,6 +171,12 @@ def get_current_officer_user(
     return user
 
 
+def is_super_admin_user(user) -> bool:
+    """Return whether the persisted account may access the private admin command center."""
+    email = str(getattr(user, "email", "") or "").strip().lower()
+    return getattr(user, "role", None) == "admin" and email in settings.super_admin_email_set
+
+
 def officer_has_permission(user, permission: str) -> bool:
     """Return whether a persisted officer designation may perform an action."""
     if getattr(user, "role", None) in {"admin", "supervisor", "municipality"}:

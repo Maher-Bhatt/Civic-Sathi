@@ -369,6 +369,7 @@ export interface AdminUser {
   department?: string;
   city?: string;
   permissions?: string[];
+  isSuperAdmin?: boolean;
   createdAt?: string;
   lastActive: string;
 }

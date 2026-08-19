@@ -882,3 +882,109 @@ body::after {
   }
 }
 
+
+
+/* Private super-admin command center: futuristic civic telemetry over Indian architectural atmosphere. */
+.civic-admin-command-card {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--civic-indigo-950) 8%, transparent), transparent 55%),
+    color-mix(in srgb, var(--surface-elevated) 82%, transparent);
+  box-shadow: 0 24px 70px -36px color-mix(in srgb, var(--civic-city-accent) 52%, transparent), inset 0 1px 0 color-mix(in srgb, white 72%, transparent);
+}
+.civic-admin-command-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  opacity: .28;
+  background-image: linear-gradient(90deg, transparent 49.5%, color-mix(in srgb, var(--civic-city-accent) 34%, transparent) 50%, transparent 50.5%), linear-gradient(0deg, transparent 49.5%, color-mix(in srgb, var(--civic-teal-600) 26%, transparent) 50%, transparent 50.5%), var(--civic-city-atmosphere);
+  background-size: 7rem 7rem, 7rem 7rem, cover;
+  background-position: center, center, center;
+  mix-blend-mode: multiply;
+  animation: civic-admin-drift 24s ease-in-out infinite alternate;
+}
+.civic-admin-command-card::after {
+  content: '';
+  position: absolute;
+  right: -5rem;
+  top: -7rem;
+  z-index: -1;
+  width: 16rem;
+  height: 16rem;
+  border-radius: 9999px;
+  border: 1px solid color-mix(in srgb, var(--civic-city-accent) 38%, transparent);
+  box-shadow: 0 0 0 1.5rem color-mix(in srgb, var(--civic-teal-600) 8%, transparent), 0 0 0 3rem color-mix(in srgb, var(--civic-city-accent) 5%, transparent);
+  opacity: .5;
+  animation: civic-admin-pulse 8s ease-in-out infinite;
+}
+.civic-admin-signal-icon {
+  display: grid;
+  width: 2.5rem;
+  height: 2.5rem;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid color-mix(in srgb, var(--civic-city-accent) 48%, var(--glass-border));
+  border-radius: .9rem;
+  color: var(--civic-city-accent);
+  background: color-mix(in srgb, var(--civic-city-accent-soft) 34%, transparent);
+  box-shadow: 0 0 26px color-mix(in srgb, var(--civic-city-accent) 22%, transparent);
+}
+.civic-admin-access-badge,
+.civic-admin-live-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+  width: fit-content;
+  border: 1px solid color-mix(in srgb, var(--civic-teal-600) 36%, var(--glass-border));
+  border-radius: 9999px;
+  padding: .35rem .6rem;
+  color: var(--civic-teal-600);
+  background: color-mix(in srgb, var(--civic-teal-600) 11%, transparent);
+  font-size: .62rem;
+  font-weight: 800;
+  letter-spacing: .14em;
+}
+.civic-admin-live-badge { animation: civic-admin-live 2.4s ease-in-out infinite; }
+.civic-admin-flow-node {
+  position: relative;
+  border: 1px solid color-mix(in srgb, var(--civic-city-accent) 16%, var(--glass-border));
+  border-radius: .85rem;
+  padding: .68rem .75rem;
+  background: color-mix(in srgb, var(--surface) 52%, transparent);
+  transition: transform .2s ease, border-color .2s ease, background .2s ease;
+}
+.civic-admin-flow-node:hover { transform: translateX(.2rem); border-color: color-mix(in srgb, var(--civic-city-accent) 46%, var(--glass-border)); background: color-mix(in srgb, var(--civic-city-accent-soft) 18%, transparent); }
+.civic-admin-flow-dot { display: grid; width: 1.7rem; height: 1.7rem; flex: 0 0 auto; place-items: center; border-radius: .6rem; color: white; font-size: .64rem; font-weight: 800; box-shadow: 0 8px 18px -10px currentColor; }
+.civic-admin-flow-dot span { line-height: 1; }
+.civic-admin-flow-teal { background: linear-gradient(135deg, #0E766E, #35A89C); }
+.civic-admin-flow-saffron { background: linear-gradient(135deg, #C86B18, #E5A34D); }
+.civic-admin-flow-indigo { background: linear-gradient(135deg, #234A84, #6D9DDF); }
+.civic-admin-flow-blue { background: linear-gradient(135deg, #2B6CB0, #54A4D4); }
+@keyframes civic-admin-drift { from { background-position: center, center, 50% 50%; } to { background-position: 1.5rem -1rem, -1rem 1.25rem, 52% 48%; } }
+@keyframes civic-admin-pulse { 0%, 100% { transform: scale(.92); opacity: .28; } 50% { transform: scale(1.06); opacity: .56; } }
+@keyframes civic-admin-live { 0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--civic-teal-600) 20%, transparent); } 50% { box-shadow: 0 0 0 .28rem color-mix(in srgb, var(--civic-teal-600) 0%, transparent); } }
+@media (max-width: 767px) {
+  .civic-admin-command-card::before { opacity: .18; background-size: 5rem 5rem, 5rem 5rem, auto 38rem; }
+  .civic-admin-command-card::after { right: -8rem; top: -8rem; opacity: .28; }
+  .civic-admin-flow-node:hover { transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .civic-admin-command-card::before, .civic-admin-command-card::after, .civic-admin-live-badge { animation: none; }
+  .civic-admin-flow-node { transition: none; }
+}
+
+
+/* Professional Civic Sathi brand lockup: transparent symbol, deliberate wordmark, no app-icon tile. */
+.civic-brand-lockup { display: inline-grid; width: 2.35rem; height: 2.35rem; flex: 0 0 auto; place-items: center; padding: .12rem; }
+.civic-brand-lockup img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 5px 8px color-mix(in srgb, var(--civic-indigo-950) 18%, transparent)); }
+.civic-brand-wordmark { display: inline-flex; align-items: baseline; white-space: nowrap; color: var(--civic-indigo-950); font-size: .94rem; font-weight: 700; letter-spacing: .12em; line-height: 1; }
+.civic-brand-wordmark span { font-weight: 700; }
+.civic-brand-wordmark strong { color: var(--civic-city-accent); font-weight: 850; }
+.civic-brand-lockup--internal { width: 2.55rem; height: 2.55rem; }
+.civic-brand-wordmark--internal { font-size: .88rem; letter-spacing: .08em; }
+.dark .civic-brand-wordmark { color: var(--foreground); }
+@media (max-width: 767px) { .civic-brand-lockup { width: 2.2rem; height: 2.2rem; } .civic-brand-wordmark { font-size: .78rem; letter-spacing: .08em; } }

@@ -8,7 +8,7 @@ import {
   getCachedWorkOrders,
   createUser,
   createRealContractor,
-  listAdminCities,
+  getCommandCenterSnapshot,
 } from "@/services/shared-store";
 import { GlassCard, SectionLabel } from "@/components/ui/glass-card";
 import {
@@ -24,10 +24,12 @@ import {
   FileText,
   MapPin,
   Plus,
-  Copy,
-  Check,
-  Key,
-  UserCheck,
+  ArrowRight,
+  Database,
+  Server,
+  Sparkles,
+  RefreshCw,
+  Network,
   X,
 } from "lucide-react";
 import {
@@ -39,6 +41,9 @@ import {
   Tooltip,
   CartesianGrid,
   Cell,
+  PieChart,
+  Pie,
+  Legend,
 } from "recharts";
 import { useI18n } from "@/lib/i18n";
 
@@ -59,63 +64,16 @@ const STATUS_COLORS: Record<string, string> = {
   CLOSED: "#1abc9c",
 };
 
-const DEMO_LOGINS = [
-  {
-    role: "Super Admin",
-    portal: "Admin Portal",
-    url: "https://janmind-admin.vercel.app",
-    email: "admin@janmind.in",
-    pass: "Janmind@2026",
-    badge: "bg-red-500/20 text-red-400 border-red-500/30",
-  },
-  {
-    role: "Municipal Officer (Vadodara)",
-    portal: "Municipality Console",
-    url: "https://janmind-municipality.vercel.app",
-    email: "officer@vmc.gov.in",
-    pass: "Janmind@2026",
-    badge: "bg-blue-500/20 text-blue-400 border-blue-500/30",
-  },
-  {
-    role: "Municipal Officer (Bengaluru)",
-    portal: "Municipality Console",
-    url: "https://janmind-municipality.vercel.app",
-    email: "officer@bbmp.gov.in",
-    pass: "Janmind@2026",
-    badge: "bg-blue-500/20 text-blue-400 border-blue-500/30",
-  },
-  {
-    role: "Municipal Supervisor",
-    portal: "Municipality Console",
-    url: "https://janmind-municipality.vercel.app",
-    email: "supervisor@vmc.gov.in",
-    pass: "Janmind@2026",
-    badge: "bg-orange-500/20 text-orange-400 border-orange-500/30",
-  },
-  {
-    role: "Municipality Dept Head",
-    portal: "Municipality Console",
-    url: "https://janmind-municipality.vercel.app",
-    email: "municipality@vmc.gov.in",
-    pass: "Janmind@2026",
-    badge: "bg-purple-500/20 text-purple-400 border-purple-500/30",
-  },
-  {
-    role: "Contractor Field Lead",
-    portal: "Contractor Portal",
-    url: "https://janmind-contractor.vercel.app",
-    email: "contractor@janmind.in",
-    pass: "Janmind@2026",
-    badge: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
-  },
-];
-
 function AdminDashboardContent() {
   const { t } = useI18n();
-  // Instant load from cache: 0ms initial render!
+  // Cached platform stats keep the shell useful while the live command center hydrates.
   const [stats, setStats] = useState<any>(() => getCachedPlatformStats());
   const [workOrders, setWOs] = useState<any[]>(() => (getCachedWorkOrders() || []).slice(0, 8));
-  const [copiedKey, setCopiedKey] = useState<string | null>(null);
+  const [snapshot, setSnapshot] = useState<any>(null);
+  const [snapshotLoading, setSnapshotLoading] = useState(true);
+  const [snapshotError, setSnapshotError] = useState<string | null>(null);
+  const [lastRefresh, setLastRefresh] = useState<Date | null>(null);
+  const [refreshNonce, setRefreshNonce] = useState(0);
 
   // Quick Action Modal states
   const [showOfficerModal, setShowOfficerModal] = useState(false);
@@ -146,28 +104,34 @@ function AdminDashboardContent() {
   useEffect(() => {
     let isMounted = true;
     const loadBackground = async () => {
+      setSnapshotLoading(true);
       try {
-        const [s, w] = await Promise.all([getPlatformStats(), listRealWorkOrders()]);
+        const [liveSnapshot, liveWorkOrders] = await Promise.all([
+          getCommandCenterSnapshot(),
+          listRealWorkOrders(),
+        ]);
         if (isMounted) {
-          if (s) setStats(s);
-          if (w) setWOs(w.slice(0, 8));
+          setSnapshot(liveSnapshot);
+          if (liveSnapshot?.platform) setStats(liveSnapshot.platform);
+          if (liveWorkOrders) setWOs(liveWorkOrders.slice(0, 8));
+          setSnapshotError(null);
+          setLastRefresh(new Date());
         }
-      } catch (e) {
-        // Fallback already rendered from cache
+      } catch (error: any) {
+        if (isMounted) {
+          setSnapshotError(error?.message ?? "Live command-center data is unavailable");
+        }
+      } finally {
+        if (isMounted) setSnapshotLoading(false);
       }
     };
     loadBackground();
+    const refreshTimer = window.setInterval(loadBackground, 30000);
     return () => {
       isMounted = false;
+      window.clearInterval(refreshTimer);
     };
-  }, []);
-
-  const handleCopy = (text: string, key: string) => {
-    navigator.clipboard.writeText(text);
-    setCopiedKey(key);
-    toast.success(`Copied: ${text}`);
-    setTimeout(() => setCopiedKey(null), 2000);
-  };
+  }, [refreshNonce]);
 
   const handleCreateOfficer = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -236,10 +200,21 @@ function AdminDashboardContent() {
     acc[wo.status] = (acc[wo.status] ?? 0) + 1;
     return acc;
   }, {});
-  const chartData = Object.entries(woStatusCounts).map(([status, count]) => ({
+  const chartData = Object.entries(snapshot?.work_order_status ?? woStatusCounts).map(([status, count]) => ({
     name: status.replace(/_/g, " "),
-    count,
+    count: Number(count),
   }));
+  const cityPulseData = (snapshot?.cities ?? []).map((city: any) => ({
+    name: city.name,
+    open: Number(city.open_complaints ?? 0),
+    resolved: Number(city.resolved_complaints ?? 0),
+    active: Number(city.active_work_orders ?? 0),
+  }));
+  const complaintStatusData = Object.entries(snapshot?.complaint_status ?? {}).map(([name, value]) => ({
+    name: name.replace(/_/g, " "),
+    value: Number(value),
+  }));
+  const workflowData = snapshot?.workflow ?? [];
 
   return (
     <div className="space-y-8 muni-page-enter">
@@ -329,72 +304,151 @@ function AdminDashboardContent() {
         </GlassCard>
       </div>
 
-      {/* DEMO CREDENTIALS & QUICK LOGIN CARD */}
-      <GlassCard className="p-6 border-blue-500/30 bg-blue-950/10">
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-2">
-            <Key className="w-5 h-5 text-blue-400" />
-            <h2 className="text-base font-semibold text-[var(--foreground)]">
-              System & Demo Login Credentials
-            </h2>
-          </div>
-          <span className="text-xs text-[var(--muted-foreground)]">
-            Click copy to test any portal
-          </span>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-          {DEMO_LOGINS.map((item, idx) => (
-            <div
-              key={idx}
-              className="p-3.5 rounded-xl bg-[var(--surface-elevated)] border border-[var(--glass-border)] flex flex-col justify-between gap-3"
-            >
-              <div>
-                <div className="flex items-center justify-between mb-1.5">
-                  <span
-                    className={`px-2 py-0.5 rounded text-[10px] font-semibold border ${item.badge}`}
-                  >
-                    {item.role}
-                  </span>
-                  <span className="text-[11px] text-[var(--muted-foreground)]">{item.portal}</span>
-                </div>
-                <p className="text-xs font-mono font-medium text-[var(--foreground)] truncate select-all">
-                  {item.email}
-                </p>
-                <p className="text-[11px] font-mono text-[var(--muted-foreground)] mt-0.5">
-                  Password:{" "}
-                  <span className="text-[var(--foreground)] font-semibold">{item.pass}</span>
-                </p>
-              </div>
-
-              <div className="flex items-center gap-2 pt-1 border-t border-[var(--glass-border)]/50">
-                <button
-                  onClick={() => handleCopy(item.email, `email_${idx}`)}
-                  className="flex-1 flex items-center justify-center gap-1 py-1 rounded bg-[var(--surface)] text-[11px] font-medium text-[var(--muted-foreground)] hover:text-white hover:bg-[var(--glass-border)] transition"
-                >
-                  {copiedKey === `email_${idx}` ? (
-                    <Check className="w-3 h-3 text-emerald-400" />
-                  ) : (
-                    <Copy className="w-3 h-3" />
-                  )}
-                  Copy ID
-                </button>
-                <button
-                  onClick={() => handleCopy(item.pass, `pass_${idx}`)}
-                  className="flex-1 flex items-center justify-center gap-1 py-1 rounded bg-[var(--surface)] text-[11px] font-medium text-[var(--muted-foreground)] hover:text-white hover:bg-[var(--glass-border)] transition"
-                >
-                  {copiedKey === `pass_${idx}` ? (
-                    <Check className="w-3 h-3 text-emerald-400" />
-                  ) : (
-                    <Key className="w-3 h-3" />
-                  )}
-                  Copy Pass
-                </button>
-              </div>
+      {/* Private super-admin security boundary */}
+      <GlassCard className="civic-admin-command-card p-6 border-[var(--civic-city-accent)]/35">
+        <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+          <div className="flex items-start gap-3">
+            <div className="civic-admin-signal-icon"><ShieldAlert className="h-5 w-5" /></div>
+            <div>
+              <SectionLabel>Private command center</SectionLabel>
+              <h2 className="text-base font-semibold text-[var(--foreground)]">Super-admin controls are locked</h2>
+              <p className="mt-1 max-w-2xl text-sm text-[var(--muted-foreground)]">
+                This surface is restricted to the configured super-admin allowlist. Credentials are never displayed here; every administrative mutation is authenticated, auditable, and tied to the live backend.
+              </p>
             </div>
-          ))}
+          </div>
+          <span className="civic-admin-access-badge">ADMIN ONLY</span>
+        </div>
+        <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <AdminSignal label="Authorization" value="JWT + allowlist" />
+          <AdminSignal label="Audit trail" value="Persisted" />
+          <AdminSignal label="Data source" value="Live backend" />
+          <AdminSignal label="Scope" value="VMC + BBMP" />
         </div>
       </GlassCard>
+
+      {snapshotError && (
+        <GlassCard className="border-red-400/40 bg-red-950/20 p-4">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-center gap-3">
+              <AlertCircle className="h-5 w-5 text-red-300" />
+              <div>
+                <p className="text-sm font-semibold text-red-100">Live command-center data needs attention</p>
+                <p className="text-xs text-red-100/70">{snapshotError}. Cached KPI values remain visible until the backend reconnects.</p>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => setRefreshNonce((value) => value + 1)}
+              className="inline-flex items-center justify-center gap-2 rounded-lg border border-red-200/30 px-3 py-2 text-xs font-semibold text-red-100 hover:bg-red-200/10"
+            >
+              <RefreshCw className="h-3.5 w-3.5" /> Retry live data
+            </button>
+          </div>
+        </GlassCard>
+      )}
+
+      <div className="grid grid-cols-1 gap-6 xl:grid-cols-[1.35fr_1fr]">
+        <GlassCard className="civic-admin-command-card p-5">
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <SectionLabel>City operations pulse</SectionLabel>
+              <h2 className="text-lg font-semibold">Vadodara × Bengaluru live comparison</h2>
+              <p className="mt-1 text-xs text-[var(--muted-foreground)]">Open complaints, resolved complaints, and active execution work orders.</p>
+            </div>
+            <div className="civic-admin-live-badge"><Activity className="h-3.5 w-3.5" /> LIVE</div>
+          </div>
+          <div className="mt-4 h-64">
+            {snapshotLoading && !snapshot ? (
+              <DataState icon={RefreshCw} title="Connecting to live telemetry" detail="Waiting for the backend command-center snapshot." />
+            ) : cityPulseData.length === 0 ? (
+              <DataState icon={MapPin} title="No city telemetry yet" detail="The backend returned no city aggregates for this scope." />
+            ) : (
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={cityPulseData} margin={{ top: 8, right: 8, left: -18, bottom: 0 }}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.08)" />
+                  <XAxis dataKey="name" tick={{ fontSize: 11, fill: "var(--muted-foreground)" }} tickLine={false} axisLine={false} />
+                  <YAxis allowDecimals={false} tick={{ fontSize: 10, fill: "var(--muted-foreground)" }} tickLine={false} axisLine={false} />
+                  <Tooltip contentStyle={{ backgroundColor: "var(--surface-elevated)", border: "1px solid var(--glass-border)", borderRadius: "10px", fontSize: "12px" }} />
+                  <Legend wrapperStyle={{ fontSize: "11px" }} />
+                  <Bar dataKey="open" name="Open complaints" fill="#C86B18" radius={[5, 5, 0, 0]} />
+                  <Bar dataKey="resolved" name="Resolved" fill="#0E766E" radius={[5, 5, 0, 0]} />
+                  <Bar dataKey="active" name="Active work" fill="#234A84" radius={[5, 5, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            )}
+          </div>
+          <div className="mt-3 flex items-center justify-between border-t border-[var(--glass-border)]/60 pt-3 text-[11px] text-[var(--muted-foreground)]">
+            <span>{lastRefresh ? `Updated ${lastRefresh.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}` : "Awaiting first update"}</span>
+            <button type="button" onClick={() => setRefreshNonce((value) => value + 1)} className="inline-flex items-center gap-1.5 font-semibold text-[var(--primary)] hover:underline"><RefreshCw className="h-3 w-3" /> Refresh</button>
+          </div>
+        </GlassCard>
+
+        <GlassCard className="civic-admin-command-card p-5">
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <SectionLabel>One civic thread</SectionLabel>
+              <h2 className="text-lg font-semibold">Complaint to resolution trace</h2>
+              <p className="mt-1 text-xs text-[var(--muted-foreground)]">A live, backend-backed view of the cross-portal operating chain.</p>
+            </div>
+            <Network className="h-5 w-5 text-[var(--civic-city-accent)]" />
+          </div>
+          <div className="mt-5 space-y-2">
+            {workflowData.length === 0 ? (
+              <DataState icon={Network} title="No workflow telemetry yet" detail="Stages will appear once the backend returns live aggregates." />
+            ) : workflowData.map((stage: any, index: number) => (
+              <div key={stage.id ?? index} className="civic-admin-flow-node">
+                <div className="flex items-center gap-3">
+                  <div className={`civic-admin-flow-dot civic-admin-flow-${stage.tone ?? "indigo"}`}><span>{index + 1}</span></div>
+                  <div className="min-w-0 flex-1"><p className="truncate text-sm font-semibold">{stage.label}</p><p className="text-[11px] text-[var(--muted-foreground)]">{Number(stage.count ?? 0).toLocaleString("en-IN")} records</p></div>
+                  {index < workflowData.length - 1 && <ArrowRight className="hidden h-4 w-4 text-[var(--muted-foreground)] sm:block" />}
+                </div>
+              </div>
+            ))}
+          </div>
+        </GlassCard>
+      </div>
+
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_1fr_1.2fr]">
+        <GlassCard className="p-5">
+          <SectionLabel>Complaint telemetry</SectionLabel>
+          <h2 className="text-lg font-semibold">Status distribution</h2>
+          <div className="mt-3 h-52">
+            {complaintStatusData.length === 0 ? <DataState icon={FileText} title="No complaint statuses" detail="No persisted complaint status aggregates were returned." /> : (
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie data={complaintStatusData} dataKey="value" nameKey="name" innerRadius={48} outerRadius={78} paddingAngle={3} stroke="none" fill="#0E766E" />
+                  <Tooltip contentStyle={{ backgroundColor: "var(--surface-elevated)", border: "1px solid var(--glass-border)", borderRadius: "10px", fontSize: "12px" }} />
+                  <Legend wrapperStyle={{ fontSize: "10px" }} />
+                </PieChart>
+              </ResponsiveContainer>
+            )}
+          </div>
+        </GlassCard>
+
+        <GlassCard className="p-5">
+          <SectionLabel>Platform health</SectionLabel>
+          <h2 className="text-lg font-semibold">Signals & dependencies</h2>
+          <div className="mt-4 space-y-3">
+            {Object.entries(snapshot?.system_health ?? {}).map(([name, health]: [string, any]) => (
+              <div key={name} className="flex items-center justify-between rounded-xl border border-[var(--glass-border)]/60 bg-[var(--surface)]/45 px-3 py-3">
+                <div className="flex items-center gap-2.5"><div className="rounded-lg bg-emerald-500/15 p-2 text-emerald-300">{name === "database" ? <Database className="h-4 w-4" /> : <Server className="h-4 w-4" />}</div><div><p className="text-xs font-semibold capitalize">{name.replace(/_/g, " ")}</p><p className="text-[10px] text-[var(--muted-foreground)]">{health?.source ?? "live signal"}</p></div></div>
+                <span className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-emerald-300"><CheckCircle2 className="h-3.5 w-3.5" /> {health?.status ?? "unknown"}</span>
+              </div>
+            ))}
+            {!snapshot?.system_health && <DataState icon={Server} title="Health signals pending" detail="The command-center endpoint has not returned dependency health yet." />}
+          </div>
+        </GlassCard>
+
+        <GlassCard className="p-5">
+          <div className="flex items-start justify-between gap-3"><div><SectionLabel>Governance trail</SectionLabel><h2 className="text-lg font-semibold">Recent persisted events</h2></div><Sparkles className="h-5 w-5 text-[var(--civic-saffron-600)]" /></div>
+          <div className="mt-4 space-y-2">
+            {(snapshot?.recent_audit ?? []).length === 0 ? <DataState icon={Shield} title="No recent audit events" detail="Persisted admin activity will appear here as the ecosystem is used." /> : (snapshot.recent_audit as any[]).slice(0, 6).map((event: any) => (
+              <div key={event.id} className="border-b border-[var(--glass-border)]/50 pb-2 last:border-0"><div className="flex items-center justify-between gap-2"><p className="truncate text-xs font-semibold">{event.action?.replace(/_/g, " ")}</p><span className="whitespace-nowrap text-[10px] text-[var(--muted-foreground)]">{event.at ? new Date(event.at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "—"}</span></div><p className="truncate text-[10px] text-[var(--muted-foreground)]">{event.entity_label ?? event.entity_type ?? "Platform event"} · {event.actor_name ?? "System"}</p></div>
+            ))}
+          </div>
+        </GlassCard>
+      </div>
 
       {/* Work order status chart + recent list */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -815,5 +869,33 @@ function StatCard({
         {suffix}
       </p>
     </GlassCard>
+  );
+}
+
+
+function AdminSignal({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-xl border border-[var(--glass-border)]/70 bg-[var(--surface)]/45 px-3 py-3">
+      <p className="text-[10px] uppercase tracking-[0.16em] text-[var(--muted-foreground)]">{label}</p>
+      <p className="mt-1 text-xs font-bold text-[var(--foreground)]">{value}</p>
+    </div>
+  );
+}
+
+function DataState({
+  icon: Icon,
+  title,
+  detail,
+}: {
+  icon: any;
+  title: string;
+  detail: string;
+}) {
+  return (
+    <div className="flex h-full min-h-28 flex-col items-center justify-center rounded-xl border border-dashed border-[var(--glass-border)]/70 bg-[var(--surface)]/25 px-4 text-center">
+      <Icon className="mb-2 h-5 w-5 text-[var(--civic-city-accent)]" />
+      <p className="text-xs font-semibold text-[var(--foreground)]">{title}</p>
+      <p className="mt-1 max-w-xs text-[10px] leading-relaxed text-[var(--muted-foreground)]">{detail}</p>
+    </div>
   );
 }

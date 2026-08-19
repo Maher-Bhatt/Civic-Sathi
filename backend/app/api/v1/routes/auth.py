@@ -9,7 +9,9 @@ from typing import Annotated, Optional
 from app.core.database import get_db
 from app.core.security import (
     create_access_token, hash_password, verify_password, verify_officer_key,
+    is_super_admin_user,
 )
+
 from app.schemas.officer import OfficerLoginRequest, OfficerLoginResponse, OfficerInfo
 from app.schemas.citizen import CitizenRegisterRequest, CitizenLoginRequest, CitizenAuthResponse, CitizenInfo
 from app.models.user import User
@@ -32,6 +34,7 @@ class MeOut(BaseModel):
     department: Optional[str] = None
     ward: Optional[str] = None
     designation: Optional[str] = None
+    is_super_admin: bool = False
 
 
 @router.get("/me", response_model=MeOut)
@@ -59,6 +62,7 @@ def get_me(
         department=user.department,
         ward=user.ward,
         designation=user.designation,
+        is_super_admin=is_super_admin_user(user),
     )
 
 
@@ -144,7 +148,8 @@ def officer_login(
             designation=user.designation,
             role=user.role.title(),
             city=user.city or "",
-        )
+            is_super_admin=is_super_admin_user(user),
+        ),
     )
 
 

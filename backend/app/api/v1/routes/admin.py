@@ -7,7 +7,7 @@ Covers: user management, contractor approvals, SLA config, platform stats, audit
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.orm import Session
 from sqlalchemy import select, func, and_
-from typing import List, Optional
+from typing import Any, List, Optional
 from uuid import UUID, uuid4
 from datetime import datetime, timezone
 from pydantic import BaseModel, EmailStr, Field
@@ -15,7 +15,7 @@ from pydantic import BaseModel, EmailStr, Field
 from app.core.database import get_db
 from app.core.security import (
     get_current_officer, hash_password, verify_password,
-    create_access_token,
+    create_access_token, is_super_admin_user,
 )
 from app.models.user import User
 from app.models.procurement import (
@@ -34,12 +34,16 @@ router = APIRouter()
 # Guards
 # ─────────────────────────────────────────────────────────────────────────────
 
-def require_admin(current: dict = Depends(get_current_officer)) -> dict:
-    """Only admin, supervisor, or municipality head roles may call admin endpoints."""
-    if current.get("role") not in ("admin", "supervisor", "municipality"):
+def require_admin(
+    current: dict = Depends(get_current_officer),
+    db: Session = Depends(get_db),
+) -> dict:
+    """Only an allowlisted admin identity may call private admin endpoints."""
+    user = db.get(User, UUID(current.get("sub", "")))
+    if not user or not is_super_admin_user(user):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="Admin, supervisor, or municipality head role required",
+            detail="Private super-admin access required",
         )
     return current
 
@@ -126,6 +130,37 @@ class PlatformStatsOut(BaseModel):
     total_cities: int
 
 
+class CommandCenterCityOut(BaseModel):
+    id: str
+    name: str
+    state_code: str
+    complaints: int = 0
+    open_complaints: int = 0
+    resolved_complaints: int = 0
+    issues: int = 0
+    critical_issues: int = 0
+    tenders: int = 0
+    published_tenders: int = 0
+    work_orders: int = 0
+    active_work_orders: int = 0
+    contractor_registrations: int = 0
+    high_risk_work_orders: int = 0
+
+
+class CommandCenterSnapshotOut(BaseModel):
+    generated_at: datetime
+    refresh_after_seconds: int = 30
+    platform: PlatformStatsOut
+    cities: List[CommandCenterCityOut]
+    complaint_status: dict[str, int]
+    issue_status: dict[str, int]
+    tender_status: dict[str, int]
+    work_order_status: dict[str, int]
+    workflow: List[dict[str, Any]]
+    recent_audit: List[dict[str, Any]]
+    system_health: dict[str, Any]
+
+
 class SLARuleOut(BaseModel):
     id: str
     category: str
@@ -169,6 +204,7 @@ class MeResponse(BaseModel):
     city: Optional[str]
     department: Optional[str]
     phone: Optional[str]
+    is_super_admin: bool = False
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -225,9 +261,9 @@ def patch_sla_rule(
 @router.get("/me", response_model=MeResponse)
 def get_me(
     db: Session = Depends(get_db),
-    current: dict = Depends(get_current_officer),
+    current: dict = Depends(require_admin),
 ):
-    """Return the currently authenticated officer/admin's profile."""
+    """Return the currently authenticated super-admin's profile."""
     user = db.get(User, UUID(current["sub"]))
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
@@ -239,6 +275,7 @@ def get_me(
         city=user.city,
         department=user.department,
         phone=user.phone,
+        is_super_admin=is_super_admin_user(user),
     )
 
 
@@ -246,9 +283,9 @@ def get_me(
 def update_me(
     patch: UpdateUserRequest,
     db: Session = Depends(get_db),
-    current: dict = Depends(get_current_officer),
+    current: dict = Depends(require_admin),
 ):
-    """Update the currently authenticated user's own profile."""
+    """Update the currently authenticated super-admin's own profile."""
     user = db.get(User, UUID(current["sub"]))
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
@@ -268,6 +305,7 @@ def update_me(
         city=user.city,
         department=user.department,
         phone=user.phone,
+        is_super_admin=is_super_admin_user(user),
     )
 
 
@@ -335,6 +373,140 @@ def get_platform_stats(
     _stats_cache["data"] = result
     _stats_cache["expires_at"] = now + 60.0
     return result
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Live super-admin command center
+# ─────────────────────────────────────────────────────────────────────────────
+
+
+def _status_key(value: Any) -> str:
+    return str(getattr(value, "value", value)).lower()
+
+
+@router.get("/command-center", response_model=CommandCenterSnapshotOut)
+def get_command_center_snapshot(
+    db: Session = Depends(get_db),
+    current: dict = Depends(require_admin),
+):
+    """Return a bounded live snapshot for the private super-admin command center."""
+    platform = get_platform_stats(db=db, current=current)
+
+    complaint_status = {
+        _status_key(status_value): int(count)
+        for status_value, count in db.query(Complaint.status, func.count(Complaint.id)).group_by(Complaint.status).all()
+    }
+    issue_status = {
+        _status_key(status_value): int(count)
+        for status_value, count in db.query(IssueCluster.status, func.count(IssueCluster.id)).group_by(IssueCluster.status).all()
+    }
+    tender_status = {
+        _status_key(status_value): int(count)
+        for status_value, count in db.query(Tender.status, func.count(Tender.id)).group_by(Tender.status).all()
+    }
+    work_order_status = {
+        _status_key(status_value): int(count)
+        for status_value, count in db.query(WorkOrder.status, func.count(WorkOrder.id)).group_by(WorkOrder.status).all()
+    }
+
+    complaint_by_city = dict(db.query(Complaint.city_id, func.count(Complaint.id)).group_by(Complaint.city_id).all())
+    open_complaint_by_city = dict(
+        db.query(Complaint.city_id, func.count(Complaint.id))
+        .filter(Complaint.status.notin_(("resolved", "rejected", "closed")))
+        .group_by(Complaint.city_id)
+        .all()
+    )
+    resolved_complaint_by_city = dict(
+        db.query(Complaint.city_id, func.count(Complaint.id))
+        .filter(Complaint.status == "resolved")
+        .group_by(Complaint.city_id)
+        .all()
+    )
+    issues_by_city = dict(db.query(IssueCluster.city_id, func.count(IssueCluster.id)).group_by(IssueCluster.city_id).all())
+    critical_issues_by_city = dict(
+        db.query(IssueCluster.city_id, func.count(IssueCluster.id))
+        .filter(func.lower(IssueCluster.risk_level) == "critical")
+        .group_by(IssueCluster.city_id)
+        .all()
+    )
+    tenders_by_city = dict(db.query(Tender.city_id, func.count(Tender.id)).group_by(Tender.city_id).all())
+    published_tenders_by_city = dict(
+        db.query(Tender.city_id, func.count(Tender.id))
+        .filter(Tender.status == "PUBLISHED")
+        .group_by(Tender.city_id)
+        .all()
+    )
+    work_orders_by_city = dict(
+        db.query(Tender.city_id, func.count(WorkOrder.id))
+        .join(WorkOrder, WorkOrder.tender_id == Tender.id)
+        .group_by(Tender.city_id)
+        .all()
+    )
+    active_work_orders_by_city = dict(
+        db.query(Tender.city_id, func.count(WorkOrder.id))
+        .join(WorkOrder, WorkOrder.tender_id == Tender.id)
+        .filter(WorkOrder.status.notin_((WorkOrderStatus.COMPLETED, WorkOrderStatus.CLOSED, WorkOrderStatus.CANCELLED)))
+        .group_by(Tender.city_id)
+        .all()
+    )
+    high_risk_work_orders_by_city = dict(
+        db.query(Tender.city_id, func.count(WorkOrder.id))
+        .join(WorkOrder, WorkOrder.tender_id == Tender.id)
+        .filter(func.lower(WorkOrder.risk_level).in_(("high", "critical")))
+        .group_by(Tender.city_id)
+        .all()
+    )
+    registrations_by_city = dict(
+        db.query(ContractorCityRegistration.city_id, func.count(ContractorCityRegistration.id))
+        .group_by(ContractorCityRegistration.city_id)
+        .all()
+    )
+
+    cities = []
+    for city in db.execute(select(City).order_by(City.name)).scalars().all():
+        city_id = city.id
+        cities.append(CommandCenterCityOut(
+            id=str(city_id),
+            name=city.name,
+            state_code=city.state_code,
+            complaints=int(complaint_by_city.get(city_id, 0)),
+            open_complaints=int(open_complaint_by_city.get(city_id, 0)),
+            resolved_complaints=int(resolved_complaint_by_city.get(city_id, 0)),
+            issues=int(issues_by_city.get(city_id, 0)),
+            critical_issues=int(critical_issues_by_city.get(city_id, 0)),
+            tenders=int(tenders_by_city.get(city_id, 0)),
+            published_tenders=int(published_tenders_by_city.get(city_id, 0)),
+            work_orders=int(work_orders_by_city.get(city_id, 0)),
+            active_work_orders=int(active_work_orders_by_city.get(city_id, 0)),
+            contractor_registrations=int(registrations_by_city.get(city_id, 0)),
+            high_risk_work_orders=int(high_risk_work_orders_by_city.get(city_id, 0)),
+        ))
+
+    workflow = [
+        {"id": "reports", "label": "Citizen reports", "count": platform.total_complaints, "tone": "teal"},
+        {"id": "issues", "label": "Issue clusters", "count": platform.total_issues, "tone": "saffron"},
+        {"id": "tenders", "label": "Municipal tenders", "count": platform.total_tenders, "tone": "indigo"},
+        {"id": "execution", "label": "Contractor work orders", "count": platform.active_work_orders, "tone": "blue"},
+        {"id": "resolved", "label": "Resolved complaints", "count": platform.resolved_complaints, "tone": "teal"},
+    ]
+
+    recent_audit = list_audit_logs(limit=10, offset=0, db=db, current=current)
+    return CommandCenterSnapshotOut(
+        generated_at=datetime.now(timezone.utc),
+        platform=platform,
+        cities=cities,
+        complaint_status=complaint_status,
+        issue_status=issue_status,
+        tender_status=tender_status,
+        work_order_status=work_order_status,
+        workflow=workflow,
+        recent_audit=recent_audit,
+        system_health={
+            "backend": {"status": "operational", "source": "request path"},
+            "database": {"status": "connected", "source": "aggregated query"},
+            "admin_api": {"status": "operational", "source": "super-admin endpoint"},
+        },
+    )
 
 
 # ─────────────────────────────────────────────────────────────────────────────

@@ -697,6 +697,7 @@ function normalizeAdminUser(userData: any, fallbackEmail = ""): AdminUser {
     role,
     department: userData?.department ?? "Administration",
     city: userData?.city || undefined,
+    isSuperAdmin: Boolean(userData?.is_super_admin ?? userData?.isSuperAdmin),
     lastActive: new Date().toISOString(),
     permissions: ["ALL"],
   };
@@ -781,23 +782,26 @@ export async function getAdminUser(): Promise<AdminUser | null> {
     const raw = localStorage.getItem(LS_USER);
     if (raw) {
       const cached = JSON.parse(raw) as AdminUser;
-      // Background refresh — don't await
-      adminApiFetch<any>("/api/v1/auth/me")
-        .then((me) => {
-          if (me) {
-            const updated: AdminUser = {
-              ...cached,
-              name: me.name,
-              email: me.email,
-              lastActive: new Date().toISOString(),
-            };
-            localStorage.setItem(LS_USER, JSON.stringify(updated));
-          }
-        })
-        .catch(() => {
-          /* ignore */
-        });
-      return cached;
+      if (cached.isSuperAdmin === true) {
+        // Background refresh — don't await
+        adminApiFetch<any>("/api/v1/auth/me")
+          .then((me) => {
+            if (me) {
+              const updated: AdminUser = {
+                ...cached,
+                name: me.name,
+                email: me.email,
+                isSuperAdmin: Boolean(me.is_super_admin ?? cached.isSuperAdmin),
+                lastActive: new Date().toISOString(),
+              };
+              localStorage.setItem(LS_USER, JSON.stringify(updated));
+            }
+          })
+          .catch(() => {
+            /* ignore */
+          });
+        return cached;
+      }
     }
   } catch {
     /* ignore */
@@ -831,13 +835,16 @@ export async function adminLogin(email: string, password: string): Promise<Admin
   const userData = res.officer || res.user;
   if (!userData) throw new Error("Login failed: no user data returned");
 
-  const allowedRoles = ["admin", "supervisor", "municipality", "officer"];
+  const allowedRoles = ["admin"];
   const role = (userData.role ?? "").toLowerCase();
-  if (!allowedRoles.includes(role)) {
-    throw new Error("Access denied — admin or officer role required");
-  }
+    if (!allowedRoles.includes(role)) {
+      throw new Error("Access denied — admin or officer role required");
+    }
+    if (userData?.is_super_admin !== true) {
+      throw new Error("Private super-admin access required");
+    }
 
-  localStorage.setItem(LS_TOKEN, res.access_token);
+    localStorage.setItem(LS_TOKEN, res.access_token);
 
   const admin = normalizeAdminUser(userData, email);
 
@@ -980,6 +987,11 @@ export async function listRealWorkOrders(): Promise<any[]> {
   } catch (e) {
     return getCachedWorkOrders();
   }
+}
+
+/** Fetch the bounded live super-admin command-center snapshot. */
+export async function getCommandCenterSnapshot(): Promise<any> {
+  return adminApiFetch<any>("/api/v1/admin/command-center");
 }
 
 /** List all cities (admin). */

@@ -65,10 +65,10 @@ export function MuniSidebar({
       >
                 <div className="flex h-16 items-center justify-between border-b border-[var(--glass-border)] px-4">
           <div className={cn("flex min-w-0 items-center gap-2.5", collapsed && "mx-auto")}>
-            <span className="civic-brand-logo-mark civic-brand-logo-mark--internal" aria-hidden="true"><img src="/brand/civic-sathi-logo.png" alt="" /></span>
+            <span className="civic-brand-lockup civic-brand-lockup--internal" aria-hidden="true"><img src="/brand/civic-sathi-symbol.png" alt="" /></span>
             {!collapsed && (
               <div className="min-w-0">
-                <p className="truncate text-sm font-semibold tracking-tight">{t('ui.civicsathi')}</p>
+                <p className="civic-brand-wordmark civic-brand-wordmark--internal"><span>Civic</span> <strong>Sathi</strong></p>
                 <p className="truncate text-[0.65rem] text-muted-foreground">{t('ui.municipal_intelligence')}</p>
               </div>
             )}

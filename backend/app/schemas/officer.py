@@ -27,6 +27,7 @@ class OfficerInfo(BaseModel):
     designation: str | None = None
     role: str
     city: str = ""
+    is_super_admin: bool = False
 
 
 class SeedResponse(BaseModel):
