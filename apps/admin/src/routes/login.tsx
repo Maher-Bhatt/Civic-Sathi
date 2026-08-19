@@ -101,31 +101,14 @@ function AdminLogin() {
           </button>
         </form>
 
-        {/* 1-Click Demo Credentials */}
-        <div className="mt-6 pt-5 border-t border-[var(--glass-border)]">
-          <p className="text-[11px] font-semibold uppercase tracking-wider text-[var(--muted-foreground)] mb-2.5 text-center">
-            Quick Demo Login
+        <div className="mt-6 pt-5 border-t border-[var(--glass-border)] text-center">
+          <p className="text-[11px] font-semibold uppercase tracking-wider text-[var(--civic-teal-600)]">
+            Private super-admin access
           </p>
-          <div className="space-y-1.5">
-            <button
-              type="button"
-              onClick={() => {
-                setEmail("admin@janmind.in");
-                setPassword("Janmind@2026");
-              }}
-              className="w-full flex items-center justify-between p-2 rounded-lg bg-[var(--surface)] hover:bg-[var(--surface-elevated)] border border-[var(--glass-border)] text-xs transition text-left"
-            >
-              <div>
-                <span className="font-semibold text-[var(--foreground)]">Super Admin</span>
-                <span className="block text-[11px] text-[var(--muted-foreground)] font-mono">
-                  admin@janmind.in
-                </span>
-              </div>
-              <span className="text-[11px] px-2 py-0.5 rounded bg-primary/15 text-primary font-medium">
-                Click to Fill
-              </span>
-            </button>
-          </div>
+          <p className="mt-2 text-xs leading-relaxed text-[var(--muted-foreground)]">
+            This command center is restricted to allowlisted platform administrators. Municipality officers,
+            contractors, and citizens must use their dedicated portals.
+          </p>
         </div>
       </GlassCard>
     </div>
