@@ -127,7 +127,7 @@ function ReportPage() {
               value={draft.description}
               onChange={(e) => update({ description: e.target.value })}
               placeholder={t('ui.describe_the_problem_in_your_o')}
-              hint="Example: There has been no water supply in our area for three days."
+              hint={t("ui.report_example_hint", "Example: There has been no water supply in our area for three days.")}
               aria-label={t('ui.describe_the_problem')}
             />
             <div className="flex items-center gap-3 pt-2">
@@ -183,7 +183,7 @@ function ReportPage() {
             <h2 className="text-lg font-semibold">{t('ui.your_report')}</h2>
             <dl className="divide-y divide-border overflow-hidden rounded-2xl border border-border">
               <ReviewRow label={t('ui.description')} onEdit={() => setStep(0)}>
-                {draft.description || "Not provided"}
+                {draft.description || t("ui.not_provided", "Not provided")}
               </ReviewRow>
               <ReviewRow label={t('ui.suggested_category')} onEdit={() => setStep(2)}>
                 {draft.category ?? t('ui.civicsathi_will_suggest_category', 'Civic Sathi will suggest a category during analysis.')}
@@ -191,17 +191,17 @@ function ReportPage() {
               <ReviewRow label={t('ui.location')} onEdit={() => setStep(1)}>
                 {draft.location
                   ? `${draft.location.area} (${draft.location.lat.toFixed(4)}, ${draft.location.lng.toFixed(4)})`
-                  : "Not selected"}
+                  : t("ui.not_selected", "Not selected")}
               </ReviewRow>
               <ReviewRow label={t('ui.photo')} onEdit={() => setStep(2)}>
                 {draft.photo ? (
                   <img
                     src={draft.photo}
-                    alt="Photo attached to your report"
+                    alt={t("ui.photo_attached_to_report", "Photo attached to your report")}
                     className="h-20 w-28 rounded-lg border border-border object-cover"
                   />
                 ) : (
-                  "No photo attached"
+                  t("ui.no_photo_attached", "No photo attached")
                 )}
               </ReviewRow>
             </dl>

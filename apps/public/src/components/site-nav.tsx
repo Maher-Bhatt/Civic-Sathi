@@ -58,7 +58,7 @@ export function SiteNav() {
   return (
     <header className="fixed inset-x-0 top-0 z-50 px-3 pt-3 sm:px-5 sm:pt-4">
       <nav aria-label={t("ui.primary")} className={cn("mx-auto flex max-w-6xl items-center gap-2 rounded-2xl border border-[var(--glass-border)] px-3 py-2.5 transition-all duration-300 sm:px-4", scrolled ? "bg-[var(--glass-strong)] shadow-[var(--shadow-lift)] backdrop-blur-2xl" : "bg-[var(--glass)] shadow-[var(--shadow-soft)] backdrop-blur-xl")}>
-        <Link to="/" className="group flex min-h-10 shrink-0 items-center gap-2.5 pr-2" aria-label="Civic Sathi home">
+        <Link to="/" className="group flex min-h-10 shrink-0 items-center gap-2.5 pr-2" aria-label={t("ui.civicsathi_home", "Civic Sathi home")}>
           <span className="civic-heritage-mark" aria-hidden="true" />
           <span className="hidden text-[0.9rem] font-bold tracking-[0.12em] text-[var(--civic-indigo-950)] sm:inline dark:text-foreground">Civic Sathi</span>
         </Link>
@@ -67,7 +67,7 @@ export function SiteNav() {
           {primaryLinks.map((link) => <NavLink key={link.tKey} link={link} pathname={pathname} />)}
           <div className="relative">
             <button type="button" aria-expanded={moreOpen} onClick={() => setMoreOpen((value) => !value)} className={cn("press flex min-h-10 items-center gap-1 rounded-xl px-3 py-2.5 text-sm transition hover:bg-[var(--glass)]", moreOpen ? "bg-[var(--surface-elevated)] text-foreground" : "text-muted-foreground")}>
-              More <MoreHorizontal className="h-4 w-4" aria-hidden />
+              {t("ui.more", "More")} <MoreHorizontal className="h-4 w-4" aria-hidden />
             </button>
             {moreOpen && <div className="absolute left-0 top-full z-50 mt-2 grid min-w-52 gap-1 rounded-2xl border border-[var(--glass-border)] bg-[var(--glass-strong)] p-2 shadow-[var(--shadow-lift)] backdrop-blur-2xl">{secondaryLinks.map((link) => <NavLink key={link.tKey} link={link} pathname={pathname} onClick={() => setMoreOpen(false)} />)}</div>}
           </div>
@@ -79,7 +79,7 @@ export function SiteNav() {
           <ThemeToggle className="hidden md:inline-flex" />
           <Link to="/notifications" aria-label={t("ui.notifications")} className="press flex h-10 w-10 items-center justify-center rounded-full border border-[var(--glass-border)] bg-[var(--glass)] text-muted-foreground hover:text-foreground"><Bell className="h-4 w-4" aria-hidden /></Link>
           {user ? <Link to="/profile" className="press hidden min-h-10 items-center gap-2 rounded-full border border-[var(--glass-border)] bg-[var(--glass)] pr-3 pl-1.5 text-sm text-foreground hover:bg-[var(--glass-strong)] sm:flex"><span className="flex h-7 w-7 items-center justify-center rounded-full bg-[color-mix(in_oklab,var(--primary)_22%,transparent)] text-xs font-semibold text-primary">{user.name.slice(0, 1).toUpperCase()}</span><span className="max-w-24 truncate">{user.name.split(" ")[0]}</span></Link> : <GlassButton asChild size="sm" variant="glass" className="hidden min-h-10 sm:inline-flex"><Link to="/login" search={{ redirect: undefined }}>{t("nav.signin", "Sign In")}</Link></GlassButton>}
-          <button type="button" aria-label={open ? "Close menu" : "Open menu"} aria-expanded={open} onClick={() => setOpen((value) => !value)} className="press flex h-10 w-10 items-center justify-center rounded-full border border-[var(--glass-border)] bg-[var(--glass)] text-foreground lg:hidden">{open ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}</button>
+          <button type="button" aria-label={open ? t("ui.close_menu", "Close menu") : t("ui.open_menu", "Open menu")} aria-expanded={open} onClick={() => setOpen((value) => !value)} className="press flex h-10 w-10 items-center justify-center rounded-full border border-[var(--glass-border)] bg-[var(--glass)] text-foreground lg:hidden">{open ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}</button>
         </div>
       </nav>
 
