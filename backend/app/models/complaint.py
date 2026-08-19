@@ -1,7 +1,7 @@
 """Complaint and ComplaintAnalysis models"""
 
 from sqlalchemy import String, Text, Integer, Float, ForeignKey, Index, Sequence, DateTime
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.dialects.postgresql import UUID, JSONB
 
 from app.models.base import Base, UUIDMixin, TimestampMixin
