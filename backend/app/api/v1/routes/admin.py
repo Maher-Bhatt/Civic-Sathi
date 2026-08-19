@@ -389,81 +389,124 @@ def get_command_center_snapshot(
     db: Session = Depends(get_db),
     current: dict = Depends(require_admin),
 ):
-    """Return a bounded live snapshot for the private super-admin command center."""
-    platform = get_platform_stats(db=db, current=current)
+    """Return a bounded live snapshot; isolated query failures become explicit degraded signals."""
+    degraded: list[str] = []
 
-    complaint_status = {
-        _status_key(status_value): int(count)
-        for status_value, count in db.query(Complaint.status, func.count(Complaint.id)).group_by(Complaint.status).all()
-    }
-    issue_status = {
-        _status_key(status_value): int(count)
-        for status_value, count in db.query(IssueCluster.status, func.count(IssueCluster.id)).group_by(IssueCluster.status).all()
-    }
-    tender_status = {
-        _status_key(status_value): int(count)
-        for status_value, count in db.query(Tender.status, func.count(Tender.id)).group_by(Tender.status).all()
-    }
-    work_order_status = {
-        _status_key(status_value): int(count)
-        for status_value, count in db.query(WorkOrder.status, func.count(WorkOrder.id)).group_by(WorkOrder.status).all()
-    }
+    def grouped(query, label: str) -> dict[str, int]:
+        try:
+            return {_status_key(key): int(value) for key, value in query.all()}
+        except Exception:
+            db.rollback()
+            degraded.append(label)
+            return {}
 
-    complaint_by_city = dict(db.query(Complaint.city_id, func.count(Complaint.id)).group_by(Complaint.city_id).all())
-    open_complaint_by_city = dict(
+    def by_city(query, label: str) -> dict[Any, int]:
+        try:
+            return {key: int(value) for key, value in query.all()}
+        except Exception:
+            db.rollback()
+            degraded.append(label)
+            return {}
+
+    try:
+        platform = get_platform_stats(db=db, current=current)
+    except Exception:
+        db.rollback()
+        degraded.append("platform")
+        platform = PlatformStatsOut(
+            total_users=0, total_citizens=0, total_officers=0, total_contractors=0,
+            total_admins=0, total_complaints=0, open_complaints=0, resolved_complaints=0,
+            total_issues=0, open_issues=0, total_tenders=0, active_work_orders=0, total_cities=0,
+        )
+
+    complaint_status = grouped(
+        db.query(Complaint.status, func.count(Complaint.id)).group_by(Complaint.status),
+        "complaint_status",
+    )
+    issue_status = grouped(
+        db.query(IssueCluster.status, func.count(IssueCluster.id)).group_by(IssueCluster.status),
+        "issue_status",
+    )
+    tender_status = grouped(
+        db.query(Tender.status, func.count(Tender.id)).group_by(Tender.status),
+        "tender_status",
+    )
+    work_order_status = grouped(
+        db.query(WorkOrder.status, func.count(WorkOrder.id)).group_by(WorkOrder.status),
+        "work_order_status",
+    )
+
+    complaint_by_city = by_city(
+        db.query(Complaint.city_id, func.count(Complaint.id)).group_by(Complaint.city_id),
+        "complaints_by_city",
+    )
+    open_complaint_by_city = by_city(
         db.query(Complaint.city_id, func.count(Complaint.id))
         .filter(Complaint.status.notin_(("resolved", "rejected", "closed")))
-        .group_by(Complaint.city_id)
-        .all()
+        .group_by(Complaint.city_id),
+        "open_complaints_by_city",
     )
-    resolved_complaint_by_city = dict(
+    resolved_complaint_by_city = by_city(
         db.query(Complaint.city_id, func.count(Complaint.id))
         .filter(Complaint.status == "resolved")
-        .group_by(Complaint.city_id)
-        .all()
+        .group_by(Complaint.city_id),
+        "resolved_complaints_by_city",
     )
-    issues_by_city = dict(db.query(IssueCluster.city_id, func.count(IssueCluster.id)).group_by(IssueCluster.city_id).all())
-    critical_issues_by_city = dict(
+    issues_by_city = by_city(
+        db.query(IssueCluster.city_id, func.count(IssueCluster.id)).group_by(IssueCluster.city_id),
+        "issues_by_city",
+    )
+    critical_issues_by_city = by_city(
         db.query(IssueCluster.city_id, func.count(IssueCluster.id))
         .filter(func.lower(IssueCluster.risk_level) == "critical")
-        .group_by(IssueCluster.city_id)
-        .all()
+        .group_by(IssueCluster.city_id),
+        "critical_issues_by_city",
     )
-    tenders_by_city = dict(db.query(Tender.city_id, func.count(Tender.id)).group_by(Tender.city_id).all())
-    published_tenders_by_city = dict(
+    tenders_by_city = by_city(
+        db.query(Tender.city_id, func.count(Tender.id)).group_by(Tender.city_id),
+        "tenders_by_city",
+    )
+    published_tenders_by_city = by_city(
         db.query(Tender.city_id, func.count(Tender.id))
         .filter(Tender.status == "PUBLISHED")
-        .group_by(Tender.city_id)
-        .all()
+        .group_by(Tender.city_id),
+        "published_tenders_by_city",
     )
-    work_orders_by_city = dict(
+    work_orders_by_city = by_city(
         db.query(Tender.city_id, func.count(WorkOrder.id))
         .join(WorkOrder, WorkOrder.tender_id == Tender.id)
-        .group_by(Tender.city_id)
-        .all()
+        .group_by(Tender.city_id),
+        "work_orders_by_city",
     )
-    active_work_orders_by_city = dict(
+    active_work_orders_by_city = by_city(
         db.query(Tender.city_id, func.count(WorkOrder.id))
         .join(WorkOrder, WorkOrder.tender_id == Tender.id)
         .filter(WorkOrder.status.notin_((WorkOrderStatus.COMPLETED, WorkOrderStatus.CLOSED, WorkOrderStatus.CANCELLED)))
-        .group_by(Tender.city_id)
-        .all()
+        .group_by(Tender.city_id),
+        "active_work_orders_by_city",
     )
-    high_risk_work_orders_by_city = dict(
+    high_risk_work_orders_by_city = by_city(
         db.query(Tender.city_id, func.count(WorkOrder.id))
         .join(WorkOrder, WorkOrder.tender_id == Tender.id)
         .filter(func.lower(WorkOrder.risk_level).in_(("high", "critical")))
-        .group_by(Tender.city_id)
-        .all()
+        .group_by(Tender.city_id),
+        "high_risk_work_orders_by_city",
     )
-    registrations_by_city = dict(
+    registrations_by_city = by_city(
         db.query(ContractorCityRegistration.city_id, func.count(ContractorCityRegistration.id))
-        .group_by(ContractorCityRegistration.city_id)
-        .all()
+        .group_by(ContractorCityRegistration.city_id),
+        "registrations_by_city",
     )
 
+    try:
+        city_rows = db.execute(select(City).order_by(City.name)).scalars().all()
+    except Exception:
+        db.rollback()
+        degraded.append("cities")
+        city_rows = []
+
     cities = []
-    for city in db.execute(select(City).order_by(City.name)).scalars().all():
+    for city in city_rows:
         city_id = city.id
         cities.append(CommandCenterCityOut(
             id=str(city_id),
@@ -490,7 +533,19 @@ def get_command_center_snapshot(
         {"id": "resolved", "label": "Resolved complaints", "count": platform.resolved_complaints, "tone": "teal"},
     ]
 
-    recent_audit = list_audit_logs(limit=10, offset=0, db=db, current=current)
+    try:
+        audit_models = list_audit_logs(limit=10, offset=0, db=db, current=current)
+        recent_audit = [
+            entry.model_dump(mode="json") if hasattr(entry, "model_dump") else entry
+            for entry in audit_models
+        ]
+    except Exception:
+        db.rollback()
+        degraded.append("recent_audit")
+        recent_audit = []
+
+    degraded = sorted(set(degraded))
+    health_status = "degraded" if degraded else "operational"
     return CommandCenterSnapshotOut(
         generated_at=datetime.now(timezone.utc),
         platform=platform,
@@ -503,8 +558,9 @@ def get_command_center_snapshot(
         recent_audit=recent_audit,
         system_health={
             "backend": {"status": "operational", "source": "request path"},
-            "database": {"status": "connected", "source": "aggregated query"},
-            "admin_api": {"status": "operational", "source": "super-admin endpoint"},
+            "database": {"status": health_status, "source": "bounded aggregate queries"},
+            "admin_api": {"status": health_status, "source": "super-admin endpoint"},
+            "degraded_sections": degraded,
         },
     )
 
