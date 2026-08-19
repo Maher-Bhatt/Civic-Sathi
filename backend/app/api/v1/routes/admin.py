@@ -13,6 +13,7 @@ from datetime import datetime, timezone
 from pydantic import BaseModel, EmailStr, Field
 
 from app.core.database import get_db
+from app.core.config import settings
 from app.core.security import (
     get_current_officer, hash_password, verify_password,
     create_access_token, is_super_admin_user,
@@ -389,8 +390,9 @@ def get_command_center_snapshot(
     db: Session = Depends(get_db),
     current: dict = Depends(require_admin),
 ):
-    """Return a bounded live snapshot; isolated query failures become explicit degraded signals."""
+    """Return a bounded live snapshot for the configured Civic Sathi city scope."""
     degraded: list[str] = []
+    scope_names = settings.command_center_city_name_set
 
     def grouped(query, label: str) -> dict[str, int]:
         try:
@@ -409,6 +411,24 @@ def get_command_center_snapshot(
             return {}
 
     try:
+        city_rows = db.execute(
+            select(City)
+            .where(func.lower(City.name).in_(sorted(scope_names)))
+            .order_by(City.name)
+        ).scalars().all()
+    except Exception:
+        db.rollback()
+        degraded.append("cities")
+        city_rows = []
+
+    scoped_city_ids = [city.id for city in city_rows]
+    if len(city_rows) != len(scope_names):
+        degraded.append("configured_city_scope")
+
+    def scoped(query, city_column):
+        return query.filter(city_column.in_(scoped_city_ids)) if scoped_city_ids else query.filter(False)
+
+    try:
         platform = get_platform_stats(db=db, current=current)
     except Exception:
         db.rollback()
@@ -420,117 +440,136 @@ def get_command_center_snapshot(
         )
 
     complaint_status = grouped(
-        db.query(Complaint.status, func.count(Complaint.id)).group_by(Complaint.status),
+        scoped(db.query(Complaint.status, func.count(Complaint.id)), Complaint.city_id)
+        .group_by(Complaint.status),
         "complaint_status",
     )
     issue_status = grouped(
-        db.query(IssueCluster.status, func.count(IssueCluster.id)).group_by(IssueCluster.status),
+        scoped(db.query(IssueCluster.status, func.count(IssueCluster.id)), IssueCluster.city_id)
+        .group_by(IssueCluster.status),
         "issue_status",
     )
     tender_status = grouped(
-        db.query(Tender.status, func.count(Tender.id)).group_by(Tender.status),
+        scoped(db.query(Tender.status, func.count(Tender.id)), Tender.city_id)
+        .group_by(Tender.status),
         "tender_status",
     )
     work_order_status = grouped(
-        db.query(WorkOrder.status, func.count(WorkOrder.id)).group_by(WorkOrder.status),
+        db.query(WorkOrder.status, func.count(WorkOrder.id))
+        .join(Tender, WorkOrder.tender_id == Tender.id)
+        .filter(Tender.city_id.in_(scoped_city_ids) if scoped_city_ids else False)
+        .group_by(WorkOrder.status),
         "work_order_status",
     )
 
     complaint_by_city = by_city(
-        db.query(Complaint.city_id, func.count(Complaint.id)).group_by(Complaint.city_id),
+        scoped(db.query(Complaint.city_id, func.count(Complaint.id)), Complaint.city_id)
+        .group_by(Complaint.city_id),
         "complaints_by_city",
     )
     open_complaint_by_city = by_city(
-        db.query(Complaint.city_id, func.count(Complaint.id))
+        scoped(db.query(Complaint.city_id, func.count(Complaint.id)), Complaint.city_id)
         .filter(Complaint.status.notin_(("resolved", "rejected", "closed")))
         .group_by(Complaint.city_id),
         "open_complaints_by_city",
     )
     resolved_complaint_by_city = by_city(
-        db.query(Complaint.city_id, func.count(Complaint.id))
+        scoped(db.query(Complaint.city_id, func.count(Complaint.id)), Complaint.city_id)
         .filter(Complaint.status == "resolved")
         .group_by(Complaint.city_id),
         "resolved_complaints_by_city",
     )
     issues_by_city = by_city(
-        db.query(IssueCluster.city_id, func.count(IssueCluster.id)).group_by(IssueCluster.city_id),
+        scoped(db.query(IssueCluster.city_id, func.count(IssueCluster.id)), IssueCluster.city_id)
+        .group_by(IssueCluster.city_id),
         "issues_by_city",
     )
     critical_issues_by_city = by_city(
-        db.query(IssueCluster.city_id, func.count(IssueCluster.id))
+        scoped(db.query(IssueCluster.city_id, func.count(IssueCluster.id)), IssueCluster.city_id)
         .filter(func.lower(IssueCluster.risk_level) == "critical")
         .group_by(IssueCluster.city_id),
         "critical_issues_by_city",
     )
     tenders_by_city = by_city(
-        db.query(Tender.city_id, func.count(Tender.id)).group_by(Tender.city_id),
+        scoped(db.query(Tender.city_id, func.count(Tender.id)), Tender.city_id)
+        .group_by(Tender.city_id),
         "tenders_by_city",
     )
     published_tenders_by_city = by_city(
-        db.query(Tender.city_id, func.count(Tender.id))
+        scoped(db.query(Tender.city_id, func.count(Tender.id)), Tender.city_id)
         .filter(Tender.status == "PUBLISHED")
         .group_by(Tender.city_id),
         "published_tenders_by_city",
     )
     work_orders_by_city = by_city(
-        db.query(Tender.city_id, func.count(WorkOrder.id))
+        scoped(db.query(Tender.city_id, func.count(WorkOrder.id)), Tender.city_id)
         .join(WorkOrder, WorkOrder.tender_id == Tender.id)
         .group_by(Tender.city_id),
         "work_orders_by_city",
     )
     active_work_orders_by_city = by_city(
-        db.query(Tender.city_id, func.count(WorkOrder.id))
+        scoped(db.query(Tender.city_id, func.count(WorkOrder.id)), Tender.city_id)
         .join(WorkOrder, WorkOrder.tender_id == Tender.id)
         .filter(WorkOrder.status.notin_((WorkOrderStatus.COMPLETED, WorkOrderStatus.CLOSED, WorkOrderStatus.CANCELLED)))
         .group_by(Tender.city_id),
         "active_work_orders_by_city",
     )
     high_risk_work_orders_by_city = by_city(
-        db.query(Tender.city_id, func.count(WorkOrder.id))
+        scoped(db.query(Tender.city_id, func.count(WorkOrder.id)), Tender.city_id)
         .join(WorkOrder, WorkOrder.tender_id == Tender.id)
         .filter(func.lower(WorkOrder.risk_level).in_(("high", "critical")))
         .group_by(Tender.city_id),
         "high_risk_work_orders_by_city",
     )
     registrations_by_city = by_city(
-        db.query(ContractorCityRegistration.city_id, func.count(ContractorCityRegistration.id))
+        scoped(db.query(ContractorCityRegistration.city_id, func.count(ContractorCityRegistration.id)), ContractorCityRegistration.city_id)
         .group_by(ContractorCityRegistration.city_id),
         "registrations_by_city",
     )
 
-    try:
-        city_rows = db.execute(select(City).order_by(City.name)).scalars().all()
-    except Exception:
-        db.rollback()
-        degraded.append("cities")
-        city_rows = []
+    scoped_total_complaints = sum(complaint_by_city.values())
+    scoped_open_complaints = sum(open_complaint_by_city.values())
+    scoped_resolved_complaints = sum(resolved_complaint_by_city.values())
+    scoped_total_issues = sum(issues_by_city.values())
+    scoped_total_tenders = sum(tenders_by_city.values())
+    scoped_active_work_orders = sum(active_work_orders_by_city.values())
+    platform = platform.model_copy(update={
+        "total_complaints": scoped_total_complaints,
+        "open_complaints": scoped_open_complaints,
+        "resolved_complaints": scoped_resolved_complaints,
+        "total_issues": scoped_total_issues,
+        "open_issues": sum(v for key, v in issue_status.items() if key not in ("resolved", "closed")),
+        "total_tenders": scoped_total_tenders,
+        "active_work_orders": scoped_active_work_orders,
+        "total_cities": len(city_rows),
+    })
 
-    cities = []
-    for city in city_rows:
-        city_id = city.id
-        cities.append(CommandCenterCityOut(
-            id=str(city_id),
+    cities = [
+        CommandCenterCityOut(
+            id=str(city.id),
             name=city.name,
             state_code=city.state_code,
-            complaints=int(complaint_by_city.get(city_id, 0)),
-            open_complaints=int(open_complaint_by_city.get(city_id, 0)),
-            resolved_complaints=int(resolved_complaint_by_city.get(city_id, 0)),
-            issues=int(issues_by_city.get(city_id, 0)),
-            critical_issues=int(critical_issues_by_city.get(city_id, 0)),
-            tenders=int(tenders_by_city.get(city_id, 0)),
-            published_tenders=int(published_tenders_by_city.get(city_id, 0)),
-            work_orders=int(work_orders_by_city.get(city_id, 0)),
-            active_work_orders=int(active_work_orders_by_city.get(city_id, 0)),
-            contractor_registrations=int(registrations_by_city.get(city_id, 0)),
-            high_risk_work_orders=int(high_risk_work_orders_by_city.get(city_id, 0)),
-        ))
+            complaints=int(complaint_by_city.get(city.id, 0)),
+            open_complaints=int(open_complaint_by_city.get(city.id, 0)),
+            resolved_complaints=int(resolved_complaint_by_city.get(city.id, 0)),
+            issues=int(issues_by_city.get(city.id, 0)),
+            critical_issues=int(critical_issues_by_city.get(city.id, 0)),
+            tenders=int(tenders_by_city.get(city.id, 0)),
+            published_tenders=int(published_tenders_by_city.get(city.id, 0)),
+            work_orders=int(work_orders_by_city.get(city.id, 0)),
+            active_work_orders=int(active_work_orders_by_city.get(city.id, 0)),
+            contractor_registrations=int(registrations_by_city.get(city.id, 0)),
+            high_risk_work_orders=int(high_risk_work_orders_by_city.get(city.id, 0)),
+        )
+        for city in city_rows
+    ]
 
     workflow = [
-        {"id": "reports", "label": "Citizen reports", "count": platform.total_complaints, "tone": "teal"},
-        {"id": "issues", "label": "Issue clusters", "count": platform.total_issues, "tone": "saffron"},
-        {"id": "tenders", "label": "Municipal tenders", "count": platform.total_tenders, "tone": "indigo"},
-        {"id": "execution", "label": "Contractor work orders", "count": platform.active_work_orders, "tone": "blue"},
-        {"id": "resolved", "label": "Resolved complaints", "count": platform.resolved_complaints, "tone": "teal"},
+        {"id": "reports", "label": "Citizen reports", "count": scoped_total_complaints, "tone": "teal"},
+        {"id": "issues", "label": "Issue clusters", "count": scoped_total_issues, "tone": "saffron"},
+        {"id": "tenders", "label": "Municipal tenders", "count": scoped_total_tenders, "tone": "indigo"},
+        {"id": "execution", "label": "Contractor work orders", "count": scoped_active_work_orders, "tone": "blue"},
+        {"id": "resolved", "label": "Resolved complaints", "count": scoped_resolved_complaints, "tone": "teal"},
     ]
 
     try:
@@ -558,8 +597,13 @@ def get_command_center_snapshot(
         recent_audit=recent_audit,
         system_health={
             "backend": {"status": "operational", "source": "request path"},
-            "database": {"status": health_status, "source": "bounded aggregate queries"},
+            "database": {"status": health_status, "source": "bounded scoped aggregate queries"},
             "admin_api": {"status": health_status, "source": "super-admin endpoint"},
+            "scope": {
+                "cities": [city.name for city in city_rows],
+                "supported_only": True,
+                "configured_city_names": sorted(scope_names),
+            },
             "degraded_sections": degraded,
         },
     )

@@ -30,6 +30,11 @@ import {
   Sparkles,
   RefreshCw,
   Network,
+  RadioTower,
+  Globe2,
+  GitBranch,
+  Gauge,
+  Clock3,
   X,
 } from "lucide-react";
 import {
@@ -51,6 +56,8 @@ export const Route = createFileRoute("/admin/dashboard")({
   head: () => ({ meta: [{ title: "Admin Dashboard | Civic Sathi" }] }),
   component: AdminDashboardContent,
 });
+
+const LIVE_CITY_NAMES = new Set(["vadodara", "bengaluru"]);
 
 const STATUS_COLORS: Record<string, string> = {
   DRAFT: "#6c757d",
@@ -113,7 +120,7 @@ function AdminDashboardContent() {
         if (isMounted) {
           setSnapshot(liveSnapshot);
           if (liveSnapshot?.platform) setStats(liveSnapshot.platform);
-          if (liveWorkOrders) setWOs(liveWorkOrders.slice(0, 8));
+          if (liveWorkOrders) setWOs(liveWorkOrders.filter((wo: any) => LIVE_CITY_NAMES.has(String(wo?.city ?? "").trim().toLowerCase())).slice(0, 8));
           setSnapshotError(null);
           setLastRefresh(new Date());
         }
@@ -204,20 +211,32 @@ function AdminDashboardContent() {
     name: status.replace(/_/g, " "),
     count: Number(count),
   }));
-  const cityPulseData = (snapshot?.cities ?? []).map((city: any) => ({
-    name: city.name,
-    open: Number(city.open_complaints ?? 0),
-    resolved: Number(city.resolved_complaints ?? 0),
-    active: Number(city.active_work_orders ?? 0),
-  }));
+  const cityPulseData = (snapshot?.cities ?? [])
+    .filter((city: any) => LIVE_CITY_NAMES.has(String(city.name ?? "").trim().toLowerCase()))
+    .map((city: any) => ({
+      name: city.name,
+      open: Number(city.open_complaints ?? 0),
+      resolved: Number(city.resolved_complaints ?? 0),
+      active: Number(city.active_work_orders ?? 0),
+      issues: Number(city.issues ?? 0),
+      tenders: Number(city.tenders ?? 0),
+      risk: Number(city.high_risk_work_orders ?? 0),
+    }));
   const complaintStatusData = Object.entries(snapshot?.complaint_status ?? {}).map(([name, value]) => ({
     name: name.replace(/_/g, " "),
     value: Number(value),
   }));
   const workflowData = snapshot?.workflow ?? [];
+  const pipelineScope = snapshot?.system_health?.scope?.cities?.filter((name: string) =>
+    LIVE_CITY_NAMES.has(String(name).trim().toLowerCase()),
+  ) ?? cityPulseData.map((city: any) => city.name);
+  const healthEntries = Object.entries(snapshot?.system_health ?? {}).filter(
+    ([name]) => name !== "scope" && name !== "degraded_sections",
+  );
+  const generatedAt = snapshot?.generated_at ? new Date(snapshot.generated_at) : null;
 
   return (
-    <div className="space-y-8 muni-page-enter">
+    <div className="civic-admin-command-center space-y-8 muni-page-enter">
       {/* Header & Quick Action Buttons */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
@@ -252,6 +271,43 @@ function AdminDashboardContent() {
           </Link>
         </div>
       </div>
+
+      {/* Live operations fabric */}
+      <section className="civic-admin-telemetry-hero civic-admin-command-card">
+        <div className="civic-admin-telemetry-hero__scan" aria-hidden="true" />
+        <div className="relative z-10 p-5 sm:p-7">
+          <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+            <div>
+              <div className="civic-admin-kicker"><RadioTower className="h-3.5 w-3.5" /> LIVE OPERATIONS FABRIC</div>
+              <h2 className="mt-3 max-w-3xl text-2xl font-semibold tracking-tight sm:text-3xl">One civic thread. Two city networks.</h2>
+              <p className="mt-2 max-w-2xl text-sm leading-6 text-[var(--muted-foreground)]">A real-time control surface for the citizen signal, municipal decision, procurement gate, contractor execution, and resolution loop.</p>
+            </div>
+            <div className="civic-admin-telemetry-meta">
+              <div><span>LOCKED SCOPE</span><strong>{pipelineScope.length ? pipelineScope.join(" × ") : "Vadodara × Bengaluru"}</strong></div>
+              <div><span>STREAM STATE</span><strong className={snapshotError ? "text-amber-300" : "text-emerald-300"}>{snapshotLoading ? "SYNCING" : snapshotError ? "DEGRADED" : "SYNCED"}</strong></div>
+            </div>
+          </div>
+          <div className="civic-admin-pipeline-rail mt-7" role="list" aria-label="Live civic workflow pipeline">
+            {(workflowData.length ? workflowData : [
+              { id: "reports", label: "Citizen reports", count: 0, tone: "teal" },
+              { id: "issues", label: "Issue clusters", count: 0, tone: "saffron" },
+              { id: "tenders", label: "Municipal tenders", count: 0, tone: "indigo" },
+              { id: "execution", label: "Contractor work orders", count: 0, tone: "blue" },
+              { id: "resolved", label: "Resolved complaints", count: 0, tone: "teal" },
+            ]).map((stage: any, index: number, stages: any[]) => (
+              <div key={stage.id ?? index} className={`civic-admin-pipeline-stage ${snapshotLoading ? "is-loading" : ""}`} role="listitem">
+                <div className={`civic-admin-pipeline-node civic-admin-flow-${stage.tone ?? "indigo"}`}><span>{String(index + 1).padStart(2, "0")}</span></div>
+                <div className="mt-3 min-w-0"><p>{stage.label}</p><strong>{Number(stage.count ?? 0).toLocaleString("en-IN")}</strong><span>LIVE RECORDS</span></div>
+                {index < stages.length - 1 && <GitBranch className="civic-admin-pipeline-connector" aria-hidden="true" />}
+              </div>
+            ))}
+          </div>
+          <div className="mt-6 flex flex-col gap-3 border-t border-white/10 pt-4 text-[10px] uppercase tracking-[0.16em] text-[var(--muted-foreground)] sm:flex-row sm:items-center sm:justify-between">
+            <span className="inline-flex items-center gap-2"><Globe2 className="h-3.5 w-3.5 text-[var(--civic-city-accent)]" /> City scope enforced by backend allowlist</span>
+            <span className="inline-flex items-center gap-2"><Clock3 className="h-3.5 w-3.5" /> {generatedAt ? `Snapshot ${generatedAt.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}` : "Awaiting first snapshot"} · 30 SEC REFRESH</span>
+          </div>
+        </div>
+      </section>
 
       {/* Stats grid */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
@@ -319,11 +375,11 @@ function AdminDashboardContent() {
           </div>
           <span className="civic-admin-access-badge">ADMIN ONLY</span>
         </div>
-        <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           <AdminSignal label="Authorization" value="JWT + allowlist" />
           <AdminSignal label="Audit trail" value="Persisted" />
           <AdminSignal label="Data source" value="Live backend" />
-          <AdminSignal label="Scope" value="VMC + BBMP" />
+          <AdminSignal label="Scope lock" value="Vadodara + Bengaluru" />
         </div>
       </GlassCard>
 
@@ -430,7 +486,7 @@ function AdminDashboardContent() {
           <SectionLabel>Platform health</SectionLabel>
           <h2 className="text-lg font-semibold">Signals & dependencies</h2>
           <div className="mt-4 space-y-3">
-            {Object.entries(snapshot?.system_health ?? {}).map(([name, health]: [string, any]) => (
+            {healthEntries.map(([name, health]: [string, any]) => (
               <div key={name} className="flex items-center justify-between rounded-xl border border-[var(--glass-border)]/60 bg-[var(--surface)]/45 px-3 py-3">
                 <div className="flex items-center gap-2.5"><div className="rounded-lg bg-emerald-500/15 p-2 text-emerald-300">{name === "database" ? <Database className="h-4 w-4" /> : <Server className="h-4 w-4" />}</div><div><p className="text-xs font-semibold capitalize">{name.replace(/_/g, " ")}</p><p className="text-[10px] text-[var(--muted-foreground)]">{health?.source ?? "live signal"}</p></div></div>
                 <span className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-emerald-300"><CheckCircle2 className="h-3.5 w-3.5" /> {health?.status ?? "unknown"}</span>

@@ -43,6 +43,10 @@ class Settings(BaseSettings):
         default="admin@janmind.in,maherbhatt01@gmail.com",
         description="Comma-separated email allowlist for private super-admin operations",
     )
+    command_center_city_names: str = Field(
+        default="Vadodara,Bengaluru",
+        description="Comma-separated city names included in the private command center",
+    )
 
     # AI / LLM Configuration (Groq, Grok / xAI, etc.)
     groq_api_key: str | None = Field(default=None, description="Groq API key")
@@ -73,6 +77,10 @@ class Settings(BaseSettings):
     @property
     def super_admin_email_set(self) -> set[str]:
         return {email.strip().lower() for email in self.super_admin_emails.split(",") if email.strip()}
+
+    @property
+    def command_center_city_name_set(self) -> set[str]:
+        return {name.strip().casefold() for name in self.command_center_city_names.split(",") if name.strip()}
 
     @property
     def is_production(self) -> bool:

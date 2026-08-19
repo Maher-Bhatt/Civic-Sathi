@@ -988,3 +988,192 @@ body::after {
 .civic-brand-wordmark--internal { font-size: .88rem; letter-spacing: .08em; }
 .dark .civic-brand-wordmark { color: var(--foreground); }
 @media (max-width: 767px) { .civic-brand-lockup { width: 2.2rem; height: 2.2rem; } .civic-brand-wordmark { font-size: .78rem; letter-spacing: .08em; } }
+
+
+/* Command-center v2: dark civic telemetry canvas, live pipeline rail, and scope-first observability. */
+.civic-admin-command-center {
+  --background: #071126;
+  --background-secondary: #0a1731;
+  --surface: #0c1a34;
+  --surface-elevated: #102443;
+  --glass-strong: rgb(16 36 67 / 0.92);
+  --glass-border: rgb(112 166 219 / 0.20);
+  --card: rgb(12 26 52 / 0.86);
+  --card-foreground: #e8f2ff;
+  --foreground: #e8f2ff;
+  --muted-foreground: #9db4d0;
+  --civic-city-accent: #e8a04a;
+  --civic-city-accent-soft: #5f789d;
+  position: relative;
+  isolation: isolate;
+  margin: -1rem;
+  padding: 1rem;
+  min-height: calc(100vh - 2rem);
+  overflow: hidden;
+  color: var(--foreground);
+  background:
+    radial-gradient(circle at 14% 8%, rgb(200 107 24 / 0.22), transparent 28rem),
+    radial-gradient(circle at 88% 12%, rgb(14 118 110 / 0.18), transparent 26rem),
+    linear-gradient(135deg, #071126 0%, #0a1731 52%, #071126 100%);
+}
+.civic-admin-command-center::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  opacity: .34;
+  background-image:
+    linear-gradient(rgb(91 150 213 / 0.11) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(91 150 213 / 0.11) 1px, transparent 1px),
+    radial-gradient(circle at 50% 22%, transparent 0 8rem, rgb(232 160 74 / 0.12) 8.1rem 8.16rem, transparent 8.2rem 14rem, rgb(14 118 110 / 0.10) 14.1rem 14.16rem, transparent 14.2rem);
+  background-size: 42px 42px, 42px 42px, auto;
+  mask-image: linear-gradient(to bottom, #000 0%, rgb(0 0 0 / 0.8) 65%, transparent 100%);
+  animation: civic-admin-grid-drift 28s linear infinite;
+}
+.civic-admin-command-center::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: linear-gradient(115deg, transparent 0 34%, rgb(232 160 74 / 0.05) 34.1% 34.25%, transparent 34.35% 61%, rgb(14 118 110 / 0.05) 61.1% 61.25%, transparent 61.35%);
+  mix-blend-mode: screen;
+}
+.civic-admin-command-center > * { position: relative; z-index: 1; }
+.civic-admin-command-center .glass-card:not(.civic-admin-command-card) {
+  background: linear-gradient(145deg, rgb(15 38 72 / 0.90), rgb(8 24 48 / 0.82));
+  border-color: rgb(112 166 219 / 0.18);
+  box-shadow: 0 20px 55px -34px rgb(0 0 0 / 0.90), inset 0 1px 0 rgb(255 255 255 / 0.07);
+}
+.civic-admin-command-center .civic-admin-command-card {
+  background: linear-gradient(145deg, rgb(14 35 68 / 0.92), rgb(7 19 40 / 0.88));
+  border-color: rgb(112 166 219 / 0.22);
+  box-shadow: 0 26px 80px -38px rgb(0 0 0 / 0.95), inset 0 1px 0 rgb(255 255 255 / 0.08);
+}
+.civic-admin-telemetry-hero {
+  min-height: 28rem;
+  border-radius: 1.5rem;
+  border: 1px solid rgb(111 165 218 / 0.25);
+  background:
+    linear-gradient(120deg, rgb(6 18 40 / 0.96), rgb(10 34 63 / 0.80) 48%, rgb(12 31 52 / 0.92)),
+    url('/city-atmosphere/vadodara-civic-atmosphere.webp') center / cover;
+  box-shadow: 0 30px 90px -42px rgb(0 0 0 / 0.95), inset 0 1px 0 rgb(255 255 255 / 0.11);
+}
+.civic-admin-telemetry-hero::before {
+  background-image: linear-gradient(90deg, transparent 49.6%, rgb(232 160 74 / 0.42) 50%, transparent 50.4%), linear-gradient(0deg, transparent 49.6%, rgb(14 118 110 / 0.36) 50%, transparent 50.4%), url('/city-atmosphere/vadodara-civic-atmosphere.webp');
+  background-size: 5rem 5rem, 5rem 5rem, cover;
+  opacity: .34;
+  mix-blend-mode: screen;
+  animation: civic-admin-drift 22s ease-in-out infinite alternate;
+}
+.civic-admin-telemetry-hero__scan {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.civic-admin-telemetry-hero__scan::before {
+  content: "";
+  position: absolute;
+  left: -10%;
+  right: -10%;
+  top: 46%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgb(232 160 74 / 0.75), rgb(14 118 110 / 0.72), transparent);
+  box-shadow: 0 0 24px rgb(232 160 74 / 0.58);
+  animation: civic-admin-scanline 5.5s ease-in-out infinite;
+}
+.civic-admin-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  color: #f4b865;
+  font-size: .62rem;
+  font-weight: 850;
+  letter-spacing: .20em;
+}
+.civic-admin-telemetry-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .6rem;
+}
+.civic-admin-telemetry-meta > div {
+  min-width: 9.5rem;
+  padding: .75rem .85rem;
+  border: 1px solid rgb(112 166 219 / 0.22);
+  border-radius: .85rem;
+  background: rgb(3 14 32 / 0.48);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.06);
+}
+.civic-admin-telemetry-meta span,
+.civic-admin-pipeline-stage span {
+  display: block;
+  color: #7894b7;
+  font-size: .56rem;
+  font-weight: 800;
+  letter-spacing: .16em;
+}
+.civic-admin-telemetry-meta strong { display: block; margin-top: .25rem; font-size: .78rem; letter-spacing: .04em; }
+.civic-admin-pipeline-rail {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: .75rem;
+  position: relative;
+}
+.civic-admin-pipeline-rail::before {
+  content: "";
+  position: absolute;
+  top: 1.55rem;
+  left: 1.25rem;
+  right: 1.25rem;
+  height: 1px;
+  background: linear-gradient(90deg, rgb(14 118 110 / 0.65), rgb(232 160 74 / 0.82), rgb(42 108 176 / 0.72), rgb(14 118 110 / 0.68));
+  box-shadow: 0 0 16px rgb(49 155 174 / 0.36);
+}
+.civic-admin-pipeline-stage { position: relative; min-width: 0; }
+.civic-admin-pipeline-node {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  width: 3.1rem;
+  height: 3.1rem;
+  place-items: center;
+  border: 1px solid rgb(231 244 255 / 0.45);
+  border-radius: 1rem;
+  color: white;
+  font-size: .66rem;
+  font-weight: 850;
+  box-shadow: 0 0 0 .35rem rgb(7 17 38 / 0.86), 0 0 26px currentColor;
+}
+.civic-admin-pipeline-stage p { margin: 0; overflow: hidden; color: #e8f2ff; font-size: .75rem; font-weight: 750; text-overflow: ellipsis; white-space: nowrap; }
+.civic-admin-pipeline-stage strong { display: block; margin-top: .35rem; color: #ffffff; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 1.25rem; }
+.civic-admin-pipeline-connector { position: absolute; top: 1.05rem; right: -.25rem; z-index: 2; width: 1rem; height: 1rem; color: #dfaa5b; filter: drop-shadow(0 0 8px rgb(232 160 74 / 0.75)); animation: civic-admin-connector-pulse 2.5s ease-in-out infinite; }
+.civic-admin-pipeline-stage.is-loading .civic-admin-pipeline-node { animation: civic-admin-node-pulse 1.4s ease-in-out infinite; }
+.civic-admin-command-center .civic-admin-flow-node { background: rgb(5 18 38 / 0.52); border-color: rgb(112 166 219 / 0.20); }
+.civic-admin-command-center .civic-admin-flow-node:hover { background: rgb(21 61 91 / 0.50); }
+@keyframes civic-admin-grid-drift { from { background-position: 0 0, 0 0, center; } to { background-position: 42px 42px, -42px 42px, 1.5rem -1rem; } }
+@keyframes civic-admin-scanline { 0%, 100% { transform: translateY(-10rem); opacity: 0; } 20%, 75% { opacity: .9; } 50% { transform: translateY(12rem); } }
+@keyframes civic-admin-connector-pulse { 0%, 100% { opacity: .45; transform: translateX(0); } 50% { opacity: 1; transform: translateX(.2rem); } }
+@keyframes civic-admin-node-pulse { 0%, 100% { box-shadow: 0 0 0 .35rem rgb(7 17 38 / 0.86), 0 0 20px currentColor; } 50% { box-shadow: 0 0 0 .5rem rgb(7 17 38 / 0.86), 0 0 36px currentColor; } }
+@media (max-width: 900px) {
+  .civic-admin-pipeline-rail { grid-template-columns: 1fr; gap: 1rem; }
+  .civic-admin-pipeline-rail::before { top: 1.4rem; bottom: 1.4rem; left: 1.5rem; right: auto; width: 1px; height: auto; background: linear-gradient(180deg, rgb(14 118 110 / 0.65), rgb(232 160 74 / 0.82), rgb(42 108 176 / 0.72)); }
+  .civic-admin-pipeline-stage { display: grid; grid-template-columns: 3.1rem 1fr; column-gap: .8rem; align-items: start; }
+  .civic-admin-pipeline-stage > div:nth-child(2) { margin-top: .2rem; }
+  .civic-admin-pipeline-connector { top: auto; bottom: -.75rem; left: 1.05rem; right: auto; transform: rotate(90deg); }
+  .civic-admin-pipeline-stage:last-child .civic-admin-pipeline-connector { display: none; }
+}
+@media (max-width: 767px) {
+  .civic-admin-command-center { margin: -.75rem; padding: .75rem; }
+  .civic-admin-telemetry-hero { min-height: 0; }
+  .civic-admin-telemetry-meta { width: 100%; }
+  .civic-admin-telemetry-meta > div { flex: 1 1 8rem; min-width: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .civic-admin-command-center::before,
+  .civic-admin-telemetry-hero::before,
+  .civic-admin-telemetry-hero__scan::before,
+  .civic-admin-pipeline-connector,
+  .civic-admin-pipeline-stage.is-loading .civic-admin-pipeline-node { animation: none; }
+}
