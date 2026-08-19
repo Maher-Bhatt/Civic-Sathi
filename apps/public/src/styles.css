@@ -692,3 +692,21 @@ body::after {
   }
   .civic-heritage-signal > a { margin-top: 0; white-space: nowrap; }
 }
+
+
+.civic-heritage-signal,
+.civic-heritage-signal > *,
+.jm-heritage-card {
+  min-width: 0;
+}
+
+@media (max-width: 639px) {
+  .civic-heritage-signal {
+    margin-top: 0.75rem;
+    padding: 0.9rem;
+  }
+
+  .jm-heritage-card {
+    padding: 1rem;
+  }
+}

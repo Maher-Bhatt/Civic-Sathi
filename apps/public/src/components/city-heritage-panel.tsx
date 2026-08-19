@@ -48,6 +48,45 @@ const HERITAGE_DATA: Record<CityId, {
         gradient: "from-amber-500/20 via-orange-500/10 to-transparent",
       },
       {
+        id: "akota-ankottaka",
+        title: "Ankottaka / Akota Bronze Heritage",
+        vernacular: "અંકોટ્ટક · અકોટા જૈન વારસો",
+        era: "5th – 6th Century CE",
+        category: "civic",
+        tagline: "An early center of Jain studies beside the Vishwamitri",
+        civicLegacy: "The district history records Akota as an early settlement and Jain learning center. Bronze tirthankar images recovered from the site now form part of Vadodara’s museum memory.",
+        quote: "A city’s civic archive begins long before its modern streets.",
+        icon: Landmark,
+        color: "#7C5A3C",
+        gradient: "from-stone-500/20 via-amber-500/10 to-transparent",
+      },
+      {
+        id: "baroda-college-msu",
+        title: "Baroda College to MSU Baroda",
+        vernacular: "બરોડા કોલેજથી મહારાજા સયાજીરાવ યુનિવર્સિટી",
+        era: "1881 → 1949 CE",
+        category: "civic",
+        tagline: "Public learning shaped the city’s architectural and intellectual life",
+        civicLegacy: "Baroda College began in 1881, and the Maharaja Sayajirao University of Baroda was founded in 1949. Its Faculty of Arts building carries an Indo-Saracenic fusion of Indian and Byzantine arches and domes.",
+        quote: "Education became one of Vadodara’s most enduring public works.",
+        icon: Scroll,
+        color: "#234A84",
+        gradient: "from-blue-500/20 via-indigo-500/10 to-transparent",
+      },
+      {
+        id: "kirti-mandir",
+        title: "Kirti Mandir and Memorial Architecture",
+        vernacular: "કીર્તિ મંદિર · સ્મારક સ્થાપત્ય",
+        era: "1936 CE",
+        category: "palace",
+        tagline: "An E-shaped civic monument with domes, terraces, and a 35-metre shikhara",
+        civicLegacy: "Built for Maharaja Sayajirao Gaekwad III’s silver jubilee, Kirti Mandir brings together memorial architecture, carved stone, domes, balconies, and murals in the heart of Vadodara.",
+        quote: "Memory can be designed as a public place.",
+        icon: Building2,
+        color: "#A45A2A",
+        gradient: "from-orange-500/20 via-amber-500/10 to-transparent",
+      },
+      {
         id: "laxmi-vilas",
         title: "Laxmi Vilas Palace & Royal Planning",
         vernacular: "લક્ષ્મી વિલાસ મહેલ",
@@ -165,7 +204,7 @@ export function CityHeritageSignal({ cityId }: { cityId: CityId }) {
         </span>
         <div className="min-w-0">
           <p className="text-[0.62rem] font-bold uppercase tracking-[0.16em] text-[var(--heritage-accent)]">{cityVisuals.authority} · Civic heritage signal</p>
-          <p className="mt-1 truncate text-sm font-bold text-[var(--foreground)]">{story.title}</p>
+          <p className="mt-1 line-clamp-2 break-words text-sm font-bold text-[var(--foreground)]">{story.title}</p>
           <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-muted-foreground">{story.tagline} · {cityVisuals.architecture}</p>
         </div>
       </div>
@@ -217,7 +256,7 @@ export function CityHeritagePanel({ cityId, onSelectCity }: { cityId: CityId; on
                   : "text-muted-foreground hover:text-foreground"
               )}
             >
-              🏛️ Vadodara (VMC)
+              Vadodara · VMC
             </button>
             <button
               type="button"
@@ -232,7 +271,7 @@ export function CityHeritagePanel({ cityId, onSelectCity }: { cityId: CityId; on
                   : "text-muted-foreground hover:text-foreground"
               )}
             >
-              🌸 Bengaluru (BBMP)
+              Bengaluru · BBMP
             </button>
           </div>
         )}
@@ -244,7 +283,7 @@ export function CityHeritagePanel({ cityId, onSelectCity }: { cityId: CityId; on
 
       {/* Main Grid: Story Selector Cards + Active Story Detail Showcase */}
       <div className="grid gap-5 lg:grid-cols-[1.1fr_1.3fr] items-start">
-        {/* Left: 4 Historic Capsules */}
+        {/* Left: Historic Milestones */}
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
           {cityData.stories.map((story) => {
             const Icon = story.icon;
@@ -262,7 +301,7 @@ export function CityHeritagePanel({ cityId, onSelectCity }: { cityId: CityId; on
                 )}
               >
                 <div className="flex w-full items-center justify-between gap-2">
-                  <div className="flex items-center gap-2.5">
+                  <div className="flex min-w-0 items-center gap-2.5">
                     <span
                       className="flex h-9 w-9 items-center justify-center rounded-xl transition-transform group-hover:scale-110 shadow-sm"
                       style={{
@@ -273,8 +312,8 @@ export function CityHeritagePanel({ cityId, onSelectCity }: { cityId: CityId; on
                     >
                       <Icon className="h-4 w-4" />
                     </span>
-                    <div>
-                      <h4 className="text-sm font-bold text-[var(--foreground)] group-hover:text-amber-700 dark:group-hover:text-amber-300 transition-colors">
+                    <div className="min-w-0">
+                      <h4 className="break-words text-sm font-bold text-[var(--foreground)] group-hover:text-amber-700 dark:group-hover:text-amber-300 transition-colors">
                         {story.title}
                       </h4>
                       <p className="text-[11px] text-muted-foreground font-medium">
@@ -303,7 +342,7 @@ export function CityHeritagePanel({ cityId, onSelectCity }: { cityId: CityId; on
           className="jm-heritage-card p-6 sm:p-7 space-y-5 border-orange-500/30 bg-gradient-to-br from-white/95 via-amber-50/40 to-emerald-50/30 dark:from-slate-900/95 dark:via-slate-900/80 dark:to-slate-800/80"
         >
           <div className="flex items-center justify-between gap-3 border-b border-orange-500/15 pb-4">
-            <div className="flex items-center gap-3">
+            <div className="flex min-w-0 items-center gap-3">
               <span
                 className="flex h-11 w-11 items-center justify-center rounded-2xl shadow-sm"
                 style={{
@@ -314,11 +353,11 @@ export function CityHeritagePanel({ cityId, onSelectCity }: { cityId: CityId; on
               >
                 <currentStory.icon className="h-5 w-5" />
               </span>
-              <div>
-                <span className="text-[10px] font-bold tracking-[0.14em] uppercase text-orange-700 dark:text-orange-400">
+              <div className="min-w-0">
+                <span className="block break-words text-[10px] font-bold tracking-[0.14em] uppercase text-orange-700 dark:text-orange-400">
                   {currentStory.era} · {cityData.cityName} Heritage
                 </span>
-                <h3 className="text-lg sm:text-xl font-bold text-[var(--foreground)]">
+                <h3 className="break-words text-lg sm:text-xl font-bold text-[var(--foreground)]">
                   {currentStory.title}
                 </h3>
               </div>
