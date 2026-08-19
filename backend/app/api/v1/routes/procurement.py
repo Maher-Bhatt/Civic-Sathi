@@ -30,6 +30,29 @@ from app.schemas.procurement import (
 router = APIRouter()
 
 
+def _scorecard_for_contractor(db: Session, contractor: Contractor) -> dict:
+    """Return only evidence-backed ratings; empty tables stay explicitly unavailable."""
+    reviews = db.query(ContractorReview).filter(ContractorReview.contractor_id == contractor.id).all()
+    by_type: dict[ReviewAuthorType, list[float]] = {ReviewAuthorType.PUBLIC: [], ReviewAuthorType.AI: [], ReviewAuthorType.OFFICER: []}
+    for review in reviews:
+        if review.rating is not None:
+            by_type.setdefault(review.author_type, []).append(float(review.rating))
+    average = lambda values: round(sum(values) / len(values), 2) if values else None
+    ai_reviews = by_type.get(ReviewAuthorType.AI, [])
+    return {
+        "public_rating": average(by_type.get(ReviewAuthorType.PUBLIC, [])),
+        "ai_rating": average(ai_reviews),
+        "officer_rating": average(by_type.get(ReviewAuthorType.OFFICER, [])),
+        "overall_rating": average([score for score in (
+            average(by_type.get(ReviewAuthorType.PUBLIC, [])),
+            average(ai_reviews),
+            average(by_type.get(ReviewAuthorType.OFFICER, [])),
+        ) if score is not None]),
+        "total_reviews_count": len(reviews),
+        "ai_insights": contractor.ai_insights if ai_reviews and contractor.ai_insights else [],
+    }
+
+
 def enforce_city_scope(db: Session, user: User, city_id: UUID) -> UUID:
     """Keep ordinary municipality accounts inside their persisted city."""
     if user.role in {"admin", "supervisor", "municipality", "contractor"}:
@@ -509,11 +532,7 @@ def list_contractors(
     contractors = db.query(Contractor).all()
     results = []
     for c in contractors:
-        pub = c.public_rating
-        ai = c.ai_rating
-        off = c.officer_rating
-        scores = [score for score in (pub, ai, off) if score is not None]
-        overall = round(sum(scores) / len(scores), 2) if scores else None
+        scorecard = _scorecard_for_contractor(db, c)
         results.append(
             ContractorProfileResponse(
                 id=c.id,
@@ -521,12 +540,7 @@ def list_contractors(
                 contact_person=c.contact_person or "Operations Lead",
                 email=c.email,
                 phone=c.phone or "",
-                public_rating=pub,
-                ai_rating=ai,
-                officer_rating=off,
-                overall_rating=overall,
-                total_reviews_count=c.total_reviews_count or 0,
-                ai_insights=c.ai_insights or [],
+                **scorecard,
             )
         )
     return results
@@ -541,23 +555,13 @@ def get_contractor_profile(
     c = db.get(Contractor, contractor_id)
     if not c:
         raise HTTPException(status_code=404, detail="Contractor not found")
-    pub = c.public_rating
-    ai = c.ai_rating
-    off = c.officer_rating
-    scores = [score for score in (pub, ai, off) if score is not None]
-    overall = round(sum(scores) / len(scores), 2) if scores else None
     return ContractorProfileResponse(
         id=c.id,
         company_name=c.company_name,
         contact_person=c.contact_person or "Operations Lead",
         email=c.email,
         phone=c.phone or "",
-        public_rating=pub,
-        ai_rating=ai,
-        officer_rating=off,
-        overall_rating=overall,
-        total_reviews_count=c.total_reviews_count or 0,
-        ai_insights=c.ai_insights or [],
+        **_scorecard_for_contractor(db, c),
     )
 
 

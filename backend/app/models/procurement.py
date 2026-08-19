@@ -27,10 +27,10 @@ class Contractor(Base, UUIDMixin, TimestampMixin):
     auth_user_id: Mapped[str | None] = mapped_column(String(50), index=True) # ID of user that logs in
     
     # 3-Dimensional Tri-Party Performance Ratings (1.0 - 5.0)
-    public_rating: Mapped[float] = mapped_column(Float, default=4.5)     # Citizen feedback rating
-    ai_rating: Mapped[float] = mapped_column(Float, default=4.8)         # AI Algorithmic SLA & Quality Audit
-    officer_rating: Mapped[float] = mapped_column(Float, default=4.6)    # Municipal Engineer Inspection Score
-    total_reviews_count: Mapped[int] = mapped_column(Integer, default=24)
+    public_rating: Mapped[float | None] = mapped_column(Float, nullable=True)     # Citizen feedback rating
+    ai_rating: Mapped[float | None] = mapped_column(Float, nullable=True)         # AI Algorithmic SLA & Quality Audit
+    officer_rating: Mapped[float | None] = mapped_column(Float, nullable=True)    # Municipal Engineer Inspection Score
+    total_reviews_count: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
     ai_insights: Mapped[list[str] | None] = mapped_column(JSONB)        # AI-generated performance strengths & recommendations
 
 
