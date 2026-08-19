@@ -48,7 +48,10 @@ function LoginPage() {
     try {
       await signIn(email.trim().toLowerCase(), password);
       toast.success(t("login.success", "Signed in"));
-      void navigate({ to: redirect ?? "/complaints" });
+      // A successful citizen sign-in should land on the public home experience.
+      // Keep `redirect` for registration links and auth-guard compatibility, but do
+      // not send a normal login directly into the complaints workspace.
+      void navigate({ to: "/" });
     } catch {
       setError(t("login.error", "We couldn't sign you in. Check your details and try again."));
     } finally {
