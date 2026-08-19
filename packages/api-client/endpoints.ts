@@ -42,7 +42,7 @@ export class Endpoints {
     },
     get: (id: string) => this.client.get<Complaint>(`/api/v1/complaints/${id}`),
     create: (data: any) => this.client.post<Complaint>('/api/v1/complaints', data),
-    updateStatus: (id: string, status: string) => this.client.patch<Complaint>(`/api/v1/complaints/${id}/status`, { status }),
+    updateStatus: (id: string, status: string, notes?: string) => this.client.patch<Complaint>(`/api/v1/complaints/${id}/status`, { status, ...(notes ? { notes } : {}) }),
   };
 
   tenders = {

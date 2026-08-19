@@ -9,8 +9,8 @@ import { SeverityBadge, StatusBadge } from "@/components/municipality/status-bad
 import { GlassCard, SectionLabel } from "@/components/ui/glass-card";
 import { ErrorState, LoadingState } from "@/components/ui/states";
 import { useMuniAuth } from "@/lib/muni-auth";
-import { getMuniComplaint, getCivicIssues } from "@/services/api";
-import { DEPARTMENTS, type MuniComplaint } from "@/services/types";
+import { getMuniComplaint, getCivicIssues, updateComplaintStatus } from "@/services/api";
+import type { MuniComplaint } from "@/services/types";
 import type { ComplaintPoint, IssueKey, AreaHealth } from "@/services/geography";
 import { useI18n } from "@/lib/i18n";
 
@@ -29,6 +29,9 @@ function ComplaintDetailPage() {
   const [complaint, setComplaint] = useState<MuniComplaint | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [actionBusy, setActionBusy] = useState<"accept" | "reject" | null>(null);
+  const [rejectOpen, setRejectOpen] = useState(false);
+  const [rejectReason, setRejectReason] = useState("");
 
   const [civicIssues, setCivicIssues] = useState<any[]>([]);
 
@@ -72,11 +75,34 @@ function ComplaintDetailPage() {
     });
   }, [civicIssues]);
 
-  async function handleAssign(dept: (typeof DEPARTMENTS)[number]) {
-    const api = await import("@/services/api");
-    const updated = await api.assignComplaint(id, { department: dept, ...(officer?.name ? { officer: officer.name } : {}) });
-    setComplaint(updated);
-    toast.success(`Assigned to ${dept}`);
+  async function handleStatusChange(action: "accept" | "reject", notes?: string) {
+    if (!complaint || actionBusy) return;
+    setActionBusy(action);
+    try {
+      const updated = await updateComplaintStatus(
+        id,
+        action === "accept" ? "Under Review" : "Rejected",
+        notes,
+      );
+      setComplaint(updated);
+      if (action === "reject") {
+        setRejectOpen(false);
+        setRejectReason("");
+      }
+      toast.success(
+        action === "accept"
+          ? `Complaint accepted — ${updated.status}`
+          : `Complaint rejected successfully — ${updated.status}`,
+      );
+    } catch (cause: any) {
+      toast.error(
+        action === "accept"
+          ? "Unable to accept complaint. The server did not confirm the status change."
+          : "Unable to reject complaint. The server did not confirm the status change.",
+      );
+    } finally {
+      setActionBusy(null);
+    }
   }
 
   if (loading) return <LoadingState message="Loading complaint..." />;
@@ -235,19 +261,55 @@ function ComplaintDetailPage() {
 
           <GlassCard elevation="raised" className="p-6">
             <SectionLabel>{t('ui.officer_actions')}</SectionLabel>
+            {complaint.status === "Rejected" && (
+              <div className="mt-4 rounded-xl border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-700 dark:text-red-200">
+                <p className="font-semibold">Complaint Rejected</p>
+                <p className="mt-1">Status: Rejected</p>
+                {complaint.rejectedAt && <p className="mt-1 text-xs opacity-80">Rejected on {safeFormat(complaint.rejectedAt, "dd MMM yyyy, HH:mm")}</p>}
+                {complaint.rejectedByName && <p className="mt-1 text-xs opacity-80">Rejected by {complaint.rejectedByName}</p>}
+                {complaint.rejectionReason && <p className="mt-2 text-xs opacity-90">Reason: {complaint.rejectionReason}</p>}
+              </div>
+            )}
             <div className="mt-4 flex flex-col gap-3">
-              <button
-                type="button"
-                onClick={() => void handleAssign("Water Supply" as any)} // TODO: Update to actual Verify API
-                className="action-btn text-left bg-green-500/10 text-green-600 hover:bg-green-500/20 border-green-500/20"
-              >
-                {t('ui.verify_accept_complaint')}</button>
-              <button
-                type="button"
-                onClick={() => toast.success("Rejecting complaint...")} // TODO: Update to actual API
-                className="action-btn text-left bg-red-500/10 text-red-600 hover:bg-red-500/20 border-red-500/20"
-              >
-                {t('ui.reject_as_invalid')}</button>
+              {complaint.status === "Received" && (
+                <button
+                  type="button"
+                  disabled={actionBusy !== null}
+                  onClick={() => void handleStatusChange("accept")}
+                  className="action-btn text-left bg-green-500/10 text-green-600 hover:bg-green-500/20 border-green-500/20 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  {actionBusy === "accept" ? "Accepting..." : t('ui.verify_accept_complaint')}
+                </button>
+              )}
+              {!['Resolved', 'Closed', 'Rejected'].includes(complaint.status) && (
+                <button
+                  type="button"
+                  disabled={actionBusy !== null}
+                  onClick={() => setRejectOpen(true)}
+                  className="action-btn text-left bg-red-500/10 text-red-600 hover:bg-red-500/20 border-red-500/20 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  {actionBusy === "reject" ? "Rejecting..." : t('ui.reject_as_invalid')}
+                </button>
+              )}
+              {rejectOpen && (
+                <div className="rounded-xl border border-red-500/30 bg-red-500/5 p-4" role="dialog" aria-label="Reject complaint">
+                  <p className="text-sm font-semibold">Reject this complaint?</p>
+                  <p className="mt-1 text-xs text-muted-foreground">This will mark the complaint as rejected and remove it from the active workflow.</p>
+                  <label className="mt-3 block text-xs font-medium" htmlFor="reject-reason">Reason</label>
+                  <textarea
+                    id="reject-reason"
+                    value={rejectReason}
+                    onChange={(event) => setRejectReason(event.target.value)}
+                    className="mt-1 min-h-20 w-full rounded-lg border border-[var(--glass-border)] bg-[var(--surface-elevated)] p-2 text-sm"
+                    placeholder="Optional reason for the audit trail"
+                    maxLength={500}
+                  />
+                  <div className="mt-3 flex gap-2">
+                    <button type="button" className="action-btn" disabled={actionBusy !== null} onClick={() => { setRejectOpen(false); setRejectReason(""); }}>Cancel</button>
+                    <button type="button" className="action-btn bg-red-600 text-white hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50" disabled={actionBusy !== null} onClick={() => void handleStatusChange("reject", rejectReason)}>Reject Complaint</button>
+                  </div>
+                </div>
+              )}
               <hr className="border-[var(--glass-border)] my-2" />
               <button
                 type="button"

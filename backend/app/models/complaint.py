@@ -1,10 +1,11 @@
 """Complaint and ComplaintAnalysis models"""
 
-from sqlalchemy import String, Text, Integer, Float, ForeignKey, Index, Sequence
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy import String, Text, Integer, Float, ForeignKey, Index, Sequence, DateTime
+from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.dialects.postgresql import UUID, JSONB
 
 from app.models.base import Base, UUIDMixin, TimestampMixin
+from datetime import datetime
 
 
 class Complaint(Base, UUIDMixin, TimestampMixin):
@@ -29,6 +30,10 @@ class Complaint(Base, UUIDMixin, TimestampMixin):
     city_id: Mapped[UUID] = mapped_column(ForeignKey("cities.id"), index=True, nullable=False)
     
     status: Mapped[str] = mapped_column(String(20), default="received", nullable=False, index=True)
+    rejection_reason: Mapped[str | None] = mapped_column(Text)
+    rejected_by_name: Mapped[str | None] = mapped_column(String(255))
+    rejected_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    timeline_json: Mapped[list | None] = mapped_column(JSONB)
     priority: Mapped[str] = mapped_column(String(20), nullable=False, index=True)
     
     severity_score: Mapped[int] = mapped_column(Integer, nullable=False, default=0)

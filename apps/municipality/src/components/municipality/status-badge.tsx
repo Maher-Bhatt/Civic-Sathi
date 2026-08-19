@@ -8,6 +8,7 @@ const STATUS_STYLES: Record<ComplaintStatus, string> = {
   "In Progress": "bg-[#a4503f]/15 text-[#a4503f]",
   Resolved: "bg-primary/20 text-primary",
   Closed: "bg-[var(--glass)] text-subtle",
+  Rejected: "border border-red-500/30 bg-red-500/10 text-red-700 dark:text-red-200",
 };
 
 const SEVERITY_STYLES: Record<Severity, string> = {

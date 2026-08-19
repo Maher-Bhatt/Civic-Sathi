@@ -332,6 +332,7 @@ const STATUS_TO_BACKEND: Record<string, string> = {
   "In Progress": "in_progress",
   Resolved: "resolved",
   Closed: "resolved",
+  Rejected: "rejected",
 };
 
 function isComplaintInCity(raw: any, city: CityId): boolean {
@@ -363,7 +364,8 @@ function normalizeMuniComplaint(raw: any, fallbackCity: CityId): MuniComplaint {
     assigned: "Assigned",
     in_progress: "In Progress",
     resolved: "Resolved",
-    rejected: "Closed",
+    closed: "Closed",
+    rejected: "Rejected",
   };
   const rawStatus = String(raw.status || "received").toLowerCase();
   const createdAt = raw.createdAt || raw.created_at || new Date().toISOString();
@@ -380,6 +382,9 @@ function normalizeMuniComplaint(raw: any, fallbackCity: CityId): MuniComplaint {
     city,
     department: (raw.department || "Municipal Water") as MuniComplaint["department"],
     status: statusMap[rawStatus] || (raw.status as ComplaintStatus) || "Received",
+    rejectionReason: raw.rejection_reason ?? raw.rejectionReason ?? null,
+    rejectedByName: raw.rejected_by_name ?? raw.rejectedByName ?? null,
+    rejectedAt: raw.rejected_at ?? raw.rejectedAt ?? null,
     lat: Number(raw.lat ?? 0),
     lng: Number(raw.lng ?? 0),
     createdAt,
@@ -388,7 +393,12 @@ function normalizeMuniComplaint(raw: any, fallbackCity: CityId): MuniComplaint {
     interpretedText: raw.interpreted_text || raw.analysis?.interpreted_text || undefined,
     suggestedAction: raw.suggested_action || raw.analysis?.suggested_action || undefined,
     timeline: Array.isArray(raw.timeline)
-      ? raw.timeline
+      ? raw.timeline.map((event: any) => ({
+          label: String(event.label ?? "Status updated"),
+          at: event.at ?? createdAt,
+          actor: event.actor,
+          reason: event.reason,
+        }))
       : [{ label: "Report Received", at: createdAt }],
     ...(raw.analysis
       ? {
@@ -445,21 +455,29 @@ export async function getMuniComplaint(id: string): Promise<MuniComplaint | null
   }
 }
 
+export async function updateComplaintStatus(
+  id: string,
+  status: ComplaintStatus,
+  notes?: string,
+): Promise<MuniComplaint> {
+  const raw = await api.complaints.updateStatus(id, STATUS_TO_BACKEND[status] || status, notes);
+  return normalizeMuniComplaint(raw, "vadodara");
+}
+
 export async function updateMuniComplaint(
   id: string,
   patch: Partial<MuniComplaint>,
 ): Promise<MuniComplaint> {
-  if (patch.status) {
-    return api.complaints.updateStatus(id, patch.status) as any;
-  }
-  return client.patch<MuniComplaint>(`/api/v1/complaints/${id}`, patch);
+  if (patch.status) return updateComplaintStatus(id, patch.status);
+  const raw = await client.patch<any>(`/api/v1/complaints/${id}`, patch);
+  return normalizeMuniComplaint(raw, "vadodara");
 }
 
 export async function assignComplaint(
   id: string,
   input: { department: Department; team?: string; officer?: string },
 ): Promise<MuniComplaint> {
-  return updateMuniComplaint(id, { status: "Assigned", department: input.department } as any);
+  return updateComplaintStatus(id, "Assigned");
 }
 
 export async function bulkUpdateComplaints(

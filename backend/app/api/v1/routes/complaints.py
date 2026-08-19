@@ -117,14 +117,19 @@ def get_complaint(
 
 @router.patch("/{complaint_id}/status", response_model=ComplaintResponse)
 def update_complaint_status(
-    complaint_id: UUID,
+    complaint_id: str,
     status_update: ComplaintStatusUpdate,
     db: Session = Depends(get_db),
     current_officer = Depends(require_officer_permission("complaints.update")),
 ):
     """Update complaint status for designations permitted to operate the queue."""
     service = ComplaintService(db)
-    return service.update_status(complaint_id, status_update.status)
+    return service.update_status(
+        complaint_id,
+        status_update.status,
+        actor=current_officer,
+        notes=status_update.notes,
+    )
 
 
 @router.get("/{complaint_id}/similar", response_model=SimilarComplaintsResponse)

@@ -929,3 +929,31 @@ body::after {
 .civic-brand-wordmark--internal { font-size: .88rem; letter-spacing: .08em; }
 .dark .civic-brand-wordmark { color: var(--foreground); }
 @media (max-width: 767px) { .civic-brand-lockup { width: 2.2rem; height: 2.2rem; } .civic-brand-wordmark { font-size: .78rem; letter-spacing: .08em; } }
+
+
+/* Targeted mobile readability pass: keep city architecture visible without sacrificing operational contrast. */
+.civic-city-shell {
+  color: var(--foreground);
+  background-color: var(--civic-sand-100);
+}
+.civic-city-shell > * {
+  position: relative;
+  z-index: 1;
+}
+@media (max-width: 767px) {
+  .civic-city-shell {
+    min-height: 100dvh;
+    background-image:
+      linear-gradient(180deg, color-mix(in srgb, var(--civic-paper) 70%, transparent), color-mix(in srgb, var(--civic-sand-100) 86%, transparent) 62%, color-mix(in srgb, var(--civic-sand-100) 94%, transparent)),
+      var(--civic-city-atmosphere),
+      linear-gradient(135deg, var(--civic-sand-100), var(--civic-paper));
+    background-position: center top, center top, center top;
+    background-size: cover, auto 48rem, cover;
+    background-attachment: scroll;
+  }
+  .civic-city-shell::before { opacity: 0.12; }
+  .civic-atmosphere-panel {
+    background: color-mix(in srgb, var(--surface-elevated) 90%, transparent);
+    backdrop-filter: blur(18px) saturate(120%);
+  }
+}

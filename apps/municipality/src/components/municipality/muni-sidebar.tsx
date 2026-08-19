@@ -14,6 +14,7 @@ import {
   Zap,
   FileText,
 } from "lucide-react";
+import { useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/lib/i18n";
 import { useMuniAuth } from "@/lib/muni-auth";
@@ -81,6 +82,20 @@ export function MuniSidebar({
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const visibleNav = getVisibleNav(officer?.designation);
 
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const previousOverflow = document.body.style.overflow;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") onMobileClose();
+    };
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [mobileOpen, onMobileClose]);
+
   return (
     <>
       {mobileOpen && (
@@ -92,9 +107,12 @@ export function MuniSidebar({
         />
       )}
       <aside
+        role="dialog"
+        aria-modal={mobileOpen ? "true" : undefined}
+        aria-label={t('ui.municipality_navigation')}
         className={cn(
-          "fixed inset-y-0 left-0 z-50 flex flex-col border-r border-[var(--glass-border)] bg-[var(--glass-strong)] backdrop-blur-xl transition-all duration-300",
-          collapsed ? "w-[4.5rem]" : "w-60",
+          "fixed inset-y-0 left-0 z-50 flex w-[min(18rem,calc(100vw-1rem))] flex-col border-r border-[var(--glass-border)] bg-[var(--glass-strong)] backdrop-blur-xl transition-all duration-300",
+          collapsed ? "lg:w-[4.5rem]" : "lg:w-60",
           mobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0",
         )}
       >

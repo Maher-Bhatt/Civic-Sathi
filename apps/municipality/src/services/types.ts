@@ -24,6 +24,7 @@ export const COMPLAINT_STATUSES = [
   "In Progress",
   "Resolved",
   "Closed",
+  "Rejected",
 ] as const;
 
 export type ComplaintStatus = (typeof COMPLAINT_STATUSES)[number];
@@ -104,6 +105,9 @@ export interface MuniComplaint {
   photo?: string | null;
   createdAt: string;
   updatedAt: string;
+  rejectionReason?: string | null;
+  rejectedByName?: string | null;
+  rejectedAt?: string | null;
   assignedTo?: string;
   clusterId?: string;
   similarity?: number;
@@ -121,6 +125,7 @@ export interface MuniComplaint {
     label: string;
     at: string;
     actor?: string;
+    reason?: string;
   }>;
 }
 

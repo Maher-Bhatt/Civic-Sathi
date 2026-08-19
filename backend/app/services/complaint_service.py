@@ -2,8 +2,10 @@ from uuid import UUID
 from datetime import datetime, timezone
 import re
 from sqlalchemy.orm import Session
+from fastapi import HTTPException
 
 from app.models.complaint import Complaint, ComplaintAnalysis
+from app.models.audit import AuditLog
 from app.models.user import Ward, Department, User
 from app.repositories.complaint_repository import ComplaintRepository
 from app.schemas.complaint import ComplaintCreate, ComplaintResponse, ComplaintAnalysisResponse, ComplaintLinks
@@ -146,6 +148,7 @@ class ComplaintService:
                 else complaint_data.submitted_by_phone
             ),
             source="web",
+            timeline_json=[{"label": "Report Received", "at": datetime.now(timezone.utc).isoformat()}],
         )
 
         complaint = self.repo.create(complaint)
@@ -277,11 +280,70 @@ class ComplaintService:
             "offset": offset,
         }
 
-    def update_status(self, complaint_id: UUID, status: ComplaintStatus) -> ComplaintResponse:
-        """Update complaint status."""
-        complaint = self.repo.update_status(complaint_id, status)
+    def update_status(
+        self,
+        complaint_id: UUID | str,
+        status: ComplaintStatus,
+        actor=None,
+        notes: str | None = None,
+    ) -> ComplaintResponse:
+        """Persist a complaint state transition and its governance timeline event."""
+        complaint = None
+        try:
+            complaint = self.repo.get_by_id(UUID(str(complaint_id)))
+        except (ValueError, TypeError, AttributeError):
+            complaint = self.repo.get_by_public_id(str(complaint_id))
         if not complaint:
             raise NotFoundException("Complaint not found")
+
+        current_status = str(complaint.status)
+        next_status = status.value
+        if current_status == "rejected" and next_status != "rejected":
+            raise HTTPException(status_code=409, detail="Rejected complaints cannot return to the active workflow")
+        if current_status in {"resolved", "closed"} and next_status == "rejected":
+            raise HTTPException(status_code=409, detail="Resolved complaints cannot be rejected")
+        if current_status == next_status and not notes:
+            return self._to_response(complaint)
+
+        now = datetime.now(timezone.utc)
+        actor_name = str(getattr(actor, "name", None) or getattr(actor, "email", None) or "Municipal operator")
+        actor_role = str(getattr(actor, "role", None) or "municipality")
+        event_label = "Complaint Rejected" if next_status == "rejected" else {
+            "received": "Report Received",
+            "in_review": "Complaint Accepted · Under Review",
+            "assigned": "Complaint Assigned",
+            "in_progress": "Work In Progress",
+            "resolved": "Complaint Resolved",
+        }.get(next_status, f"Status changed to {next_status.replace('_', ' ').title()}")
+        timeline = list(complaint.timeline_json or [])
+        timeline.append({
+            "label": event_label,
+            "at": now.isoformat(),
+            "actor": f"{actor_name} · {actor_role}",
+            **({"reason": notes.strip()} if notes and notes.strip() else {}),
+        })
+        complaint.status = next_status
+        complaint.timeline_json = timeline
+        if next_status == "rejected":
+            complaint.rejection_reason = notes.strip() if notes and notes.strip() else "Marked invalid by municipal review"
+            complaint.rejected_by_name = actor_name
+            complaint.rejected_at = now
+
+        self.db.add(AuditLog(
+            actor_id=str(getattr(actor, "id", None) or "system"),
+            actor_name=actor_name,
+            actor_role=actor_role,
+            action="complaint.rejected" if next_status == "rejected" else "complaint.status_changed",
+            entity_type="complaint",
+            entity_id=str(complaint.id),
+            entity_label=complaint.public_id,
+            previous_value=current_status,
+            new_value=next_status,
+            reason=notes.strip() if notes and notes.strip() else None,
+            at=now,
+        ))
+        self.db.commit()
+        self.db.refresh(complaint)
         return self._to_response(complaint)
 
     def get_similar_complaints(self, complaint_id: UUID, limit: int = 5):
@@ -399,6 +461,9 @@ class ComplaintService:
             title=complaint.title,
             description=complaint.description if include_private else None,
             status=str(complaint.status),
+            rejection_reason=complaint.rejection_reason,
+            rejected_by_name=complaint.rejected_by_name,
+            rejected_at=complaint.rejected_at,
             category=complaint.category,
             department=complaint.department.name if complaint.department else "Municipal Administration",
             priority=complaint.priority,
@@ -413,6 +478,16 @@ class ComplaintService:
             privacy_status="Protected (Anti-Retaliation)",
             created_at=complaint.created_at,
             updated_at=complaint.updated_at,
+            timeline=[
+                {
+                    "label": event.get("label", "Status updated"),
+                    "at": event.get("at", complaint.updated_at),
+                    "actor": event.get("actor"),
+                    "reason": event.get("reason"),
+                }
+                for event in (complaint.timeline_json or [])
+                if isinstance(event, dict)
+            ],
             analysis=analysis_response,
             links=links,
         )
@@ -438,6 +513,9 @@ class ComplaintService:
             title=complaint.title,
             description=complaint.description,
             status=ComplaintStatus(complaint.status),
+            rejection_reason=complaint.rejection_reason,
+            rejected_by_name=complaint.rejected_by_name,
+            rejected_at=complaint.rejected_at,
             category=complaint.category,
             department=complaint.department.name if complaint.department else None,
             priority=complaint.priority,

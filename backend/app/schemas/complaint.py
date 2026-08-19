@@ -73,6 +73,14 @@ class ComplaintLinks(BaseModel):
     similar: str
 
 
+class ComplaintTimelineEvent(BaseModel):
+    """Persisted operational event surfaced in the complaint timeline."""
+    label: str
+    at: datetime
+    actor: str | None = None
+    reason: str | None = None
+
+
 class ComplaintResponse(BaseModel):
     """Response schema for a complaint with privacy protection"""
     id: UUID
@@ -80,6 +88,9 @@ class ComplaintResponse(BaseModel):
     title: str
     description: str | None = None
     status: str
+    rejection_reason: str | None = None
+    rejected_by_name: str | None = None
+    rejected_at: datetime | None = None
     category: str
     department: str
     priority: str
@@ -94,6 +105,7 @@ class ComplaintResponse(BaseModel):
     privacy_status: str = "Protected (Anti-Retaliation)"
     created_at: datetime
     updated_at: datetime
+    timeline: list[ComplaintTimelineEvent] = []
     analysis: ComplaintAnalysisResponse | None = None
     links: ComplaintLinks | None = None
     
@@ -108,6 +120,9 @@ class ComplaintListItem(BaseModel):
     title: str
     description: str | None = None
     status: str
+    rejection_reason: str | None = None
+    rejected_by_name: str | None = None
+    rejected_at: datetime | None = None
     category: str
     department: str | None = None
     priority: str
