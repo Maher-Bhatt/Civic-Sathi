@@ -845,3 +845,17 @@ body::after {
   }
 }
 
+
+
+/* Hero readability lock: architectural background remains visible around, not through, primary copy. */
+.civic-atmosphere-panel > .animate-rise:first-child {
+  background: color-mix(in srgb, var(--surface-elevated) 86%, transparent);
+  border-color: color-mix(in srgb, var(--civic-city-accent) 30%, var(--glass-border));
+  box-shadow: 0 18px 38px -22px color-mix(in srgb, var(--foreground) 35%, transparent);
+}
+@media (max-width: 767px) {
+  .civic-atmosphere-panel > .animate-rise:first-child {
+    background: color-mix(in srgb, var(--surface-elevated) 92%, transparent);
+  }
+}
+
