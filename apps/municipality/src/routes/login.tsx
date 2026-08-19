@@ -132,10 +132,13 @@ function MuniLoginPage() {
           </GlassButton>
         </form>
 
-        {/* 1-Click Demo Credentials */}
+        {/* Backend-provisioned QA identities: passwords remain hidden and are only filled into the form. */}
         <div className="mt-6 pt-5 border-t border-[var(--glass-border)]">
-          <p className="text-[11px] font-semibold uppercase tracking-wider text-[var(--muted-foreground)] mb-2.5 text-center">
-            Quick Demo Logins
+          <p className="text-[11px] font-semibold uppercase tracking-wider text-[var(--muted-foreground)] mb-1 text-center">
+            Authorized test access
+          </p>
+          <p className="mb-2.5 text-center text-[10px] leading-relaxed text-[var(--muted-foreground)]">
+            Select an account to fill its live city and role context. Passwords are never displayed.
           </p>
           <div className="space-y-1.5">
             <button
@@ -157,7 +160,7 @@ function MuniLoginPage() {
                 </span>
               </div>
               <span className="text-[11px] px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-400 font-medium">
-                Click to Fill
+                Fill form
               </span>
             </button>
 
@@ -180,7 +183,7 @@ function MuniLoginPage() {
                 </span>
               </div>
               <span className="text-[11px] px-2 py-0.5 rounded bg-blue-500/15 text-blue-400 font-medium">
-                Click to Fill
+                Fill form
               </span>
             </button>
 
@@ -203,7 +206,7 @@ function MuniLoginPage() {
                 </span>
               </div>
               <span className="text-[11px] px-2 py-0.5 rounded bg-amber-500/15 text-amber-400 font-medium">
-                Click to Fill
+                Fill form
               </span>
             </button>
 
@@ -226,7 +229,7 @@ function MuniLoginPage() {
                 </span>
               </div>
               <span className="text-[11px] px-2 py-0.5 rounded bg-purple-500/15 text-purple-400 font-medium">
-                Click to Fill
+                Fill form
               </span>
             </button>
           </div>

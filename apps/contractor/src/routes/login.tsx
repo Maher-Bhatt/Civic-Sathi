@@ -90,12 +90,36 @@ function ContractorLogin() {
           </button>
         </form>
 
-        {/* 1-Click Demo Credentials */}
+        {/* Backend-provisioned QA identities: passwords remain hidden and are only filled into the form. */}
         <div className="mt-6 pt-5 border-t border-[var(--glass-border)]">
-          <p className="text-[11px] font-semibold uppercase tracking-wider text-[var(--muted-foreground)] mb-2.5 text-center">
-            Quick Demo Login
+          <p className="text-[11px] font-semibold uppercase tracking-wider text-[var(--muted-foreground)] mb-1 text-center">
+            Authorized test access
+          </p>
+          <p className="mb-2.5 text-center text-[10px] leading-relaxed text-[var(--muted-foreground)]">
+            These identities are provisioned in the live backend for portal QA. Passwords are never displayed.
           </p>
           <div className="space-y-1.5">
+            <button
+              type="button"
+              onClick={() => {
+                setEmail("contractor@bharat.in");
+                setPassword("Janmind@2026");
+              }}
+              className="w-full flex items-center justify-between p-2 rounded-lg bg-[var(--surface)] hover:bg-[var(--surface-elevated)] border border-[var(--glass-border)] text-xs transition text-left"
+            >
+              <div>
+                <span className="font-semibold text-[var(--foreground)]">
+                  Bharat Infrastructure Lead
+                </span>
+                <span className="block text-[11px] text-[var(--muted-foreground)] font-mono">
+                  contractor@bharat.in · Vadodara
+                </span>
+              </div>
+              <span className="text-[11px] px-2 py-0.5 rounded bg-amber-500/15 text-amber-700 dark:text-amber-400 font-medium">
+                Fill form
+              </span>
+            </button>
+
             <button
               type="button"
               onClick={() => {
@@ -106,14 +130,14 @@ function ContractorLogin() {
             >
               <div>
                 <span className="font-semibold text-[var(--foreground)]">
-                  Verified Contractor Lead
+                  Alternate Contractor Lead
                 </span>
                 <span className="block text-[11px] text-[var(--muted-foreground)] font-mono">
-                  contractor@janmind.in
+                  contractor@janmind.in · Vadodara
                 </span>
               </div>
-              <span className="text-[11px] px-2 py-0.5 rounded bg-amber-500/15 text-amber-700 dark:text-amber-400 font-medium">
-                Click to Fill
+              <span className="text-[11px] px-2 py-0.5 rounded bg-teal-500/15 text-teal-700 dark:text-teal-400 font-medium">
+                Fill form
               </span>
             </button>
           </div>

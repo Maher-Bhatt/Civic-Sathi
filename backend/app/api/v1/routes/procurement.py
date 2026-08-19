@@ -70,6 +70,30 @@ def enforce_city_scope(db: Session, user: User, city_id: UUID) -> UUID:
     return city_id
 
 
+# The Bharat Infra QA alias is a separately authenticated contractor user. It must
+# resolve to the same procurement company as the primary Janmind login so both
+# authorized identities see the same approved registrations and work orders.
+CONTRACTOR_ACCOUNT_ALIASES = {
+    "contractor@bharat.in": "contractor@janmind.in",
+}
+
+
+def resolve_contractor_for_user(db: Session, user: User) -> Contractor | None:
+    """Resolve a contractor profile for its primary login or approved alias."""
+    contractor = db.execute(
+        select(Contractor).where(Contractor.auth_user_id == str(user.id))
+    ).scalar_one_or_none()
+    if contractor or not user.email:
+        return contractor
+
+    canonical_email = CONTRACTOR_ACCOUNT_ALIASES.get(user.email.strip().lower())
+    if not canonical_email:
+        return None
+    return db.execute(
+        select(Contractor).where(func.lower(Contractor.email) == canonical_email)
+    ).scalar_one_or_none()
+
+
 # ── Pydantic body schemas used inline ─────────────────────────────────────────
 
 class WorkOrderStatusUpdate(BaseModel):
@@ -159,9 +183,12 @@ def list_tenders(
     Officers see all tenders for their city.
     """
     if current_user.role == "contractor":
-        stmt = select(ContractorCityRegistration).join(Contractor).where(
+        contractor = resolve_contractor_for_user(db, current_user)
+        if not contractor:
+            raise HTTPException(status_code=403, detail="Contractor profile not found")
+        stmt = select(ContractorCityRegistration).where(
             and_(
-                Contractor.auth_user_id == str(current_user.id),
+                ContractorCityRegistration.contractor_id == contractor.id,
                 ContractorCityRegistration.city_id == city_id,
                 ContractorCityRegistration.status == RegistrationStatus.APPROVED,
             )
@@ -214,9 +241,7 @@ def submit_bid(
     if not tender or tender.status != TenderStatus.PUBLISHED:
         raise HTTPException(status_code=400, detail="Tender is not open for bidding")
 
-    contractor = db.execute(
-        select(Contractor).where(Contractor.auth_user_id == str(current_user.id))
-    ).scalar_one_or_none()
+    contractor = resolve_contractor_for_user(db, current_user)
     if not contractor:
         raise HTTPException(status_code=400, detail="Contractor profile not found")
 
@@ -328,9 +353,7 @@ def list_work_orders(
     """List work orders based on role, enriched with Tender + Contractor data."""
     city_id = enforce_city_scope(db, current_user, city_id)
     if current_user.role == "contractor":
-        contractor = db.execute(
-            select(Contractor).where(Contractor.auth_user_id == str(current_user.id))
-        ).scalar_one_or_none()
+        contractor = resolve_contractor_for_user(db, current_user)
         if not contractor:
             return []
         query = select(WorkOrder).join(Tender).where(
@@ -359,9 +382,7 @@ def get_work_order(
 
     # Ownership and city checks: contractors see only their records; municipal users stay in their city.
     if current_user.role == "contractor":
-        contractor = db.execute(
-            select(Contractor).where(Contractor.auth_user_id == str(current_user.id))
-        ).scalar_one_or_none()
+        contractor = resolve_contractor_for_user(db, current_user)
         if not contractor or work_order.contractor_id != contractor.id:
             raise HTTPException(status_code=403, detail="Access denied")
     else:
@@ -399,9 +420,7 @@ def update_work_order_status(
 
     if current_user.role == "contractor":
         # Verify ownership
-        contractor = db.execute(
-            select(Contractor).where(Contractor.auth_user_id == str(current_user.id))
-        ).scalar_one_or_none()
+        contractor = resolve_contractor_for_user(db, current_user)
         if not contractor or work_order.contractor_id != contractor.id:
             raise HTTPException(status_code=403, detail="Access denied")
         allowed = contractor_transitions.get(work_order.status)
@@ -445,9 +464,7 @@ def submit_evidence(
 
     # Verify contractor ownership
     if current_user.role == "contractor":
-        contractor = db.execute(
-            select(Contractor).where(Contractor.auth_user_id == str(current_user.id))
-        ).scalar_one_or_none()
+        contractor = resolve_contractor_for_user(db, current_user)
         if not contractor or work_order.contractor_id != contractor.id:
             raise HTTPException(status_code=403, detail="Access denied")
 
