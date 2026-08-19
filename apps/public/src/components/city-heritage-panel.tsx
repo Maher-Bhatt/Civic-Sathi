@@ -3,6 +3,7 @@ import { Landmark, Sparkles, Building2, Trees, Droplets, Crown, Scroll, ChevronR
 import { GlassCard } from "@/components/ui/glass-card";
 import { type CityId } from "@/services/cities";
 import { cn } from "@/lib/utils";
+import { getCityVisuals } from "@civicsathi/visual-system";
 
 interface HeritageStory {
   id: string;
@@ -150,6 +151,31 @@ const HERITAGE_DATA: Record<CityId, {
   },
 };
 
+export function CityHeritageSignal({ cityId }: { cityId: CityId }) {
+  const cityData = HERITAGE_DATA[cityId] || HERITAGE_DATA.vadodara;
+  const cityVisuals = getCityVisuals(cityId);
+  const story = cityData.stories[0]!;
+  const Icon = story.icon;
+
+  return (
+    <div className="civic-heritage-signal" style={{ "--heritage-accent": cityVisuals.accent } as React.CSSProperties}>
+      <div className="flex min-w-0 items-start gap-3">
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border border-[var(--heritage-accent)]/30 bg-[var(--heritage-accent)]/10 text-[var(--heritage-accent)]">
+          <Icon className="h-4 w-4" aria-hidden />
+        </span>
+        <div className="min-w-0">
+          <p className="text-[0.62rem] font-bold uppercase tracking-[0.16em] text-[var(--heritage-accent)]">{cityVisuals.authority} · Civic heritage signal</p>
+          <p className="mt-1 truncate text-sm font-bold text-[var(--foreground)]">{story.title}</p>
+          <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-muted-foreground">{story.tagline} · {cityVisuals.architecture}</p>
+        </div>
+      </div>
+      <a href="#city-heritage" className="mt-3 inline-flex items-center gap-1 text-xs font-bold text-[var(--heritage-accent)] underline-offset-4 hover:underline">
+        Explore {cityData.cityName} heritage <ChevronRight className="h-3.5 w-3.5" aria-hidden />
+      </a>
+    </div>
+  );
+}
+
 export function CityHeritagePanel({ cityId, onSelectCity }: { cityId: CityId; onSelectCity?: (c: CityId) => void }) {
   const [activeStoryId, setActiveStoryId] = useState<string | null>(null);
   const cityData = HERITAGE_DATA[cityId] || HERITAGE_DATA.vadodara;
@@ -157,7 +183,7 @@ export function CityHeritagePanel({ cityId, onSelectCity }: { cityId: CityId; on
   const currentStory = cityData.stories.find((s) => s.id === activeStoryId) || cityData.stories[0]!;
 
   return (
-    <section className="space-y-6 pt-16 sm:pt-24">
+    <section id="city-heritage" className="space-y-6 pt-16 sm:pt-24">
       {/* Section Header with Indian Tricolor Accent */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div className="space-y-2">
@@ -314,7 +340,7 @@ export function CityHeritagePanel({ cityId, onSelectCity }: { cityId: CityId; on
           {/* Civic Legacy Context */}
           <div className="p-4 rounded-2xl bg-white/70 dark:bg-black/20 border border-amber-500/20 space-y-1.5 shadow-sm">
             <p className="text-[11px] font-bold tracking-wider text-amber-800 dark:text-amber-400 uppercase">
-              🏛️ Modern Civic Infrastructure Relevance
+              Modern civic infrastructure relevance
             </p>
             <p className="text-xs leading-relaxed text-foreground/80">
               {currentStory.civicLegacy}
@@ -326,10 +352,7 @@ export function CityHeritagePanel({ cityId, onSelectCity }: { cityId: CityId; on
             {currentStory.quote}
           </div>
 
-          {/* Tricolor Micro-Accent */}
-          <div className="pt-2">
-            <div className="jm-tricolor-bar" />
-          </div>
+          <div className="civic-architecture-rule" aria-hidden="true" />
         </GlassCard>
       </div>
     </section>

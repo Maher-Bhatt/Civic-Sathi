@@ -12,7 +12,7 @@ import { PageShell } from "@/components/site-nav";
 import { GlassCard, SectionLabel } from "@/components/ui/glass-card";
 import { GlassButton } from "@/components/ui/glass-button";
 import { ClientCivicMap } from "@/components/civic-map-panel";
-import { CityHeritagePanel } from "@/components/city-heritage-panel";
+import { CityHeritagePanel, CityHeritageSignal } from "@/components/city-heritage-panel";
 import { DEFAULT_FILTERS, areaActivity, nearestArea, type ComplaintPoint, type IssueKey, type AreaHealth } from "@/services/geography";
 import { getDefaultCity, setPreferredCity, type CityId } from "@/services/cities";
 import { useI18n } from "@/lib/i18n";
@@ -225,6 +225,9 @@ function Landing() {
           </GlassCard>
         </div>
       </section>
+
+      {/* City Cultural & Civic Heritage Signal — visible before the deeper story panel */}
+      <CityHeritageSignal cityId={cityId} />
 
       {/* City Cultural & Civic Heritage Section */}
       <CityHeritagePanel cityId={cityId} onSelectCity={handleCitySelect} />
