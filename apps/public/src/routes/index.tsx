@@ -41,29 +41,37 @@ export const Route = createFileRoute("/")({
 const steps = [
   {
     n: "01",
-    title: "Report Issue",
-    body: "Tell Civic Sathi what happened in your locality.",
+    titleKey: "hiw.step1.title",
+    bodyKey: "hiw.step1.body",
+    titleFallback: "Report Issue",
+    bodyFallback: "Tell Civic Sathi what happened in your locality.",
     icon: MessageSquareText,
     accent: "#FF6F00",
   },
   {
     n: "02",
-    title: "Pinpoint Location",
-    body: "Exact ward and GPS coordinates detected automatically.",
+    titleKey: "hiw.step2.title",
+    bodyKey: "hiw.step2.body",
+    titleFallback: "Pinpoint Location",
+    bodyFallback: "Exact ward and GPS coordinates detected automatically.",
     icon: MapPin,
     accent: "#0A369D",
   },
   {
     n: "03",
-    title: "Visual Evidence",
-    body: "Upload geotagged photos or voice notes securely.",
+    titleKey: "hiw.step3.title",
+    bodyKey: "hiw.step3.body",
+    titleFallback: "Visual Evidence",
+    bodyFallback: "Upload geotagged photos or voice notes securely.",
     icon: Camera,
     accent: "#D97706",
   },
   {
     n: "04",
-    title: "Track Resolution",
-    body: "Live pipeline from municipality to verified contractors.",
+    titleKey: "hiw.step4.title",
+    bodyKey: "hiw.step4.body",
+    titleFallback: "Track Resolution",
+    bodyFallback: "Live pipeline from municipality to verified contractors.",
     icon: Activity,
     accent: "#0E8A4B",
   },
@@ -243,8 +251,8 @@ function Landing() {
                   <s.icon className="h-4 w-4" aria-hidden />
                 </span>
               </div>
-              <h3 className="mt-5 text-base font-bold text-[var(--foreground)]">{s.title}</h3>
-              <p className="mt-1.5 text-xs text-muted-foreground leading-relaxed">{s.body}</p>
+<h3 className="mt-5 text-base font-bold text-[var(--foreground)]">{t(s.titleKey, s.titleFallback)}</h3>
+              <p className="mt-1.5 text-xs text-muted-foreground leading-relaxed">{t(s.bodyKey, s.bodyFallback)}</p>
             </GlassCard>
           ))}
         </div>
@@ -253,25 +261,25 @@ function Landing() {
       {/* About Municipal Governance */}
       <section className="pt-20 sm:pt-28">
         <GlassCard elevation="raised" className="p-6 sm:p-9 border-amber-500/30 bg-gradient-to-br from-amber-50/40 via-white/80 to-orange-50/40 dark:from-slate-900/90 dark:via-slate-900/70 dark:to-slate-800/70">
-          <SectionLabel>Indian Local Governance</SectionLabel>
+<SectionLabel>{t("governance.label", "Indian Local Governance")}</SectionLabel>
           <h2 className="mt-3 text-2xl font-bold sm:text-3xl text-[var(--foreground)]">
-            Empowered by the 74th Amendment
+            {t("governance.heading", "Empowered by the 74th Amendment")}
           </h2>
           <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-            The 74th Constitutional Amendment Act of 1992 recognized Urban Local Bodies (ULBs) as the third tier of government. Civic Sathi empowers this democratic structure by directly connecting citizens with their local Ward Corporators, Municipal Engineers, and Civic Departments.
+            {t("governance.desc", "The 74th Constitutional Amendment Act of 1992 recognized Urban Local Bodies (ULBs) as the third tier of government. Civic Sathi empowers this democratic structure by directly connecting citizens with their local Ward Corporators, Municipal Engineers, and Civic Departments.")}
           </p>
           <div className="mt-8 grid gap-4 sm:grid-cols-3">
             <div className="space-y-2 p-4 rounded-xl bg-white/50 dark:bg-black/20 border border-[var(--glass-border)]">
-              <h3 className="font-semibold text-amber-800 dark:text-amber-300">Wards</h3>
-              <p className="text-xs text-muted-foreground">Cities are divided into administrative and electoral units called Wards, each representing a localized neighborhood.</p>
+<h3 className="font-semibold text-amber-800 dark:text-amber-300">{t("governance.wards.title", "Wards")}</h3>
+              <p className="text-xs text-muted-foreground">{t("governance.wards.body", "Cities are divided into administrative and electoral units called Wards, each representing a localized neighborhood.")}</p>
             </div>
             <div className="space-y-2 p-4 rounded-xl bg-white/50 dark:bg-black/20 border border-[var(--glass-border)]">
-              <h3 className="font-semibold text-emerald-800 dark:text-emerald-300">Corporators</h3>
-              <p className="text-xs text-muted-foreground">Elected representatives of the ward who oversee local civic issues, budget allocation, and development projects.</p>
+<h3 className="font-semibold text-emerald-800 dark:text-emerald-300">{t("governance.corporators.title", "Corporators")}</h3>
+              <p className="text-xs text-muted-foreground">{t("governance.corporators.body", "Elected representatives of the ward who oversee local civic issues, budget allocation, and development projects.")}</p>
             </div>
             <div className="space-y-2 p-4 rounded-xl bg-white/50 dark:bg-black/20 border border-[var(--glass-border)]">
-              <h3 className="font-semibold text-blue-800 dark:text-blue-300">Municipal Engineers</h3>
-              <p className="text-xs text-muted-foreground">Executive officers responsible for executing public works, managing contractors, and ensuring quality SLAs.</p>
+<h3 className="font-semibold text-blue-800 dark:text-blue-300">{t("governance.engineers.title", "Municipal Engineers")}</h3>
+              <p className="text-xs text-muted-foreground">{t("governance.engineers.body", "Executive officers responsible for executing public works, managing contractors, and ensuring quality SLAs.")}</p>
             </div>
           </div>
         </GlassCard>
@@ -295,10 +303,10 @@ function Landing() {
               )}
             </p>
             <ul className="space-y-2.5 pt-1">
-              {[
-                "23 similar reports detected within approximately 500m",
-                "Automated routing to verified municipal contractors",
-                "Public aggregate view only — zero citizen surveillance",
+{[
+                t("pattern.bullet1", "23 similar reports detected within approximately 500m"),
+                t("pattern.bullet2", "Automated routing to verified municipal contractors"),
+                t("pattern.bullet3", "Public aggregate view only — zero citizen surveillance"),
               ].map((item) => (
                 <li key={item} className="flex items-start gap-2.5 text-sm text-muted-foreground font-medium">
                   <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-emerald-500" />
