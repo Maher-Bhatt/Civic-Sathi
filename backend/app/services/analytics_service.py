@@ -8,6 +8,7 @@ from app.schemas.analytics import (
     StatusDistribution,
     RiskDistribution,
     DepartmentDistribution,
+    CategoryDistribution,
     DailyTrend,
     MapDataResponse,
     WardPolygon,
@@ -40,6 +41,7 @@ class AnalyticsService:
         status_dist = self.repo.get_status_distribution(city_id=city_id)
         risk_dist = self.repo.get_risk_distribution(city_id=city_id)
         dept_dist = self.repo.get_department_distribution(city_id=city_id)
+        category_dist = self.repo.get_category_distribution(city_id=city_id)
         trends = self.repo.get_daily_trends(days=7, city_id=city_id)
         
         # Build status distribution
@@ -64,6 +66,10 @@ class AnalyticsService:
             DepartmentDistribution(name=dept['name'], count=dept['count'])
             for dept in dept_dist
         ]
+        category_distribution = [
+            CategoryDistribution(name=category['name'], count=category['count'])
+            for category in category_dist
+        ]
         
         # Build daily trends
         daily_trends = [
@@ -79,6 +85,7 @@ class AnalyticsService:
             status_distribution=status_distribution,
             risk_distribution=risk_distribution,
             department_distribution=department_distribution,
+            category_distribution=category_distribution,
             daily_trends=daily_trends,
         )
     

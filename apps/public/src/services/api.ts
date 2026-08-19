@@ -16,7 +16,6 @@ import {
   SEVERITY_KEYWORDS,
   DEMO_USER,
   NEARBY_REPORTS,
-  SEED_NOTIFICATIONS,
 } from "./mockData";
 
 export function getApiBaseUrl(): string {
@@ -298,7 +297,7 @@ export async function createComplaint(input: any): Promise<Complaint> {
       at: new Date().toISOString(),
       read: false,
     };
-    const existing = read<AppNotification[]>(LS.notifications, SEED_NOTIFICATIONS as any);
+    const existing = read<AppNotification[]>(LS.notifications, []);
     write(LS.notifications, [notif, ...existing]);
 
     return normalizeComplaint(created, input);
@@ -311,13 +310,9 @@ export async function createComplaint(input: any): Promise<Complaint> {
 }
 
 export async function getMyComplaints(): Promise<Complaint[]> {
-  try {
-    const res = await api.complaints.list({ limit: 100 });
-    const list = res?.items ?? res?.data ?? res;
-    return (Array.isArray(list) ? list : []).map((c) => normalizeComplaint(c));
-  } catch {
-    return [];
-  }
+  const res = await api.complaints.list({ limit: 100 });
+  const list = res?.items ?? res?.data ?? res;
+  return (Array.isArray(list) ? list : []).map((c) => normalizeComplaint(c));
 }
 
 export async function getComplaint(id: string): Promise<Complaint> {
@@ -414,12 +409,29 @@ export async function getNearbyComplaints(): Promise<NearbyReport[]> {
 }
 
 export async function getNotifications(): Promise<AppNotification[]> {
-  const stored = read<AppNotification[]>(LS.notifications, SEED_NOTIFICATIONS as any);
-  return stored;
+  const stored = read<AppNotification[]>(LS.notifications, []);
+  if (stored.length === 0) return [];
+
+  // Notifications are local presentation records, but a notification is only
+  // valid when its complaint is still readable by the signed-in citizen. This
+  // removes legacy seed links and prevents an infinite-loading detail route.
+  const checks = await Promise.all(
+    stored.map(async (notification) => {
+      try {
+        await api.complaints.get(notification.complaintId);
+        return notification;
+      } catch {
+        return null;
+      }
+    }),
+  );
+  const valid = checks.filter((notification): notification is AppNotification => Boolean(notification));
+  if (valid.length !== stored.length) write(LS.notifications, valid);
+  return valid;
 }
 
 export async function markNotificationsRead(): Promise<AppNotification[]> {
-  const list = read<AppNotification[]>(LS.notifications, SEED_NOTIFICATIONS as any).map((n) => ({
+  const list = read<AppNotification[]>(LS.notifications, []).map((n) => ({
     ...n,
     read: true,
   }));

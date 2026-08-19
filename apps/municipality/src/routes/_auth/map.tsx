@@ -26,6 +26,7 @@ import {
   cityHealthDistribution,
   complaintPoints,
   filterPoints,
+  nearestArea,
   type AreaActivity,
   type AreaHealth,
   type ComplaintPoint,
@@ -83,8 +84,8 @@ function MuniMapPage() {
   const [civicIssues, setCivicIssues] = useState<any[]>([]);
 
   useEffect(() => {
-    getCivicIssues().then(setCivicIssues);
-  }, []);
+    getCivicIssues(city).then(setCivicIssues);
+  }, [city]);
 
   const allPoints: ComplaintPoint[] = useMemo(() => {
     return civicIssues.map((ci) => {
@@ -102,17 +103,23 @@ function MuniMapPage() {
       else if (sev === "high") health = "high";
       else if (sev === "moderate") health = "moderate";
 
+      const lat = Number(ci.lat) || 0;
+      const lng = Number(ci.lng) || 0;
+      const createdAt = ci.createdAt || ci.created_at;
+      const daysAgo = createdAt
+        ? Math.max(0, Math.floor((Date.now() - new Date(createdAt).getTime()) / 86_400_000))
+        : 0;
       return {
         id: String(ci.id),
-        areaId: String(ci.area || ""),
+        areaId: nearestArea(city, lat, lng)?.id ?? String(ci.area || ""),
         issue,
         health,
-        daysAgo: 0,
-        lat: Number(ci.lat) || 0,
-        lng: Number(ci.lng) || 0,
+        daysAgo,
+        lat,
+        lng,
       };
     });
-  }, [civicIssues]);
+  }, [civicIssues, city]);
 
   const activities = useMemo(() => areaActivity(city, filters, allPoints), [city, filters, allPoints]);
   const points = useMemo(() => filterPoints(allPoints, filters), [allPoints, filters]);

@@ -33,6 +33,12 @@ class DailyTrend(BaseModel):
     count: int
 
 
+class CategoryDistribution(BaseModel):
+    """Complaint distribution by normalized category."""
+    name: str
+    count: int
+
+
 class DashboardSummary(BaseModel):
     """Dashboard summary response"""
     total_complaints: int
@@ -42,6 +48,7 @@ class DashboardSummary(BaseModel):
     status_distribution: StatusDistribution
     risk_distribution: RiskDistribution
     department_distribution: list[DepartmentDistribution]
+    category_distribution: list[CategoryDistribution] = []
     daily_trends: list[DailyTrend]
 
 

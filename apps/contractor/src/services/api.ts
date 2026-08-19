@@ -320,7 +320,41 @@ export async function submitMeasurement(data: any, contractorId: string, contrac
   return null;
 }
 export async function getContractor(id: string) {
-  return getContractorPerformance();
+  const list = await api.contractors.list();
+  const user = await getContractorUser();
+  const current = (list || []).find((item: any) => String(item?.id) === id)
+    || (list || []).find((item: any) => item?.email === user?.email);
+  if (!current) return null;
+  const registrations = Array.isArray(current.registrations) ? current.registrations : [];
+  const approved = registrations.find((registration: any) => registration?.status === "APPROVED") ?? registrations[0] ?? {};
+  const categories = registrations.flatMap((registration: any) => Array.isArray(registration?.approved_categories) ? registration.approved_categories : []);
+  return {
+    id: String(current.id),
+    companyName: current.company_name ?? current.companyName ?? user?.name ?? "Unknown contractor",
+    registrationNumber: approved.registration_number ?? "—",
+    contactPerson: current.contact_person ?? user?.name ?? "",
+    email: current.email ?? user?.email ?? "",
+    phone: current.phone ?? user?.phone ?? "",
+    address: "—",
+    gstin: "—",
+    pan: "—",
+    status: registrations.some((registration: any) => registration?.status === "APPROVED") ? "VERIFIED" : "PENDING_VERIFICATION",
+    verificationStatus: registrations.some((registration: any) => registration?.status === "APPROVED") ? "VERIFIED" : "PENDING",
+    registrationDate: "",
+    expiryDate: "",
+    specializationCategories: Array.from(new Set(categories)),
+    serviceAreas: Array.from(new Set(registrations.map((registration: any) => registration?.city_name).filter(Boolean))),
+    performanceScore: Number(current.performance_score ?? 0),
+    slaScore: Number(current.sla_score ?? 0),
+    inspectionPassRate: Number(current.inspection_pass_rate ?? 0),
+    onTimeCompletionRate: Number(current.on_time_completion_rate ?? 0),
+    reworkRate: Number(current.rework_rate ?? 0),
+    rating: Number(current.public_rating ?? 0),
+    activeWorkCount: Number(current.active_work_count ?? 0),
+    totalCompleted: Number(current.total_completed ?? 0),
+    createdAt: current.created_at ?? "",
+    updatedAt: current.updated_at ?? current.created_at ?? "",
+  };
 }
 
 export async function getContractorPerformance() {

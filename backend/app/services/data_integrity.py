@@ -10,33 +10,64 @@ from app.models.user import User
 
 
 def ensure_historical_city_separation(db: Session) -> int:
-    """Assign the bundled historical grievance dataset to Bengaluru.
+    """Assign historical complaints to the city indicated by address or coordinates.
 
-    The raw grievance files inspected in this repository contain BBMP/Bengaluru
-    ward names (for example Bagalagunte and Indiranagar) and do not contain a
-    city column. Historical rows must therefore be scoped to Bengaluru rather
-    than left NULL (which makes them appear in unscoped/demo municipality views).
-    Web submissions keep their explicitly supplied city untouched.
+    The imported grievance files do not have a reliable city column, so the repair
+    uses explicit city names, known locality names, and city bounding boxes. Web
+    submissions already carrying a city remain untouched because they are not
+    marked as historical.
     """
-    bengaluru = (
-        db.query(City)
-        .filter(func.lower(City.name).in_(["bengaluru", "bangalore"]))
-        .first()
-    )
+    vadodara = db.query(City).filter(func.lower(City.name) == "vadodara").first()
+    if not vadodara:
+        vadodara = City(name="Vadodara", state_code="GJ")
+        db.add(vadodara)
+        db.flush()
+    bengaluru = db.query(City).filter(func.lower(City.name).in_(["bengaluru", "bangalore"])).first()
     if not bengaluru:
         bengaluru = City(name="Bengaluru", state_code="KA")
         db.add(bengaluru)
         db.flush()
 
-    updated = (
-        db.query(Complaint)
-        .filter(Complaint.source == "historical")
-        .filter(Complaint.city_id != bengaluru.id)
-        .update({Complaint.city_id: bengaluru.id}, synchronize_session=False)
-    )
+    vadodara_tokens = {
+        "vadodara", "baroda", "gotri", "manjalpur", "bhayli", "atladara",
+        "vasna", "fatehgunj", "sevasi", "sayajigunj", "karelibaug", "alkapuri",
+        "makarpura", "waghodia", "akota", "tarsali", "harni", "ajwa",
+    }
+    bengaluru_tokens = {
+        "bengaluru", "bangalore", "indiranagar", "yelahanka", "electronic city",
+        "hsr layout", "jayanagar", "whitefield", "basavanagudi", "vijayanagar",
+        "marathahalli", "btm layout", "malleshwaram", "hebbal", "peenya",
+        "bommanahalli", "kengeri", "rajajinagar", "shivajinagar", "bellandur",
+        "banaswadi", "mahadevapura", "c.v. raman nagar", "koramangala",
+    }
+
+    historical = db.query(Complaint).filter(Complaint.source == "historical").all()
+    updated = 0
+    for complaint in historical:
+        address = (complaint.address_text or "").lower()
+        city_id = None
+        if any(token in address for token in vadodara_tokens) or (
+            complaint.lat is not None and complaint.lng is not None
+            and 21.95 <= float(complaint.lat) <= 22.55
+            and 72.85 <= float(complaint.lng) <= 73.55
+        ):
+            city_id = vadodara.id
+        elif any(token in address for token in bengaluru_tokens) or (
+            complaint.lat is not None and complaint.lng is not None
+            and 12.70 <= float(complaint.lat) <= 13.25
+            and 77.30 <= float(complaint.lng) <= 77.85
+        ):
+            city_id = bengaluru.id
+        elif complaint.city_id is None:
+            city_id = bengaluru.id
+
+        if city_id is not None and complaint.city_id != city_id:
+            complaint.city_id = city_id
+            updated += 1
+
     if updated:
         db.commit()
-    return int(updated or 0)
+    return updated
 
 
 def ensure_working_contractor_access(db: Session) -> int:

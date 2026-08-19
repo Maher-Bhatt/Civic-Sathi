@@ -6,11 +6,13 @@ from app.models.complaint import Complaint, ComplaintAnalysis
 from app.models.issue import IssueCluster, IssueComplaint, RootCause
 from app.models.recommendation import Recommendation
 from app.models.alert import Alert
-from app.models.audit import ModelRun
+from app.models.audit import AuditLog, ModelRun
+
 from app.models.procurement import (
     City, Contractor, ContractorCityRegistration, Tender, Bid, WorkOrder, FieldEvidence, Inspection, ContractorReview
 )
 from app.models.job import AnalysisJob
+from app.models.sla import SLARule
 
 __all__ = [
     "Base",
@@ -24,7 +26,9 @@ __all__ = [
     "RootCause",
     "Recommendation",
     "Alert",
-    "ModelRun",
+        "ModelRun",
+    "AuditLog",
+
     "City",
     "Contractor",
     "ContractorCityRegistration",
@@ -33,6 +37,8 @@ __all__ = [
     "WorkOrder",
     "FieldEvidence",
     "Inspection",
-    "AnalysisJob",
+        "AnalysisJob",
+    "SLARule",
     "ContractorReview"
+
 ]

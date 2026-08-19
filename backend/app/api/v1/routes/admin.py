@@ -23,7 +23,9 @@ from app.models.procurement import (
     City, Tender, Bid, WorkOrder, WorkOrderStatus,
 )
 from app.models.complaint import Complaint
+from app.models.audit import AuditLog
 from app.models.issue import IssueCluster
+from app.models.sla import SLARule
 
 router = APIRouter()
 
@@ -134,6 +136,31 @@ class SLARuleOut(BaseModel):
     is_active: bool
 
 
+class SLARulePatch(BaseModel):
+    response_hours: Optional[int] = Field(None, ge=1, le=8760)
+    resolution_hours: Optional[int] = Field(None, ge=1, le=8760)
+    escalation_hours: Optional[int] = Field(None, ge=1, le=8760)
+    is_active: Optional[bool] = None
+
+
+class AuditLogCreate(BaseModel):
+    actor_id: str = Field(..., min_length=1, max_length=100)
+    actor_name: str = Field(..., min_length=1, max_length=255)
+    actor_role: str = Field(..., min_length=1, max_length=50)
+    action: str = Field(..., min_length=1, max_length=100)
+    entity_type: str = Field(..., min_length=1, max_length=100)
+    entity_id: str = Field(..., min_length=1, max_length=100)
+    entity_label: Optional[str] = Field(None, max_length=255)
+    previous_value: Optional[str] = None
+    new_value: Optional[str] = None
+    reason: Optional[str] = None
+
+
+class AuditLogOut(AuditLogCreate):
+    id: str
+    at: datetime
+
+
 class MeResponse(BaseModel):
     id: str
     name: str
@@ -142,6 +169,53 @@ class MeResponse(BaseModel):
     city: Optional[str]
     department: Optional[str]
     phone: Optional[str]
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# SLA configuration
+# ─────────────────────────────────────────────────────────────────────────────
+
+@router.get("/sla-rules", response_model=List[SLARuleOut])
+def list_sla_rules(
+    db: Session = Depends(get_db),
+    current: dict = Depends(require_admin),
+):
+    rules = db.query(SLARule).order_by(SLARule.category, SLARule.severity).all()
+    if not rules:
+        defaults = {
+            "CRITICAL": (2, 24, 4),
+            "HIGH": (4, 48, 8),
+            "MODERATE": (12, 120, 24),
+            "LOW": (24, 240, 48),
+        }
+        categories = ["Road Damage", "Water Supply", "Sanitation", "Drainage", "Street Lighting"]
+        rules = [
+            SLARule(category=category, severity=severity, response_hours=values[0], resolution_hours=values[1], escalation_hours=values[2], is_active=True)
+            for category in categories
+            for severity, values in defaults.items()
+        ]
+        db.add_all(rules)
+        db.commit()
+    return [SLARuleOut(id=str(r.id), category=r.category, severity=r.severity, response_hours=r.response_hours, resolution_hours=r.resolution_hours, escalation_hours=r.escalation_hours, is_active=r.is_active) for r in rules]
+
+
+@router.patch("/sla-rules/{rule_id}", response_model=SLARuleOut)
+def patch_sla_rule(
+    rule_id: UUID,
+    patch: SLARulePatch,
+    db: Session = Depends(get_db),
+    current: dict = Depends(require_admin),
+):
+    rule = db.get(SLARule, rule_id)
+    if not rule:
+        raise HTTPException(status_code=404, detail="SLA rule not found")
+    for field in ("response_hours", "resolution_hours", "escalation_hours", "is_active"):
+        value = getattr(patch, field)
+        if value is not None:
+            setattr(rule, field, value)
+    db.commit()
+    db.refresh(rule)
+    return SLARuleOut(id=str(rule.id), category=rule.category, severity=rule.severity, response_hours=rule.response_hours, resolution_hours=rule.resolution_hours, escalation_hours=rule.escalation_hours, is_active=rule.is_active)
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -649,3 +723,55 @@ def admin_list_work_orders(
             "created_at": wo.created_at.isoformat(),
         })
     return result
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Persistent platform audit trail
+# ─────────────────────────────────────────────────────────────────────────────
+
+
+def _audit_out(log: AuditLog) -> AuditLogOut:
+    return AuditLogOut(
+        id=str(log.id),
+        actor_id=log.actor_id,
+        actor_name=log.actor_name,
+        actor_role=log.actor_role,
+        action=log.action,
+        entity_type=log.entity_type,
+        entity_id=log.entity_id,
+        entity_label=log.entity_label,
+        previous_value=log.previous_value,
+        new_value=log.new_value,
+        reason=log.reason,
+        at=log.at,
+    )
+
+
+@router.get("/audit-logs", response_model=List[AuditLogOut])
+def list_audit_logs(
+    limit: int = Query(200, ge=1, le=1000),
+    offset: int = Query(0, ge=0),
+    actor_role: Optional[str] = None,
+    entity_type: Optional[str] = None,
+    db: Session = Depends(get_db),
+    current: dict = Depends(require_admin),
+):
+    query = select(AuditLog).order_by(AuditLog.at.desc()).offset(offset).limit(limit)
+    if actor_role:
+        query = query.where(AuditLog.actor_role == actor_role)
+    if entity_type:
+        query = query.where(AuditLog.entity_type == entity_type)
+    return [_audit_out(log) for log in db.execute(query).scalars().all()]
+
+
+@router.post("/audit-logs", response_model=AuditLogOut, status_code=201)
+def create_audit_log(
+    body: AuditLogCreate,
+    db: Session = Depends(get_db),
+    current: dict = Depends(require_admin),
+):
+    log = AuditLog(**body.model_dump())
+    db.add(log)
+    db.commit()
+    db.refresh(log)
+    return _audit_out(log)

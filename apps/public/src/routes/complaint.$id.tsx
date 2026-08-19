@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+
 import { useQuery } from "@tanstack/react-query";
-import { ArrowLeft, HardHat, CheckCircle2, Clock, Building2 } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 
 import { PageShell } from "@/components/site-nav";
 import { AuthGate } from "@/lib/require-auth";
@@ -11,67 +11,12 @@ import { ComplaintTimeline } from "@/components/complaint-timeline";
 import { ErrorState, LoadingState } from "@/components/ui/states";
 import { ClientCityMap } from "@/components/city-map-panel";
 import { getComplaint } from "@/services/api";
-import { RELATED_SAMPLES } from "@/services/mockData";
+
 import { clustersForCity, nearestCity } from "@/services/cities";
-import { cn } from "@/lib/utils";
+
 import { useI18n } from "@/lib/i18n";
 
-// Read work execution info from the shared store (public-safe fields only)
-function useWorkExecutionStatus(complaintId: string) {
-  const [info, setInfo] = useState<{
-    hasWorkOrder: boolean;
-    contractorCompany?: string;
-    workOrderStatus?: string;
-    progressPercent?: number;
-    department?: string;
-  }>({ hasWorkOrder: false });
 
-  useEffect(() => {
-    try {
-      const orders = JSON.parse(localStorage.getItem("civicsathi.work_orders") ?? "[]") as Array<{
-        relatedComplaintIds: string[];
-        contractorName: string;
-        status: string;
-        department: string;
-      }>;
-      const wo = orders.find((o) => o.relatedComplaintIds.includes(complaintId));
-      if (!wo) return;
-
-      const progress = JSON.parse(localStorage.getItem("civicsathi.field_progress") ?? "[]") as Array<{
-        workOrderId: string; percentComplete: number;
-      }>;
-      // Find matching work order id
-      const ordersRaw = JSON.parse(localStorage.getItem("civicsathi.work_orders") ?? "[]") as Array<{id:string;relatedComplaintIds:string[];}>;
-      const woFull = ordersRaw.find((o) => o.relatedComplaintIds.includes(complaintId));
-      const latestProgress = woFull ? progress.filter(p => p.workOrderId === (woFull as any).id).sort((a,b) => b.percentComplete - a.percentComplete)[0] : null;
-
-      setInfo({
-        hasWorkOrder: true,
-        contractorCompany: wo.contractorName,
-        workOrderStatus: wo.status,
-        ...(latestProgress?.percentComplete !== undefined ? { progressPercent: latestProgress.percentComplete } : {}),
-        department: wo.department,
-      });
-    } catch {
-      // storage unavailable
-    }
-  }, [complaintId]);
-
-  return info;
-}
-
-const WO_STATUS_PUBLIC: Record<string, { label: string; desc: string }> = {
-  PENDING_ACCEPTANCE: { label: "Contractor Notified", desc: "A contractor has been assigned and notified." },
-  ACCEPTED: { label: "Contractor Assigned", desc: "Contractor has confirmed and is preparing to mobilize." },
-  MOBILIZATION: { label: "Mobilization", desc: "Contractor is mobilizing equipment and materials." },
-  IN_PROGRESS: { label: "Work In Progress", desc: "Physical work is underway at the site." },
-  SUBMITTED_FOR_INSPECTION: { label: "Inspection Pending", desc: "Work submitted. Municipal inspection is scheduled." },
-  INSPECTION_FAILED: { label: "Rework Required", desc: "Inspection identified issues. Contractor is addressing them." },
-  REWORK: { label: "Rework In Progress", desc: "Contractor is correcting identified issues." },
-  INSPECTION_PASSED: { label: "Inspection Passed", desc: "Work passed municipal quality inspection." },
-  COMPLETED: { label: "Work Completed", desc: "Physical work has been completed and verified." },
-  CLOSED: { label: "Resolved", desc: "Work is complete and complaint has been resolved." },
-};
 
 export const Route = createFileRoute("/complaint/$id")({
   head: () => ({
@@ -99,13 +44,15 @@ export const Route = createFileRoute("/complaint/$id")({
 function ComplaintDetail() {
     const { t } = useI18n();
   const { id } = Route.useParams();
-  const { data, isLoading, isError, refetch } = useQuery({
+    const { data, isLoading, isError, error, refetch } = useQuery({
+
     queryKey: ["complaint", id],
     queryFn: () => getComplaint(id),
   });
 
-  const workInfo = useWorkExecutionStatus(id);
+  
 
+  const isNotFound = (error as any)?.status === 404;
   const location = data?.location ?? { lat: 22.3072, lng: 73.1812, ward: "Ward 14", area: "Vadodara" };
   const city = data ? nearestCity(location.lat, location.lng) : null;
   const mapCityId = city?.id ?? "vadodara";
@@ -132,7 +79,8 @@ function ComplaintDetail() {
         {isLoading && <LoadingState message="Loading complaint..." />}
         {isError && (
           <ErrorState
-            description="We couldn't load this complaint."
+                        description={isNotFound ? "This complaint is no longer available to your account." : "We couldn't load this complaint. Please retry once the civic data service is available."}
+
             onRetry={() => void refetch()}
           />
         )}
@@ -184,68 +132,7 @@ function ComplaintDetail() {
               </dl>
             </GlassCard>
 
-            {/* Work Execution Status — shown only when a work order exists */}
-            {workInfo.hasWorkOrder && workInfo.workOrderStatus && (
-              <GlassCard elevation="raised" className="animate-rise p-5 sm:p-7">
-                <div className="flex items-center gap-2">
-                  <HardHat className="h-4 w-4 text-[var(--primary)]" />
-                  <SectionLabel>{t('ui.work_execution_status')}</SectionLabel>
-                </div>
-                <div className="mt-4 space-y-4">
-                  {/* Status */}
-                  <div className="flex items-center gap-3">
-                    <span
-                      className={cn(
-                        "rounded-full px-3 py-1 text-xs font-medium",
-                        workInfo.workOrderStatus === "CLOSED" || workInfo.workOrderStatus === "COMPLETED"
-                          ? "bg-[color-mix(in_oklab,var(--success)_15%,transparent)] text-[var(--success)]"
-                          : workInfo.workOrderStatus?.includes("FAIL") || workInfo.workOrderStatus === "REWORK"
-                            ? "bg-[color-mix(in_oklab,var(--warning)_15%,transparent)] text-[var(--warning)]"
-                            : "bg-[color-mix(in_oklab,var(--primary)_12%,transparent)] text-[var(--primary)]",
-                      )}
-                    >
-                      {WO_STATUS_PUBLIC[workInfo.workOrderStatus]?.label ?? workInfo.workOrderStatus.replace(/_/g, " ")}
-                    </span>
-                  </div>
-
-                  <p className="text-sm text-muted-foreground">
-                    {WO_STATUS_PUBLIC[workInfo.workOrderStatus]?.desc ?? "Work is in progress."}
-                  </p>
-
-                  {/* Contractor */}
-                  {workInfo.contractorCompany && (
-                    <div className="flex items-center gap-2 text-sm">
-                      <Building2 className="h-4 w-4 text-muted-foreground" />
-                      <span className="text-muted-foreground">{t('ui.contractor')}</span>
-                      <span className="font-medium">{workInfo.contractorCompany}</span>
-                    </div>
-                  )}
-
-                  {/* Progress bar */}
-                  {workInfo.progressPercent !== undefined && workInfo.progressPercent > 0 && (
-                    <div className="space-y-1.5">
-                      <div className="flex items-center justify-between text-xs text-muted-foreground">
-                        <span className="flex items-center gap-1">
-                          <Clock className="h-3 w-3" /> {t('ui.work_progress')}</span>
-                        <span className="font-semibold tabular-nums text-foreground">{workInfo.progressPercent}%</span>
-                      </div>
-                      <div className="h-2 overflow-hidden rounded-full bg-[var(--glass-border)]">
-                        <div
-                          className="h-full rounded-full bg-[var(--primary)] transition-all duration-700"
-                          style={{ width: `${workInfo.progressPercent}%` }}
-                        />
-                      </div>
-                    </div>
-                  )}
-
-                  {workInfo.workOrderStatus === "INSPECTION_PASSED" || workInfo.workOrderStatus === "COMPLETED" || workInfo.workOrderStatus === "CLOSED" ? (
-                    <div className="flex items-center gap-2 text-[var(--success)] text-sm font-medium">
-                      <CheckCircle2 className="h-4 w-4" />
-                      {t('ui.inspection_passed_work_quality')}</div>
-                  ) : null}
-                </div>
-              </GlassCard>
-            )}
+            
 
             <GlassCard className="animate-rise overflow-hidden p-2.5">
               <div className="flex flex-wrap items-center justify-between gap-2 px-2.5 pt-2 pb-3">

@@ -2,7 +2,7 @@
 
 from datetime import datetime, timedelta, timezone
 from typing import Optional
-from sqlalchemy import select, func, and_
+from sqlalchemy import select, func, and_, case
 from sqlalchemy.orm import Session
 
 from app.models.complaint import Complaint
@@ -73,12 +73,32 @@ class AnalyticsRepository:
         return {status: count for status, count in results}
 
     def get_risk_distribution(self, city_id: Optional[str] = None) -> dict:
-        """Get issue risk distribution, optionally scoped to a city."""
-        isf = self._issue_city_filter(city_id)
+        """Get complaint-backed risk distribution, optionally scoped to a city.
+
+        Historical rows frequently have no IssueCluster, so aggregating only issue
+        rows incorrectly produced four zeros while complaints were visible.
+        Prefer stored risk/severity scores, then fall back to the complaint
+        priority assigned during ingestion.
+        """
+        cf = self._complaint_city_filter(city_id)
+        score = case(
+            (Complaint.risk_score > 0, Complaint.risk_score),
+            (Complaint.severity_score > 0, Complaint.severity_score),
+            (Complaint.priority.ilike("critical"), 90),
+            (Complaint.priority.ilike("high"), 70),
+            (Complaint.priority.ilike("medium"), 45),
+            else_=20,
+        )
+        level = case(
+            (score >= 80, "critical"),
+            (score >= 60, "high"),
+            (score >= 35, "medium"),
+            else_="low",
+        )
         results = self.db.execute(
-            select(IssueCluster.risk_level, func.count(IssueCluster.id))
-            .where(isf)
-            .group_by(IssueCluster.risk_level)
+            select(level.label("risk_level"), func.count(Complaint.id))
+            .where(cf)
+            .group_by(level)
         ).all()
         return {risk: count for risk, count in results}
 
@@ -93,6 +113,17 @@ class AnalyticsRepository:
             .order_by(func.count(Complaint.id).desc())
         ).all()
         return [{"name": name, "count": count} for name, count in results]
+
+    def get_category_distribution(self, city_id: Optional[str] = None) -> list[dict]:
+        """Get complaint distribution by category, optionally scoped to a city."""
+        cf = self._complaint_city_filter(city_id)
+        results = self.db.execute(
+            select(Complaint.category, func.count(Complaint.id))
+            .where(cf)
+            .group_by(Complaint.category)
+            .order_by(func.count(Complaint.id).desc())
+        ).all()
+        return [{"name": category or "other", "count": count} for category, count in results]
 
     def get_daily_trends(self, days: int = 7, city_id: Optional[str] = None) -> list[dict]:
         """Get daily complaint trends, optionally scoped to a city."""

@@ -14,6 +14,7 @@ import type {
   SystemicIssue,
   Department,
   ComplaintStatus,
+  alertPriority,
 } from "./types";
 import { DEFAULT_COMPLAINT_FILTERS } from "./types";
 // Mocks removed
@@ -206,7 +207,18 @@ export async function getDashboardKPIs(): Promise<DashboardKPIs> {
 }
 
 export async function getLiveActivity(): Promise<LiveActivity[]> {
-  return [];
+  try {
+    const data = await client.get<any>("/api/v1/analytics/summary?days=7");
+    return (data?.daily_trends ?? []).map((item: any, index: number) => ({
+      id: `daily-${item.date ?? index}`,
+      type: "new_report" as const,
+      title: "Daily civic reports received",
+      subtitle: `${Number(item.count ?? 0).toLocaleString("en-IN")} reports recorded`,
+      at: item.date ?? new Date().toISOString(),
+    }));
+  } catch {
+    return [];
+  }
 }
 
 /* --------------------------------------------------------- systemic issues */
@@ -242,10 +254,25 @@ export async function assignIssueDepartment(
   return updateSystemicIssue(id, { status: "Assigned", department });
 }
 
-export async function getCivicIssues(): Promise<any[]> {
+export async function getCivicIssues(city?: CityId): Promise<any[]> {
   try {
-    const res = await client.get<any[]>("/api/v1/issues");
-    return Array.isArray(res) ? res : [];
+    const res = await client.get<any[]>(`/api/v1/issues${city ? `?city=${encodeURIComponent(city)}` : ""}`);
+    if (Array.isArray(res) && res.length > 0) return res;
+  } catch {
+    // Fall through to complaint-backed map points when issue clustering is empty.
+  }
+
+  try {
+    const complaints = await getMuniComplaints(city ? { city } : undefined);
+    return complaints.map((complaint) => ({
+      id: complaint.id,
+      category: complaint.category,
+      severity: complaint.severity,
+      lat: complaint.lat,
+      lng: complaint.lng,
+      area: complaint.area,
+      createdAt: complaint.createdAt,
+    }));
   } catch {
     return [];
   }
@@ -473,41 +500,66 @@ export async function recordInspection(data: any, byId: string, byName: string) 
 
 /* ---------------------------------------------------------------- alerts */
 export async function getAlerts(city?: CityId): Promise<MuniAlert[]> {
-  return [];
+  const officer = await getMuniOfficer();
+  const targetCity = city ?? officer?.city ?? "vadodara";
+  const complaints = await getMuniComplaints({ city: targetCity });
+  const grouped = new Map<string, MuniComplaint[]>();
+  for (const complaint of complaints.filter((row) => row.severity !== "Low")) {
+    const key = `${complaint.area}|${complaint.category}`;
+    grouped.set(key, [...(grouped.get(key) ?? []), complaint]);
+  }
+  return Array.from(grouped.entries()).map(([key, rows]) => {
+    const [area, category] = key.split("|");
+    const score = Math.max(...rows.map((row) => row.severity === "Critical" ? 90 : row.severity === "High" ? 70 : 45));
+    return {
+      id: `alert-${targetCity}-${area}-${category}`,
+      priority: alertPriority(score),
+      category: category as MuniAlert["category"],
+      area,
+      ward: rows[0]?.ward ?? "Unassigned",
+      city: targetCity,
+      complaintCount: rows.length,
+      riskScore: score,
+      trendPct: 0,
+      acknowledged: false,
+      createdAt: rows[0]?.createdAt ?? new Date().toISOString(),
+    };
+  });
 }
 export async function acknowledgeAlert(id: string): Promise<MuniAlert> {
-  return {} as any;
+  throw new Error("Alert acknowledgement is unavailable until the backend alert store is enabled");
 }
 
 /* ------------------------------------------------------------ departments */
 export async function getDepartments(): Promise<DepartmentStats[]> {
-  try {
-    const data = await client.get<any>("/api/v1/analytics/summary");
-    const rawList = data?.department_distribution || [];
-    return rawList.map((d: any, idx: number) => {
-      const count = Number(d.count || d.total || 0);
-      const slug =
-        (d.name || "")
-          .toLowerCase()
-          .replace(/[^a-z0-9]+/g, "-")
-          .replace(/(^-|-$)/g, "") || `dept-${idx}`;
-      return {
-        id: slug,
-        name: d.name || "General Department",
-        open: Math.round(count * 0.35),
-        inProgress: Math.round(count * 0.25),
-        resolved: Math.round(count * 0.4),
-        critical: Math.max(0, Math.round(count * 0.04)),
-        emergingIssues: Math.max(1, Math.round(count * 0.02)),
-        avgResponseDays: +(2.1 + idx * 0.3).toFixed(1),
-        slaAdherencePct: 92 - idx * 2,
-        satisfactionPct: 88 + (idx % 7),
-        activeStaff: 24 + idx * 6,
-      };
-    });
-  } catch {
-    return [];
+  const officer = await getMuniOfficer();
+  if (!officer?.city) return [];
+  const complaints = await getMuniComplaints({ city: officer.city });
+  const grouped = new Map<string, MuniComplaint[]>();
+  for (const complaint of complaints) {
+    const name = complaint.department || "General";
+    grouped.set(name, [...(grouped.get(name) ?? []), complaint]);
   }
+  return Array.from(grouped.entries()).map(([name, rows], index) => {
+    const categoryBreakdown = rows.reduce<Record<string, number>>((result, row) => {
+      result[row.category] = (result[row.category] ?? 0) + 1;
+      return result;
+    }, {});
+    return {
+      id: name.toLowerCase().replace(/[^a-z0-9]+/g, "-") || `dept-${index}`,
+      name: name as DepartmentStats["name"],
+      open: rows.filter((row) => ["Received", "Under Review", "Assigned"].includes(row.status)).length,
+      inProgress: rows.filter((row) => row.status === "In Progress").length,
+      resolved: rows.filter((row) => ["Resolved", "Closed"].includes(row.status)).length,
+      critical: rows.filter((row) => row.severity === "Critical").length,
+      emergingIssues: 0,
+      avgResponseDays: 0,
+      slaAdherencePct: 0,
+      satisfactionPct: 0,
+      activeStaff: 0,
+      categoryBreakdown,
+    } as DepartmentStats;
+  });
 }
 export async function getDepartment(id: string): Promise<DepartmentStats | null> {
   const depts = await getDepartments();
@@ -516,7 +568,37 @@ export async function getDepartment(id: string): Promise<DepartmentStats | null>
 
 /* ------------------------------------------------------------------ areas */
 export async function getAreaOverviews(city: CityId) {
-  return [];
+  const complaints = await getMuniComplaints({ city });
+  const grouped = new Map<string, MuniComplaint[]>();
+  for (const complaint of complaints) {
+    const name = complaint.area || "Unassigned area";
+    const current = grouped.get(name) ?? [];
+    current.push(complaint);
+    grouped.set(name, current);
+  }
+  return Array.from(grouped.entries()).map(([name, rows], index) => {
+    const critical = rows.filter((row) => row.severity === "Critical").length;
+    const high = rows.filter((row) => row.severity === "High").length;
+    const risk = Math.min(100, Math.round((critical * 90 + high * 70 + rows.length * 10) / Math.max(1, rows.length)));
+    const top = rows.reduce<Record<string, number>>((counts, row) => {
+      counts[row.category] = (counts[row.category] ?? 0) + 1;
+      return counts;
+    }, {});
+    const topIssue = Object.entries(top).sort((a, b) => b[1] - a[1])[0]?.[0] ?? "Other";
+    return {
+      id: `${city}-${index}-${name}`,
+      name,
+      ward: rows[0]?.ward ?? "Unassigned",
+      city,
+      activity: risk >= 85 ? "Critical" : risk >= 70 ? "High" : risk >= 40 ? "Moderate" : "Low",
+      reports: rows.length,
+      critical,
+      trendPct: 0,
+      topIssue,
+      risk,
+      health: risk >= 85 ? "critical" : risk >= 70 ? "high" : risk >= 40 ? "moderate" : "low",
+    };
+  });
 }
 
 /* -------------------------------------------------------------- analytics */
@@ -524,41 +606,66 @@ export async function getTrendAnalysis() {
   return [];
 }
 export async function getHotspotRankings() {
-  return [];
+  const officer = await getMuniOfficer();
+  if (!officer?.city) return [];
+  const areas = await getAreaOverviews(officer.city);
+  return areas.filter((area: any) => area.risk >= 40).sort((a: any, b: any) => b.risk - a.risk);
 }
 export async function getAnalyticsData(city: CityId) {
   const data = await client.get<any>("/api/v1/analytics/summary?days=30");
-  const months = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec",
-  ];
+  const trend = Array.isArray(data?.daily_trends)
+    ? data.daily_trends.map((item: any) => ({
+        month: String(item.date ?? "").slice(5, 10),
+        total: Number(item.count ?? 0),
+        critical: 0,
+      }))
+    : [];
+  const risk = data?.risk_distribution ?? {};
+  const severityTrend = [{
+    month: "Current",
+    low: Number(risk.low ?? 0),
+    moderate: Number(risk.medium ?? 0),
+    high: Number(risk.high ?? 0),
+    critical: Number(risk.critical ?? 0),
+  }];
+  const departmentDistribution = (data?.department_distribution ?? []).map((item: any) => ({
+    name: item.name,
+    value: Number(item.count ?? item.value ?? 0),
+  }));
+  const categoryDistribution = (data?.category_distribution ?? []).map((item: any) => ({
+    name: String(item.name ?? "Other").replace(/_/g, " "),
+    value: Number(item.count ?? item.value ?? 0),
+  }));
+  const status = data?.status_distribution ?? {};
+  const resolutionStatus = Object.entries(status).map(([name, value]) => ({ name, value }));
   return {
-    complaintTrend: data?.daily_trends || [],
-    severityTrend: [],
-    departmentDistribution: data?.department_distribution || [],
-    categoryDistribution: [],
-    resolutionStatus: [],
-    emergingTrend: months.map((m, i) => ({ month: m, count: 8 + i * 2 })),
-    responseTime: months.map((m, i) => ({ month: m, days: 2.8 - i * 0.1 })),
+    complaintTrend: trend,
+    severityTrend,
+    departmentDistribution,
+    categoryDistribution,
+    resolutionStatus,
+    emergingTrend: [],
+    responseTime: [],
     city,
   };
 }
 
 /* --------------------------------------------------------- notifications */
 export async function getOfficerNotifications(): Promise<OfficerNotification[]> {
-  return [];
+  const alerts = await getAlerts();
+  return alerts.map((alert) => ({
+    id: alert.id,
+    title: `${alert.priority} civic risk in ${alert.area}`,
+    body: `${alert.complaintCount} ${alert.category} report${alert.complaintCount === 1 ? "" : "s"} require attention.`,
+    kind: alert.priority === "Critical" ? "critical" : "risk_increase",
+    read: alert.acknowledged,
+    at: alert.createdAt,
+    link: `/complaints?area=${encodeURIComponent(alert.area)}`,
+  }));
 }
-export async function markNotificationRead(id: string): Promise<void> {}
+export async function markNotificationRead(id: string): Promise<void> {
+  throw new Error("Notification acknowledgement is unavailable until the backend alert store is enabled");
+}
 
 /* -------------------------------------------------------------- settings */
 const DEFAULT_SETTINGS: MuniSettings = {

@@ -81,10 +81,14 @@ function ContractorsPublicPage() {
       {/* Contractor List */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {contractors.map((c) => {
-          const pub = Number(c.public_rating || 4.5);
-          const ai = Number(c.ai_rating || 4.8);
-          const off = Number(c.officer_rating || 4.6);
-          const overall = Number(c.overall_rating || (pub * 0.35 + ai * 0.35 + off * 0.30).toFixed(1));
+          const pub = Number.isFinite(Number(c.public_rating)) ? Number(c.public_rating) : null;
+          const ai = Number.isFinite(Number(c.ai_rating)) ? Number(c.ai_rating) : null;
+          const off = Number.isFinite(Number(c.officer_rating)) ? Number(c.officer_rating) : null;
+          const overall = Number.isFinite(Number(c.overall_rating))
+            ? Number(c.overall_rating)
+            : pub !== null && ai !== null && off !== null
+              ? Number((pub * 0.35 + ai * 0.35 + off * 0.30).toFixed(1))
+              : null;
 
           return (
             <GlassCard key={c.id} className="p-6 glass-strong lift flex flex-col justify-between">
@@ -97,7 +101,7 @@ function ContractorsPublicPage() {
                     </p>
                   </div>
                   <div className="text-right shrink-0">
-                    <span className="text-2xl font-extrabold text-emerald-500">{overall.toFixed(1)}</span>
+                    <span className="text-2xl font-extrabold text-emerald-500">{overall === null ? "—" : overall.toFixed(1)}</span>
                     <span className="text-xs text-[var(--muted-foreground)] block">Composite Index</span>
                   </div>
                 </div>
@@ -111,7 +115,7 @@ function ContractorsPublicPage() {
                       <span className="text-[10px] font-bold uppercase">Public</span>
                     </div>
                     <span className="text-lg font-black text-amber-600 dark:text-amber-400">
-                      {pub.toFixed(1)} <span className="text-[10px] font-normal">/ 5</span>
+                      {pub === null ? "—" : pub.toFixed(1)} {pub !== null && <span className="text-[10px] font-normal">/ 5</span>}
                     </span>
                     <span className="block text-[9px] text-[var(--muted-foreground)] mt-0.5">Citizen Votes</span>
                   </div>
@@ -123,7 +127,7 @@ function ContractorsPublicPage() {
                       <span className="text-[10px] font-bold uppercase">AI Quality</span>
                     </div>
                     <span className="text-lg font-black text-blue-600 dark:text-blue-400">
-                      {ai.toFixed(1)} <span className="text-[10px] font-normal">/ 5</span>
+                      {ai === null ? "—" : ai.toFixed(1)} {ai !== null && <span className="text-[10px] font-normal">/ 5</span>}
                     </span>
                     <span className="block text-[9px] text-[var(--muted-foreground)] mt-0.5">SLA & Evidence</span>
                   </div>
@@ -135,7 +139,7 @@ function ContractorsPublicPage() {
                       <span className="text-[10px] font-bold uppercase">Officer</span>
                     </div>
                     <span className="text-lg font-black text-emerald-600 dark:text-emerald-400">
-                      {off.toFixed(1)} <span className="text-[10px] font-normal">/ 5</span>
+                      {off === null ? "—" : off.toFixed(1)} {off !== null && <span className="text-[10px] font-normal">/ 5</span>}
                     </span>
                     <span className="block text-[9px] text-[var(--muted-foreground)] mt-0.5">Govt Inspection</span>
                   </div>
@@ -143,21 +147,22 @@ function ContractorsPublicPage() {
 
                 {/* AI Insights bullets */}
                 <div className="mt-4 space-y-1.5 text-xs text-[var(--muted-foreground)]">
-                  {(c.ai_insights || [
-                    "High SLA adherence on civic work orders",
-                    "Prompt resolution of citizen feedback within warranty period"
-                  ]).slice(0, 2).map((insight: string, idx: number) => (
-                    <div key={idx} className="flex items-center gap-2">
-                      <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0" />
-                      <span>{insight}</span>
-                    </div>
-                  ))}
+                  {Array.isArray(c.ai_insights) && c.ai_insights.length > 0 ? (
+                    c.ai_insights.slice(0, 2).map((insight: string, idx: number) => (
+                      <div key={idx} className="flex items-center gap-2">
+                        <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0" />
+                        <span>{insight}</span>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="text-xs text-[var(--muted-foreground)]">No AI quality findings published yet.</div>
+                  )}
                 </div>
               </div>
 
               <div className="mt-6 pt-4 border-t border-[var(--glass-border)] flex items-center justify-between">
                 <span className="text-xs text-[var(--muted-foreground)]">
-                  {c.total_reviews_count || 32} total citizen reviews
+                  {Number(c.total_reviews_count ?? 0)} total citizen reviews
                 </span>
                 <button
                   type="button"

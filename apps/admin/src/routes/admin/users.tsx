@@ -91,12 +91,8 @@ function UserManagementPage() {
     return [];
   });
   const [cities, setCities]       = useState<{ id: string; name: string }[]>([]);
-  const [loading, setLoading]     = useState(() => {
-    if (typeof window !== "undefined" && localStorage.getItem("civicsathi_admin_users")) {
-      return false;
-    }
-    return true;
-  });
+  const [loading, setLoading]     = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [search, setSearch]       = useState("");
   const [roleFilter, setRoleFilter] = useState<string>("all");
   const [showForm, setShowForm]   = useState(false);
@@ -106,20 +102,23 @@ function UserManagementPage() {
   const [deleting, setDeleting]   = useState<string | null>(null);
 
   const load = async () => {
+    if (!admin) return;
+    setLoading(true);
+    setLoadError(null);
     try {
       const [us, cs] = await Promise.all([listAllUsers({ limit: 200 }), listAdminCities()]);
       if (us && Array.isArray(us)) setUsers(us);
       if (cs && Array.isArray(cs)) setCities(cs);
     } catch (e: any) {
-      if (users.length === 0) {
-        toast.error(e.message ?? "Failed to load users");
-      }
+      const message = e?.message ?? "Failed to load users";
+      setLoadError(message);
+      toast.error(message);
     } finally {
       setLoading(false);
     }
   };
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => { if (admin) load(); }, [admin?.id]);
 
   const filtered = users.filter(u => {
     const matchRole   = roleFilter === "all" || u.role === roleFilter;
@@ -176,6 +175,18 @@ function UserManagementPage() {
   };
 
   if (loading) return <LoadingState message="Loading users..." />;
+  if (loadError && users.length === 0) {
+    return (
+      <div className="space-y-4 muni-page-enter">
+        <h1 className="text-2xl font-bold tracking-tight">{t('ui.user_management')}</h1>
+        <div className="rounded-lg border border-[var(--critical)]/30 bg-[var(--critical)]/10 p-6 text-sm">
+          <p className="font-medium">Unable to load live users</p>
+          <p className="mt-1 text-[var(--muted-foreground)]">{loadError}</p>
+          <button onClick={load} className="action-btn primary mt-4">Retry</button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6 muni-page-enter">

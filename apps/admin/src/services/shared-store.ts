@@ -101,17 +101,77 @@ async function appendAudit(
     ...(opts?.reason ? { reason: opts.reason } : {}),
     at: new Date().toISOString(),
   };
-  await fetchStore("auditLogs", "POST", entry);
+  try {
+    await adminApiFetch("/api/v1/admin/audit-logs", {
+      method: "POST",
+      body: JSON.stringify({
+        actor_id: entry.actorId,
+        actor_name: entry.actorName,
+        actor_role: entry.actorRole,
+        action: entry.action,
+        entity_type: entry.entityType,
+        entity_id: entry.entityId,
+        entity_label: entry.entityLabel,
+        previous_value: entry.previousValue,
+        new_value: entry.newValue,
+        reason: entry.reason,
+      }),
+    });
+  } catch (error) {
+    console.warn("Audit log could not be persisted", error);
+  }
 }
 
 // ================================================================ Contractors
 
+function normalizeRealContractor(raw: any): Contractor {
+  const registrations = Array.isArray(raw?.registrations) ? raw.registrations : [];
+  const first = registrations[0] ?? {};
+  const hasApproved = registrations.some((r: any) => r?.status === "APPROVED");
+  const hasPending = registrations.some((r: any) => r?.status === "PENDING");
+  const status: Contractor["status"] = hasApproved
+    ? "VERIFIED"
+    : hasPending
+      ? "PENDING_VERIFICATION"
+      : "SUSPENDED";
+  const categories = registrations.flatMap((r: any) => Array.isArray(r?.approved_categories) ? r.approved_categories : []);
+  const serviceAreas = registrations.map((r: any) => r?.city_name).filter(Boolean);
+  return {
+    id: String(raw?.id ?? ""),
+    companyName: raw?.company_name ?? raw?.companyName ?? "Unnamed contractor",
+    registrationNumber: first?.registration_number ?? "Not registered",
+    contactPerson: raw?.contact_person ?? raw?.contactPerson ?? "",
+    email: raw?.email ?? "",
+    phone: raw?.phone ?? "",
+    address: "",
+    gstin: "",
+    pan: "",
+    status,
+    verificationStatus: hasApproved ? "VERIFIED" : hasPending ? "PENDING" : "REJECTED",
+    registrationDate: raw?.created_at ?? "",
+    expiryDate: "",
+    specializationCategories: Array.from(new Set(categories)) as Contractor["specializationCategories"],
+    serviceAreas: Array.from(new Set(serviceAreas)),
+    performanceScore: Number(raw?.performance_score ?? 0),
+    slaScore: Number(raw?.sla_score ?? 0),
+    inspectionPassRate: Number(raw?.inspection_pass_rate ?? 0),
+    onTimeCompletionRate: Number(raw?.on_time_completion_rate ?? 0),
+    reworkRate: Number(raw?.rework_rate ?? 0),
+    rating: Number(raw?.public_rating ?? 0),
+    activeWorkCount: Number(raw?.active_work_count ?? 0),
+    totalCompleted: Number(raw?.total_completed ?? 0),
+    createdAt: raw?.created_at ?? "",
+    updatedAt: raw?.updated_at ?? raw?.created_at ?? "",
+  };
+}
+
 export async function getContractors(): Promise<Contractor[]> {
-  return fetchStore("contractors");
+  const raw = await listRealContractors();
+  return raw.map(normalizeRealContractor);
 }
 
 export async function getContractor(id: string): Promise<Contractor | null> {
-  const list = await fetchStore<Contractor[]>("contractors");
+  const list = await getContractors();
   return list.find((c) => c.id === id) ?? null;
 }
 
@@ -150,10 +210,11 @@ export async function verifyContractor(
   actorId: string,
   actorName: string,
 ): Promise<Contractor> {
-  const updated = await updateContractor(id, {
-    status: "VERIFIED",
-    verificationStatus: "VERIFIED",
-  });
+  const raw = (await listRealContractors()).find((c: any) => String(c?.id) === id);
+  const registration = raw?.registrations?.[0];
+  if (!registration?.id) throw new Error("This contractor has no city registration to verify");
+  await updateContractorRegistration(id, registration.id, "APPROVED", registration.approved_categories ?? []);
+  const updated = normalizeRealContractor({ ...raw, registrations: raw.registrations.map((r: any) => r.id === registration.id ? { ...r, status: "APPROVED" } : r) });
   await appendAudit(
     actorId,
     actorName,
@@ -172,7 +233,11 @@ export async function suspendContractor(
   actorName: string,
   reason: string,
 ): Promise<Contractor> {
-  const updated = await updateContractor(id, { status: "SUSPENDED" });
+  const raw = (await listRealContractors()).find((c: any) => String(c?.id) === id);
+  const registration = raw?.registrations?.[0];
+  if (!registration?.id) throw new Error("This contractor has no city registration to suspend");
+  await updateContractorRegistration(id, registration.id, "REVOKED", registration.approved_categories ?? []);
+  const updated = normalizeRealContractor({ ...raw, registrations: raw.registrations.map((r: any) => r.id === registration.id ? { ...r, status: "REVOKED" } : r) });
   await appendAudit(
     actorId,
     actorName,
@@ -239,12 +304,43 @@ export async function updateWorkPackage(
 
 // ================================================================ Work Orders
 
+function normalizeRealWorkOrder(raw: any): WorkOrder {
+  return {
+    id: String(raw?.id ?? ""),
+    workPackageId: String(raw?.tender_id ?? ""),
+    contractorId: String(raw?.contractor_id ?? ""),
+    contractorName: raw?.contractor_name ?? "Unassigned",
+    assignedEngineerId: undefined,
+    assignedEngineerName: undefined,
+    departmentId: String(raw?.department_id ?? ""),
+    department: (raw?.department ?? "General") as WorkOrder["department"],
+    title: raw?.title ?? "Untitled work order",
+    description: raw?.description ?? "",
+    cityId: raw?.city ?? raw?.city_id ?? "",
+    ward: raw?.ward ?? "",
+    area: raw?.area ?? "",
+    lat: Number(raw?.lat ?? 0),
+    lng: Number(raw?.lng ?? 0),
+    priority: "Moderate",
+    estimatedCost: Number(raw?.award_value ?? raw?.estimated_budget ?? 0),
+    approvedAmount: Number(raw?.award_value ?? 0),
+    startDate: raw?.created_at ?? "",
+    expectedCompletionDate: raw?.target_completion_date ?? "",
+    slaDeadline: raw?.target_completion_date ?? raw?.created_at ?? "",
+    status: String(raw?.status ?? "ISSUED") as WorkOrderStatus,
+    boqItems: [],
+    createdBy: "backend",
+    createdAt: raw?.created_at ?? "",
+    updatedAt: raw?.updated_at ?? raw?.created_at ?? "",
+  };
+}
+
 export async function getWorkOrders(filters?: {
   contractorId?: string;
   cityId?: string;
   status?: WorkOrderStatus;
 }): Promise<WorkOrder[]> {
-  let list = await fetchStore<WorkOrder[]>("workOrders");
+  let list = (await listRealWorkOrders()).map(normalizeRealWorkOrder);
   if (filters?.contractorId) list = list.filter((w) => w.contractorId === filters.contractorId);
   if (filters?.cityId) list = list.filter((w) => w.cityId === filters.cityId);
   if (filters?.status) list = list.filter((w) => w.status === filters.status);
@@ -252,7 +348,7 @@ export async function getWorkOrders(filters?: {
 }
 
 export async function getWorkOrder(id: string): Promise<WorkOrder | null> {
-  const list = await fetchStore<WorkOrder[]>("workOrders");
+  const list = await getWorkOrders();
   return list.find((w) => w.id === id) ?? null;
 }
 
@@ -511,16 +607,44 @@ export async function getAuditLogs(filters?: {
   actorRole?: SystemRole;
   limit?: number;
 }): Promise<AuditLog[]> {
-  let logs = await fetchStore<AuditLog[]>("auditLogs");
-  if (filters?.entityType) logs = logs.filter((l) => l.entityType === filters.entityType);
-  if (filters?.actorRole) logs = logs.filter((l) => l.actorRole === filters.actorRole);
-  return filters?.limit ? logs.slice(0, filters.limit) : logs;
+  const params = new URLSearchParams();
+  if (filters?.entityType) params.set("entity_type", filters.entityType);
+  if (filters?.actorRole) params.set("actor_role", filters.actorRole);
+  params.set("limit", String(filters?.limit ?? 200));
+  const raw = await adminApiFetch<any[]>(`/api/v1/admin/audit-logs?${params.toString()}`);
+  return (Array.isArray(raw) ? raw : []).map((entry) => ({
+    id: String(entry.id),
+    actorId: String(entry.actor_id ?? entry.actorId ?? ""),
+    actorName: String(entry.actor_name ?? entry.actorName ?? ""),
+    actorRole: entry.actor_role ?? entry.actorRole ?? "admin",
+    action: entry.action,
+    entityType: entry.entity_type ?? entry.entityType,
+    entityId: String(entry.entity_id ?? entry.entityId ?? ""),
+    entityLabel: entry.entity_label ?? entry.entityLabel,
+    previousValue: entry.previous_value ?? entry.previousValue,
+    newValue: entry.new_value ?? entry.newValue,
+    reason: entry.reason,
+    at: entry.at ?? entry.created_at ?? new Date().toISOString(),
+  })) as AuditLog[];
 }
 
 // ================================================================ SLA Rules
 
+function normalizeSLARule(raw: any): SLARule {
+  return {
+    id: String(raw?.id ?? ""),
+    category: raw?.category ?? "General",
+    severity: raw?.severity ?? "LOW",
+    responseHours: Number(raw?.response_hours ?? raw?.responseHours ?? 0),
+    resolutionHours: Number(raw?.resolution_hours ?? raw?.resolutionHours ?? 0),
+    escalationHours: Number(raw?.escalation_hours ?? raw?.escalationHours ?? 0),
+    active: Boolean(raw?.is_active ?? raw?.active ?? true),
+  } as SLARule;
+}
+
 export async function getSLARules(): Promise<SLARule[]> {
-  return fetchStore<SLARule[]>("slaRules");
+  const response = await adminApiFetch<any[]>("/api/v1/admin/sla-rules");
+  return Array.isArray(response) ? response.map(normalizeSLARule) : [];
 }
 
 export async function updateSLARule(
@@ -529,7 +653,16 @@ export async function updateSLARule(
   actorId: string,
   actorName: string,
 ): Promise<SLARule> {
-  const r = await fetchStorePatch<SLARule>("slaRules", id, patch);
+  const response = await adminApiFetch<any>(`/api/v1/admin/sla-rules/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify({
+      response_hours: patch.responseHours,
+      resolution_hours: patch.resolutionHours,
+      escalation_hours: patch.escalationHours,
+      is_active: patch.active,
+    }),
+  });
+  const rule = normalizeSLARule(response);
   await appendAudit(
     actorId,
     actorName,
@@ -537,9 +670,9 @@ export async function updateSLARule(
     "SLA_RULE_CHANGED",
     "sla",
     id,
-    `${r.category} / ${r.severity}`,
+    `${rule.category} / ${rule.severity}`,
   );
-  return r;
+  return rule;
 }
 
 // ================================================================ Admin Auth — Real JWT backend
