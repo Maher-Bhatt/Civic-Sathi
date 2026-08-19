@@ -148,11 +148,46 @@ class CommandCenterCityOut(BaseModel):
     high_risk_work_orders: int = 0
 
 
+class CommandCenterPipelineStageOut(BaseModel):
+    id: str
+    label: str
+    count: int = 0
+    signal: str = ""
+    state: str = "quiet"
+    tone: str = "indigo"
+    href: str = "/admin/audit-logs"
+
+
+class CommandCenterCityLaneOut(BaseModel):
+    id: str
+    name: str
+    state_code: str
+    health: str = "operational"
+    open_complaints: int = 0
+    critical_issues: int = 0
+    active_work_orders: int = 0
+    high_risk_work_orders: int = 0
+    stages: List[CommandCenterPipelineStageOut] = []
+
+
+class CommandCenterLiveEventOut(BaseModel):
+    id: str
+    city_name: str
+    stage: str
+    label: str
+    detail: str
+    severity: str = "info"
+    at: datetime | None = None
+    href: str = "/admin/audit-logs"
+
+
 class CommandCenterSnapshotOut(BaseModel):
     generated_at: datetime
     refresh_after_seconds: int = 30
     platform: PlatformStatsOut
     cities: List[CommandCenterCityOut]
+    city_lanes: List[CommandCenterCityLaneOut] = []
+    live_events: List[CommandCenterLiveEventOut] = []
     complaint_status: dict[str, int]
     issue_status: dict[str, int]
     tender_status: dict[str, int]
@@ -583,12 +618,133 @@ def get_command_center_snapshot(
         degraded.append("recent_audit")
         recent_audit = []
 
+    city_name_by_id = {city.id: city.name for city in city_rows}
+    lane_href = {
+        "reports": "/admin/audit-logs",
+        "issues": "/admin/audit-logs",
+        "tenders": "/admin/audit-logs",
+        "execution": "/admin/work-orders-overview",
+        "resolved": "/admin/audit-logs",
+    }
+
+    def pipeline_stage(stage_id: str, label: str, count: int, tone: str, signal: str, *, completed: bool = False, critical: bool = False):
+        state = "critical" if critical else "complete" if completed and count > 0 else "active" if count > 0 else "quiet"
+        return CommandCenterPipelineStageOut(
+            id=stage_id,
+            label=label,
+            count=int(count),
+            signal=signal,
+            state=state,
+            tone=tone,
+            href=lane_href[stage_id],
+        )
+
+    city_lanes = []
+    for city in cities:
+        city_critical = city.critical_issues > 0 or city.high_risk_work_orders > 0
+        city_lanes.append(CommandCenterCityLaneOut(
+            id=city.id,
+            name=city.name,
+            state_code=city.state_code,
+            health="critical" if city_critical else "active" if city.open_complaints or city.active_work_orders else "quiet",
+            open_complaints=city.open_complaints,
+            critical_issues=city.critical_issues,
+            active_work_orders=city.active_work_orders,
+            high_risk_work_orders=city.high_risk_work_orders,
+            stages=[
+                pipeline_stage("reports", "Citizen reports", city.complaints, "teal", f"{city.open_complaints:,} open"),
+                pipeline_stage("issues", "Issue clusters", city.issues, "saffron", f"{city.critical_issues:,} critical", critical=city.critical_issues > 0),
+                pipeline_stage("tenders", "Municipal tenders", city.tenders, "indigo", f"{city.published_tenders:,} published"),
+                pipeline_stage("execution", "Contractor execution", city.active_work_orders, "blue", f"{city.high_risk_work_orders:,} high risk", critical=city.high_risk_work_orders > 0),
+                pipeline_stage("resolved", "Resolved complaints", city.resolved_complaints, "teal", "closed loop", completed=True),
+            ],
+        ))
+
+    live_events: list[CommandCenterLiveEventOut] = []
+    try:
+        recent_complaints = (
+            scoped(db.query(Complaint), Complaint.city_id)
+            .order_by(Complaint.created_at.desc())
+            .limit(4)
+            .all()
+        )
+        live_events.extend(
+            CommandCenterLiveEventOut(
+                id=f"complaint-{complaint.id}",
+                city_name=city_name_by_id.get(complaint.city_id, "Unknown city"),
+                stage="Citizen reports",
+                label=complaint.title,
+                detail=f"{complaint.public_id} · {complaint.status.upper()} · {complaint.category}",
+                severity=str(complaint.priority or "info").lower(),
+                at=complaint.created_at,
+                href="/admin/audit-logs",
+            )
+            for complaint in recent_complaints
+        )
+    except Exception:
+        db.rollback()
+        degraded.append("recent_complaint_events")
+
+    try:
+        recent_tenders = (
+            scoped(db.query(Tender), Tender.city_id)
+            .order_by(Tender.created_at.desc())
+            .limit(4)
+            .all()
+        )
+        live_events.extend(
+            CommandCenterLiveEventOut(
+                id=f"tender-{tender.id}",
+                city_name=city_name_by_id.get(tender.city_id, "Unknown city"),
+                stage="Municipal tenders",
+                label=tender.title,
+                detail=f"{_status_key(tender.status).upper()} · INR {float(tender.estimated_budget or 0):,.0f}",
+                severity="info",
+                at=tender.created_at,
+                href="/admin/audit-logs",
+            )
+            for tender in recent_tenders
+        )
+    except Exception:
+        db.rollback()
+        degraded.append("recent_tender_events")
+
+    try:
+        recent_work_orders = (
+            db.query(WorkOrder, Tender)
+            .join(Tender, WorkOrder.tender_id == Tender.id)
+            .filter(Tender.city_id.in_(scoped_city_ids) if scoped_city_ids else False)
+            .order_by(WorkOrder.created_at.desc())
+            .limit(4)
+            .all()
+        )
+        live_events.extend(
+            CommandCenterLiveEventOut(
+                id=f"work-order-{work_order.id}",
+                city_name=city_name_by_id.get(tender.city_id, "Unknown city"),
+                stage="Contractor execution",
+                label=tender.title,
+                detail=f"{_status_key(work_order.status).upper()} · {float(work_order.verified_progress_pct or work_order.reported_progress_pct or 0):.0f}% verified",
+                severity=str(work_order.risk_level or "info").lower(),
+                at=work_order.created_at,
+                href="/admin/work-orders-overview",
+            )
+            for work_order, tender in recent_work_orders
+        )
+    except Exception:
+        db.rollback()
+        degraded.append("recent_execution_events")
+
+    live_events = sorted(live_events, key=lambda event: event.at or datetime.min.replace(tzinfo=timezone.utc), reverse=True)[:12]
+
     degraded = sorted(set(degraded))
     health_status = "degraded" if degraded else "operational"
     return CommandCenterSnapshotOut(
         generated_at=datetime.now(timezone.utc),
         platform=platform,
         cities=cities,
+        city_lanes=city_lanes,
+        live_events=live_events,
         complaint_status=complaint_status,
         issue_status=issue_status,
         tender_status=tender_status,

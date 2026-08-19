@@ -24,15 +24,12 @@ import {
   FileText,
   MapPin,
   Plus,
-  ArrowRight,
   Database,
   Server,
   Sparkles,
   RefreshCw,
-  Network,
   RadioTower,
   Globe2,
-  GitBranch,
   Gauge,
   Clock3,
   X,
@@ -81,6 +78,8 @@ function AdminDashboardContent() {
   const [snapshotError, setSnapshotError] = useState<string | null>(null);
   const [lastRefresh, setLastRefresh] = useState<Date | null>(null);
   const [refreshNonce, setRefreshNonce] = useState(0);
+  const [activeCity, setActiveCity] = useState<"all" | "vadodara" | "bengaluru">("all");
+  const [refreshCountdown, setRefreshCountdown] = useState(30);
 
   // Quick Action Modal states
   const [showOfficerModal, setShowOfficerModal] = useState(false);
@@ -123,6 +122,7 @@ function AdminDashboardContent() {
           if (liveWorkOrders) setWOs(liveWorkOrders.filter((wo: any) => LIVE_CITY_NAMES.has(String(wo?.city ?? "").trim().toLowerCase())).slice(0, 8));
           setSnapshotError(null);
           setLastRefresh(new Date());
+          setRefreshCountdown(Number(liveSnapshot?.refresh_after_seconds ?? 30));
         }
       } catch (error: any) {
         if (isMounted) {
@@ -139,6 +139,13 @@ function AdminDashboardContent() {
       window.clearInterval(refreshTimer);
     };
   }, [refreshNonce]);
+
+  useEffect(() => {
+    const countdownTimer = window.setInterval(() => {
+      setRefreshCountdown((value) => (value <= 1 ? 30 : value - 1));
+    }, 1000);
+    return () => window.clearInterval(countdownTimer);
+  }, []);
 
   const handleCreateOfficer = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -226,7 +233,26 @@ function AdminDashboardContent() {
     name: name.replace(/_/g, " "),
     value: Number(value),
   }));
-  const workflowData = snapshot?.workflow ?? [];
+  const cityLanes = (snapshot?.city_lanes?.length ? snapshot.city_lanes : cityPulseData.map((city: any) => ({
+    id: String(city.name).toLowerCase(),
+    name: city.name,
+    state_code: city.name.toLowerCase().includes("bengaluru") ? "KA" : "GJ",
+    health: city.risk > 0 ? "critical" : city.open > 0 || city.active > 0 ? "active" : "quiet",
+    open_complaints: city.open,
+    critical_issues: 0,
+    active_work_orders: city.active,
+    high_risk_work_orders: city.risk,
+    stages: [
+      { id: "reports", label: "Citizen reports", count: city.open + city.resolved, signal: `${city.open.toLocaleString("en-IN")} open`, state: city.open ? "active" : "quiet", tone: "teal", href: "/admin/audit-logs" },
+      { id: "issues", label: "Issue clusters", count: city.issues, signal: "0 critical", state: city.issues ? "active" : "quiet", tone: "saffron", href: "/admin/audit-logs" },
+      { id: "tenders", label: "Municipal tenders", count: city.tenders, signal: "live register", state: city.tenders ? "active" : "quiet", tone: "indigo", href: "/admin/audit-logs" },
+      { id: "execution", label: "Contractor execution", count: city.active, signal: `${city.risk} high risk`, state: city.risk ? "critical" : city.active ? "active" : "quiet", tone: "blue", href: "/admin/work-orders-overview" },
+      { id: "resolved", label: "Resolved complaints", count: city.resolved, signal: "closed loop", state: city.resolved ? "complete" : "quiet", tone: "teal", href: "/admin/audit-logs" },
+    ],
+  })))
+    .filter((lane: any) => LIVE_CITY_NAMES.has(String(lane.name ?? "").trim().toLowerCase()));
+  const visibleCityLanes = cityLanes.filter((lane: any) => activeCity === "all" || String(lane.name).trim().toLowerCase() === activeCity);
+  const liveEvents = snapshot?.live_events ?? [];
   const pipelineScope = snapshot?.system_health?.scope?.cities?.filter((name: string) =>
     LIVE_CITY_NAMES.has(String(name).trim().toLowerCase()),
   ) ?? cityPulseData.map((city: any) => city.name);
@@ -287,24 +313,39 @@ function AdminDashboardContent() {
               <div><span>STREAM STATE</span><strong className={snapshotError ? "text-amber-300" : "text-emerald-300"}>{snapshotLoading ? "SYNCING" : snapshotError ? "DEGRADED" : "SYNCED"}</strong></div>
             </div>
           </div>
-          <div className="civic-admin-pipeline-rail mt-7" role="list" aria-label="Live civic workflow pipeline">
-            {(workflowData.length ? workflowData : [
-              { id: "reports", label: "Citizen reports", count: 0, tone: "teal" },
-              { id: "issues", label: "Issue clusters", count: 0, tone: "saffron" },
-              { id: "tenders", label: "Municipal tenders", count: 0, tone: "indigo" },
-              { id: "execution", label: "Contractor work orders", count: 0, tone: "blue" },
-              { id: "resolved", label: "Resolved complaints", count: 0, tone: "teal" },
-            ]).map((stage: any, index: number, stages: any[]) => (
-              <div key={stage.id ?? index} className={`civic-admin-pipeline-stage ${snapshotLoading ? "is-loading" : ""}`} role="listitem">
-                <div className={`civic-admin-pipeline-node civic-admin-flow-${stage.tone ?? "indigo"}`}><span>{String(index + 1).padStart(2, "0")}</span></div>
-                <div className="mt-3 min-w-0"><p>{stage.label}</p><strong>{Number(stage.count ?? 0).toLocaleString("en-IN")}</strong><span>LIVE RECORDS</span></div>
-                {index < stages.length - 1 && <GitBranch className="civic-admin-pipeline-connector" aria-hidden="true" />}
-              </div>
+          <div className="civic-admin-pipeline-toolbar mt-7">
+            <div className="civic-admin-city-filter" role="tablist" aria-label="Filter pipeline by city">
+              {[{ id: "all", label: "Both networks" }, { id: "vadodara", label: "Vadodara · VMC" }, { id: "bengaluru", label: "Bengaluru · BBMP" }].map((filter) => (
+                <button key={filter.id} type="button" role="tab" aria-selected={activeCity === filter.id} onClick={() => setActiveCity(filter.id as typeof activeCity)}>{filter.label}</button>
+              ))}
+            </div>
+            <div className="civic-admin-next-sync"><span className="civic-admin-pulse-dot" /> NEXT SYNC IN <strong>{refreshCountdown}s</strong></div>
+          </div>
+          <div className="civic-admin-city-lanes mt-4" role="list" aria-label="Two-city live civic workflow pipeline">
+            {visibleCityLanes.length === 0 ? <DataState icon={Globe2} title="Waiting for city lanes" detail="The scoped backend snapshot has not returned Vadodara or Bengaluru telemetry yet." /> : visibleCityLanes.map((lane: any) => (
+              <article key={lane.id} className={`civic-admin-city-lane civic-admin-city-lane--${String(lane.name).toLowerCase().includes("bengaluru") ? "bengaluru" : "vadodara"} ${snapshotLoading ? "is-loading" : ""}`} role="listitem">
+                <div className="civic-admin-city-lane__header">
+                  <div className="civic-admin-city-lane__identity"><div className="civic-admin-city-emblem"><Globe2 className="h-5 w-5" /></div><div><div className="civic-admin-city-kicker">{String(lane.name).toLowerCase().includes("bengaluru") ? "ಬೆಂಗಳೂರು" : "વડોદરા"} · {lane.state_code}</div><h3>{lane.name}</h3><p>{String(lane.name).toLowerCase().includes("bengaluru") ? "BBMP civic network" : "VMC civic network"}</p></div></div>
+                  <div className={`civic-admin-city-health civic-admin-city-health--${lane.health}`}><span /> {String(lane.health).toUpperCase()}</div>
+                </div>
+                <div className="civic-admin-city-lane__summary"><div><strong>{Number(lane.open_complaints ?? 0).toLocaleString("en-IN")}</strong><span>OPEN SIGNALS</span></div><div><strong>{Number(lane.active_work_orders ?? 0).toLocaleString("en-IN")}</strong><span>ACTIVE WORK</span></div><div className={Number(lane.high_risk_work_orders ?? 0) > 0 ? "is-risk" : ""}><strong>{Number(lane.high_risk_work_orders ?? 0).toLocaleString("en-IN")}</strong><span>HIGH RISK</span></div></div>
+                <div className="civic-admin-stage-track">
+                  {(lane.stages ?? []).map((stage: any, stageIndex: number, stages: any[]) => <div key={stage.id ?? stageIndex} className="civic-admin-stage-step">
+                    <a href={stage.href ?? "/admin/audit-logs"} className={`civic-admin-stage-card civic-admin-stage-card--${stage.state ?? "quiet"}`} aria-label={`Open ${stage.label} for ${lane.name}`}>
+                      <div className={`civic-admin-pipeline-node civic-admin-flow-${stage.tone ?? "indigo"}`}><span>{String(stageIndex + 1).padStart(2, "0")}</span><i /></div>
+                      <div className="civic-admin-stage-card__copy"><span>{stage.label}</span><strong>{Number(stage.count ?? 0).toLocaleString("en-IN")}</strong><small>{stage.signal || (Number(stage.count ?? 0) === 0 ? "0 active" : "LIVE RECORDS")}</small></div>
+                      {stage.state === "critical" && <span className="civic-admin-risk-marker"><ShieldAlert className="h-3 w-3" /> RISK</span>}
+                    </a>
+                    {stageIndex < stages.length - 1 && <div className="civic-admin-stage-connector" aria-hidden="true"><span /></div>}
+                  </div>)}
+                </div>
+                <div className="civic-admin-lane-events"><div className="civic-admin-lane-events__label"><Activity className="h-3.5 w-3.5" /> LATEST PERSISTED SIGNALS</div><div className="civic-admin-lane-events__items">{liveEvents.filter((event: any) => String(event.city_name).toLowerCase() === String(lane.name).toLowerCase()).slice(0, 3).map((event: any) => <a key={event.id} href={event.href ?? "/admin/audit-logs"} className={`civic-admin-live-event civic-admin-live-event--${event.severity ?? "info"}`}><span className="civic-admin-live-event__time">{event.at ? new Date(event.at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" }) : "—"}</span><span className="civic-admin-live-event__stage">{event.stage}</span><strong>{event.label}</strong><small>{event.detail}</small></a>)}{liveEvents.filter((event: any) => String(event.city_name).toLowerCase() === String(lane.name).toLowerCase()).length === 0 && <span className="civic-admin-live-event-empty">No persisted activity in the latest backend window.</span>}</div></div>
+              </article>
             ))}
           </div>
           <div className="mt-6 flex flex-col gap-3 border-t border-white/10 pt-4 text-[10px] uppercase tracking-[0.16em] text-[var(--muted-foreground)] sm:flex-row sm:items-center sm:justify-between">
-            <span className="inline-flex items-center gap-2"><Globe2 className="h-3.5 w-3.5 text-[var(--civic-city-accent)]" /> City scope enforced by backend allowlist</span>
-            <span className="inline-flex items-center gap-2"><Clock3 className="h-3.5 w-3.5" /> {generatedAt ? `Snapshot ${generatedAt.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}` : "Awaiting first snapshot"} · 30 SEC REFRESH</span>
+            <span className="inline-flex items-center gap-2"><Globe2 className="h-3.5 w-3.5 text-[var(--civic-city-accent)]" /> Backend scope: Vadodara + Bengaluru only</span>
+            <span className="inline-flex items-center gap-2"><Clock3 className="h-3.5 w-3.5" /> {generatedAt ? `Snapshot ${generatedAt.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" })}` : "Awaiting first snapshot"} · 30 SEC REFRESH</span>
           </div>
         </div>
       </section>
@@ -441,27 +482,8 @@ function AdminDashboardContent() {
         </GlassCard>
 
         <GlassCard className="civic-admin-command-card p-5">
-          <div className="flex items-start justify-between gap-3">
-            <div>
-              <SectionLabel>One civic thread</SectionLabel>
-              <h2 className="text-lg font-semibold">Complaint to resolution trace</h2>
-              <p className="mt-1 text-xs text-[var(--muted-foreground)]">A live, backend-backed view of the cross-portal operating chain.</p>
-            </div>
-            <Network className="h-5 w-5 text-[var(--civic-city-accent)]" />
-          </div>
-          <div className="mt-5 space-y-2">
-            {workflowData.length === 0 ? (
-              <DataState icon={Network} title="No workflow telemetry yet" detail="Stages will appear once the backend returns live aggregates." />
-            ) : workflowData.map((stage: any, index: number) => (
-              <div key={stage.id ?? index} className="civic-admin-flow-node">
-                <div className="flex items-center gap-3">
-                  <div className={`civic-admin-flow-dot civic-admin-flow-${stage.tone ?? "indigo"}`}><span>{index + 1}</span></div>
-                  <div className="min-w-0 flex-1"><p className="truncate text-sm font-semibold">{stage.label}</p><p className="text-[11px] text-[var(--muted-foreground)]">{Number(stage.count ?? 0).toLocaleString("en-IN")} records</p></div>
-                  {index < workflowData.length - 1 && <ArrowRight className="hidden h-4 w-4 text-[var(--muted-foreground)] sm:block" />}
-                </div>
-              </div>
-            ))}
-          </div>
+          <div className="flex items-start justify-between gap-3"><div><SectionLabel>Cross-city control readout</SectionLabel><h2 className="text-lg font-semibold">Open-signal comparison</h2><p className="mt-1 text-xs text-[var(--muted-foreground)]">A direct comparison of unresolved citizen pressure across the two live networks.</p></div><Gauge className="h-5 w-5 text-[var(--civic-city-accent)]" /></div>
+          <div className="mt-5 space-y-4">{cityLanes.map((lane: any) => <a key={lane.id} href="/admin/audit-logs" className="civic-admin-compare-row"><div className="flex items-center justify-between gap-3 text-xs"><span className="font-semibold">{lane.name}</span><strong>{Number(lane.open_complaints ?? 0).toLocaleString("en-IN")} open</strong></div><div className="civic-admin-compare-track"><span style={{ width: `${Math.max(4, Math.min(100, (Number(lane.open_complaints ?? 0) / Math.max(...cityLanes.map((item: any) => Number(item.open_complaints ?? 0)), 1)) * 100))}%` }} /></div></a>)}</div>
         </GlassCard>
       </div>
 

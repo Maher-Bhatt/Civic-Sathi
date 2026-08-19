@@ -1177,3 +1177,74 @@ body::after {
   .civic-admin-pipeline-connector,
   .civic-admin-pipeline-stage.is-loading .civic-admin-pipeline-node { animation: none; }
 }
+
+/* Command-center v3: connected city lanes and observable stage activity. */
+.civic-admin-pipeline-toolbar { display: flex; align-items: center; justify-content: space-between; gap: .8rem; flex-wrap: wrap; }
+.civic-admin-city-filter { display: inline-flex; flex-wrap: wrap; gap: .35rem; padding: .3rem; border: 1px solid rgb(112 166 219 / .22); border-radius: .8rem; background: rgb(3 14 32 / .52); }
+.civic-admin-city-filter button { border: 1px solid transparent; border-radius: .55rem; padding: .48rem .72rem; color: #9db4d0; font-size: .65rem; font-weight: 800; letter-spacing: .04em; transition: .2s ease; }
+.civic-admin-city-filter button:hover, .civic-admin-city-filter button[aria-selected="true"] { border-color: rgb(232 160 74 / .45); color: #fff; background: rgb(232 160 74 / .15); box-shadow: 0 0 18px rgb(232 160 74 / .12); }
+.civic-admin-next-sync { display: inline-flex; align-items: center; gap: .42rem; color: #87a4c7; font-size: .62rem; font-weight: 800; letter-spacing: .13em; }
+.civic-admin-next-sync strong { color: #e8f2ff; font-variant-numeric: tabular-nums; }
+.civic-admin-pulse-dot { width: .45rem; height: .45rem; border-radius: 999px; background: #42d5a4; box-shadow: 0 0 0 .25rem rgb(66 213 164 / .12), 0 0 14px #42d5a4; animation: civic-admin-live-blink 1.3s ease-in-out infinite; }
+.civic-admin-city-lanes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+.civic-admin-city-lane { min-width: 0; overflow: hidden; border: 1px solid rgb(112 166 219 / .24); border-radius: 1.15rem; background: linear-gradient(155deg, rgb(8 26 53 / .88), rgb(3 13 29 / .84)); box-shadow: inset 0 1px 0 rgb(255 255 255 / .06), 0 20px 50px -38px #000; }
+.civic-admin-city-lane--vadodara { --lane-accent: #e8a04a; --lane-accent-rgb: 232 160 74; }
+.civic-admin-city-lane--bengaluru { --lane-accent: #26c4b5; --lane-accent-rgb: 38 196 181; }
+.civic-admin-city-lane__header { display: flex; align-items: flex-start; justify-content: space-between; gap: .8rem; padding: 1rem; border-bottom: 1px solid rgb(112 166 219 / .16); background: linear-gradient(110deg, rgb(var(--lane-accent-rgb) / .14), transparent 60%); }
+.civic-admin-city-lane__identity { display: flex; align-items: center; gap: .7rem; min-width: 0; }
+.civic-admin-city-emblem { display: grid; flex: 0 0 2.45rem; width: 2.45rem; height: 2.45rem; place-items: center; border: 1px solid rgb(var(--lane-accent-rgb) / .52); border-radius: .75rem; color: var(--lane-accent); background: rgb(var(--lane-accent-rgb) / .12); box-shadow: 0 0 22px rgb(var(--lane-accent-rgb) / .22); }
+.civic-admin-city-kicker { color: var(--lane-accent); font-size: .57rem; font-weight: 900; letter-spacing: .16em; text-transform: uppercase; }
+.civic-admin-city-lane h3 { margin: .18rem 0 0; color: #f7fbff; font-size: 1.15rem; font-weight: 850; letter-spacing: -.02em; }
+.civic-admin-city-lane p { margin: .15rem 0 0; color: #86a3c7; font-size: .66rem; }
+.civic-admin-city-health { display: inline-flex; align-items: center; gap: .4rem; padding: .35rem .48rem; border: 1px solid rgb(112 166 219 / .2); border-radius: .6rem; color: #8faaca; font-size: .55rem; font-weight: 900; letter-spacing: .12em; white-space: nowrap; }
+.civic-admin-city-health span { width: .38rem; height: .38rem; border-radius: 999px; background: #8198b4; }
+.civic-admin-city-health--active span { background: #42d5a4; box-shadow: 0 0 10px #42d5a4; }
+.civic-admin-city-health--critical { border-color: rgb(239 108 92 / .44); color: #ffaaa0; }
+.civic-admin-city-health--critical span { background: #ef6c5c; box-shadow: 0 0 12px #ef6c5c; animation: civic-admin-live-blink 1.1s ease-in-out infinite; }
+.civic-admin-city-lane__summary { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .45rem; padding: .85rem 1rem; }
+.civic-admin-city-lane__summary > div { min-width: 0; padding: .55rem .6rem; border: 1px solid rgb(112 166 219 / .16); border-radius: .65rem; background: rgb(2 12 28 / .42); }
+.civic-admin-city-lane__summary strong { display: block; color: #fff; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 1.05rem; font-variant-numeric: tabular-nums; }
+.civic-admin-city-lane__summary span { display: block; margin-top: .2rem; color: #7894b7; font-size: .52rem; font-weight: 850; letter-spacing: .1em; }
+.civic-admin-city-lane__summary .is-risk { border-color: rgb(239 108 92 / .56); background: rgb(239 108 92 / .1); }
+.civic-admin-city-lane__summary .is-risk strong { color: #ffaaa0; }
+.civic-admin-stage-track { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0; padding: .55rem 1rem 1rem; }
+.civic-admin-stage-step { position: relative; min-width: 0; }
+.civic-admin-stage-card { position: relative; display: block; min-height: 7.55rem; padding: .72rem .55rem .55rem; border: 1px solid rgb(112 166 219 / .16); border-radius: .75rem; color: inherit; background: rgb(2 12 28 / .52); transition: transform .22s ease, border-color .22s ease, background .22s ease; }
+.civic-admin-stage-card:hover { z-index: 2; transform: translateY(-.2rem); border-color: rgb(var(--lane-accent-rgb) / .72); background: rgb(var(--lane-accent-rgb) / .12); }
+.civic-admin-stage-card--active { border-color: rgb(66 213 164 / .38); }
+.civic-admin-stage-card--complete { border-color: rgb(38 196 181 / .38); }
+.civic-admin-stage-card--critical { border-color: rgb(239 108 92 / .72); box-shadow: inset 0 0 18px rgb(239 108 92 / .08), 0 0 20px rgb(239 108 92 / .1); }
+.civic-admin-stage-card--critical .civic-admin-pipeline-node { animation: civic-admin-node-pulse-danger 1.45s ease-in-out infinite; }
+.civic-admin-stage-card .civic-admin-pipeline-node { width: 2.3rem; height: 2.3rem; border-radius: .7rem; box-shadow: 0 0 0 .22rem rgb(3 13 29 / .95), 0 0 17px currentColor; }
+.civic-admin-stage-card__copy { min-width: 0; margin-top: .65rem; }
+.civic-admin-stage-card__copy > span { display: block; min-height: 1.7rem; overflow: hidden; color: #dceaff; font-size: .62rem; font-weight: 800; line-height: 1.35; }
+.civic-admin-stage-card__copy strong { display: block; margin-top: .25rem; color: #fff; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 1.2rem; font-variant-numeric: tabular-nums; }
+.civic-admin-stage-card__copy small { display: block; margin-top: .18rem; overflow: hidden; color: #87a4c7; font-size: .52rem; font-weight: 800; letter-spacing: .06em; text-overflow: ellipsis; text-transform: uppercase; white-space: nowrap; }
+.civic-admin-stage-card--quiet .civic-admin-stage-card__copy strong { color: #91a6bf; }
+.civic-admin-stage-connector { position: absolute; top: 1.75rem; left: calc(100% - .1rem); z-index: 1; width: .35rem; height: .18rem; background: rgb(var(--lane-accent-rgb) / .36); }
+.civic-admin-stage-connector::before { content: ""; position: absolute; top: -.13rem; left: .15rem; width: .45rem; height: .45rem; border-top: 1px solid var(--lane-accent); border-right: 1px solid var(--lane-accent); transform: rotate(45deg); opacity: .72; }
+.civic-admin-stage-connector span { position: absolute; top: .02rem; left: -.15rem; width: .55rem; height: .12rem; border-radius: 1rem; background: var(--lane-accent); box-shadow: 0 0 9px var(--lane-accent); animation: civic-admin-flow-run 2.2s linear infinite; }
+.civic-admin-risk-marker { position: absolute; top: .5rem; right: .42rem; display: inline-flex; align-items: center; gap: .16rem; color: #ffaaa0; font-size: .49rem; font-weight: 900; letter-spacing: .08em; }
+.civic-admin-lane-events { margin: 0 1rem 1rem; padding: .7rem; border: 1px solid rgb(var(--lane-accent-rgb) / .2); border-radius: .75rem; background: rgb(var(--lane-accent-rgb) / .06); }
+.civic-admin-lane-events__label { display: flex; align-items: center; gap: .4rem; color: var(--lane-accent); font-size: .55rem; font-weight: 900; letter-spacing: .13em; }
+.civic-admin-lane-events__items { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .45rem; margin-top: .55rem; }
+.civic-admin-live-event { display: block; min-width: 0; padding: .55rem; border: 1px solid rgb(112 166 219 / .14); border-radius: .6rem; background: rgb(2 12 28 / .44); transition: .2s ease; }
+.civic-admin-live-event:hover { border-color: rgb(var(--lane-accent-rgb) / .62); background: rgb(var(--lane-accent-rgb) / .12); }
+.civic-admin-live-event--critical, .civic-admin-live-event--high { border-color: rgb(239 108 92 / .45); }
+.civic-admin-live-event__time, .civic-admin-live-event__stage { display: inline-block; color: #8aa6c8; font-size: .49rem; font-weight: 850; letter-spacing: .05em; }
+.civic-admin-live-event__stage { margin-left: .35rem; color: var(--lane-accent); text-transform: uppercase; }
+.civic-admin-live-event strong { display: block; margin-top: .25rem; overflow: hidden; color: #e8f2ff; font-size: .62rem; text-overflow: ellipsis; white-space: nowrap; }
+.civic-admin-live-event small { display: block; margin-top: .2rem; overflow: hidden; color: #7894b7; font-size: .53rem; text-overflow: ellipsis; white-space: nowrap; }
+.civic-admin-live-event-empty { display: block; padding: .7rem .2rem .1rem; color: #7894b7; font-size: .58rem; }
+.civic-admin-compare-row { display: block; padding: .55rem .65rem; border: 1px solid rgb(112 166 219 / .14); border-radius: .7rem; background: rgb(3 14 32 / .34); transition: .2s ease; }
+.civic-admin-compare-row:hover { border-color: rgb(232 160 74 / .5); background: rgb(232 160 74 / .08); }
+.civic-admin-compare-row strong { color: #fff; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .72rem; }
+.civic-admin-compare-track { height: .36rem; margin-top: .45rem; overflow: hidden; border-radius: 999px; background: rgb(112 166 219 / .14); }
+.civic-admin-compare-track span { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #e8a04a, #26c4b5); box-shadow: 0 0 12px rgb(38 196 181 / .45); transition: width .65s ease; }
+@keyframes civic-admin-flow-run { from { transform: translateX(0); opacity: .15; } 20% { opacity: 1; } to { transform: translateX(1.35rem); opacity: 0; } }
+@keyframes civic-admin-live-blink { 0%, 100% { opacity: .55; } 50% { opacity: 1; } }
+@keyframes civic-admin-node-pulse-danger { 0%, 100% { box-shadow: 0 0 0 .22rem rgb(3 13 29 / .95), 0 0 14px currentColor; } 50% { box-shadow: 0 0 0 .38rem rgb(3 13 29 / .95), 0 0 28px #ef6c5c; } }
+@media (max-width: 1050px) { .civic-admin-stage-track { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .5rem; } .civic-admin-stage-connector { display: none; } .civic-admin-lane-events__items { grid-template-columns: 1fr; } }
+@media (max-width: 760px) { .civic-admin-city-lanes { grid-template-columns: 1fr; } .civic-admin-city-lane__header { flex-direction: column; } .civic-admin-stage-track { grid-template-columns: repeat(2, minmax(0, 1fr)); } .civic-admin-stage-card { min-height: 7.1rem; } }
+@media (max-width: 430px) { .civic-admin-stage-track { grid-template-columns: 1fr; } .civic-admin-city-lane__summary { grid-template-columns: 1fr 1fr; } .civic-admin-city-lane__summary > div:last-child { grid-column: span 2; } }
+@media (prefers-reduced-motion: reduce) { .civic-admin-pulse-dot, .civic-admin-stage-connector span, .civic-admin-stage-card--critical .civic-admin-pipeline-node, .civic-admin-city-health--critical span { animation: none; } }
