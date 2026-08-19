@@ -1,10 +1,11 @@
 from uuid import UUID
 from datetime import datetime, timedelta, timezone
-from sqlalchemy import select, func, and_
+from sqlalchemy import select, func, and_, or_, not_
 from sqlalchemy.orm import Session
 
 from app.models.complaint import Complaint, ComplaintAnalysis
 from app.models.user import Ward
+from app.models.procurement import City
 from app.schemas.common import ComplaintStatus, ComplaintCategory
 
 
@@ -57,6 +58,42 @@ class ComplaintRepository:
             filters.append(Complaint.category == category.value)
         if city:
             filters.append(Complaint.city_id == city)
+            city_record = self.db.execute(
+                select(City).where(City.id == city)
+            ).scalar_one_or_none()
+            city_name = (city_record.name if city_record else "").strip().lower()
+            if city_name in {"vadodara", "baroda"}:
+                opposite_address = or_(*[
+                    Complaint.address_text.ilike(f"%{token}%")
+                    for token in (
+                        "bengaluru", "bangalore", "indiranagar", "yelahanka",
+                        "electronic city", "whitefield", "hsr layout", "jayanagar",
+                        "basavanagudi", "vijayanagar", "marathahalli", "btm layout",
+                        "malleshwaram", "hebbal", "peenya", "bommanahalli",
+                        "kengeri", "rajajinagar", "shivajinagar", "bellandur",
+                        "banaswadi", "mahadevapura", "koramangala",
+                    )
+                ])
+                opposite_coordinates = and_(
+                    Complaint.lat.between(12.70, 13.25),
+                    Complaint.lng.between(77.30, 77.85),
+                )
+                filters.append(not_(or_(opposite_address, opposite_coordinates)))
+            elif city_name in {"bengaluru", "bangalore"}:
+                opposite_address = or_(*[
+                    Complaint.address_text.ilike(f"%{token}%")
+                    for token in (
+                        "vadodara", "baroda", "gotri", "manjalpur", "bhayli",
+                        "atladara", "vasna", "fatehgunj", "sevasi", "sayajigunj",
+                        "karelibaug", "alkapuri", "makarpura", "waghodia", "akota",
+                        "tarsali", "harni", "ajwa",
+                    )
+                ])
+                opposite_coordinates = and_(
+                    Complaint.lat.between(21.95, 22.55),
+                    Complaint.lng.between(72.85, 73.55),
+                )
+                filters.append(not_(or_(opposite_address, opposite_coordinates)))
         if submitted_by_id:
             filters.append(Complaint.submitted_by_id == submitted_by_id)
 
