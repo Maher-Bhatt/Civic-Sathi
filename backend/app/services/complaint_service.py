@@ -1,5 +1,6 @@
 from uuid import UUID
 from datetime import datetime, timezone
+import re
 from sqlalchemy.orm import Session
 
 from app.models.complaint import Complaint, ComplaintAnalysis
@@ -29,22 +30,55 @@ class ComplaintService:
         from app.models.procurement import City
         from sqlalchemy import func as sqlfunc
 
-        category_slug = complaint_data.category or complaint_data.category_hint or "general"
-        department = None
-        if category_slug:
-            clean_cat = category_slug.strip().lower().replace(" ", "_").replace("-", "_")
-            department = self.db.query(Department).filter(
-                (sqlfunc.lower(Department.slug) == clean_cat)
-                | (sqlfunc.lower(Department.name).like(f"%{clean_cat}%"))
-            ).first()
+        raw_category = complaint_data.category or complaint_data.category_hint or "other"
+        category_slug = raw_category.strip().lower().replace(" ", "_").replace("-", "_")
+        category_aliases = {
+            "roads": "road_damage",
+            "road": "road_damage",
+            "water": "water_supply",
+            "garbage": "garbage_collection",
+            "streetlight": "street_lighting",
+            "street_lights": "street_lighting",
+        }
+        category_slug = category_aliases.get(category_slug, category_slug)
+        department_by_category = {
+            "road_damage": "public_works",
+            "water_supply": "water_works",
+            "garbage_collection": "sanitation",
+            "sanitation": "sanitation",
+            "drainage": "drainage",
+            "sewage": "drainage",
+            "street_lighting": "electricity",
+            "electricity": "electricity",
+            "public_transport": "safety",
+            "other": "general",
+        }
+        department_slug = department_by_category.get(category_slug, "general")
+        department = self.db.query(Department).filter(
+            sqlfunc.lower(Department.slug) == department_slug
+        ).first()
         if not department:
             department = self.db.query(Department).first()
 
+        # The legacy Ward table is not city-scoped. Never attach a global ward row
+        # to a new complaint, because that can leak another municipality's ward.
         ward = None
-        if complaint_data.ward_number:
-            ward = self.db.query(Ward).filter(
-                Ward.ward_number == complaint_data.ward_number
-            ).first()
+
+        severity_slug = (complaint_data.severity or "moderate").strip().lower()
+        severity_score = {
+            "critical": 100,
+            "high": 80,
+            "moderate": 60,
+            "medium": 60,
+            "low": 35,
+        }.get(severity_slug, 60)
+        priority = {
+            "critical": "urgent",
+            "high": "high",
+            "moderate": "medium",
+            "medium": "medium",
+            "low": "low",
+        }.get(severity_slug, "medium")
 
         city_id = None
         if complaint_data.city_id:
@@ -81,10 +115,12 @@ class ComplaintService:
             public_id=public_id,
             title=complaint_data.title or (complaint_data.description[:50] + "..."),
             description=complaint_data.description,
-            category=department.slug if department else "general",
+            category=category_slug,
             department_id=department.id if department else None,
             status=ComplaintStatus.RECEIVED.value,
-            priority="medium",
+            priority=priority,
+            severity_score=severity_score,
+            risk_score=severity_score,
             ward_id=ward.id if ward else None,
             city_id=city_id,
             lat=complaint_data.lat,
@@ -279,6 +315,10 @@ class ComplaintService:
             )
 
         ward_number = complaint.ward.ward_number if complaint.ward else None
+        if ward_number is None and complaint.address_text:
+            ward_match = re.search(r"\bward\s*[-#]?\s*(\d{1,3})\b", complaint.address_text, re.IGNORECASE)
+            if ward_match:
+                ward_number = int(ward_match.group(1))
         raw_phone = complaint.submitted_by_phone
         masked_phone = None
         if raw_phone:
@@ -316,6 +356,10 @@ class ComplaintService:
     def _to_list_item(self, complaint: Complaint):
         from app.schemas.complaint import ComplaintListItem
         ward_number = complaint.ward.ward_number if complaint.ward else None
+        if ward_number is None and complaint.address_text:
+            ward_match = re.search(r"\bward\s*[-#]?\s*(\d{1,3})\b", complaint.address_text, re.IGNORECASE)
+            if ward_match:
+                ward_number = int(ward_match.group(1))
         return ComplaintListItem(
             id=complaint.id,
             public_id=complaint.public_id,

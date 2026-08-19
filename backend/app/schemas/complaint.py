@@ -25,7 +25,9 @@ class ComplaintCreate(BaseModel):
     description: str = Field(..., min_length=1, max_length=2500)
     category: str | None = None
     category_hint: str | None = None
+    severity: str | None = None
     address_text: str | None = Field(None, max_length=500)
+
     ward_number: int | None = Field(None, ge=1, le=500)
     lat: float | None = Field(None, ge=-90, le=90)
     lng: float | None = Field(None, ge=-180, le=180)
