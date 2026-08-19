@@ -328,7 +328,14 @@ class AnalyticsService:
                 else_="low",
             )
 
-        avg_risk = func.avg(Complaint.risk_score)
+        severity_risk = case(
+            (Complaint.severity == "critical", 95),
+            (Complaint.severity == "high", 75),
+            (Complaint.severity == "moderate", 48),
+            (Complaint.severity == "low", 18),
+            else_=func.coalesce(Complaint.risk_score, 20),
+        )
+        avg_risk = func.avg(func.greatest(func.coalesce(Complaint.risk_score, 20), severity_risk))
         lat_cell = func.round(Complaint.lat.cast(Numeric), 2)
         lng_cell = func.round(Complaint.lng.cast(Numeric), 2)
         rows = self.db.query(
@@ -349,7 +356,8 @@ class AnalyticsService:
 
         points = []
         for row in rows:
-            risk = int(round(float(row.avg_risk or 0)))
+            density_risk = min(100, int(row.count or 0) * 2)
+            risk = min(100, max(int(round(float(row.avg_risk or 0))), density_risk))
             health = "critical" if risk >= 80 else "high" if risk >= 60 else "moderate" if risk >= 35 else "low"
             if health_filter != "all" and health != health_filter:
                 continue
