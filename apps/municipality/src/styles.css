@@ -880,3 +880,26 @@ body::after {
   }
 }
 
+
+
+/* Content lens: preserve readable civic copy while keeping heritage architecture visible. */
+.civic-atmosphere-panel > .animate-rise:first-child {
+  position: relative;
+  z-index: 1;
+  margin: -0.35rem;
+  padding: 0.9rem;
+  border: 1px solid color-mix(in srgb, var(--civic-city-accent) 22%, var(--glass-border));
+  border-radius: 1.35rem;
+  background: color-mix(in srgb, var(--civic-paper) 68%, transparent);
+  box-shadow: 0 16px 34px -22px color-mix(in srgb, var(--civic-indigo-950) 46%, transparent);
+  backdrop-filter: blur(14px) saturate(125%);
+}
+@media (max-width: 767px) {
+  .civic-atmosphere-panel > .animate-rise:first-child {
+    margin: -0.15rem;
+    padding: 0.65rem;
+    background: color-mix(in srgb, var(--civic-paper) 76%, transparent);
+    backdrop-filter: blur(18px) saturate(128%);
+  }
+}
+
