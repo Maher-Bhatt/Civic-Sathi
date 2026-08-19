@@ -1,19 +1,26 @@
 {
+  "id": "/",
   "name": "Civic Sathi — Citizen Civic Portal",
   "short_name": "Civic Sathi",
-  "description": "Report civic issues, track municipal response, and monitor neighborhood health in real-time.",
+  "description": "Report civic issues, track municipal response, and monitor neighborhood health.",
+  "lang": "en-IN",
+  "dir": "ltr",
   "start_url": "/",
-  "id": "/",
+  "scope": "/",
   "display": "standalone",
-  "orientation": "portrait",
-  "background_color": "#0B0F19",
-  "theme_color": "#0B0F19",
+  "orientation": "portrait-primary",
+  "background_color": "#F5F0E7",
+  "theme_color": "#101B3D",
   "categories": ["government", "utilities", "social"],
   "icons": [
-    {
-      "src": "/favicon.ico",
-      "sizes": "64x64 32x32 24x24 16x16",
-      "type": "image/x-icon"
-    }
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-maskable-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Report a problem", "short_name": "Report", "url": "/report", "icons": [{ "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" }] },
+    { "name": "My complaints", "short_name": "Complaints", "url": "/complaints", "icons": [{ "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" }] },
+    { "name": "Civic map", "short_name": "Map", "url": "/map", "icons": [{ "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" }] }
   ]
 }

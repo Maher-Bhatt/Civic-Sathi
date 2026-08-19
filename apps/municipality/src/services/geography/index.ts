@@ -183,54 +183,11 @@ export interface AreaActivity {
   recent: Array<{ issue: IssueKey; daysAgo: number; health: AreaHealth }>;
 }
 
-/** Thresholds scale with the active time window so colours stay meaningful. */
-export function healthFromCount(total: number, time: TimeWindow = "30d"): AreaHealth {
-  const k = time === "7d" ? 0.28 : time === "all" ? 3.4 : 1;
-  if (total >= 78 * k) return "critical";
-  if (total >= 46 * k) return "high";
-  if (total >= 20 * k) return "moderate";
-  return "low";
-}
-
-/** All prototype complaint points for a city — deterministic, de-identified. */
-function buildPoints(city: CityId): ComplaintPoint[] {
-  const points: ComplaintPoint[] = [];
-  for (const a of cityAreas(city)) {
-    const r = rng(`pts:${a.id}`);
-    const base = 6 + Math.floor(r() ** 2.1 * 210);
-    for (let i = 0; i < base; i++) {
-      const issue = ISSUE_KEYS[Math.floor(r() * ISSUE_KEYS.length)]!;
-      const daysAgo = Math.floor(r() ** 2 * 180);
-      const angle = r() * Math.PI * 2;
-      const dist = Math.sqrt(r()) * a.radiusMeters * 0.82;
-      const mPerDegLng = M_PER_DEG_LAT * Math.cos((a.center[0] * Math.PI) / 180);
-      points.push({
-        id: `${a.id}-${i}`,
-        areaId: a.id,
-        issue,
-        health: (["low", "low", "moderate", "moderate", "high", "critical"] as AreaHealth[])[
-          Math.floor(r() * 6)
-        ]!,
-        daysAgo,
-        // rounded to ~50m so no exact private location is ever published
-        lat: Math.round((a.center[0] + (dist * Math.sin(angle)) / M_PER_DEG_LAT) * 2200) / 2200,
-        lng: Math.round((a.center[1] + (dist * Math.cos(angle)) / mPerDegLng) * 2200) / 2200,
-      });
-    }
-  }
-  return points;
-}
-
-const pointCache = new Map<CityId, ComplaintPoint[]>();
-
-export function complaintPoints(city: CityId): ComplaintPoint[] {
-  let p = pointCache.get(city);
-  if (!p) {
-    p = buildPoints(city);
-    pointCache.set(city, p);
-  }
-  return p;
-}
+/*
+ * Complaint points are intentionally supplied only by the backend public-map
+ * aggregate. The former deterministic generator was removed so a network
+ * failure cannot make the municipality map look populated with invented data.
+ */
 
 export interface MapFilters {
   issue: IssueKey | "all";

@@ -1,19 +1,26 @@
 {
-  "name": "Civic Sathi — Contractor Field Operations",
-  "short_name": "Civic Sathi Contractor",
-  "description": "Field operations for contractors: view work orders, submit milestone proof, and manage repair jobs.",
-  "start_url": "/",
   "id": "/contractor",
+  "name": "Civic Sathi — Contractor Operations",
+  "short_name": "Civic Sathi Pro",
+  "description": "Manage civic tenders, work orders, field evidence, and delivery milestones.",
+  "lang": "en-IN",
+  "dir": "ltr",
+  "start_url": "/",
+  "scope": "/",
   "display": "standalone",
-  "orientation": "portrait",
-  "background_color": "#0B0F19",
-  "theme_color": "#0B0F19",
-  "categories": ["business", "productivity", "utilities"],
+  "orientation": "any",
+  "background_color": "#F5F0E7",
+  "theme_color": "#234A84",
+  "categories": ["government", "business", "productivity"],
   "icons": [
-    {
-      "src": "/favicon.ico",
-      "sizes": "64x64 32x32 24x24 16x16",
-      "type": "image/x-icon"
-    }
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-maskable-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Work orders", "short_name": "Work orders", "url": "/contractor/work-orders", "icons": [{ "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" }] },
+    { "name": "Tenders", "short_name": "Tenders", "url": "/contractor/tenders", "icons": [{ "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" }] },
+    { "name": "Performance", "short_name": "Performance", "url": "/contractor/performance", "icons": [{ "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" }] }
   ]
 }

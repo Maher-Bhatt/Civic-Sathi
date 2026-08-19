@@ -1,19 +1,26 @@
 {
+  "id": "/municipality",
   "name": "Civic Sathi — Municipality Operations",
   "short_name": "Civic Sathi Muni",
-  "description": "Officer operations console for complaint triage, contractor dispatch, and civic intelligence.",
+  "description": "Municipal operations for complaint triage, contractor dispatch, and city intelligence.",
+  "lang": "en-IN",
+  "dir": "ltr",
   "start_url": "/",
-  "id": "/municipality",
+  "scope": "/",
   "display": "standalone",
-  "orientation": "portrait",
-  "background_color": "#0B0F19",
-  "theme_color": "#0B0F19",
+  "orientation": "any",
+  "background_color": "#F5F0E7",
+  "theme_color": "#101B3D",
   "categories": ["government", "business", "productivity"],
   "icons": [
-    {
-      "src": "/favicon.ico",
-      "sizes": "64x64 32x32 24x24 16x16",
-      "type": "image/x-icon"
-    }
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-maskable-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Civic map", "short_name": "Map", "url": "/map", "icons": [{ "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" }] },
+    { "name": "Complaints", "short_name": "Complaints", "url": "/complaints", "icons": [{ "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" }] },
+    { "name": "AI triage", "short_name": "Triage", "url": "/ai-triage", "icons": [{ "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" }] }
   ]
 }

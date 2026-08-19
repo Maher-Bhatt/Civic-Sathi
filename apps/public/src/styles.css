@@ -467,3 +467,77 @@ body::after {
 @media (prefers-reduced-motion: reduce) {
   body::after { opacity: 0.11; }
 }
+
+/* -------------------------------------------------------------------------
+   Civic Sathi 2026 public-service visual refresh
+   Indigo institution + sandstone paper + restrained Indian civic accents.
+   ------------------------------------------------------------------------- */
+:root {
+  --civic-indigo-950: #101B3D;
+  --civic-indigo-700: #234A84;
+  --civic-teal-600: #0E766E;
+  --civic-sand-100: #F5F0E7;
+  --civic-paper: #FFFCF7;
+  --civic-saffron-600: #C86B18;
+  --civic-green-700: #2F6B4F;
+  --civic-red-700: #A43D3D;
+  --civic-ink: #172033;
+  --civic-muted: #526078;
+  --background: #F5F0E7;
+  --background-secondary: #ECE4D8;
+  --primary: #234A84;
+  --primary-foreground: #FFFFFF;
+  --foreground: #172033;
+  --card-foreground: #172033;
+  --popover-foreground: #172033;
+  --muted-foreground: #526078;
+  --subtle-foreground: #68748A;
+  --glass-border: rgba(16, 27, 61, 0.14);
+  --border: rgba(16, 27, 61, 0.14);
+  --input: rgba(16, 27, 61, 0.18);
+  --ring: #234A84;
+  --success: #2F6B4F;
+  --warning: #C86B18;
+  --critical: #A43D3D;
+}
+.dark {
+  --civic-indigo-950: #0B1230;
+  --civic-indigo-700: #6D9DDF;
+  --civic-teal-600: #4CB5A2;
+  --civic-sand-100: #0F172A;
+  --civic-paper: #111C35;
+  --civic-saffron-600: #E0A25B;
+  --civic-green-700: #77BE91;
+  --civic-red-700: #F08B86;
+  --civic-ink: #F5F0E7;
+  --civic-muted: #BAC5D8;
+  --background: #0F172A;
+  --background-secondary: #121E35;
+  --primary: #6D9DDF;
+  --primary-foreground: #0B1230;
+  --foreground: #F5F0E7;
+  --card-foreground: #F5F0E7;
+  --popover-foreground: #F5F0E7;
+  --muted-foreground: #BAC5D8;
+  --subtle-foreground: #8D9BB3;
+  --glass-border: rgba(180, 199, 231, 0.18);
+  --border: rgba(180, 199, 231, 0.18);
+  --input: rgba(180, 199, 231, 0.22);
+  --ring: #6D9DDF;
+  --success: #77BE91;
+  --warning: #E0A25B;
+  --critical: #F08B86;
+}
+
+:where(button, a, input, select, textarea):focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--ring) 70%, white);
+  outline-offset: 3px;
+}
+
+.civic-heritage-shell {
+  background-image: radial-gradient(circle at 8% 8%, color-mix(in srgb, var(--civic-saffron-600) 9%, transparent), transparent 26rem), radial-gradient(circle at 92% 18%, color-mix(in srgb, var(--civic-teal-600) 8%, transparent), transparent 28rem), linear-gradient(135deg, color-mix(in srgb, var(--civic-paper) 76%, transparent), transparent 48%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+}
