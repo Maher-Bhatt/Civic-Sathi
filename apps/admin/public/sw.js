@@ -1,4 +1,4 @@
-const CACHE = "civic-sathi-admin-shell-v2";
+const CACHE = "civic-sathi-admin-shell-v3";
 const SHELL = [
   "/",
   "/manifest.webmanifest",
@@ -16,6 +16,6 @@ self.addEventListener("install", (event) => event.waitUntil(caches.open(CACHE).t
 self.addEventListener("activate", (event) => event.waitUntil(caches.keys().then((keys) => Promise.all(keys.filter((key) => key !== CACHE).map((key) => caches.delete(key)))).then(() => self.clients.claim())));
 self.addEventListener("fetch", (event) => {
   const request = event.request;
-  if (request.method !== "GET" || new URL(request.url).origin !== self.location.origin || request.url.includes("/api/") || request.url.includes("/_server/")) return;
+  if (request.method !== "GET" || new URL(request.url).origin !== self.location.origin || request.url.includes("/api/") || request.url.includes("/_server/") || ["style", "script", "font"].includes(request.destination)) return;
   event.respondWith(fetch(request).catch(() => caches.match(request).then((cached) => cached || caches.match("/"))));
 });
