@@ -1122,3 +1122,30 @@ body::after {
   .muni-dashboard-map-card .jm-map-frame > *,
   .muni-dashboard-map-card .leaflet-container { min-height: 27rem; }
 }
+
+.civic-heritage-sidebar {
+  color: #F7E9D8 !important;
+  border-right-color: rgb(232 214 191 / 0.22) !important;
+  background:
+    linear-gradient(180deg, rgb(185 82 50 / 0.22), transparent 17rem),
+    linear-gradient(160deg, #541F2B 0%, #38131F 72%, #28101B 100%) !important;
+  box-shadow: 14px 0 36px -28px rgb(84 31 43 / 0.70);
+}
+.civic-heritage-sidebar .civic-heritage-strip {
+  border-bottom-color: rgb(232 214 191 / 0.22) !important;
+  background: linear-gradient(90deg, rgb(214 146 46 / 0.14), transparent 74%);
+}
+.civic-heritage-sidebar nav a { color: #D7BDA8 !important; }
+.civic-heritage-sidebar nav a:hover {
+  color: #FFFAF2 !important;
+  background: rgb(255 253 248 / 0.08) !important;
+}
+.civic-heritage-sidebar nav a[aria-current="page"] {
+  color: #FFFAF2 !important;
+  background: linear-gradient(90deg, rgb(185 82 50 / 0.38), rgb(214 146 46 / 0.12)) !important;
+  box-shadow: inset 3px 0 0 #D6922E, 0 10px 24px -18px rgb(185 82 50 / 0.90) !important;
+}
+.civic-heritage-sidebar .text-muted-foreground { color: #B69480 !important; }
+.civic-heritage-sidebar .text-foreground { color: #FFF9F0 !important; }
+.civic-heritage-sidebar .border-b,
+.civic-heritage-sidebar .border-t { border-color: rgb(232 214 191 / 0.20) !important; }

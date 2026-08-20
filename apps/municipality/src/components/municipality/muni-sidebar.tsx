@@ -113,7 +113,7 @@ export function MuniSidebar({
         aria-modal={mobileOpen ? "true" : undefined}
         aria-label={t('ui.municipality_navigation')}
         className={cn(
-          "fixed inset-y-0 left-0 z-50 flex w-[min(18rem,calc(100vw-1rem))] flex-col border-r border-[var(--glass-border)] bg-[var(--glass-strong)] backdrop-blur-xl transition-all duration-300",
+          "civic-heritage-sidebar fixed inset-y-0 left-0 z-50 flex w-[min(18rem,calc(100vw-1rem))] flex-col border-r border-[var(--glass-border)] bg-[var(--glass-strong)] backdrop-blur-xl transition-all duration-300",
           collapsed ? "lg:w-[4.5rem]" : "lg:w-60",
           mobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0",
         )}
