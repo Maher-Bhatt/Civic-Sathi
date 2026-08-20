@@ -875,95 +875,95 @@ body::after {
 
 /* Public portal visual correction: remove the opaque ivory wash and restore a deeper heritage glass canvas. */
 body.civic-heritage-shell {
-  background: #071126;
-  color-scheme: dark;
-  --background: #071126;
-  --background-secondary: #0b1a35;
-  --surface: rgb(10 28 56 / .68);
-  --surface-elevated: rgb(15 39 75 / .82);
-  --glass: rgb(8 24 50 / .58);
-  --glass-strong: rgb(10 30 60 / .78);
-  --glass-border: rgb(160 194 231 / .22);
-  --border: rgb(160 194 231 / .18);
-  --input: rgb(160 194 231 / .22);
-  --foreground: #eef6ff;
-  --card: rgb(10 28 56 / .70);
-  --card-foreground: #eef6ff;
-  --popover: rgb(10 28 56 / .94);
-  --popover-foreground: #eef6ff;
-  --muted: #142846;
-  --muted-foreground: #b3c6df;
-  --subtle-foreground: #8ea7c7;
-  --civic-paper: #0b1a35;
-  --civic-sand-100: #071126;
-  --civic-ink: #eef6ff;
-  --civic-muted: #b3c6df;
-  --civic-indigo-950: #071126;
-  --civic-indigo-700: #77a9e7;
-  --primary: #4cb5a2;
-  --primary-foreground: #06151f;
-  --secondary: #142846;
-  --secondary-foreground: #eef6ff;
-  --accent: #153154;
-  --accent-foreground: #eef6ff;
-  --ring: #e0a25b;
-  --shadow-soft: 0 10px 34px -18px rgb(0 0 0 / .72), inset 0 1px 0 rgb(255 255 255 / .06);
-  --shadow-lift: 0 24px 58px -28px rgb(0 0 0 / .92), 0 0 28px -10px color-mix(in srgb, var(--civic-city-accent) 28%, transparent), inset 0 1px 0 rgb(255 255 255 / .08);
+  background: #f5f0e7;
+  color-scheme: light;
+  --background: #f5f0e7;
+  --background-secondary: #ece4d8;
+  --surface: rgb(255 255 255 / .58);
+  --surface-elevated: rgb(255 252 247 / .78);
+  --glass: rgb(255 255 255 / .48);
+  --glass-strong: rgb(255 252 247 / .70);
+  --glass-border: rgb(16 27 61 / .16);
+  --border: rgb(16 27 61 / .14);
+  --input: rgb(16 27 61 / .18);
+  --foreground: #172033;
+  --card: rgb(255 255 255 / .64);
+  --card-foreground: #172033;
+  --popover: rgb(255 252 247 / .92);
+  --popover-foreground: #172033;
+  --muted: #eee6db;
+  --muted-foreground: #526078;
+  --subtle-foreground: #68748a;
+  --civic-paper: #fffaf3;
+  --civic-sand-100: #f5f0e7;
+  --civic-ink: #172033;
+  --civic-muted: #526078;
+  --civic-indigo-950: #101b3d;
+  --civic-indigo-700: #234a84;
+  --primary: #234a84;
+  --primary-foreground: #ffffff;
+  --secondary: #f1e8dc;
+  --secondary-foreground: #172033;
+  --accent: #f4e8d8;
+  --accent-foreground: #7c3f19;
+  --ring: #c86b18;
+  --shadow-soft: 0 10px 28px -18px rgb(74 48 28 / .24), inset 0 1px 0 rgb(255 255 255 / .72);
+  --shadow-lift: 0 24px 58px -28px rgb(74 48 28 / .28), 0 0 28px -10px color-mix(in srgb, var(--civic-city-accent) 18%, transparent), inset 0 1px 0 rgb(255 255 255 / .82);
 }
 body.civic-heritage-shell .civic-city-shell {
   background-image:
-    linear-gradient(180deg, rgb(7 17 38 / .38), rgb(7 17 38 / .72) 48%, #071126 100%),
+    linear-gradient(180deg, rgb(255 250 243 / .30), rgb(245 240 231 / .56) 48%, #f5f0e7 100%),
     var(--civic-city-atmosphere),
-    linear-gradient(135deg, #0b1a35, #071126);
+    linear-gradient(135deg, #f5f0e7, #fffaf3);
   background-position: center top, center top, center top;
   background-size: cover, cover, cover;
   background-attachment: fixed;
 }
 body.civic-heritage-shell .civic-city-shell::before {
-  opacity: .20;
+  opacity: .12;
   background:
-    linear-gradient(90deg, transparent 0 6%, rgb(160 194 231 / .10) 6.1% 6.2%, transparent 6.3% 93.7%, rgb(160 194 231 / .10) 93.8% 93.9%, transparent 94%),
-    repeating-linear-gradient(0deg, transparent 0 5.2rem, rgb(160 194 231 / .08) 5.25rem 5.32rem, transparent 5.38rem 10.5rem);
+    linear-gradient(90deg, transparent 0 6%, rgb(16 27 61 / .10) 6.1% 6.2%, transparent 6.3% 93.7%, rgb(16 27 61 / .10) 93.8% 93.9%, transparent 94%),
+    repeating-linear-gradient(0deg, transparent 0 5.2rem, rgb(16 27 61 / .08) 5.25rem 5.32rem, transparent 5.38rem 10.5rem);
 }
 body.civic-heritage-shell .civic-atmosphere-panel,
 body.civic-heritage-shell .jm-heritage-card {
-  background: linear-gradient(145deg, rgb(15 43 78 / .76), rgb(7 20 42 / .68)) !important;
+  background: linear-gradient(145deg, rgb(255 252 247 / .66), rgb(245 240 231 / .52)) !important;
   border-color: color-mix(in srgb, var(--civic-city-accent) 38%, var(--glass-border)) !important;
   box-shadow: var(--shadow-lift);
   backdrop-filter: blur(24px) saturate(145%);
   -webkit-backdrop-filter: blur(24px) saturate(145%);
 }
 body.civic-heritage-shell .civic-atmosphere-panel > .animate-rise:first-child {
-  background: rgb(8 25 51 / .64) !important;
-  border-color: rgb(160 194 231 / .20) !important;
-  box-shadow: 0 18px 40px -26px rgb(0 0 0 / .88), inset 0 1px 0 rgb(255 255 255 / .06);
+  background: rgb(255 252 247 / .62) !important;
+  border-color: rgb(16 27 61 / .16) !important;
+  box-shadow: 0 18px 40px -26px rgb(74 48 28 / .22), inset 0 1px 0 rgb(255 255 255 / .72);
   backdrop-filter: blur(18px) saturate(135%);
 }
 body.civic-heritage-shell .civic-data-rail,
 body.civic-heritage-shell .civic-city-chip {
-  background: rgb(9 28 56 / .62) !important;
-  color: #d9e8fa !important;
-  border-color: rgb(160 194 231 / .22) !important;
+  background: rgb(255 252 247 / .54) !important;
+  color: #172033 !important;
+  border-color: rgb(16 27 61 / .16) !important;
 }
-body.civic-heritage-shell .civic-brand-wordmark { color: #eef6ff; }
-body.civic-heritage-shell .civic-brand-logo-mark { background: rgb(8 24 50 / .64); }
+body.civic-heritage-shell .civic-brand-wordmark { color: #101b3d; }
+body.civic-heritage-shell .civic-brand-logo-mark { background: rgb(255 252 247 / .58); }
 body.civic-heritage-shell [class*="bg-white/"],
 body.civic-heritage-shell [class*="bg-amber-50/"],
 body.civic-heritage-shell [class*="bg-orange-50/"] {
-  background-color: rgb(9 28 56 / .62) !important;
+  background-color: rgb(255 255 255 / .66) !important;
 }
 body.civic-heritage-shell [class*="from-white/"],
 body.civic-heritage-shell [class*="via-white/"],
 body.civic-heritage-shell [class*="to-white/"] {
-  --tw-gradient-from: rgb(15 43 78 / .78) var(--tw-gradient-from-position) !important;
-  --tw-gradient-to: rgb(15 43 78 / 0) var(--tw-gradient-to-position) !important;
+  --tw-gradient-from: rgb(255 255 255 / .76) var(--tw-gradient-from-position) !important;
+  --tw-gradient-to: rgb(255 255 255 / 0) var(--tw-gradient-to-position) !important;
 }
 body.civic-heritage-shell [class*="via-amber-50/"],
 body.civic-heritage-shell [class*="to-amber-50/"],
 body.civic-heritage-shell [class*="via-emerald-50/"],
 body.civic-heritage-shell [class*="to-emerald-50/"] {
-  --tw-gradient-via: rgb(200 107 24 / .10) var(--tw-gradient-via-position) !important;
-  --tw-gradient-to: rgb(14 118 110 / 0) var(--tw-gradient-to-position) !important;
+  --tw-gradient-via: rgb(255 219 180 / .24) var(--tw-gradient-via-position) !important;
+  --tw-gradient-to: rgb(220 244 231 / 0) var(--tw-gradient-to-position) !important;
 }
 @media (max-width: 767px) {
   body.civic-heritage-shell .civic-city-shell {
@@ -972,6 +972,6 @@ body.civic-heritage-shell [class*="to-emerald-50/"] {
     background-position: center top, 50% 4.5rem, center top;
   }
   body.civic-heritage-shell .civic-atmosphere-panel > .animate-rise:first-child {
-    background: rgb(8 25 51 / .76) !important;
+    background: rgb(255 252 247 / .72) !important;
   }
 }
