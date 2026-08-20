@@ -1023,3 +1023,15 @@ body::after {
   .civic-city-shell > div > header { background: rgb(255 249 240 / 0.82) !important; }
   .civic-city-shell main { padding-top: 0.85rem !important; }
 }
+
+
+/* Layout integrity: the shell layering rule must never pull the persistent sidebar into document flow. */
+.civic-city-shell > aside {
+  position: fixed !important;
+  inset: 0 auto 0 0;
+  height: 100dvh;
+  max-height: 100dvh;
+}
+.civic-city-shell > div {
+  position: relative !important;
+}
