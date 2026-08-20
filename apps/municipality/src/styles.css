@@ -1158,3 +1158,37 @@ body::after {
 .civic-heritage-sidebar .text-foreground { color: #FFF9F0 !important; }
 .civic-heritage-sidebar .border-b,
 .civic-heritage-sidebar .border-t { border-color: rgb(232 214 191 / 0.20) !important; }
+
+/* Final specificity guard: this must win over the older civic-city-shell > aside navy patch. */
+.civic-city-shell > aside.civic-heritage-sidebar {
+  color: #F7E9D8 !important;
+  pointer-events: auto !important;
+  background:
+    linear-gradient(180deg, rgb(185 82 50 / 0.22), transparent 17rem),
+    linear-gradient(160deg, #541F2B 0%, #38131F 72%, #28101B 100%) !important;
+  border-right-color: rgb(232 214 191 / 0.22) !important;
+}
+.civic-city-shell > aside.civic-heritage-sidebar nav {
+  position: relative;
+  z-index: 2;
+  pointer-events: auto !important;
+}
+.civic-city-shell > aside.civic-heritage-sidebar nav a {
+  color: #D7BDA8 !important;
+  cursor: pointer;
+  pointer-events: auto !important;
+}
+.civic-city-shell > aside.civic-heritage-sidebar nav a:hover,
+.civic-city-shell > aside.civic-heritage-sidebar nav a[aria-current="page"] {
+  color: #FFFAF2 !important;
+  background: linear-gradient(90deg, rgb(185 82 50 / 0.38), rgb(214 146 46 / 0.12)) !important;
+}
+.civic-city-shell > aside.civic-heritage-sidebar::before,
+.civic-city-shell > aside.civic-heritage-sidebar::after { pointer-events: none !important; }
+@media (max-width: 767px) {
+  .civic-city-shell > aside.civic-heritage-sidebar {
+    background:
+      linear-gradient(180deg, rgb(185 82 50 / 0.24), transparent 17rem),
+      linear-gradient(160deg, #541F2B 0%, #38131F 72%, #28101B 100%) !important;
+  }
+}
