@@ -2089,3 +2089,29 @@ body {
     transition: none;
   }
 }
+
+
+/* v4.1 visual correction: no legacy atmosphere images inside admin data cards. */
+.civic-admin-command-center .civic-admin-command-card::before,
+.civic-admin-command-center .civic-admin-command-card::after {
+  display: none;
+}
+
+.civic-admin-command-center .civic-admin-telemetry-hero {
+  color: #f7fbff;
+  background:
+    linear-gradient(135deg, rgba(11, 23, 51, 0.99), rgba(25, 57, 107, 0.98) 56%, rgba(13, 118, 110, 0.9)),
+    radial-gradient(circle at 88% 12%, rgba(240, 181, 111, 0.22), transparent 15rem) !important;
+  border-color: rgba(108, 151, 208, 0.34);
+}
+
+.civic-admin-command-center .civic-admin-telemetry-hero h2,
+.civic-admin-command-center .civic-admin-telemetry-hero p,
+.civic-admin-command-center .civic-admin-telemetry-hero span,
+.civic-admin-command-center .civic-admin-telemetry-hero strong {
+  color: inherit;
+}
+
+.civic-admin-command-center .civic-admin-telemetry-hero__scan::before {
+  display: block;
+}
