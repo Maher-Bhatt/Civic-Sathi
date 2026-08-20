@@ -83,7 +83,10 @@ function Landing() {
     const [cityId, setCityId] = useState<CityId>(() => getDefaultCity());
   const [cityAggregate, setCityAggregate] = useState<any>(null);
   const cityVisuals = useMemo(() => getCityVisuals(cityId), [cityId]);
-  const cityEpithet = t(`heritage.${cityId}.epithet`, cityVisuals.epithet);
+  const cityEpithet = t(`city.${cityId}.epithet`, cityVisuals.epithet);
+  const citySignal = t(`city.${cityId}.civicSignal`, cityVisuals.civicSignal);
+  const cityLandmarks = t(`city.${cityId}.landmarkCue`, cityVisuals.landmarkCue);
+  const cityDataLine = t(`city.${cityId}.dataLine`, cityVisuals.dataLine);
 
   useEffect(() => {
     let cancelled = false;
@@ -163,7 +166,7 @@ function Landing() {
           <div className="civic-data-rail text-xs text-subtle">
             <span className="flex items-center gap-1.5"><span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />{t("home.trust.privacy", "Privacy protected")}</span>
             <span className="flex items-center gap-1.5"><span className="h-1.5 w-1.5 rounded-full bg-amber-500" />{t("home.trust.linked", "Municipality linked")}</span>
-            <span className="flex items-center gap-1.5"><span className="h-1.5 w-1.5 rounded-full bg-[var(--civic-teal-600)]" />{cityVisuals.landmarkCue}</span>
+              <span className="flex items-center gap-1.5"><span className="h-1.5 w-1.5 rounded-full bg-[var(--civic-teal-600)]" />{cityLandmarks}</span>
           </div>
         </div>
 
@@ -214,7 +217,7 @@ function Landing() {
             />
             <div className="flex items-center justify-between gap-3 px-1.5 pt-1.5 pb-0.5">
               <p className="text-[0.7rem] tracking-[0.08em] font-semibold text-amber-900 dark:text-amber-200 uppercase">
-                {cityVisuals.dataLine} · {cityVisuals.civicSignal}
+                {cityDataLine} · {citySignal}
               </p>
               <Link
                 to="/map"
