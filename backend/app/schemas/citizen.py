@@ -28,7 +28,8 @@ class CitizenRegisterRequest(BaseModel):
 class CitizenLoginRequest(BaseModel):
     """Citizen login request"""
     email: EmailStr = Field(..., description="Email address")
-    password: str = Field(..., min_length=8, max_length=100, description="Password")
+    password: str = Field(..., min_length=8, max_length=100)
+    city: Optional[str] = Field(None, max_length=100, description="Optional city context for role-scoped login")
     
     model_config = {
         "json_schema_extra": {

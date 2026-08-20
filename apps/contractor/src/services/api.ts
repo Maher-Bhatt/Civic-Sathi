@@ -69,7 +69,7 @@ export async function contractorLogin(input: {
       user?: any;
       citizen?: any;
       contractor?: any;
-    }>("/api/v1/auth/contractor-login", { email: input.email, password: input.password });
+    }>("/api/v1/auth/contractor-login", { email: input.email, password: input.password, city: input.city });
 
     // Accept the shared client's canonical user shape as well as legacy aliases.
     const userData = res.user || res.contractor || res.citizen;

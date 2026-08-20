@@ -342,6 +342,30 @@ def award_bid(
     return WorkOrderResponse(**_enrich_work_order(db, work_order))
 
 
+def _assert_work_order_access(db: Session, work_order: WorkOrder, current_user: User) -> None:
+    """Apply the same ownership and city boundary to execution subresources."""
+    if current_user.role == "contractor":
+        contractor = resolve_contractor_for_user(db, current_user)
+        if not contractor or work_order.contractor_id != contractor.id:
+            raise HTTPException(status_code=403, detail="Access denied")
+        return
+    tender = db.get(Tender, work_order.tender_id)
+    if tender:
+        enforce_city_scope(db, current_user, tender.city_id)
+
+
+def _inspection_payload(db: Session, inspection: Inspection) -> dict:
+    evidence = db.get(FieldEvidence, inspection.field_evidence_id)
+    return {
+        "id": inspection.id,
+        "work_order_id": evidence.work_order_id if evidence else None,
+        "inspector_id": inspection.inspector_user_id,
+        "result": inspection.result.value if hasattr(inspection.result, "value") else str(inspection.result),
+        "feedback": inspection.feedback,
+        "created_at": inspection.created_at,
+    }
+
+
 # ── Work Orders ───────────────────────────────────────────────────────────────
 
 @router.get("/work-orders", response_model=List[WorkOrderResponse])
@@ -380,17 +404,42 @@ def get_work_order(
     if not work_order:
         raise HTTPException(status_code=404, detail="Work Order not found")
 
-    # Ownership and city checks: contractors see only their records; municipal users stay in their city.
-    if current_user.role == "contractor":
-        contractor = resolve_contractor_for_user(db, current_user)
-        if not contractor or work_order.contractor_id != contractor.id:
-            raise HTTPException(status_code=403, detail="Access denied")
-    else:
-        tender = db.get(Tender, work_order.tender_id)
-        if tender:
-            enforce_city_scope(db, current_user, tender.city_id)
-
+    _assert_work_order_access(db, work_order, current_user)
     return WorkOrderResponse(**_enrich_work_order(db, work_order))
+
+
+@router.get("/work-orders/{work_order_id}/evidence", response_model=List[FieldEvidenceResponse])
+def list_work_order_evidence(
+    work_order_id: UUID,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    work_order = db.get(WorkOrder, work_order_id)
+    if not work_order:
+        raise HTTPException(status_code=404, detail="Work Order not found")
+    _assert_work_order_access(db, work_order, current_user)
+    return db.execute(
+        select(FieldEvidence).where(FieldEvidence.work_order_id == work_order_id).order_by(FieldEvidence.created_at.desc())
+    ).scalars().all()
+
+
+@router.get("/work-orders/{work_order_id}/inspections", response_model=List[InspectionResponse])
+def list_work_order_inspections(
+    work_order_id: UUID,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    work_order = db.get(WorkOrder, work_order_id)
+    if not work_order:
+        raise HTTPException(status_code=404, detail="Work Order not found")
+    _assert_work_order_access(db, work_order, current_user)
+    rows = db.execute(
+        select(Inspection)
+        .join(FieldEvidence, Inspection.field_evidence_id == FieldEvidence.id)
+        .where(FieldEvidence.work_order_id == work_order_id)
+        .order_by(Inspection.created_at.desc())
+    ).scalars().all()
+    return [_inspection_payload(db, row) for row in rows]
 
 
 @router.patch("/work-orders/{work_order_id}/status", response_model=WorkOrderResponse)
@@ -541,7 +590,7 @@ def submit_inspection(
 
     db.commit()
     db.refresh(inspection)
-    return inspection
+    return _inspection_payload(db, inspection)
 
 
 # ── Contractors & 3-Way Ratings ───────────────────────────────────────────────

@@ -15,6 +15,7 @@ function ContractorLogin() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [city, setCity] = useState("vadodara");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -23,7 +24,7 @@ function ContractorLogin() {
     setLoading(true);
     setError(null);
     try {
-      await signIn(email.trim().toLowerCase(), password);
+      await signIn(email.trim().toLowerCase(), password, city);
       navigate({ to: "/contractor/dashboard" as any });
     } catch (err: any) {
       setError(
@@ -68,6 +69,14 @@ function ContractorLogin() {
           </div>
 
           <div>
+            <label className="label-xs block mb-2 text-[var(--foreground)]">Municipality</label>
+            <select value={city} onChange={(e) => setCity(e.target.value)} className="filter-input w-full ambient-field px-4 py-2 rounded-md bg-[var(--surface)] text-[var(--foreground)] border border-[var(--glass-border)] focus:outline-none focus:ring-1 focus:ring-[var(--primary)]">
+              <option value="vadodara">Vadodara · VMC</option>
+              <option value="bengaluru">Bengaluru · BBMP</option>
+            </select>
+          </div>
+
+          <div>
             <label className="label-xs block mb-2 text-[var(--foreground)]">
               {t("ui.password")}
             </label>
@@ -104,6 +113,7 @@ function ContractorLogin() {
               onClick={() => {
                 setEmail("contractor@bharat.in");
                 setPassword("Janmind@2026");
+                setCity("vadodara");
               }}
               className="w-full flex items-center justify-between p-2 rounded-lg bg-[var(--surface)] hover:bg-[var(--surface-elevated)] border border-[var(--glass-border)] text-xs transition text-left"
             >
@@ -125,6 +135,7 @@ function ContractorLogin() {
               onClick={() => {
                 setEmail("contractor@janmind.in");
                 setPassword("Janmind@2026");
+                setCity("vadodara");
               }}
               className="w-full flex items-center justify-between p-2 rounded-lg bg-[var(--surface)] hover:bg-[var(--surface-elevated)] border border-[var(--glass-border)] text-xs transition text-left"
             >

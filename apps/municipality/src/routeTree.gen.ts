@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthRouteRouteImport } from './routes/_auth/route'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as AuthAdministrationRouteImport } from './routes/_auth/administration'
 import { Route as AuthAiTriageRouteImport } from './routes/_auth/ai-triage'
 import { Route as AuthAlertsRouteImport } from './routes/_auth/alerts'
 import { Route as AuthAnalyticsRouteImport } from './routes/_auth/analytics'
@@ -48,6 +49,11 @@ const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthAdministrationRoute = AuthAdministrationRouteImport.update({
+  id: '/administration',
+  path: '/administration',
+  getParentRoute: () => AuthRouteRoute,
 } as any)
 const AuthAiTriageRoute = AuthAiTriageRouteImport.update({
   id: '/ai-triage',
@@ -163,6 +169,7 @@ const AuthWorkOrdersIdRoute = AuthWorkOrdersIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/administration': typeof AuthAdministrationRoute
   '/ai-triage': typeof AuthAiTriageRoute
   '/alerts': typeof AuthAlertsRoute
   '/analytics': typeof AuthAnalyticsRoute
@@ -189,6 +196,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/administration': typeof AuthAdministrationRoute
   '/ai-triage': typeof AuthAiTriageRoute
   '/alerts': typeof AuthAlertsRoute
   '/analytics': typeof AuthAnalyticsRoute
@@ -217,6 +225,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_auth': typeof AuthRouteRouteWithChildren
   '/login': typeof LoginRoute
+  '/_auth/administration': typeof AuthAdministrationRoute
   '/_auth/ai-triage': typeof AuthAiTriageRoute
   '/_auth/alerts': typeof AuthAlertsRoute
   '/_auth/analytics': typeof AuthAnalyticsRoute
@@ -245,6 +254,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/login'
+    | '/administration'
     | '/ai-triage'
     | '/alerts'
     | '/analytics'
@@ -271,6 +281,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/login'
+    | '/administration'
     | '/ai-triage'
     | '/alerts'
     | '/analytics'
@@ -298,6 +309,7 @@ export interface FileRouteTypes {
     | '/'
     | '/_auth'
     | '/login'
+    | '/_auth/administration'
     | '/_auth/ai-triage'
     | '/_auth/alerts'
     | '/_auth/analytics'
@@ -350,6 +362,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_auth/administration': {
+      id: '/_auth/administration'
+      path: '/administration'
+      fullPath: '/administration'
+      preLoaderRoute: typeof AuthAdministrationRouteImport
+      parentRoute: typeof AuthRouteRoute
     }
     '/_auth/ai-triage': {
       id: '/_auth/ai-triage'
@@ -509,6 +528,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthRouteRouteChildren {
+  AuthAdministrationRoute: typeof AuthAdministrationRoute
   AuthAiTriageRoute: typeof AuthAiTriageRoute
   AuthAlertsRoute: typeof AuthAlertsRoute
   AuthAnalyticsRoute: typeof AuthAnalyticsRoute
@@ -534,6 +554,7 @@ interface AuthRouteRouteChildren {
 }
 
 const AuthRouteRouteChildren: AuthRouteRouteChildren = {
+  AuthAdministrationRoute: AuthAdministrationRoute,
   AuthAiTriageRoute: AuthAiTriageRoute,
   AuthAlertsRoute: AuthAlertsRoute,
   AuthAnalyticsRoute: AuthAnalyticsRoute,

@@ -30,6 +30,10 @@ class Complaint(Base, UUIDMixin, TimestampMixin):
     city_id: Mapped[UUID] = mapped_column(ForeignKey("cities.id"), index=True, nullable=False)
     
     status: Mapped[str] = mapped_column(String(20), default="received", nullable=False, index=True)
+    assigned_officer_id: Mapped[UUID | None] = mapped_column(ForeignKey("users.id"), index=True)
+    assigned_officer_name: Mapped[str | None] = mapped_column(String(255))
+    assigned_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    assignment_notes: Mapped[str | None] = mapped_column(Text)
     rejection_reason: Mapped[str | None] = mapped_column(Text)
     rejected_by_name: Mapped[str | None] = mapped_column(String(255))
     rejected_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))

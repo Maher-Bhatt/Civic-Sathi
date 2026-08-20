@@ -226,7 +226,7 @@ class ComplaintService:
 
     @staticmethod
     def _assert_read_access(complaint: Complaint, current_user) -> None:
-        officer_roles = {"officer", "supervisor", "admin", "municipality"}
+        officer_roles = {"officer", "supervisor", "admin", "municipality", "collector"}
         if getattr(current_user, "role", None) in officer_roles:
             return
         if getattr(current_user, "id", None) == complaint.submitted_by_id:
@@ -340,6 +340,67 @@ class ComplaintService:
             previous_value=current_status,
             new_value=next_status,
             reason=notes.strip() if notes and notes.strip() else None,
+            at=now,
+        ))
+        self.db.commit()
+        self.db.refresh(complaint)
+        return self._to_response(complaint)
+
+    def assign_complaint(
+        self,
+        complaint_id: UUID | str,
+        assignee_id: UUID | str,
+        actor=None,
+        notes: str | None = None,
+    ) -> ComplaintResponse:
+        """Assign a complaint to a city-bound officer and append an auditable timeline event."""
+        try:
+            complaint = self.repo.get_by_id(UUID(str(complaint_id)))
+        except (ValueError, TypeError, AttributeError):
+            complaint = self.repo.get_by_public_id(str(complaint_id))
+        if not complaint:
+            raise NotFoundException("Complaint not found")
+        if str(complaint.status) in {"rejected", "resolved", "closed"}:
+            raise HTTPException(status_code=409, detail="Only active complaints can be assigned")
+
+        try:
+            assignee = self.db.get(User, UUID(str(assignee_id)))
+        except (ValueError, TypeError, AttributeError):
+            assignee = None
+        if not assignee or assignee.role not in {"officer", "supervisor", "municipality"}:
+            raise HTTPException(status_code=404, detail="Assigned municipal officer not found")
+        actor_city = str(getattr(actor, "city", "") or "").strip().lower()
+        assignee_city = str(assignee.city or "").strip().lower()
+        if actor_city and assignee_city and actor_city != assignee_city:
+            raise HTTPException(status_code=403, detail="Officer belongs to a different city")
+
+        now = datetime.now(timezone.utc)
+        actor_name = str(getattr(actor, "name", None) or getattr(actor, "email", None) or "Municipal operator")
+        timeline = list(complaint.timeline_json or [])
+        timeline.append({
+            "label": "Complaint Assigned",
+            "at": now.isoformat(),
+            "actor": f"{actor_name} · {getattr(actor, 'role', 'municipality')}",
+            "reason": notes.strip() if notes and notes.strip() else f"Assigned to {assignee.name}",
+        })
+        previous_status = str(complaint.status)
+        complaint.status = "assigned"
+        complaint.assigned_officer_id = assignee.id
+        complaint.assigned_officer_name = assignee.name
+        complaint.assigned_at = now
+        complaint.assignment_notes = notes.strip() if notes and notes.strip() else None
+        complaint.timeline_json = timeline
+        self.db.add(AuditLog(
+            actor_id=str(getattr(actor, "id", None) or "system"),
+            actor_name=actor_name,
+            actor_role=str(getattr(actor, "role", None) or "municipality"),
+            action="complaint.assigned",
+            entity_type="complaint",
+            entity_id=str(complaint.id),
+            entity_label=complaint.public_id,
+            previous_value=previous_status,
+            new_value=f"assigned:{assignee.id}",
+            reason=notes.strip() if notes and notes.strip() else f"Assigned to {assignee.name}",
             at=now,
         ))
         self.db.commit()
@@ -461,6 +522,10 @@ class ComplaintService:
             title=complaint.title,
             description=complaint.description if include_private else None,
             status=str(complaint.status),
+            assigned_officer_id=complaint.assigned_officer_id,
+            assigned_officer_name=complaint.assigned_officer_name,
+            assigned_at=complaint.assigned_at,
+            assignment_notes=complaint.assignment_notes,
             rejection_reason=complaint.rejection_reason,
             rejected_by_name=complaint.rejected_by_name,
             rejected_at=complaint.rejected_at,
@@ -513,6 +578,10 @@ class ComplaintService:
             title=complaint.title,
             description=complaint.description,
             status=ComplaintStatus(complaint.status),
+            assigned_officer_id=complaint.assigned_officer_id,
+            assigned_officer_name=complaint.assigned_officer_name,
+            assigned_at=complaint.assigned_at,
+            assignment_notes=complaint.assignment_notes,
             rejection_reason=complaint.rejection_reason,
             rejected_by_name=complaint.rejected_by_name,
             rejected_at=complaint.rejected_at,

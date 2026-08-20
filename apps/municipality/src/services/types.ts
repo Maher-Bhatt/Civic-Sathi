@@ -29,7 +29,7 @@ export const COMPLAINT_STATUSES = [
 
 export type ComplaintStatus = (typeof COMPLAINT_STATUSES)[number];
 
-export type OfficerRole = "Officer" | "Supervisor" | "Department Head" | "Administrator";
+export type OfficerRole = "Officer" | "Supervisor" | "Department Head" | "Collector" | "Administrator";
 
 export type AlertPriority = "Critical" | "High" | "Moderate" | "Informational";
 
@@ -105,6 +105,10 @@ export interface MuniComplaint {
   photo?: string | null;
   createdAt: string;
   updatedAt: string;
+  assignedOfficerId?: string | null;
+  assignedOfficerName?: string | null;
+  assignedAt?: string | null;
+  assignmentNotes?: string | null;
   rejectionReason?: string | null;
   rejectedByName?: string | null;
   rejectedAt?: string | null;
@@ -271,6 +275,7 @@ export type SystemRole =
   | "officer"
   | "supervisor"
   | "department_head"
+  | "collector"
   | "admin";
 
 export type Permission =
@@ -325,6 +330,19 @@ export const ROLE_PERMISSIONS: Record<SystemRole, Permission[]> = {
     "measurement.verify",
     "bill.verify",
     "payment.approve",
+    "audit.view",
+  ],
+  collector: [
+    "complaint.view",
+    "complaint.assign",
+    "contractor.view",
+    "contractor.manage",
+    "contractor.verify",
+    "work.create",
+    "work.approve",
+    "work.inspect",
+    "work.complete",
+    "admin.users.manage",
     "audit.view",
   ],
   department_head: [

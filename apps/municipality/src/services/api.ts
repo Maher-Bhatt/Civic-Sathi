@@ -14,6 +14,8 @@ import type {
   SystemicIssue,
   Department,
   ComplaintStatus,
+  WorkOrder,
+  WorkOrderEvent,
   alertPriority,
 } from "./types";
 import { DEFAULT_COMPLAINT_FILTERS } from "./types";
@@ -88,7 +90,9 @@ function normalizeOfficer(
         ? "Supervisor"
         : backendRole === "municipality"
           ? "Department Head"
-          : "Officer";
+            : backendRole === "collector"
+              ? "Collector"
+              : "Officer";
   const city = String(userData?.city ?? fallbackCity).toLowerCase() as CityId;
   const designation = userData?.designation ?? fallbackDesignation;
   return {
@@ -122,7 +126,7 @@ export async function muniLogin(input: {
     }
 
     const role = (backendUser.role || "").toLowerCase();
-    if (!["officer", "supervisor", "admin", "municipality"].includes(role)) {
+    if (!["officer", "supervisor", "admin", "municipality", "collector"].includes(role)) {
       throw new Error("Access denied: this account does not have officer permissions");
     }
 
@@ -161,7 +165,7 @@ export async function getMuniOfficer(): Promise<Officer | null> {
     try {
       const me = await api.auth.me();
       const roleLower = String((me as any)?.role || "").toLowerCase();
-      if (me && ["officer", "supervisor", "admin", "municipality"].includes(roleLower)) {
+      if (me && ["officer", "supervisor", "admin", "municipality", "collector"].includes(roleLower)) {
         const officer = normalizeOfficer(me, cached?.city ?? "vadodara", cached?.designation);
         write(LS.officer, officer);
         return officer;
@@ -382,6 +386,10 @@ function normalizeMuniComplaint(raw: any, fallbackCity: CityId): MuniComplaint {
     city,
     department: (raw.department || "Municipal Water") as MuniComplaint["department"],
     status: statusMap[rawStatus] || (raw.status as ComplaintStatus) || "Received",
+    assignedOfficerId: raw.assigned_officer_id ?? raw.assignedOfficerId ?? null,
+    assignedOfficerName: raw.assigned_officer_name ?? raw.assignedOfficerName ?? null,
+    assignedAt: raw.assigned_at ?? raw.assignedAt ?? null,
+    assignmentNotes: raw.assignment_notes ?? raw.assignmentNotes ?? null,
     rejectionReason: raw.rejection_reason ?? raw.rejectionReason ?? null,
     rejectedByName: raw.rejected_by_name ?? raw.rejectedByName ?? null,
     rejectedAt: raw.rejected_at ?? raw.rejectedAt ?? null,
@@ -475,9 +483,16 @@ export async function updateMuniComplaint(
 
 export async function assignComplaint(
   id: string,
-  input: { department: Department; team?: string; officer?: string },
+  input: { department: Department; team?: string; officer?: string; notes?: string },
 ): Promise<MuniComplaint> {
-  return updateComplaintStatus(id, "Assigned");
+  if (!input.officer) {
+    throw new Error("Select a municipal officer before assigning this complaint");
+  }
+  const raw = await client.patch<any>(`/api/v1/complaints/${id}/assignment`, {
+    officer_id: input.officer,
+    notes: input.notes || undefined,
+  });
+  return normalizeMuniComplaint(raw, "vadodara");
 }
 
 export async function bulkUpdateComplaints(
@@ -521,14 +536,73 @@ export async function inspectWorkOrder(workOrderId: string, result: string, feed
   return await api.workOrders.inspect(workOrderId, { result, feedback });
 }
 
+const BACKEND_WORK_ORDER_TO_UI: Record<string, WorkOrder["status"]> = {
+  ISSUED: "PENDING_ACCEPTANCE",
+  ACCEPTED: "ACCEPTED",
+  IN_PROGRESS: "IN_PROGRESS",
+  INSPECTION_PENDING: "SUBMITTED_FOR_INSPECTION",
+  INSPECTION_FAILED: "INSPECTION_FAILED",
+  REWORK: "REWORK",
+  COMPLETED: "COMPLETED",
+  CLOSED: "CLOSED",
+  CANCELLED: "CLOSED",
+};
+
+const UI_WORK_ORDER_TO_BACKEND: Record<string, string> = {
+  PENDING_ACCEPTANCE: "ISSUED",
+  ACCEPTED: "ACCEPTED",
+  IN_PROGRESS: "IN_PROGRESS",
+  SUBMITTED_FOR_INSPECTION: "INSPECTION_PENDING",
+  INSPECTION_FAILED: "INSPECTION_FAILED",
+  REWORK: "REWORK",
+  COMPLETED: "COMPLETED",
+  CLOSED: "CLOSED",
+};
+
+function normalizeWorkOrder(raw: any): WorkOrder {
+  const backendStatus = String(raw?.status ?? "ISSUED").toUpperCase();
+  const createdAt = raw?.created_at ?? new Date().toISOString();
+  const department = String(raw?.department ?? raw?.department_id ?? "Public Works") as Department;
+  const cost = Number(raw?.estimated_budget ?? raw?.award_value ?? 0);
+  return {
+    id: String(raw?.id ?? ""),
+    workPackageId: String(raw?.tender_id ?? ""),
+    contractorId: String(raw?.contractor_id ?? ""),
+    contractorName: String(raw?.contractor_name ?? "Assigned contractor"),
+    departmentId: String(raw?.department_id ?? ""),
+    department,
+    title: String(raw?.title ?? "Municipal work order"),
+    description: String(raw?.description ?? "No work-order description provided."),
+    cityId: String(raw?.city_id ?? ""),
+    ward: String(raw?.ward ?? "Unassigned"),
+    area: String(raw?.area ?? "City execution site"),
+    lat: Number(raw?.lat ?? 0),
+    lng: Number(raw?.lng ?? 0),
+    priority: String(raw?.risk_level ?? "Moderate").toLowerCase() === "critical" ? "Critical" : String(raw?.risk_level ?? "").toLowerCase() === "high" ? "High" : "Moderate",
+    estimatedCost: cost,
+    startDate: createdAt,
+    expectedCompletionDate: raw?.target_completion_date ?? createdAt,
+    slaDeadline: raw?.target_completion_date ?? createdAt,
+    status: BACKEND_WORK_ORDER_TO_UI[backendStatus] ?? "PENDING_ACCEPTANCE",
+    boqItems: [],
+    createdBy: "Municipal procurement",
+    createdAt,
+    updatedAt: raw?.updated_at ?? createdAt,
+    contractorReportedProgress: Number(raw?.reported_progress_pct ?? 0),
+    engineerVerifiedProgress: Number(raw?.verified_progress_pct ?? 0),
+    officialProgress: Number(raw?.verified_progress_pct ?? 0),
+  };
+}
+
 export async function getWorkOrders(params?: any) {
   const officer = await getMuniOfficer();
   const rawCity = String(params?.cityId || officer?.city || "vadodara");
-  return await api.workOrders.list(await resolveCityId(rawCity));
+  const rows = await api.workOrders.list(await resolveCityId(rawCity));
+  return (Array.isArray(rows) ? rows : []).map(normalizeWorkOrder);
 }
 
-export async function getWorkOrder(id: string) {
-  return await api.workOrders.get(id);
+export async function getWorkOrder(id: string): Promise<WorkOrder> {
+  return normalizeWorkOrder(await api.workOrders.get(id));
 }
 
 export async function updateWorkOrderStatus(
@@ -538,14 +612,69 @@ export async function updateWorkOrderStatus(
   byName?: string,
   role?: string,
 ) {
-  return await api.workOrders.updateStatus(id, status);
+  const backendStatus = UI_WORK_ORDER_TO_BACKEND[status] ?? status;
+  return normalizeWorkOrder(await api.workOrders.updateStatus(id, backendStatus));
 }
 
-export async function getWorkOrderEvents(id: string) {
-  return [];
+export async function getWorkOrderEvents(id: string): Promise<WorkOrderEvent[]> {
+  const [workOrder, evidence, inspections] = await Promise.all([
+    getWorkOrder(id),
+    client.get<any[]>(`/api/v1/procurement/work-orders/${id}/evidence`),
+    client.get<any[]>(`/api/v1/procurement/work-orders/${id}/inspections`),
+  ]);
+  const events: WorkOrderEvent[] = [{
+    id: `${id}-created`,
+    workOrderId: id,
+    eventType: "STATUS_CHANGE",
+    toStatus: workOrder.status,
+    title: "Work order issued",
+    description: `${workOrder.title} entered the municipal execution register.`,
+    actorId: "system",
+    actorName: "Civic Sathi procurement",
+    actorRole: "department_head",
+    at: workOrder.createdAt,
+  }];
+  for (const item of Array.isArray(evidence) ? evidence : []) {
+    events.push({
+      id: String(item.id),
+      workOrderId: id,
+      eventType: "PHOTO_UPLOADED",
+      title: "Field evidence uploaded",
+      description: String(item.description ?? "Contractor submitted field evidence."),
+      actorId: workOrder.contractorId,
+      actorName: workOrder.contractorName,
+      actorRole: "contractor",
+      photoUrls: item.photo_url ? [item.photo_url] : [],
+      at: item.created_at ?? workOrder.updatedAt,
+    });
+  }
+  for (const item of Array.isArray(inspections) ? inspections : []) {
+    const result = String(item.result ?? "").toUpperCase();
+    events.push({
+      id: String(item.id),
+      workOrderId: id,
+      eventType: "INSPECTION",
+      title: result === "PASS" ? "Inspection passed" : result === "REWORK" ? "Rework requested" : "Inspection failed",
+      description: String(item.feedback ?? "Municipal inspection recorded."),
+      actorId: String(item.inspector_id ?? "municipality"),
+      actorName: "Municipal inspector",
+      actorRole: "supervisor",
+      at: item.created_at ?? workOrder.updatedAt,
+    });
+  }
+  return events.sort((a, b) => new Date(a.at).getTime() - new Date(b.at).getTime());
 }
+
 export async function getEvidence(id: string) {
-  return [];
+  const rows = await client.get<any[]>(`/api/v1/procurement/work-orders/${id}/evidence`);
+  return (Array.isArray(rows) ? rows : []).map((item) => ({
+    id: String(item.id),
+    fileUrl: item.photo_url,
+    stage: "FIELD",
+    captureTimestamp: item.created_at,
+    status: "PENDING",
+    description: item.description,
+  }));
 }
 export async function submitMeasurement(data: any, byId: string, byName: string) {
   return null;
@@ -793,4 +922,66 @@ export function stopLiveSimulation() {}
 
 export async function getMyCivicRolePerformance() {
   return client.get<import("./types").CivicRolePerformance>("/api/v1/reputation/performance/me");
+}
+
+
+/* -------------------------------- collector administration */
+export interface MunicipalityOfficerRecord {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+  city: string;
+  department?: string | null;
+  designation?: string | null;
+  ward?: string | null;
+  created_at: string;
+}
+
+export interface MunicipalityContractorRecord {
+  id: string;
+  company_name: string;
+  contact_person: string;
+  email: string;
+  phone: string;
+  auth_user_id?: string | null;
+  city: string;
+  registration_id: string;
+  registration_number: string;
+  registration_status: string;
+}
+
+export async function listMunicipalityOfficers(): Promise<MunicipalityOfficerRecord[]> {
+  return client.get<MunicipalityOfficerRecord[]>("/api/v1/municipality/officers");
+}
+
+export async function createMunicipalityOfficer(input: {
+  name: string;
+  email: string;
+  password: string;
+  phone?: string;
+  role?: "officer" | "supervisor" | "municipality";
+  department: string;
+  designation: string;
+  ward?: string;
+}): Promise<MunicipalityOfficerRecord> {
+  return client.post<MunicipalityOfficerRecord>("/api/v1/municipality/officers", input);
+}
+
+export async function listMunicipalityContractors(): Promise<MunicipalityContractorRecord[]> {
+  return client.get<MunicipalityContractorRecord[]>("/api/v1/municipality/contractors");
+}
+
+export async function createMunicipalityContractor(input: {
+  company_name: string;
+  contact_person: string;
+  email: string;
+  phone: string;
+  login_email: string;
+  login_password: string;
+  registration_class?: string;
+  approved_categories?: string[];
+  registration_number?: string;
+}): Promise<MunicipalityContractorRecord> {
+  return client.post<MunicipalityContractorRecord>("/api/v1/municipality/contractors", input);
 }

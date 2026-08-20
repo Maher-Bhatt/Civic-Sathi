@@ -4,7 +4,7 @@ import { contractorLogin, contractorLogout, getContractorUser, ContractorUser } 
 interface ContractorAuthContextValue {
   contractor: ContractorUser | null;
   ready: boolean;
-  signIn: (email: string, password: string) => Promise<ContractorUser>;
+  signIn: (email: string, password: string, city?: string) => Promise<ContractorUser>;
   signOut: () => Promise<void>;
 }
 
@@ -20,8 +20,8 @@ export function ContractorAuthProvider({ children }: { children: React.ReactNode
       .finally(() => setReady(true));
   }, []);
 
-  const signIn = useCallback(async (email: string, password: string): Promise<ContractorUser> => {
-    const user = await contractorLogin({ email, password, city: "vadodara" });
+  const signIn = useCallback(async (email: string, password: string, city = "vadodara"): Promise<ContractorUser> => {
+    const user = await contractorLogin({ email, password, city });
     setContractor(user as ContractorUser);
     return user as ContractorUser;
   }, []);

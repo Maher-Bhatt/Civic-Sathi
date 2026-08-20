@@ -1,8 +1,10 @@
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status as http_status
+from pydantic import BaseModel, Field
 from sqlalchemy import func as sqlfunc
 from sqlalchemy.orm import Session
+from uuid import UUID
 
 from app.core.database import get_db
 from app.core.security import get_current_user, require_officer_permission
@@ -18,7 +20,12 @@ from app.schemas.common import ComplaintStatus
 from app.services.complaint_service import ComplaintService
 
 router = APIRouter()
-OFFICER_ROLES = {"officer", "supervisor", "admin", "municipality"}
+OFFICER_ROLES = {"officer", "supervisor", "admin", "municipality", "collector"}
+
+
+class ComplaintAssignmentRequest(BaseModel):
+    officer_id: UUID
+    notes: str | None = Field(None, max_length=500)
 
 
 def resolve_city_id(db: Session, city_value: str | None) -> str | None:
@@ -129,6 +136,22 @@ def update_complaint_status(
         status_update.status,
         actor=current_officer,
         notes=status_update.notes,
+    )
+
+
+@router.patch("/{complaint_id}/assignment", response_model=ComplaintResponse)
+def assign_complaint(
+    complaint_id: str,
+    assignment: ComplaintAssignmentRequest,
+    db: Session = Depends(get_db),
+    current_officer = Depends(require_officer_permission("complaints.update")),
+):
+    """Assign an active complaint to a same-city municipal officer."""
+    return ComplaintService(db).assign_complaint(
+        complaint_id,
+        assignment.officer_id,
+        actor=current_officer,
+        notes=assignment.notes,
     )
 
 

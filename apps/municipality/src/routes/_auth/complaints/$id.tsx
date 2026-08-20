@@ -9,7 +9,7 @@ import { SeverityBadge, StatusBadge } from "@/components/municipality/status-bad
 import { GlassCard, SectionLabel } from "@/components/ui/glass-card";
 import { ErrorState, LoadingState } from "@/components/ui/states";
 import { useMuniAuth } from "@/lib/muni-auth";
-import { getMuniComplaint, getCivicIssues, updateComplaintStatus } from "@/services/api";
+import { assignComplaint, getMuniComplaint, getCivicIssues, listMunicipalityOfficers, updateComplaintStatus } from "@/services/api";
 import type { MuniComplaint } from "@/services/types";
 import type { ComplaintPoint, IssueKey, AreaHealth } from "@/services/geography";
 import { useI18n } from "@/lib/i18n";
@@ -32,6 +32,10 @@ function ComplaintDetailPage() {
   const [actionBusy, setActionBusy] = useState<"accept" | "reject" | null>(null);
   const [rejectOpen, setRejectOpen] = useState(false);
   const [rejectReason, setRejectReason] = useState("");
+  const [cityOfficers, setCityOfficers] = useState<Array<{ id: string; name: string; designation?: string | null; department?: string | null }>>([]);
+  const [selectedOfficer, setSelectedOfficer] = useState("");
+  const [assignmentNotes, setAssignmentNotes] = useState("");
+  const [assignmentBusy, setAssignmentBusy] = useState(false);
 
   const [civicIssues, setCivicIssues] = useState<any[]>([]);
 
@@ -45,7 +49,10 @@ function ComplaintDetailPage() {
       .finally(() => setLoading(false));
 
     getCivicIssues().then(setCivicIssues).catch(() => {});
-  }, [id]);
+    if (officer?.role === "Collector" || officer?.designation === "Collector") {
+      listMunicipalityOfficers().then(setCityOfficers).catch(() => {});
+    }
+  }, [id, officer?.designation, officer?.role]);
 
   const allPoints: ComplaintPoint[] = useMemo(() => {
     return civicIssues.map((ci) => {
@@ -74,6 +81,25 @@ function ComplaintDetailPage() {
       };
     });
   }, [civicIssues]);
+
+  async function handleAssignment() {
+    if (!complaint || !selectedOfficer || assignmentBusy) return;
+    setAssignmentBusy(true);
+    try {
+      const updated = await assignComplaint(id, {
+        department: complaint.department,
+        officer: selectedOfficer,
+        notes: assignmentNotes,
+      });
+      setComplaint(updated);
+      setAssignmentNotes("");
+      toast.success(`Complaint assigned to ${updated.assignedOfficerName || "municipal officer"}`);
+    } catch (cause: any) {
+      toast.error(cause?.message || "Assignment failed; no routing change was saved");
+    } finally {
+      setAssignmentBusy(false);
+    }
+  }
 
   async function handleStatusChange(action: "accept" | "reject", notes?: string) {
     if (!complaint || actionBusy) return;
@@ -164,7 +190,7 @@ function ComplaintDetailPage() {
               </div>
               <div>
                 <dt className="label-xs">{t('ui.assigned_to')}</dt>
-                <dd className="mt-1 text-sm font-medium">{complaint.assignedTo ?? "—"}</dd>
+                <dd className="mt-1 text-sm font-medium">{complaint.assignedOfficerName ?? complaint.assignedTo ?? "—"}</dd>
               </div>
               <div>
                 <dt className="label-xs">{t('ui.created')}</dt>
@@ -268,6 +294,18 @@ function ComplaintDetailPage() {
                 {complaint.rejectedAt && <p className="mt-1 text-xs opacity-80">Rejected on {safeFormat(complaint.rejectedAt, "dd MMM yyyy, HH:mm")}</p>}
                 {complaint.rejectedByName && <p className="mt-1 text-xs opacity-80">Rejected by {complaint.rejectedByName}</p>}
                 {complaint.rejectionReason && <p className="mt-2 text-xs opacity-90">Reason: {complaint.rejectionReason}</p>}
+              </div>
+            )}
+            {(officer?.role === "Collector" || officer?.designation === "Collector") && !["Resolved", "Closed", "Rejected"].includes(complaint.status) && (
+              <div className="mt-4 rounded-xl border border-[var(--glass-border)] bg-[var(--glass)] p-4">
+                <p className="text-sm font-semibold">Route to municipal officer</p>
+                <p className="mt-1 text-xs text-muted-foreground">Only officers in your collector city are returned by the server.</p>
+                <select aria-label="Assign complaint to officer" value={selectedOfficer} onChange={(event) => setSelectedOfficer(event.target.value)} className="mt-3 w-full rounded-lg border border-[var(--glass-border)] bg-[var(--surface-elevated)] px-3 py-2 text-sm">
+                  <option value="">Select officer</option>
+                  {cityOfficers.map((member) => <option key={member.id} value={member.id}>{member.name} · {member.designation || member.department || "Municipal officer"}</option>)}
+                </select>
+                <textarea aria-label="Assignment notes" value={assignmentNotes} onChange={(event) => setAssignmentNotes(event.target.value)} maxLength={500} rows={2} placeholder="Optional routing note" className="mt-2 w-full rounded-lg border border-[var(--glass-border)] bg-[var(--surface-elevated)] p-2 text-sm" />
+                <button type="button" disabled={!selectedOfficer || assignmentBusy} onClick={() => void handleAssignment()} className="action-btn primary mt-2 w-full disabled:cursor-not-allowed disabled:opacity-50">{assignmentBusy ? "Assigning..." : "Assign complaint"}</button>
               </div>
             )}
             <div className="mt-4 flex flex-col gap-3">

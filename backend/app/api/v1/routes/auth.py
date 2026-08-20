@@ -73,7 +73,7 @@ class AdminSetupRequest(BaseModel):
     name: str = Field(..., min_length=2, max_length=100)
     email: EmailStr
     password: str = Field(..., min_length=8, max_length=100)
-    role: str = Field(default="admin", description="admin | officer | supervisor | municipality")
+    role: str = Field(default="admin", description="admin | officer | supervisor | municipality | collector")
     city: str | None = None
     department: str | None = None
 
@@ -105,7 +105,7 @@ def officer_login(
         )
 
     # Verify user is an officer
-    if user.role not in ["admin", "officer", "supervisor", "municipality"]:
+    if user.role not in ["admin", "officer", "supervisor", "municipality", "collector"]:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Access denied - officer role required"
@@ -160,7 +160,7 @@ def admin_setup(
 ):
     email = setup_data.email.strip().lower()
 
-    allowed_roles = {"admin", "officer", "supervisor", "municipality"}
+    allowed_roles = {"admin", "officer", "supervisor", "municipality", "collector"}
     if setup_data.role not in allowed_roles:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,

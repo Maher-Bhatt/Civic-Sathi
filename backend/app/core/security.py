@@ -126,7 +126,7 @@ def verify_officer_key(
         )
 
 
-OFFICER_ROLES = {"officer", "supervisor", "admin", "municipality"}
+OFFICER_ROLES = {"officer", "supervisor", "admin", "municipality", "collector"}
 
 # Designation-level permissions are intentionally explicit. The broad legacy
 # roles (admin, supervisor, municipality) retain full operational access, while
@@ -179,7 +179,7 @@ def is_super_admin_user(user) -> bool:
 
 def officer_has_permission(user, permission: str) -> bool:
     """Return whether a persisted officer designation may perform an action."""
-    if getattr(user, "role", None) in {"admin", "supervisor", "municipality"}:
+    if getattr(user, "role", None) in {"admin", "supervisor", "municipality", "collector"}:
         return True
     designation = str(getattr(user, "designation", "") or "").strip()
     permissions = DESIGNATION_PERMISSIONS.get(designation, {"dashboard.read", "map.read", "complaints.read"})
@@ -233,3 +233,18 @@ def get_optional_user(
         raise HTTPException(status_code=401, detail="User not found", headers={"WWW-Authenticate": "Bearer"})
     return user
 
+
+
+def require_collector(user=Depends(get_current_user)):
+    """Resolve a collector/commissioner account for municipality-scoped provisioning."""
+    if getattr(user, "role", None) != "collector":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Collector-level municipality access is required",
+        )
+    if not getattr(user, "city", None):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Collector account has no assigned city",
+        )
+    return user

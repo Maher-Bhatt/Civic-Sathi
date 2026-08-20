@@ -131,28 +131,20 @@ function WorkOrderDetailPage() {
     if (!officer) return;
     setActing(true);
     try {
-      const insp: Omit<Inspection, "id"> = {
-        workOrderId: id,
-        result: inspResult,
-        inspectedBy: officer.id,
-        inspectedByName: officer.name,
-        inspectionDate: new Date().toISOString(),
-        notes: inspNotes,
-      };
-      
-      try {
-        await inspectWorkOrder(id, inspResult, inspNotes);
-      } catch (e) {
-        console.warn("Backend API not found for this mock ID, proceeding with local update");
-      }
-      
-      await recordInspection(insp, officer.id, officer.name);
-      await transition(inspResult === "PASSED" ? "INSPECTION_PASSED" : "INSPECTION_FAILED");
+      await inspectWorkOrder(id, inspResult === "PASSED" ? "PASS" : "FAIL", inspNotes);
+      const [updated, evts, evds] = await Promise.all([
+        getWorkOrder(id),
+        getWorkOrderEvents(id),
+        getEvidence(id),
+      ]);
+      setWo(updated);
+      setEvents(evts);
+      setEvidenceList(evds);
       setInspPanel(false);
       setInspNotes("");
-      toast.success("Inspection recorded");
-    } catch {
-      toast.error("Failed to record inspection");
+      toast.success(inspResult === "PASSED" ? "Inspection passed and work order completed" : "Inspection failed and work order closed");
+    } catch (cause: any) {
+      toast.error(cause?.message || "Inspection was not saved; the work order is unchanged");
     } finally {
       setActing(false);
     }

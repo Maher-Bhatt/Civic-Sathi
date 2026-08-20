@@ -88,6 +88,10 @@ class ComplaintResponse(BaseModel):
     title: str
     description: str | None = None
     status: str
+    assigned_officer_id: UUID | None = None
+    assigned_officer_name: str | None = None
+    assigned_at: datetime | None = None
+    assignment_notes: str | None = None
     rejection_reason: str | None = None
     rejected_by_name: str | None = None
     rejected_at: datetime | None = None
@@ -120,6 +124,10 @@ class ComplaintListItem(BaseModel):
     title: str
     description: str | None = None
     status: str
+    assigned_officer_id: UUID | None = None
+    assigned_officer_name: str | None = None
+    assigned_at: datetime | None = None
+    assignment_notes: str | None = None
     rejection_reason: str | None = None
     rejected_by_name: str | None = None
     rejected_at: datetime | None = None

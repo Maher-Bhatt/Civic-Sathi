@@ -32,6 +32,7 @@ type Designation =
   | "Chief Engineer"
   | "Commissioner"
   | "Department Head"
+  | "Collector"
   | "all";
 
 interface NavItem {
@@ -54,6 +55,7 @@ const NAV: NavItem[] = [
   { to: "/areas", label: "Areas", icon: MapPin, access: ["Field Inspector", "Municipal Supervisor", "Commissioner", "Department Head"] },
   { to: "/analytics", label: "Analytics", icon: BarChart3, access: ["Chief Engineer", "Municipal Supervisor", "Commissioner", "Department Head"] },
   { to: "/settings", label: "Settings", icon: Settings, access: ["Municipal Supervisor", "Commissioner", "Department Head"] },
+  { to: "/administration", label: "Administration", icon: User, access: ["Collector"] },
   { to: "/profile", label: "Profile", icon: User, access: ["all"] },
 ];
 
