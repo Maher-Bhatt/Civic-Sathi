@@ -2115,3 +2115,378 @@ body {
 .civic-admin-command-center .civic-admin-telemetry-hero__scan::before {
   display: block;
 }
+
+
+/* ========================================================================
+   Admin heritage v5 — Indian civic institution palette.
+   Blue is no longer the dominant color; data contracts remain untouched.
+   ======================================================================== */
+:root {
+  --heritage-ivory: #f5efe5;
+  --heritage-paper: #fffdf8;
+  --heritage-sandstone: #e8d6bf;
+  --heritage-sandstone-deep: #d6b895;
+  --heritage-terracotta: #b95232;
+  --heritage-terracotta-dark: #8f3b2a;
+  --heritage-maroon: #541f2b;
+  --heritage-maroon-deep: #38131f;
+  --heritage-turmeric: #d6922e;
+  --heritage-leaf: #39735a;
+  --heritage-teal: #176c68;
+  --heritage-ink: #2b2320;
+  --heritage-muted: #796c63;
+}
+
+body:has(.admin-app-shell) {
+  background: var(--heritage-ivory) !important;
+  color: var(--heritage-ink) !important;
+  color-scheme: light;
+}
+
+.admin-app-shell {
+  background:
+    linear-gradient(180deg, rgba(255, 253, 248, 0.9), transparent 24rem),
+    var(--heritage-ivory) !important;
+  color: var(--heritage-ink) !important;
+}
+
+.admin-sidebar {
+  color: #f7e9d8 !important;
+  background:
+    linear-gradient(180deg, rgba(182, 82, 50, 0.2), transparent 16rem),
+    linear-gradient(160deg, var(--heritage-maroon) 0%, var(--heritage-maroon-deep) 70%, #28101b 100%) !important;
+  border-right-color: rgba(232, 214, 191, 0.18) !important;
+  box-shadow: 14px 0 36px -28px rgba(84, 31, 43, 0.65) !important;
+}
+
+.admin-sidebar::before {
+  opacity: 0.32 !important;
+  background-image:
+    radial-gradient(circle at 50% 0%, rgba(214, 184, 149, 0.18) 0 1px, transparent 1.5px),
+    linear-gradient(45deg, transparent 46%, rgba(232, 214, 191, 0.08) 47% 53%, transparent 54%),
+    linear-gradient(-45deg, transparent 46%, rgba(232, 214, 191, 0.08) 47% 53%, transparent 54%) !important;
+  background-size: 26px 26px, 26px 26px, 26px 26px !important;
+  mask-image: linear-gradient(to bottom, #000, transparent 80%) !important;
+}
+
+.admin-brand-mark {
+  color: #fff7ec !important;
+  border-color: rgba(255, 230, 180, 0.74) !important;
+  background:
+    radial-gradient(circle, rgba(255, 235, 190, 0.22) 0 27%, transparent 28%),
+    conic-gradient(from 0deg, var(--heritage-turmeric), var(--heritage-terracotta), var(--heritage-turmeric)) !important;
+  box-shadow: 0 10px 22px -14px rgba(214, 146, 46, 0.95) !important;
+}
+
+.admin-brand-title,
+.admin-profile-name {
+  color: #fffaf2 !important;
+}
+
+.admin-brand-subtitle,
+.admin-profile-email {
+  color: #d6bda5 !important;
+}
+
+.admin-scope-strip,
+.admin-profile-card {
+  color: #e6cdb5 !important;
+  border-color: rgba(232, 214, 191, 0.18) !important;
+  background: rgba(255, 253, 248, 0.065) !important;
+}
+
+.admin-scope-strip strong,
+.admin-profile-role {
+  color: #f0c56f !important;
+}
+
+.admin-status-dot {
+  background: #79a96d !important;
+  box-shadow: 0 0 0 0.22rem rgba(121, 169, 109, 0.16) !important;
+}
+
+.admin-nav-label {
+  color: #b69480 !important;
+}
+
+.admin-nav-item {
+  color: #d7bda8 !important;
+}
+
+.admin-nav-item:hover {
+  color: #fffaf2 !important;
+  background: rgba(255, 253, 248, 0.075) !important;
+  border-color: rgba(232, 214, 191, 0.16) !important;
+}
+
+.admin-nav-item.is-active {
+  color: #fffaf2 !important;
+  background: linear-gradient(90deg, rgba(185, 82, 50, 0.34), rgba(214, 146, 46, 0.1)) !important;
+  border-color: rgba(232, 214, 191, 0.22) !important;
+  box-shadow: inset 3px 0 0 var(--heritage-turmeric), 0 9px 24px -18px rgba(185, 82, 50, 0.9) !important;
+}
+
+.admin-nav-item.is-active svg:first-child {
+  color: #f0c56f !important;
+}
+
+.admin-nav-chevron {
+  color: #9b7668 !important;
+}
+
+.admin-sidebar-footer {
+  border-top-color: rgba(232, 214, 191, 0.18) !important;
+}
+
+.admin-avatar {
+  color: #fff8ee !important;
+  background: linear-gradient(145deg, var(--heritage-terracotta), var(--heritage-maroon)) !important;
+}
+
+.admin-signout-button {
+  color: #d7bda8 !important;
+}
+
+.admin-signout-button:hover {
+  color: #ffd0be !important;
+  border-color: rgba(231, 128, 96, 0.32) !important;
+  background: rgba(185, 82, 50, 0.16) !important;
+}
+
+.admin-topbar {
+  background: rgba(255, 253, 248, 0.92) !important;
+  border-bottom-color: var(--heritage-sandstone) !important;
+  box-shadow: 0 9px 26px -24px rgba(84, 31, 43, 0.46) !important;
+}
+
+.admin-icon-button {
+  color: var(--heritage-maroon) !important;
+  border-color: var(--heritage-sandstone) !important;
+  background: var(--heritage-paper) !important;
+}
+
+.admin-icon-button:hover {
+  color: var(--heritage-terracotta) !important;
+  border-color: var(--heritage-sandstone-deep) !important;
+  background: #f8eadb !important;
+}
+
+.admin-breadcrumbs {
+  color: #a08e80 !important;
+}
+
+.admin-breadcrumbs strong {
+  color: var(--heritage-maroon) !important;
+}
+
+.admin-topbar-scope {
+  color: var(--heritage-leaf) !important;
+}
+
+.admin-topbar-date {
+  color: var(--heritage-muted) !important;
+  border-left-color: var(--heritage-sandstone) !important;
+}
+
+.civic-admin-command-center {
+  --background: var(--heritage-ivory) !important;
+  --surface: var(--heritage-paper) !important;
+  --surface-elevated: var(--heritage-paper) !important;
+  --glass-border: var(--heritage-sandstone) !important;
+  --card: var(--heritage-paper) !important;
+  --card-foreground: var(--heritage-ink) !important;
+  --foreground: var(--heritage-ink) !important;
+  --muted-foreground: var(--heritage-muted) !important;
+  --primary: var(--heritage-terracotta) !important;
+  color: var(--heritage-ink) !important;
+  background: transparent !important;
+}
+
+.civic-admin-command-center .glass,
+.civic-admin-command-center .glass-strong,
+.civic-admin-command-center .solid-surface {
+  color: var(--heritage-ink) !important;
+  background: var(--heritage-paper) !important;
+  border-color: var(--heritage-sandstone) !important;
+  box-shadow: 0 16px 35px -30px rgba(84, 31, 43, 0.48), 0 1px 0 rgba(255, 255, 255, 0.86) inset !important;
+}
+
+.civic-admin-command-center h1,
+.civic-admin-command-center h2,
+.civic-admin-command-center h3 {
+  color: var(--heritage-maroon) !important;
+}
+
+.civic-admin-command-center .text-\[var\(--muted-foreground\)\] {
+  color: var(--heritage-muted) !important;
+}
+
+.civic-admin-telemetry-hero,
+.civic-admin-command-center .civic-admin-telemetry-hero {
+  --foreground: #fff8ee !important;
+  --muted-foreground: #e2c8b1 !important;
+  color: #fff8ee !important;
+  border-color: rgba(232, 214, 191, 0.28) !important;
+  background:
+    radial-gradient(circle at 86% 19%, rgba(214, 146, 46, 0.24) 0 1px, transparent 2px),
+    repeating-radial-gradient(circle at 86% 19%, transparent 0 4.5rem, rgba(214, 146, 46, 0.16) 4.55rem 4.62rem, transparent 4.68rem 8.2rem),
+    linear-gradient(135deg, var(--heritage-maroon-deep), var(--heritage-maroon) 58%, var(--heritage-terracotta-dark)) !important;
+  box-shadow: 0 26px 54px -36px rgba(84, 31, 43, 0.84), inset 0 1px 0 rgba(255, 253, 248, 0.1) !important;
+}
+
+.civic-admin-telemetry-hero::before {
+  opacity: 0.22 !important;
+  background-image:
+    linear-gradient(30deg, transparent 46%, rgba(232, 214, 191, 0.15) 47% 53%, transparent 54%),
+    linear-gradient(150deg, transparent 46%, rgba(232, 214, 191, 0.15) 47% 53%, transparent 54%) !important;
+  background-size: 44px 44px !important;
+  mask-image: linear-gradient(to bottom, #000, transparent 84%) !important;
+  animation: none !important;
+}
+
+.civic-admin-telemetry-hero h2,
+.civic-admin-telemetry-hero h3,
+.civic-admin-telemetry-hero p,
+.civic-admin-telemetry-hero span,
+.civic-admin-telemetry-hero strong {
+  color: inherit !important;
+}
+
+.civic-admin-kicker {
+  color: #f0c56f !important;
+}
+
+.civic-admin-telemetry-meta > div {
+  border-color: rgba(232, 214, 191, 0.22) !important;
+  background: rgba(56, 19, 31, 0.34) !important;
+}
+
+.civic-admin-telemetry-meta span,
+.civic-admin-pipeline-stage span {
+  color: #d6bda5 !important;
+}
+
+.civic-admin-city-filter {
+  border-color: rgba(232, 214, 191, 0.26) !important;
+  background: rgba(56, 19, 31, 0.42) !important;
+}
+
+.civic-admin-city-filter button {
+  color: #e2c8b1 !important;
+}
+
+.civic-admin-city-filter button:hover,
+.civic-admin-city-filter button[aria-selected="true"] {
+  color: #fff8ee !important;
+  border-color: rgba(240, 197, 111, 0.62) !important;
+  background: rgba(214, 146, 46, 0.2) !important;
+  box-shadow: none !important;
+}
+
+.civic-admin-city-lane {
+  border-color: var(--heritage-sandstone) !important;
+  background: var(--heritage-paper) !important;
+  box-shadow: 0 18px 35px -32px rgba(84, 31, 43, 0.72) !important;
+}
+
+.civic-admin-city-lane--vadodara {
+  --lane-accent: var(--heritage-terracotta) !important;
+  --lane-accent-rgb: 185 82 50 !important;
+}
+
+.civic-admin-city-lane--bengaluru {
+  --lane-accent: var(--heritage-teal) !important;
+  --lane-accent-rgb: 23 108 104 !important;
+}
+
+.civic-admin-city-lane__header {
+  border-bottom-color: #efe3d4 !important;
+  background: linear-gradient(115deg, rgba(var(--lane-accent-rgb), 0.1), transparent 68%) !important;
+}
+
+.civic-admin-city-lane h3 {
+  color: var(--heritage-maroon) !important;
+}
+
+.civic-admin-city-kicker,
+.civic-admin-city-emblem {
+  color: var(--lane-accent) !important;
+}
+
+.civic-admin-city-emblem {
+  border-color: rgba(var(--lane-accent-rgb), 0.38) !important;
+  background: rgba(var(--lane-accent-rgb), 0.1) !important;
+  box-shadow: none !important;
+}
+
+.civic-admin-city-lane__summary > div,
+.civic-admin-stage-card,
+.civic-admin-live-event,
+.civic-admin-compare-row {
+  border-color: #eee3d6 !important;
+  background: #fffaf3 !important;
+}
+
+.civic-admin-city-lane__summary strong,
+.civic-admin-stage-card__copy strong,
+.civic-admin-compare-row strong {
+  color: var(--heritage-ink) !important;
+}
+
+.civic-admin-city-lane__summary span,
+.civic-admin-stage-card__copy small,
+.civic-admin-live-event__time,
+.civic-admin-live-event small,
+.civic-admin-live-event-empty {
+  color: #8a786c !important;
+}
+
+.civic-admin-stage-card:hover,
+.civic-admin-live-event:hover,
+.civic-admin-compare-row:hover {
+  border-color: rgba(var(--lane-accent-rgb), 0.52) !important;
+  background: rgba(var(--lane-accent-rgb), 0.08) !important;
+}
+
+.civic-admin-lane-events {
+  border-color: rgba(var(--lane-accent-rgb), 0.2) !important;
+  background: rgba(var(--lane-accent-rgb), 0.06) !important;
+}
+
+.civic-admin-pipeline-node {
+  border-color: rgba(84, 31, 43, 0.25) !important;
+  box-shadow: 0 0 0 0.22rem #fffaf3, 0 0 16px currentColor !important;
+}
+
+.civic-admin-compare-track {
+  background: #eadfd2 !important;
+}
+
+.civic-admin-compare-track span {
+  background: linear-gradient(90deg, var(--heritage-terracotta), var(--heritage-turmeric)) !important;
+  box-shadow: none !important;
+}
+
+.civic-admin-command-center input,
+.civic-admin-command-center select,
+.civic-admin-command-center textarea {
+  color: var(--heritage-ink) !important;
+  border-color: var(--heritage-sandstone) !important;
+  background: var(--heritage-paper) !important;
+}
+
+.civic-admin-command-center input::placeholder,
+.civic-admin-command-center textarea::placeholder {
+  color: #a18d7d !important;
+}
+
+@media (max-width: 767px) {
+  .admin-content {
+    padding: 1.25rem 1rem 2.5rem;
+  }
+
+  .civic-admin-telemetry-hero,
+  .civic-admin-command-center .civic-admin-telemetry-hero {
+    border-radius: 0.9rem;
+  }
+}
