@@ -110,18 +110,18 @@ function NotificationsPage() {
       </div>
 
       <div className="mt-7">
-        {isLoading && <LoadingState message="Loading notifications..." />}
+        {isLoading && <LoadingState message={t("notifications.loading", "Loading notifications…")} />}
         {isError && (
           <ErrorState
-            description="We couldn't load your notifications."
+            description={t("notifications.error", "We couldn't load your notifications.")}
             onRetry={() => void refetch()}
           />
         )}
         {data && data.length === 0 && (
           <EmptyState
             title={t('ui.nothing_yet')}
-            description="Updates about your reports will appear here."
-            actionLabel="Report a problem"
+            description={t("notifications.empty", "Updates about your reports will appear here.")}
+            actionLabel={t("nav.report", "Report a problem")}
             onAction={() => navigate({ to: "/report" })}
           />
         )}

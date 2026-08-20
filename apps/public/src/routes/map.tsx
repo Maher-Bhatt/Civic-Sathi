@@ -71,14 +71,10 @@ export const Route = createFileRoute("/map")({
   component: CivicMapPage,
 });
 
-const MODES: Array<{ key: MapMode; label: string; hint: string }> = [
-  { key: "health", label: "Area health", hint: "Aggregate civic health per locality" },
-  {
-    key: "activity",
-    label: "Complaint activity",
-    hint: "Clustered reports — separates as you zoom",
-  },
-  { key: "hotspots", label: "Hotspots", hint: "Concentrated issue areas with trend and risk" },
+const MODES: Array<{ key: MapMode; labelKey: string; hintKey: string }> = [
+  { key: "health", labelKey: "map.mode.health", hintKey: "map.mode.health.hint" },
+  { key: "activity", labelKey: "map.mode.activity", hintKey: "map.mode.activity.hint" },
+  { key: "hotspots", labelKey: "map.mode.hotspots", hintKey: "map.mode.hotspots.hint" },
 ];
 
 function Chip({
@@ -213,7 +209,7 @@ function CivicMapPage() {
 
   const nearMe = () => {
     if (typeof navigator === "undefined" || !navigator.geolocation) {
-      setLocationNote("Location is not available in this browser.");
+      setLocationNote(t("map.location.unavailable", "Location is not available in this browser."));
       return;
     }
     setLocating(true);
@@ -232,7 +228,7 @@ function CivicMapPage() {
       },
       () => {
         setLocating(false);
-        setLocationNote("Location permission denied — pick a locality from search instead.");
+        setLocationNote(t("map.location.denied", "Location permission denied — pick a locality from search instead."));
       },
       { enableHighAccuracy: false, timeout: 10000 },
     );
@@ -271,8 +267,8 @@ function CivicMapPage() {
             )}
           >
             <span className="h-2 w-2 rounded-full bg-emerald-400" />
-            <span>Vadodara (VMC)</span>
-            <span className="text-[10px] font-normal opacity-75">· 24 Areas (5 Zones)</span>
+            <span>{t("map.city.vadodara", "Vadodara · VMC")}</span>
+            <span className="text-[10px] font-normal opacity-75">· 24 {t("ui.localities", "Areas")} (5 {t("ui.zones", "Zones")})</span>
           </button>
 
           <button
@@ -287,12 +283,12 @@ function CivicMapPage() {
             )}
           >
             <span className="h-2 w-2 rounded-full bg-blue-400" />
-            <span>Bengaluru (BBMP)</span>
-            <span className="text-[10px] font-normal opacity-75">· 35 Areas (8 Zones)</span>
+            <span>{t("map.city.bengaluru", "Bengaluru · BBMP")}</span>
+            <span className="text-[10px] font-normal opacity-75">· 35 {t("ui.localities", "Areas")} (8 {t("ui.zones", "Zones")})</span>
           </button>
 
           <span className="ml-auto text-[0.7rem] text-muted-foreground hidden sm:inline-block">
-            {cityId === "vadodara" ? "Vadodara Municipal Scale (Normalized)" : "Bengaluru Metropolitan Scale"}
+            {cityId === "vadodara" ? t("map.scale.vadodara", "Vadodara Municipal Scale (Normalized)") : t("map.scale.bengaluru", "Bengaluru Metropolitan Scale")}
           </span>
         </div>
 
@@ -308,7 +304,7 @@ function CivicMapPage() {
                 type="button"
                 role="tab"
                 aria-selected={mode === m.key}
-                title={m.hint}
+                title={t(m.hintKey, m.hintKey)}
                 onClick={() => setMode(m.key)}
                 className={cn(
                   "press rounded-full px-3.5 py-1.5 text-xs whitespace-nowrap transition-all duration-200",
@@ -317,7 +313,7 @@ function CivicMapPage() {
                     : "text-muted-foreground hover:text-foreground",
                 )}
               >
-                {m.label}
+                {t(m.labelKey, m.labelKey)}
               </button>
             ))}
           </div>
@@ -334,7 +330,7 @@ function CivicMapPage() {
               type="search"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder={`Search area in ${getCity(cityId).name}`}
+              placeholder={`${t("ui.search_area_or_locality", "Search area or locality")} · ${getCity(cityId).name}`}
               aria-label={t('ui.search_area_or_locality')}
               className="glass h-11 w-full rounded-xl border border-[var(--glass-border)] pr-3 pl-9 text-sm text-foreground outline-none placeholder:text-subtle focus:border-[color-mix(in_oklab,var(--foreground)_25%,transparent)]"
             />
@@ -459,7 +455,7 @@ function CivicMapPage() {
                 <AnimatedStat value={totals.reports} />
               </p>
               <p className="text-[0.66rem] tracking-[0.08em] text-muted-foreground uppercase">
-                Reports in view
+                {t("map.stat.reports", "Reports in view")}
               </p>
             </GlassCard>
 
@@ -468,7 +464,7 @@ function CivicMapPage() {
                 <AnimatedStat value={totals.last7} />
               </p>
               <p className="text-[0.66rem] tracking-[0.08em] text-muted-foreground uppercase">
-                Last 7 days
+                {t("map.stat.last7", "Last 7 days")}
               </p>
             </GlassCard>
 
@@ -477,7 +473,7 @@ function CivicMapPage() {
                 <AnimatedStat value={totals.areas} />
               </p>
               <p className="text-[0.66rem] tracking-[0.08em] text-muted-foreground uppercase">
-                Localities mapped
+                {t("map.stat.localities", "Localities mapped")}
               </p>
             </GlassCard>
 
@@ -486,7 +482,7 @@ function CivicMapPage() {
                 ~<AnimatedStat value={totals.affectedPeople} />
               </p>
               <p className="text-[0.66rem] tracking-[0.08em] text-blue-700 dark:text-blue-300 font-medium uppercase">
-                Citizens Affected
+                {t("map.stat.affected", "Citizens Affected")}
               </p>
             </GlassCard>
           </div>
@@ -530,7 +526,7 @@ function CivicMapPage() {
 
           <GlassCard className="animate-rise p-4" style={{ animationDelay: "160ms" }}>
             <SectionLabel>
-              {mode === "hotspots" ? "Active hotspots" : "Most active areas"}
+              {mode === "hotspots" ? t("map.sidebar.hotspots", "Active hotspots") : t("map.sidebar.areas", "Most active areas")}
             </SectionLabel>
             <ul className="mt-3 space-y-1">
               {(mode === "hotspots" ? hotspots : ranked.slice(0, 10)).map((a) => (
@@ -553,7 +549,7 @@ function CivicMapPage() {
                     <span className="min-w-0 flex-1">
                       <span className="block truncate text-sm">{a.area.name}</span>
                       <span className="block text-[0.66rem] tracking-[0.08em] text-subtle uppercase">
-                        {AREA_HEALTH_LABEL[a.health]} · ~{(a.affectedPopulation || 0).toLocaleString('en-IN')} affected
+                        {AREA_HEALTH_LABEL[a.health]} · ~{(a.affectedPopulation || 0).toLocaleString('en-IN')} {t("map.sidebar.affected", "affected")}
                       </span>
                     </span>
                     <span className="text-sm text-muted-foreground">{a.total}</span>
@@ -597,7 +593,7 @@ function AreaPanel({
       <GlassCard
         elevation="raised"
         className="jm-panel-glow max-h-[72vh] overflow-y-auto p-4 sm:max-h-none sm:p-5"
-        aria-label={`${area.name} civic detail`}
+        aria-label={`${area.name} ${t("map.area.civicDetail", "civic detail")}`}
       >
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
@@ -606,7 +602,7 @@ function AreaPanel({
             <h2 className="mt-1 truncate text-lg font-semibold">{area.name}</h2>
             <p className="mt-0.5 text-[0.7rem] text-subtle">
               {area.admin.body}
-              {area.admin.bodyVerified ? " · verified" : ""}
+              {area.admin.bodyVerified ? ` · ${t("map.area.verified", "verified")}` : ""}
               {area.admin.division
                 ? ` · ${area.admin.division}${area.admin.divisionVerified ? "" : " (indicative)"}`
                 : ""}
@@ -631,20 +627,20 @@ function AreaPanel({
             </p>
           </div>
           <div className="p-2.5 rounded-xl bg-[var(--surface)] border border-[var(--glass-border)]">
-            <p className="label-xs text-muted-foreground">Ward Population</p>
+            <p className="label-xs text-muted-foreground">{t("map.area.population", "Ward Population")}</p>
             <p className="mt-0.5 text-base font-semibold tabular-nums text-[var(--foreground)]">
               ~{(area.population || 80000).toLocaleString('en-IN')}
             </p>
           </div>
           <div className="p-2.5 rounded-xl bg-blue-500/10 border border-blue-500/30">
-            <p className="label-xs text-blue-700 dark:text-blue-300 font-medium">Citizens Affected</p>
+            <p className="label-xs text-blue-700 dark:text-blue-300 font-medium">{t("map.stat.affected", "Citizens Affected")}</p>
             <p className="mt-0.5 text-base font-bold text-blue-700 dark:text-blue-400 tabular-nums">
               ~{(activity.affectedPopulation || 0).toLocaleString('en-IN')}
               <span className="text-xs font-normal opacity-80 ml-1">({activity.affectedPercent}%)</span>
             </p>
           </div>
           <div className="p-2.5 rounded-xl bg-[var(--surface)] border border-[var(--glass-border)]">
-            <p className="label-xs text-muted-foreground">Impact Rating</p>
+            <p className="label-xs text-muted-foreground">{t("map.area.impact", "Impact Rating")}</p>
             <p className="mt-0.5 text-xs font-bold" style={{ color: AREA_HEALTH_HEX[activity.health] }}>
               {activity.impactLevel}
             </p>
@@ -663,7 +659,7 @@ function AreaPanel({
         {getLocalityHeritage(area.id) && (
           <div className="mt-4 p-3.5 rounded-2xl bg-gradient-to-r from-amber-500/10 via-orange-500/5 to-emerald-500/10 border border-orange-500/25 space-y-1">
             <div className="flex items-center gap-1.5 text-[11px] font-bold text-amber-800 dark:text-amber-300 uppercase tracking-wider">
-              <span>🏛️ Locality Historic & Civic Heritage</span>
+              <span>🏛️ {t("map.area.heritage", "Locality Historic & Civic Heritage")}</span>
             </div>
             <p className="text-xs text-foreground/85 leading-relaxed">
               {getLocalityHeritage(area.id)}
@@ -681,9 +677,9 @@ function AreaPanel({
                   style={{ background: AREA_HEALTH_HEX[r.health] }}
                   aria-hidden
                 />
-                <span className="flex-1 truncate">{ISSUE_LABEL[r.issue]} {t('ui.reported')}</span>
+                <span className="flex-1 truncate">{t(`pattern.category.${r.issue}`, ISSUE_LABEL[r.issue])} {t('ui.reported')}</span>
                 <span className="text-xs text-subtle">
-                  {r.daysAgo === 0 ? "today" : `${r.daysAgo}d ago`}
+                  {r.daysAgo === 0 ? t("map.area.today", "today") : t("map.area.daysAgo", "{days}d ago").replace("{days}", String(r.daysAgo))}
                 </span>
               </li>
             ))}

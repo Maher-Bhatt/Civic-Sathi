@@ -83,6 +83,7 @@ function Landing() {
     const [cityId, setCityId] = useState<CityId>(() => getDefaultCity());
   const [cityAggregate, setCityAggregate] = useState<any>(null);
   const cityVisuals = useMemo(() => getCityVisuals(cityId), [cityId]);
+  const cityEpithet = t(`heritage.${cityId}.epithet`, cityVisuals.epithet);
 
   useEffect(() => {
     let cancelled = false;
@@ -130,7 +131,7 @@ function Landing() {
             </h1>
             <div className="flex flex-wrap items-center gap-2 text-xs font-semibold text-[var(--civic-muted)]">
               <span className="civic-city-chip"><MapPin className="h-3.5 w-3.5" aria-hidden />{cityVisuals.vernacularName}</span>
-              <span>{cityVisuals.epithet}</span>
+              <span>{cityEpithet}</span>
             </div>
             <div className="civic-architecture-rule" aria-hidden="true" />
             <p className="max-w-xl text-[0.98rem] leading-relaxed text-muted-foreground">
@@ -181,7 +182,7 @@ function Landing() {
                       : "text-muted-foreground hover:text-foreground"
                   }`}
                 >
-                  Vadodara · VMC
+                  {t("map.city.vadodara", "Vadodara · VMC")}
                 </button>
                 <button
                   type="button"
@@ -192,7 +193,7 @@ function Landing() {
                       : "text-muted-foreground hover:text-foreground"
                   }`}
                 >
-                  Bengaluru · BBMP
+                  {t("map.city.bengaluru", "Bengaluru · BBMP")}
                 </button>
               </div>
 
@@ -219,7 +220,7 @@ function Landing() {
                 to="/map"
                 className="text-xs font-bold text-orange-700 dark:text-orange-400 underline-offset-4 hover:underline"
               >
-                {t("map.card.open", "Explore Full Civic Map →")}
+                {t("home.map.explore", "Explore Full Civic Map →")}
               </Link>
             </div>
           </GlassCard>
@@ -324,19 +325,19 @@ function Landing() {
           <div className="space-y-3">
             <SectionLabel>{t("pattern.issues.label", "Categories Covered")}</SectionLabel>
             <div className="flex flex-wrap gap-2 pt-1">
-              {[
-                { name: "Water Supply & Purity", color: "bg-blue-500/15 text-blue-800 dark:text-blue-300 border-blue-500/30" },
-                { name: "Potholes & Road Damage", color: "bg-amber-500/15 text-amber-800 dark:text-amber-300 border-amber-500/30" },
-                { name: "Drainage & Sewage Overflow", color: "bg-emerald-500/15 text-emerald-800 dark:text-emerald-300 border-emerald-500/30" },
-                { name: "Sanitation & Garbage Disposal", color: "bg-teal-500/15 text-teal-800 dark:text-teal-300 border-teal-500/30" },
-                { name: "Streetlights & Power Outages", color: "bg-orange-500/15 text-orange-800 dark:text-orange-300 border-orange-500/30" },
-                { name: "Parks & Urban Encroachment", color: "bg-rose-500/15 text-rose-800 dark:text-rose-300 border-rose-500/30" },
+              {              [
+                { key: "pattern.category.water", color: "bg-blue-500/15 text-blue-800 dark:text-blue-300 border-blue-500/30" },
+                { key: "pattern.category.roads", color: "bg-amber-500/15 text-amber-800 dark:text-amber-300 border-amber-500/30" },
+                { key: "pattern.category.drainage", color: "bg-emerald-500/15 text-emerald-800 dark:text-emerald-300 border-emerald-500/30" },
+                { key: "pattern.category.sanitation", color: "bg-teal-500/15 text-teal-800 dark:text-teal-300 border-teal-500/30" },
+                { key: "pattern.category.lighting", color: "bg-orange-500/15 text-orange-800 dark:text-orange-300 border-orange-500/30" },
+                { key: "pattern.category.parks", color: "bg-rose-500/15 text-rose-800 dark:text-rose-300 border-rose-500/30" },
               ].map((cat) => (
                 <span
-                  key={cat.name}
+                  key={cat.key}
                   className={`rounded-full border px-3 py-1.5 text-xs font-semibold shadow-xs ${cat.color}`}
                 >
-                  {cat.name}
+                  {t(cat.key, cat.key)}
                 </span>
               ))}
             </div>
@@ -351,7 +352,7 @@ function Landing() {
 
       {/* Stats Summary */}
       <section className="pt-14 sm:pt-20">
-        <SectionLabel>{t("stats.label", "Civic Live Intelligence")}</SectionLabel>
+              <SectionLabel>{t("stats.label", "Civic Live Intelligence")}</SectionLabel>
         <dl className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
           {[
             [cityAggregate ? Number(cityAggregate.total_reports ?? 0).toLocaleString("en-IN") : "—", t("stats.city_reports", "Reports in selected city · 30 days"), "📋"],
@@ -378,7 +379,7 @@ function Landing() {
             <span className="font-bold tracking-[0.14em] uppercase text-amber-900 dark:text-amber-200">
               Civic Sathi · જન મન
             </span>
-            <span className="text-[10px] text-muted-foreground">· Built for Indian Cities</span>
+            <span className="text-[10px] text-muted-foreground">· {t("home.footer.built", "Built for Indian Cities")}</span>
           </div>
           <span className="text-muted-foreground font-medium">
             સત્યમેવ જયતે · सत्यमेव जयते · Satyameva Jayate

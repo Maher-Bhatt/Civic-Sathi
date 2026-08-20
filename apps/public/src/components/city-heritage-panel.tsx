@@ -3,6 +3,7 @@ import { Landmark, Sparkles, Building2, Trees, Droplets, Crown, Scroll, ChevronR
 import { GlassCard } from "@/components/ui/glass-card";
 import { type CityId } from "@/services/cities";
 import { cn } from "@/lib/utils";
+import { useI18n } from "@/lib/i18n";
 import { getCityVisuals } from "@civicsathi/visual-system";
 
 interface HeritageStory {
@@ -193,6 +194,7 @@ const HERITAGE_DATA: Record<CityId, {
 export function CityHeritageSignal({ cityId }: { cityId: CityId }) {
   const cityData = HERITAGE_DATA[cityId] || HERITAGE_DATA.vadodara;
   const cityVisuals = getCityVisuals(cityId);
+  const { t } = useI18n();
   const story = cityData.stories[0]!;
   const Icon = story.icon;
 
@@ -203,13 +205,13 @@ export function CityHeritageSignal({ cityId }: { cityId: CityId }) {
           <Icon className="h-4 w-4" aria-hidden />
         </span>
         <div className="min-w-0">
-          <p className="text-[0.62rem] font-bold uppercase tracking-[0.16em] text-[var(--heritage-accent)]">{cityVisuals.authority} · Civic heritage signal</p>
+          <p className="text-[0.62rem] font-bold uppercase tracking-[0.16em] text-[var(--heritage-accent)]">{cityVisuals.authority} · {t("home.heritage.signal", "Civic heritage signal")}</p>
           <p className="mt-1 line-clamp-2 break-words text-sm font-bold text-[var(--foreground)]">{story.title}</p>
           <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-muted-foreground">{story.tagline} · {cityVisuals.architecture}</p>
         </div>
       </div>
       <a href="#city-heritage" className="mt-3 inline-flex items-center gap-1 text-xs font-bold text-[var(--heritage-accent)] underline-offset-4 hover:underline">
-        Explore {cityData.cityName} heritage <ChevronRight className="h-3.5 w-3.5" aria-hidden />
+        {t("home.heritage.explore", "Explore {city} heritage").replace("{city}", cityData.cityName)} <ChevronRight className="h-3.5 w-3.5" aria-hidden />
       </a>
     </div>
   );
@@ -217,6 +219,7 @@ export function CityHeritageSignal({ cityId }: { cityId: CityId }) {
 
 export function CityHeritagePanel({ cityId, onSelectCity }: { cityId: CityId; onSelectCity?: (c: CityId) => void }) {
   const [activeStoryId, setActiveStoryId] = useState<string | null>(null);
+  const { t } = useI18n();
   const cityData = HERITAGE_DATA[cityId] || HERITAGE_DATA.vadodara;
 
   const currentStory = cityData.stories.find((s) => s.id === activeStoryId) || cityData.stories[0]!;
@@ -229,7 +232,7 @@ export function CityHeritagePanel({ cityId, onSelectCity }: { cityId: CityId; on
           <div className="inline-flex items-center gap-2 rounded-full border border-orange-500/30 bg-orange-500/10 px-3.5 py-1 backdrop-blur-md">
             <Sparkles className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400" />
             <span className="text-[0.68rem] tracking-[0.14em] font-semibold text-amber-800 dark:text-amber-300 uppercase">
-              Civic Heritage & Historical Foundations
+              {t("heritage.heading", "Civic Heritage & Historical Foundations")}
             </span>
           </div>
           <h2 className="text-2xl font-bold tracking-tight sm:text-3xl lg:text-4xl text-[var(--foreground)]">
@@ -256,7 +259,7 @@ export function CityHeritagePanel({ cityId, onSelectCity }: { cityId: CityId; on
                   : "text-muted-foreground hover:text-foreground"
               )}
             >
-              Vadodara · VMC
+              {t("heritage.vadodara.toggle", "Vadodara · VMC")}
             </button>
             <button
               type="button"
@@ -271,7 +274,7 @@ export function CityHeritagePanel({ cityId, onSelectCity }: { cityId: CityId; on
                   : "text-muted-foreground hover:text-foreground"
               )}
             >
-              Bengaluru · BBMP
+              {t("heritage.bengaluru.toggle", "Bengaluru · BBMP")}
             </button>
           </div>
         )}
@@ -355,7 +358,7 @@ export function CityHeritagePanel({ cityId, onSelectCity }: { cityId: CityId; on
               </span>
               <div className="min-w-0">
                 <span className="block break-words text-[10px] font-bold tracking-[0.14em] uppercase text-orange-700 dark:text-orange-400">
-                  {currentStory.era} · {cityData.cityName} Heritage
+                  {currentStory.era} · {cityData.cityName} {t("home.heritage.signal", "Heritage")}
                 </span>
                 <h3 className="break-words text-lg sm:text-xl font-bold text-[var(--foreground)]">
                   {currentStory.title}
@@ -363,7 +366,7 @@ export function CityHeritagePanel({ cityId, onSelectCity }: { cityId: CityId; on
               </div>
             </div>
             <span className="hidden sm:inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-semibold bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30">
-              <Scroll className="h-3 w-3" /> Historic Record
+              <Scroll className="h-3 w-3" /> {t("heritage.record", "Historic Record")}
             </span>
           </div>
 
@@ -379,7 +382,7 @@ export function CityHeritagePanel({ cityId, onSelectCity }: { cityId: CityId; on
           {/* Civic Legacy Context */}
           <div className="p-4 rounded-2xl bg-white/70 dark:bg-black/20 border border-amber-500/20 space-y-1.5 shadow-sm">
             <p className="text-[11px] font-bold tracking-wider text-amber-800 dark:text-amber-400 uppercase">
-              Modern civic infrastructure relevance
+              {t("heritage.relevance", "Modern civic infrastructure relevance")}
             </p>
             <p className="text-xs leading-relaxed text-foreground/80">
               {currentStory.civicLegacy}

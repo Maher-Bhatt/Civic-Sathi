@@ -49,18 +49,18 @@ function ComplaintsPage() {
       </div>
 
       <div className="mt-7">
-        {isLoading && <LoadingState message="Loading your reports..." />}
+        {isLoading && <LoadingState message={t("complaints.loading", "Loading your reports…")} />}
         {isError && (
           <ErrorState
-            description="We couldn't load your complaints right now."
+            description={t("complaints.error", "We couldn't load your complaints right now.")}
             onRetry={() => void refetch()}
           />
         )}
         {data && data.length === 0 && (
           <EmptyState
             title={t('ui.no_reports_yet')}
-            description="You haven't submitted any reports yet."
-            actionLabel="Report a problem"
+            description={t("complaints.empty", "You haven't submitted any reports yet.")}
+            actionLabel={t("nav.report", "Report a problem")}
             onAction={() => navigate({ to: "/report" })}
           />
         )}

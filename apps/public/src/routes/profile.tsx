@@ -100,7 +100,7 @@ function ProfilePage() {
         if (active) setReputation(data);
       })
       .catch(() => {
-        if (active) setReputationMessage("Civic identity data is temporarily unavailable. Your core account is still safe.");
+        if (active) setReputationMessage(t("profile.identityUnavailable", "Civic identity data is temporarily unavailable. Your core account is still safe."));
       })
       .finally(() => {
         if (active) setReputationBusy(false);
@@ -117,9 +117,9 @@ function ProfilePage() {
     try {
       const profile = await updateCivicReputationPreferences(patch);
       setReputation((current) => (current ? { ...current, profile } : current));
-      setReputationMessage("Civic identity privacy settings updated.");
+      setReputationMessage(t("profile.privacyUpdated", "Civic identity privacy settings updated."));
     } catch {
-      setReputationMessage("We could not update that preference. Please retry.");
+      setReputationMessage(t("profile.preferenceFailed", "We could not update that preference. Please retry."));
     } finally {
       setReputationBusy(false);
     }
@@ -152,7 +152,7 @@ function ProfilePage() {
         <SectionLabel>{t("nav.profile", "My Civic Identity")}</SectionLabel>
         <h1 className="text-2xl font-semibold sm:text-3xl">{t("profile.title", "Profile")}</h1>
         <p className="max-w-2xl text-sm text-muted-foreground">
-          Your civic progress is based on verified contributions and real outcomes. Core Civic Sathi services never require XP or badges.
+          {t("profile.pageIntro", "Your civic progress is based on verified contributions and real outcomes. Core Civic Sathi services never require XP or badges.")}
         </p>
       </div>
 
@@ -166,19 +166,19 @@ function ProfilePage() {
         <div className="bg-[linear-gradient(120deg,color-mix(in_oklab,var(--primary)_22%,transparent),transparent_58%)] p-5 sm:p-7">
           <div className="flex flex-wrap items-start justify-between gap-5">
             <div>
-              <SectionLabel>Civic progress</SectionLabel>
-              <h2 className="mt-2 text-2xl font-semibold">{civic?.level_name ?? "Civic Observer"}</h2>
+              <SectionLabel>{t("profile.civicProgress", "Civic progress")}</SectionLabel>
+              <h2 className="mt-2 text-2xl font-semibold">{civic?.level_name ?? t("profile.civicObserver", "Civic Observer")}</h2>
               <p className="mt-1 text-sm text-muted-foreground">
-                Level {civic?.level ?? 1} · {civic?.xp_total ?? 0} XP · {civic?.impact_score ?? 0} Civic Impact
+                {t("ui.level", "Level")} {civic?.level ?? 1} · {civic?.xp_total ?? 0} XP · {civic?.impact_score ?? 0} {t("profile.civicImpact", "Civic Impact")}
               </p>
             </div>
             <div className="rounded-2xl border border-border/80 bg-background/35 px-4 py-3 text-right">
-              <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground">Verified contributions</p>
+              <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground">{t("profile.verifiedContributions", "Verified contributions")}</p>
               <p className="mt-1 text-2xl font-semibold">{civic?.verified_contributions ?? 0}</p>
-              <p className="text-xs text-muted-foreground">{civic?.resolutions_supported ?? 0} resolutions supported</p>
+              <p className="text-xs text-muted-foreground">{civic?.resolutions_supported ?? 0} {t("profile.resolutionsSupported", "resolutions supported")}</p>
             </div>
           </div>
-          <div className="mt-6" aria-label={`Level progress: ${levelProgress}%`}>
+          <div className="mt-6" aria-label={`${t("ui.level", "Level")} ${t("ui.progress", "progress")}: ${levelProgress}%`}>
             <div className="flex justify-between text-xs text-muted-foreground">
               <span>{civic?.current_level_xp ?? 0} XP at this level</span>
               <span>{civic?.next_level_xp ?? 0} XP next level</span>
@@ -190,9 +190,9 @@ function ProfilePage() {
         </div>
         <div className="grid gap-px border-t border-border bg-border sm:grid-cols-3">
           {[
-            ["Civic reputation", civic?.reputation_score ?? 0, "Quality and verified trust"],
-            ["Civic Impact", civic?.impact_score ?? 0, "Outcome-weighted contribution"],
-            ["Current streak", civic?.streak_days ?? 0, "Meaningful activity days"],
+            [t("profile.reputation", "Civic reputation"), civic?.reputation_score ?? 0, t("profile.reputationHint", "Quality and verified trust")],
+            [t("profile.civicImpact", "Civic Impact"), civic?.impact_score ?? 0, t("profile.impactHint", "Outcome-weighted contribution")],
+            [t("profile.currentStreak", "Current streak"), civic?.streak_days ?? 0, t("profile.streakHint", "Meaningful activity days")],
           ].map(([label, value, hint]) => (
             <div className="bg-background/80 p-4" key={String(label)}>
               <p className="text-xs uppercase tracking-[0.12em] text-muted-foreground">{label}</p>
@@ -206,14 +206,14 @@ function ProfilePage() {
       <div className="mt-5 grid gap-5 lg:grid-cols-[1.15fr_0.85fr]">
         <GlassCard className="animate-rise space-y-5 p-5 sm:p-7">
           <div>
-            <SectionLabel>Recognition earned</SectionLabel>
-            <h2 className="mt-2 text-xl font-semibold">Achievements</h2>
+            <SectionLabel>{t("profile.recognition", "Recognition earned")}</SectionLabel>
+            <h2 className="mt-2 text-xl font-semibold">{t("profile.achievements", "Achievements")}</h2>
           </div>
-          {reputationBusy && !reputation ? <p className="text-sm text-muted-foreground">Loading verified achievements…</p> : null}
+          {reputationBusy && !reputation ? <p className="text-sm text-muted-foreground">{t("profile.loadingAchievements", "Loading verified achievements…")}</p> : null}
           {!reputationBusy && !reputation?.badges.length ? (
             <div className="rounded-xl border border-dashed border-border p-4 text-sm text-muted-foreground">
-              <p className="font-medium text-foreground">Your Civic Journey Starts Here</p>
-              <p className="mt-1">Report your first genuine civic issue and begin building Civic Impact.</p>
+              <p className="font-medium text-foreground">{t("profile.journeyEmpty", "Your Civic Journey Starts Here")}</p>
+              <p className="mt-1">{t("profile.journeyBody", "Report your first genuine civic issue and begin building Civic Impact.")}</p>
             </div>
           ) : null}
           <div className="grid gap-3 sm:grid-cols-2">
@@ -224,7 +224,7 @@ function ProfilePage() {
                   <span aria-hidden="true" className="text-primary">◆</span>
                 </div>
                 <p className="mt-2 text-sm text-muted-foreground">{badge.description}</p>
-                <p className="mt-3 text-xs text-muted-foreground">Awarded {formatDate(badge.awarded_at)}</p>
+                <p className="mt-3 text-xs text-muted-foreground">{t("profile.awarded", "Awarded")} {formatDate(badge.awarded_at)}</p>
               </div>
             ))}
           </div>
@@ -232,37 +232,37 @@ function ProfilePage() {
 
         <GlassCard className="animate-rise space-y-5 p-5 sm:p-7">
           <div>
-            <SectionLabel>Optional participation</SectionLabel>
-            <h2 className="mt-2 text-xl font-semibold">Privacy and recognition</h2>
+            <SectionLabel>{t("profile.optionalParticipation", "Optional participation")}</SectionLabel>
+            <h2 className="mt-2 text-xl font-semibold">{t("profile.privacyRecognition", "Privacy and recognition")}</h2>
           </div>
-          <p className="text-sm text-muted-foreground">Your complaint details, contact information, and precise private locations are never made public through recognition features.</p>
+          <p className="text-sm text-muted-foreground">{t("profile.privacyCopy", "Your complaint details, contact information, and precise private locations are never made public through recognition features.")}</p>
           {civic ? (
             <>
               <Toggle
-                label="Show me in Civic Contributors"
+                label={t("profile.showContributors", "Show me in Civic Contributors")}
                 checked={civic.leaderboard_opt_in}
                 onChange={(value) => void updateReputationPreferences({ leaderboard_opt_in: value })}
               />
               <Toggle
-                label="Allow achievement sharing"
+                label={t("profile.allowSharing", "Allow achievement sharing")}
                 checked={civic.sharing_opt_in}
                 onChange={(value) => void updateReputationPreferences({ sharing_opt_in: value })}
               />
               <Toggle
-                label="Use subtle celebration animation"
+                label={t("profile.subtleCelebration", "Use subtle celebration animation")}
                 checked={civic.animation_enabled}
                 onChange={(value) => void updateReputationPreferences({ animation_enabled: value })}
               />
               <Toggle
-                label="Reward and mission notifications"
+                label={t("profile.rewardNotifications", "Reward and mission notifications")}
                 checked={civic.reward_notifications_enabled}
                 onChange={(value) => void updateReputationPreferences({ reward_notifications_enabled: value })}
               />
             </>
-          ) : <p className="text-sm text-muted-foreground">Privacy controls will appear when civic identity data is available.</p>}
+          ) : <p className="text-sm text-muted-foreground">{t("profile.controlsUnavailable", "Privacy controls will appear when civic identity data is available.")}</p>}
           <div>
-            <p className="mb-2 text-sm font-medium">Public display name</p>
-            <div className="flex flex-wrap gap-2" role="group" aria-label="Public display name">
+            <p className="mb-2 text-sm font-medium">{t("profile.publicNameGroup", "Public display name")}</p>
+            <div className="flex flex-wrap gap-2" role="group" aria-label={t("profile.publicNameGroup", "Public display name")}>
               {(["initials", "first_name", "alias"] as const).map((mode) => (
                 <button
                   type="button"
@@ -284,28 +284,28 @@ function ProfilePage() {
       <div className="mt-5 grid gap-5 lg:grid-cols-[0.8fr_1.2fr]">
         <GlassCard className="animate-rise space-y-5 p-5 sm:p-7">
           <div>
-            <SectionLabel>Real city progress</SectionLabel>
-            <h2 className="mt-2 text-xl font-semibold">City impact</h2>
+            <SectionLabel>{t("profile.realCityProgress", "Real city progress")}</SectionLabel>
+            <h2 className="mt-2 text-xl font-semibold">{t("profile.cityImpact", "City impact")}</h2>
           </div>
           {!reputation?.city_impact.length ? (
-            <p className="rounded-xl border border-dashed border-border p-4 text-sm text-muted-foreground">No city impact has been recorded for your account yet.</p>
+            <p className="rounded-xl border border-dashed border-border p-4 text-sm text-muted-foreground">{t("profile.noCityImpact", "No city impact has been recorded for your account yet.")}</p>
           ) : (
             <div className="space-y-3">
               {reputation.city_impact.map((city) => (
                 <div className="rounded-xl border border-border bg-[var(--glass)] p-4" key={city.city_name}>
                   <div className="flex items-center justify-between gap-3">
                     <h3 className="font-medium">{city.city_name}</h3>
-                    <span className="text-sm font-semibold">{city.impact_points} impact</span>
+                    <span className="text-sm font-semibold">{city.impact_points} {t("profile.impact", "impact")}</span>
                   </div>
-                  <p className="mt-2 text-xs text-muted-foreground">{city.verified_reports} verified reports · {city.resolved_reports} resolved reports · {city.contributing_citizens} contributing citizens</p>
-                  {city.milestone ? <p className="mt-2 text-xs text-primary">Milestone: {city.milestone}</p> : null}
+                  <p className="mt-2 text-xs text-muted-foreground">{city.verified_reports} {t("profile.verifiedReports", "verified reports")} · {city.resolved_reports} {t("profile.resolvedReports", "resolved reports")} · {city.contributing_citizens} {t("profile.contributingCitizens", "contributing citizens")}</p>
+                  {city.milestone ? <p className="mt-2 text-xs text-primary">{t("profile.milestone", "Milestone")}: {city.milestone}</p> : null}
                 </div>
               ))}
             </div>
           )}
           {reputation?.missions.length ? (
             <div className="border-t border-border pt-5">
-              <SectionLabel>Optional missions</SectionLabel>
+              <SectionLabel>{t("profile.optionalMissions", "Optional missions")}</SectionLabel>
               <div className="mt-3 space-y-3">
                 {reputation.missions.map((mission) => (
                   <div className="rounded-xl border border-border p-3" key={mission.code}>
@@ -320,11 +320,11 @@ function ProfilePage() {
 
         <GlassCard className="animate-rise space-y-5 p-5 sm:p-7">
           <div>
-            <SectionLabel>Explainable activity</SectionLabel>
-            <h2 className="mt-2 text-xl font-semibold">Recent civic ledger</h2>
+            <SectionLabel>{t("profile.explainableActivity", "Explainable activity")}</SectionLabel>
+            <h2 className="mt-2 text-xl font-semibold">{t("profile.recentLedger", "Recent civic ledger")}</h2>
           </div>
           {!reputation?.transactions.length ? (
-            <p className="rounded-xl border border-dashed border-border p-4 text-sm text-muted-foreground">Your verified civic rewards will appear here with the reason and source behind each entry.</p>
+            <p className="rounded-xl border border-dashed border-border p-4 text-sm text-muted-foreground">{t("profile.ledgerEmpty", "Your verified civic rewards will appear here with the reason and source behind each entry.")}</p>
           ) : (
             <div className="divide-y divide-border rounded-xl border border-border">
               {reputation.transactions.map((transaction) => (
@@ -345,8 +345,8 @@ function ProfilePage() {
 
       <GlassCard elevation="raised" className="animate-rise mt-5 space-y-5 p-5 sm:p-7">
         <div>
-          <SectionLabel>Account controls</SectionLabel>
-          <h2 className="mt-2 text-xl font-semibold">Profile details</h2>
+            <SectionLabel>{t("profile.accountControls", "Account controls")}</SectionLabel>
+          <h2 className="mt-2 text-xl font-semibold">{t("profile.details", "Profile details")}</h2>
         </div>
         <form
           className="grid gap-4 sm:grid-cols-2"
@@ -355,9 +355,9 @@ function ProfilePage() {
             setBusy(true);
             try {
               await save(form);
-              toast.success("Profile updated");
+              toast.success(t("profile.updated", "Profile updated"));
             } catch {
-              toast.error("Failed to update profile");
+              toast.error(t("profile.updateFailed", "Failed to update profile"));
             } finally {
               setBusy(false);
             }
@@ -366,10 +366,10 @@ function ProfilePage() {
           <GlassInput label={t("ui.name")} value={form.name} onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))} />
           <GlassInput label={t("ui.email")} type="email" value={form.email} onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))} />
           <GlassInput label={t("ui.phone")} type="tel" value={form.phone} onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))} />
-          <GlassInput label={t("ui.preferred_ward")} value={form.ward} hint="Used to surface civic activity near you." onChange={(e) => setForm((f) => ({ ...f, ward: e.target.value }))} />
+          <GlassInput label={t("ui.preferred_ward")} value={form.ward} hint={t("profile.wardHint", "Used to surface civic activity near you.")} onChange={(e) => setForm((f) => ({ ...f, ward: e.target.value }))} />
           <div className="flex flex-wrap gap-2 sm:col-span-2">
-            <GlassButton type="submit" disabled={busy}>{busy ? "Saving…" : "Save changes"}</GlassButton>
-            <GlassButton variant="glass" type="button" onClick={async () => { await changePassword(); toast.success("Password reset link sent"); }}>{t("ui.change_password")}</GlassButton>
+            <GlassButton type="submit" disabled={busy}>{busy ? t("profile.saving", "Saving…") : t("profile.save", "Save changes")}</GlassButton>
+            <GlassButton variant="glass" type="button" onClick={async () => { await changePassword(); toast.success(t("profile.resetSent", "Password reset link sent")); }}>{t("ui.change_password")}</GlassButton>
             <GlassButton variant="outline" type="button" onClick={async () => { await signOut(); navigate({ to: "/" }); }}>{t("ui.log_out")}</GlassButton>
           </div>
         </form>

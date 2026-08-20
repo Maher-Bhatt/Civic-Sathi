@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { type Language, TRANSLATIONS } from "./translations";
+import { PORTAL_TRANSLATIONS } from "./portal-translations";
 
 type I18nContextType = {
   language: Language;
@@ -19,15 +20,20 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
+  useEffect(() => {
+    if (typeof document !== "undefined") document.documentElement.lang = language;
+  }, [language]);
+
   const setLanguage = (lang: Language) => {
     localStorage.setItem("civicsathi-lang", lang);
     setLanguageState(lang);
   };
 
   const t = (key: string, fallback?: string) => {
-    const dict = TRANSLATIONS[language];
+    const dict = { ...TRANSLATIONS[language], ...PORTAL_TRANSLATIONS[language] };
+    const english = { ...TRANSLATIONS["en"], ...PORTAL_TRANSLATIONS["en"] };
     if (dict && dict[key]) return dict[key];
-    if (TRANSLATIONS["en"] && TRANSLATIONS["en"][key]) return TRANSLATIONS["en"][key];
+    if (english && english[key]) return english[key];
     if (fallback) return fallback;
     if (key.startsWith("ui.")) {
       const cleaned = key.replace(/^ui\./, "").replace(/_/g, " ");
