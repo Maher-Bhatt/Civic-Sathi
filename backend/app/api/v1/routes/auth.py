@@ -4,6 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy import func
 from typing import Annotated, Optional
 
 from app.core.database import get_db
@@ -16,6 +17,7 @@ from app.schemas.officer import OfficerLoginRequest, OfficerLoginResponse, Offic
 from app.schemas.citizen import CitizenRegisterRequest, CitizenLoginRequest, CitizenAuthResponse, CitizenInfo
 from app.models.user import User
 from app.models.audit import AuditLog
+from app.models.procurement import Contractor, ContractorCityRegistration, City, RegistrationStatus
 from uuid import uuid4, UUID
 from pydantic import BaseModel, EmailStr, Field
 
@@ -332,8 +334,40 @@ def contractor_login(
             detail="Invalid email or password"
         )
 
+    requested_city = (login_data.city or "").strip().lower()
+    if not requested_city:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Municipality city is required for contractor login"
+        )
+
+    contractor = db.query(Contractor).filter(
+        Contractor.auth_user_id == str(user.id)
+    ).first()
+    if not contractor:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Contractor company profile is not linked to this login"
+        )
+
+    eligible_registration = (
+        db.query(ContractorCityRegistration)
+        .join(City, City.id == ContractorCityRegistration.city_id)
+        .filter(
+            ContractorCityRegistration.contractor_id == contractor.id,
+            ContractorCityRegistration.status == RegistrationStatus.APPROVED,
+            func.lower(City.name) == requested_city,
+        )
+        .first()
+    )
+    if not eligible_registration:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="This contractor is not approved for the selected municipality"
+        )
+
     access_token = create_access_token(
-        data={"sub": str(user.id), "email": user.email, "role": user.role}
+        data={"sub": str(user.id), "email": user.email, "role": user.role, "city": requested_city}
     )
 
     return CitizenAuthResponse(
@@ -345,7 +379,7 @@ def contractor_login(
             email=user.email,
             phone=user.phone or "",
             ward=user.ward or "Unassigned",
-            city=user.city,
+            city=requested_city,
             role=user.role,
             notifyStatus=True,
             notifyNearby=True,
