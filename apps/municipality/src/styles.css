@@ -1105,12 +1105,15 @@ body::after {
 .civic-city-shell::before { opacity: 0.12; }
 .muni-dashboard-map-layout { align-items: stretch; }
 .muni-dashboard-map-card { min-width: 0; }
-.muni-dashboard-map-card .jm-map-frame,
-.muni-dashboard-map-card .jm-map-frame > *,
-.muni-dashboard-map-card .leaflet-container {
-  min-height: clamp(30rem, 58vh, 44rem);
+.muni-dashboard-map-card .jm-map-shell {
+  height: clamp(30rem, 58vh, 44rem) !important;
+  min-height: 30rem;
 }
-.muni-dashboard-map-card .leaflet-container { height: 100% !important; }
+.muni-dashboard-map-card .jm-map-shell > .jm-map,
+.muni-dashboard-map-card .jm-map-shell .leaflet-container {
+  height: 100% !important;
+  min-height: 100%;
+}
 .muni-live-activity-rail { min-width: 0; }
 .muni-live-activity-rail > * { height: 100%; }
 @media (max-width: 1279px) {
@@ -1118,9 +1121,15 @@ body::after {
   .muni-live-activity-rail > * { height: auto; }
 }
 @media (max-width: 640px) {
-  .muni-dashboard-map-card .jm-map-frame,
-  .muni-dashboard-map-card .jm-map-frame > *,
-  .muni-dashboard-map-card .leaflet-container { min-height: 27rem; }
+  .muni-dashboard-map-card .jm-map-shell {
+    height: 27rem !important;
+    min-height: 27rem;
+  }
+  .muni-dashboard-map-card .jm-map-shell > .jm-map,
+  .muni-dashboard-map-card .jm-map-shell .leaflet-container {
+    height: 100% !important;
+    min-height: 100%;
+  }
 }
 
 .civic-heritage-sidebar {
