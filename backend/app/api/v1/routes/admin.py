@@ -109,6 +109,11 @@ class ContractorCreateRequest(BaseModel):
     login_password: Optional[str] = Field(None, min_length=8, max_length=100)
 
 
+class ContractorLoginResetRequest(BaseModel):
+    login_email: EmailStr
+    login_password: str = Field(..., min_length=8, max_length=100)
+
+
 class RegistrationUpdateRequest(BaseModel):
     status: RegistrationStatus
     approved_categories: Optional[List[str]] = None
@@ -915,6 +920,26 @@ def delete_user(
     user = db.get(User, user_id)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
+
+    actor = db.get(User, UUID(current["sub"]))
+    # Preserve complaints and their immutable citizen/officer display metadata while
+    # removing only the identity reference that would otherwise block deletion.
+    db.query(Complaint).filter(Complaint.submitted_by_id == user_id).update(
+        {Complaint.submitted_by_id: None}, synchronize_session=False
+    )
+    db.query(Complaint).filter(Complaint.assigned_officer_id == user_id).update(
+        {Complaint.assigned_officer_id: None}, synchronize_session=False
+    )
+    db.add(AuditLog(
+        actor_id=str(actor.id) if actor else str(current["sub"]),
+        actor_name=actor.name if actor else "Super Admin",
+        actor_role=actor.role if actor else "admin",
+        action="DELETE_USER",
+        entity_type="User",
+        entity_id=str(user.id),
+        entity_label=user.email or user.name,
+        reason="Safe production identity reset; civic records preserved",
+    ))
     db.delete(user)
     db.commit()
 
@@ -1016,6 +1041,74 @@ def create_contractor(
         phone=contractor.phone,
         auth_user_id=contractor.auth_user_id,
         registrations=[],
+    )
+
+
+@router.post("/contractors/{contractor_id}/login", response_model=ContractorOut)
+def reset_contractor_login(
+    contractor_id: UUID,
+    body: ContractorLoginResetRequest,
+    db: Session = Depends(get_db),
+    current: dict = Depends(require_admin),
+):
+    """Create or rotate a contractor login and relink the company safely."""
+    contractor = db.get(Contractor, contractor_id)
+    if not contractor:
+        raise HTTPException(status_code=404, detail="Contractor not found")
+    existing = db.query(User).filter(User.email == body.login_email).first()
+    linked_id = str(existing.id) if existing else None
+    if existing and linked_id != contractor.auth_user_id:
+        raise HTTPException(status_code=409, detail=f"Login email {body.login_email} already belongs to another user")
+    if existing:
+        existing.role = "contractor"
+        existing.name = contractor.company_name
+        existing.password_hash = hash_password(body.login_password)
+        login_user = existing
+    else:
+        login_user = User(
+            id=uuid4(),
+            role="contractor",
+            name=contractor.company_name,
+            email=body.login_email,
+            password_hash=hash_password(body.login_password),
+            ward="Contractor",
+        )
+        db.add(login_user)
+        db.flush()
+    contractor.auth_user_id = str(login_user.id)
+    actor = db.get(User, UUID(current["sub"]))
+    db.add(AuditLog(
+        actor_id=str(actor.id) if actor else str(current["sub"]),
+        actor_name=actor.name if actor else "Super Admin",
+        actor_role=actor.role if actor else "admin",
+        action="ROTATE_CONTRACTOR_LOGIN",
+        entity_type="Contractor",
+        entity_id=str(contractor.id),
+        entity_label=contractor.company_name,
+        reason="Safe production identity reset; company and work-order history preserved",
+    ))
+    db.commit()
+    db.refresh(contractor)
+    return ContractorOut(
+        id=str(contractor.id),
+        company_name=contractor.company_name,
+        contact_person=contractor.contact_person,
+        email=contractor.email,
+        phone=contractor.phone,
+        auth_user_id=contractor.auth_user_id,
+        registrations=[
+            {
+                "id": str(reg.id),
+                "city_id": str(reg.city_id),
+                "city_name": db.get(City, reg.city_id).name if db.get(City, reg.city_id) else str(reg.city_id),
+                "status": reg.status.value,
+                "registration_number": reg.registration_number,
+                "registration_class": reg.registration_class,
+                "approved_categories": reg.approved_categories or [],
+                "current_risk_level": reg.current_risk_level,
+            }
+            for reg in db.execute(select(ContractorCityRegistration).where(ContractorCityRegistration.contractor_id == contractor.id)).scalars().all()
+        ],
     )
 
 
