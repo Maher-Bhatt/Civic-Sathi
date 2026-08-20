@@ -13,7 +13,7 @@ import {
   X,
   Users,
   Activity,
-  Landmark,
+  
   ChevronRight,
 } from "lucide-react";
 import { useState } from "react";
@@ -78,8 +78,8 @@ function AdminShell() {
 
       <aside className={`admin-sidebar ${mobileMenuOpen ? "is-open" : ""}`}>
         <div className="admin-brand-lockup">
-          <div className="admin-brand-mark" aria-hidden="true">
-            <Landmark className="h-5 w-5" />
+          <div className="admin-brand-mark">
+            <img src="/icon-192.png" alt="Civic Sathi logo" />
           </div>
           <div className="min-w-0">
             <p className="admin-brand-title">Civic Sathi</p>
@@ -155,6 +155,10 @@ function AdminShell() {
 
       <main className="admin-main">
         <header className="admin-topbar">
+          <div className="admin-topbar-brand lg:hidden" aria-label="Civic Sathi">
+            <img src="/icon-192.png" alt="" />
+            <span>Civic Sathi</span>
+          </div>
           <div className="flex min-w-0 items-center gap-3">
             <button
               type="button"

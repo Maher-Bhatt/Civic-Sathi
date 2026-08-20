@@ -282,24 +282,27 @@ function AdminDashboardContent() {
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="admin-command-actions flex flex-wrap items-center gap-2" aria-label="Dashboard commands">
           <button
             onClick={() => setShowOfficerModal(true)}
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-[var(--primary)] text-white text-xs font-semibold hover:opacity-90 transition shadow-sm"
+            title="Create a municipal officer account"
+            className="admin-command-action admin-command-action--primary flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-[var(--primary)] text-white text-xs font-semibold hover:opacity-90 transition shadow-sm"
           >
             <Plus className="w-4 h-4" />
             Add Municipal Officer
           </button>
           <button
             onClick={() => setShowContractorModal(true)}
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-amber-500/20 text-amber-300 border border-amber-500/30 text-xs font-semibold hover:bg-amber-500/30 transition"
+            title="Register a professional contractor company"
+            className="admin-command-action admin-command-action--secondary flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-amber-500/20 text-amber-300 border border-amber-500/30 text-xs font-semibold hover:bg-amber-500/30 transition"
           >
             <Building2 className="w-4 h-4" />
             Add Contractor
           </button>
           <Link
             to="/admin/users"
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-[var(--surface-elevated)] border border-[var(--glass-border)] text-xs font-semibold hover:bg-[var(--surface)] transition text-[var(--foreground)]"
+            title="Open the live user registry"
+            className="admin-command-action admin-command-action--tertiary flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-[var(--surface-elevated)] border border-[var(--glass-border)] text-xs font-semibold hover:bg-[var(--surface)] transition text-[var(--foreground)]"
           >
             <Users className="w-4 h-4" />
             Manage Users

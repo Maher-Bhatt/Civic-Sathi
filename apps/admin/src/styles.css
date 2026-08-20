@@ -2929,3 +2929,102 @@ body:has(.admin-app-shell) {
   .civic-admin-command-center::after,
   .civic-admin-telemetry-hero::before { animation: none !important; }
 }
+
+
+/* ========================================================================
+   Admin controls + real Civic Sathi brand mark.
+   ======================================================================== */
+
+.admin-brand-mark {
+  display: grid !important;
+  place-items: center !important;
+  width: 2.55rem !important;
+  height: 2.55rem !important;
+  padding: .22rem !important;
+  overflow: hidden !important;
+  border-radius: .82rem !important;
+  border: 1px solid rgba(255, 230, 180, .72) !important;
+  background: #fffaf1 !important;
+  box-shadow: 0 10px 22px -14px rgba(214, 146, 46, .96) !important;
+}
+
+.admin-brand-mark img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: .58rem;
+}
+
+.admin-topbar-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: .48rem;
+  color: var(--heritage-maroon);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: .96rem;
+  font-weight: 700;
+}
+
+.admin-topbar-brand img {
+  width: 1.85rem;
+  height: 1.85rem;
+  border-radius: .52rem;
+  object-fit: contain;
+  background: #fffaf1;
+  border: 1px solid var(--heritage-sandstone);
+}
+
+.admin-command-actions {
+  gap: .55rem !important;
+}
+
+.admin-command-action {
+  min-height: 2.65rem !important;
+  border-radius: .58rem !important;
+  border-width: 1px !important;
+  letter-spacing: .01em;
+  transition: transform 160ms cubic-bezier(.22,1,.36,1), box-shadow 160ms ease-out, background-color 160ms ease-out, border-color 160ms ease-out !important;
+}
+
+.admin-command-action:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 20px -16px rgba(84, 31, 43, .88) !important;
+}
+
+.admin-command-action:active {
+  transform: translateY(0) scale(.98);
+}
+
+.admin-command-action--primary {
+  color: #fffaf2 !important;
+  border-color: var(--heritage-terracotta-dark) !important;
+  background: linear-gradient(135deg, var(--heritage-terracotta), var(--heritage-terracotta-dark)) !important;
+}
+
+.admin-command-action--secondary {
+  color: var(--heritage-maroon) !important;
+  border-color: rgba(214, 146, 46, .58) !important;
+  background: linear-gradient(135deg, #f7dfb4, #efd096) !important;
+}
+
+.admin-command-action--tertiary {
+  color: var(--heritage-maroon) !important;
+  border-color: var(--heritage-sandstone) !important;
+  background: var(--heritage-paper) !important;
+}
+
+.admin-command-action svg {
+  flex: 0 0 auto;
+}
+
+@media (max-width: 767px) {
+  .admin-command-actions {
+    width: 100%;
+  }
+
+  .admin-command-action {
+    flex: 1 1 auto;
+    justify-content: center;
+  }
+}
