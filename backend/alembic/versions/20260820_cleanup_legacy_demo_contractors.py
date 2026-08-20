@@ -26,7 +26,7 @@ import sqlalchemy as sa
 
 
 
-revision = "20260820_cleanup_legacy_demo_contractors"
+revision = "20260820_cleanup_demo_ctr"
 
 down_revision = ("20260820_complaint_assignment", "9284456fe81d")
 
