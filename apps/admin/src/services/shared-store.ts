@@ -932,17 +932,36 @@ export async function getPlatformStats(): Promise<any> {
 }
 
 /** List all contractors with their city registrations. */
+const RETIRED_DEMO_CONTRACTOR_NAMES = new Set([
+  "vadodara infra (demo)",
+  "bbmp infra (demo)",
+]);
+
+function removeRetiredDemoContractors<T extends { company_name?: string; companyName?: string }>(items: T[]): T[] {
+  return items.filter((item) => {
+    const name = String(item.company_name ?? item.companyName ?? "").trim().toLowerCase();
+    return !RETIRED_DEMO_CONTRACTOR_NAMES.has(name);
+  });
+}
+
 export async function listRealContractors(): Promise<any[]> {
   try {
     const res = await adminApiFetch<any[]>("/api/v1/admin/contractors");
-    if (res && typeof window !== "undefined") {
-      localStorage.setItem("civicsathi_admin_contractors", JSON.stringify(res));
+    const live = removeRetiredDemoContractors(Array.isArray(res) ? res : []);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("civicsathi_admin_contractors", JSON.stringify(live));
     }
-    return res;
+    return live;
   } catch (e) {
     if (typeof window !== "undefined") {
       const cached = localStorage.getItem("civicsathi_admin_contractors");
-      if (cached) return JSON.parse(cached);
+      if (cached) {
+        try {
+          return removeRetiredDemoContractors(JSON.parse(cached));
+        } catch {
+          localStorage.removeItem("civicsathi_admin_contractors");
+        }
+      }
     }
     return [];
   }
