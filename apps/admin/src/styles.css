@@ -2490,3 +2490,442 @@ body:has(.admin-app-shell) {
     border-radius: 0.9rem;
   }
 }
+
+
+/* ========================================================================
+   Admin heritage v6 — composition reset, not another palette patch.
+   The admin must feel native to Civic Sathi's public heritage storytelling.
+   ======================================================================== */
+
+body:has(.admin-app-shell) {
+  background:
+    radial-gradient(circle at 8% 2%, rgba(185, 82, 50, .10), transparent 24rem),
+    radial-gradient(circle at 92% 16%, rgba(23, 108, 104, .08), transparent 26rem),
+    var(--heritage-ivory) !important;
+}
+
+.admin-content {
+  background: transparent !important;
+}
+
+.civic-admin-command-center {
+  min-height: calc(100vh - 4.25rem) !important;
+  margin: 0 !important;
+  padding: 1.5rem clamp(1rem, 3vw, 2.6rem) 4rem !important;
+  background:
+    linear-gradient(90deg, transparent 0 49.8%, rgba(214, 184, 149, .13) 50%, transparent 50.2%),
+    linear-gradient(0deg, transparent 0 49.8%, rgba(214, 184, 149, .10) 50%, transparent 50.2%),
+    radial-gradient(circle at 12% 4%, rgba(214, 146, 46, .11), transparent 21rem),
+    var(--heritage-ivory) !important;
+  background-size: 5.5rem 5.5rem, 5.5rem 5.5rem, auto, auto !important;
+}
+
+.civic-admin-command-center::before,
+.civic-admin-command-center::after {
+  display: block !important;
+  position: absolute;
+  pointer-events: none;
+  content: "";
+}
+
+.civic-admin-command-center::before {
+  inset: 0 0 auto auto;
+  width: min(42vw, 34rem);
+  height: 32rem;
+  z-index: 0;
+  opacity: .28;
+  background:
+    radial-gradient(ellipse 78% 80% at 100% 0%, transparent 0 50%, rgba(185, 82, 50, .25) 50.5% 50.9%, transparent 51.4%),
+    radial-gradient(ellipse 60% 62% at 100% 0%, transparent 0 50%, rgba(214, 146, 46, .24) 50.5% 50.9%, transparent 51.4%),
+    repeating-linear-gradient(45deg, transparent 0 1.55rem, rgba(84, 31, 43, .08) 1.6rem 1.68rem);
+  mask-image: linear-gradient(180deg, #000 0%, transparent 88%);
+}
+
+.civic-admin-command-center::after {
+  inset: auto 0 0;
+  height: 14rem;
+  z-index: 0;
+  opacity: .42;
+  background: linear-gradient(180deg, transparent, rgba(214, 184, 149, .16));
+}
+
+.civic-admin-command-center > * {
+  position: relative;
+  z-index: 1;
+}
+
+.civic-admin-command-center > .flex:first-child {
+  padding: .35rem 0 .55rem;
+  border-bottom: 1px solid rgba(214, 184, 149, .52);
+}
+
+.civic-admin-command-center > .flex:first-child h1 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(2rem, 3.6vw, 3.25rem) !important;
+  line-height: .98;
+  letter-spacing: -.045em;
+  color: var(--heritage-maroon) !important;
+}
+
+.civic-admin-command-center > .flex:first-child p {
+  max-width: 36rem;
+  color: var(--heritage-muted) !important;
+}
+
+.civic-admin-command-center > .flex:first-child button,
+.civic-admin-command-center > .flex:first-child a {
+  min-height: 2.55rem;
+  border-radius: .55rem !important;
+  box-shadow: 0 8px 18px -16px rgba(84, 31, 43, .8) !important;
+}
+
+.civic-admin-telemetry-hero,
+.civic-admin-command-center .civic-admin-telemetry-hero {
+  min-height: 0 !important;
+  border: 1px solid var(--heritage-sandstone) !important;
+  border-radius: 1.65rem !important;
+  color: var(--heritage-ink) !important;
+  background:
+    linear-gradient(135deg, rgba(255, 253, 248, .98), rgba(245, 239, 229, .94) 56%, rgba(232, 214, 191, .84)) !important;
+  box-shadow: 0 28px 70px -46px rgba(84, 31, 43, .74), inset 0 1px 0 rgba(255,255,255,.9) !important;
+}
+
+.civic-admin-telemetry-hero::before {
+  opacity: .34 !important;
+  background-image:
+    radial-gradient(ellipse 68% 92% at 100% 0%, transparent 0 47%, rgba(185, 82, 50, .32) 47.5% 48.2%, transparent 48.8%),
+    radial-gradient(ellipse 49% 66% at 100% 0%, transparent 0 47%, rgba(214, 146, 46, .28) 47.5% 48.2%, transparent 48.8%),
+    linear-gradient(45deg, transparent 46%, rgba(84, 31, 43, .08) 47% 53%, transparent 54%),
+    linear-gradient(-45deg, transparent 46%, rgba(84, 31, 43, .08) 47% 53%, transparent 54%) !important;
+  background-size: auto, auto, 2.6rem 2.6rem, 2.6rem 2.6rem !important;
+  mask-image: linear-gradient(90deg, transparent 0%, #000 34%, #000 100%) !important;
+}
+
+.civic-admin-telemetry-hero__scan::before {
+  opacity: .24 !important;
+  background: linear-gradient(90deg, transparent, var(--heritage-turmeric), transparent) !important;
+}
+
+.civic-admin-telemetry-hero .relative.z-10 {
+  padding: clamp(1.25rem, 3vw, 2.4rem) !important;
+}
+
+.civic-admin-telemetry-hero h2,
+.civic-admin-telemetry-hero h3,
+.civic-admin-telemetry-hero p,
+.civic-admin-telemetry-hero span,
+.civic-admin-telemetry-hero strong {
+  color: inherit !important;
+}
+
+.civic-admin-telemetry-hero h2 {
+  max-width: 42rem !important;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(2rem, 4vw, 3.45rem) !important;
+  line-height: .98;
+  letter-spacing: -.045em;
+  color: var(--heritage-maroon) !important;
+}
+
+.civic-admin-telemetry-hero p {
+  max-width: 40rem !important;
+  color: var(--heritage-muted) !important;
+}
+
+.civic-admin-kicker {
+  color: var(--heritage-terracotta) !important;
+  font-weight: 800;
+  letter-spacing: .22em !important;
+}
+
+.civic-admin-telemetry-meta > div {
+  min-width: 10rem;
+  border: 1px solid rgba(185, 82, 50, .24) !important;
+  border-radius: .9rem;
+  background: rgba(255, 253, 248, .66) !important;
+  box-shadow: 0 12px 26px -24px rgba(84, 31, 43, .78);
+}
+
+.civic-admin-telemetry-meta span,
+.civic-admin-pipeline-stage span {
+  color: var(--heritage-muted) !important;
+}
+
+.civic-admin-telemetry-meta strong {
+  color: var(--heritage-maroon) !important;
+}
+
+.civic-admin-pipeline-toolbar {
+  align-items: center;
+  border-top: 1px solid rgba(214, 184, 149, .55);
+  padding-top: 1rem;
+}
+
+.civic-admin-city-filter {
+  border: 1px solid var(--heritage-sandstone) !important;
+  border-radius: .7rem !important;
+  background: rgba(255, 253, 248, .74) !important;
+}
+
+.civic-admin-city-filter button {
+  color: var(--heritage-muted) !important;
+  border-radius: .48rem !important;
+}
+
+.civic-admin-city-filter button:hover,
+.civic-admin-city-filter button[aria-selected="true"] {
+  color: #fff8ee !important;
+  border-color: var(--heritage-terracotta) !important;
+  background: var(--heritage-terracotta) !important;
+  box-shadow: none !important;
+}
+
+.civic-admin-next-sync {
+  color: var(--heritage-muted) !important;
+}
+
+.civic-admin-pulse-dot {
+  background: var(--heritage-leaf) !important;
+  box-shadow: 0 0 0 .25rem rgba(57, 115, 90, .13) !important;
+}
+
+.civic-admin-city-lanes {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem !important;
+}
+
+.civic-admin-city-lane {
+  min-width: 0;
+  border: 1px solid var(--heritage-sandstone) !important;
+  border-radius: 1.25rem !important;
+  background: rgba(255, 253, 248, .91) !important;
+  box-shadow: 0 22px 45px -38px rgba(84, 31, 43, .8) !important;
+}
+
+.civic-admin-city-lane__header {
+  min-height: 5.8rem;
+  padding: 1.05rem 1.15rem !important;
+  border-bottom-color: #eadbca !important;
+  background: linear-gradient(115deg, rgba(var(--lane-accent-rgb), .10), transparent 72%) !important;
+}
+
+.civic-admin-city-emblem {
+  width: 2.8rem !important;
+  height: 2.8rem !important;
+  border-radius: 1rem !important;
+  border-color: rgba(var(--lane-accent-rgb), .38) !important;
+  background: rgba(var(--lane-accent-rgb), .10) !important;
+}
+
+.civic-admin-city-kicker {
+  color: var(--lane-accent) !important;
+  font-size: .63rem !important;
+  letter-spacing: .16em;
+}
+
+.civic-admin-city-lane h3 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.5rem !important;
+  color: var(--heritage-maroon) !important;
+}
+
+.civic-admin-city-lane p {
+  color: var(--heritage-muted) !important;
+}
+
+.civic-admin-city-health {
+  color: var(--heritage-leaf) !important;
+  border-color: rgba(57, 115, 90, .24) !important;
+  background: rgba(57, 115, 90, .07) !important;
+}
+
+.civic-admin-city-lane__summary {
+  padding: 1rem 1.15rem .7rem !important;
+  gap: .6rem !important;
+}
+
+.civic-admin-city-lane__summary > div {
+  min-height: 4.35rem;
+  border: 0 !important;
+  border-left: 3px solid rgba(var(--lane-accent-rgb), .42) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  padding: .15rem .55rem !important;
+}
+
+.civic-admin-city-lane__summary strong {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.55rem !important;
+  color: var(--heritage-maroon) !important;
+}
+
+.civic-admin-city-lane__summary span,
+.civic-admin-stage-card__copy small,
+.civic-admin-live-event__time,
+.civic-admin-live-event small,
+.civic-admin-live-event-empty {
+  color: #8a786c !important;
+}
+
+.civic-admin-stage-track {
+  display: grid !important;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: .15rem !important;
+  margin: .2rem 1.15rem 0 !important;
+  padding: 1rem 0 .85rem !important;
+  border-top: 1px solid #eee3d6;
+  border-bottom: 1px solid #eee3d6;
+}
+
+.civic-admin-stage-step {
+  position: relative;
+  min-width: 0;
+}
+
+.civic-admin-stage-card {
+  min-height: 7.2rem;
+  display: flex !important;
+  align-items: center;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: .4rem;
+  padding: .1rem .2rem !important;
+  border: 0 !important;
+  background: transparent !important;
+  text-align: center;
+}
+
+.civic-admin-stage-card:hover {
+  background: rgba(var(--lane-accent-rgb), .06) !important;
+}
+
+.civic-admin-pipeline-node {
+  width: 2.15rem !important;
+  height: 2.15rem !important;
+  border: 2px solid #fffaf3 !important;
+  box-shadow: 0 0 0 1px rgba(var(--lane-accent-rgb), .28), 0 6px 14px -10px currentColor !important;
+}
+
+.civic-admin-flow-teal { background: var(--heritage-teal) !important; }
+.civic-admin-flow-saffron { background: var(--heritage-turmeric) !important; }
+.civic-admin-flow-indigo { background: var(--heritage-terracotta) !important; }
+.civic-admin-flow-blue { background: var(--heritage-leaf) !important; }
+
+.civic-admin-stage-card__copy > span {
+  min-height: 2rem;
+  color: var(--heritage-maroon) !important;
+  font-size: .62rem !important;
+  line-height: 1.25;
+}
+
+.civic-admin-stage-card__copy strong {
+  color: var(--heritage-ink) !important;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.35rem !important;
+}
+
+.civic-admin-stage-connector {
+  display: block !important;
+  position: absolute;
+  top: 1.1rem;
+  left: 60%;
+  width: 80%;
+  height: 1px;
+  background: linear-gradient(90deg, var(--heritage-sandstone-deep), rgba(214, 184, 149, .15));
+  z-index: -1;
+}
+
+.civic-admin-lane-events {
+  margin: 1rem 1.15rem 1.15rem !important;
+  border: 1px solid rgba(var(--lane-accent-rgb), .18) !important;
+  border-radius: .9rem !important;
+  background: rgba(var(--lane-accent-rgb), .045) !important;
+}
+
+.civic-admin-lane-events__label {
+  color: var(--lane-accent) !important;
+}
+
+.civic-admin-live-event {
+  border-color: rgba(var(--lane-accent-rgb), .16) !important;
+  background: rgba(255, 253, 248, .58) !important;
+}
+
+.civic-admin-live-event strong {
+  color: var(--heritage-maroon) !important;
+}
+
+.civic-admin-command-center > .grid {
+  gap: 1.25rem !important;
+}
+
+.civic-admin-command-center > .grid > .glass,
+.civic-admin-command-center > .grid > .glass-strong,
+.civic-admin-command-center .civic-admin-command-card {
+  border-radius: 1.15rem !important;
+  border-color: var(--heritage-sandstone) !important;
+  background: rgba(255, 253, 248, .88) !important;
+  box-shadow: 0 18px 40px -34px rgba(84, 31, 43, .68), inset 0 1px 0 rgba(255,255,255,.86) !important;
+}
+
+.civic-admin-command-center .recharts-cartesian-grid line {
+  stroke: rgba(84, 31, 43, .12) !important;
+}
+
+.civic-admin-command-center .recharts-text {
+  fill: var(--heritage-muted) !important;
+}
+
+.civic-admin-compare-row {
+  border-color: #eadbca !important;
+  background: #fffaf3 !important;
+}
+
+.civic-admin-compare-row strong {
+  color: var(--heritage-maroon) !important;
+}
+
+.civic-admin-compare-track {
+  background: #eadfd2 !important;
+}
+
+.civic-admin-compare-track span {
+  background: linear-gradient(90deg, var(--heritage-terracotta), var(--heritage-turmeric)) !important;
+}
+
+.civic-admin-signal-icon {
+  color: var(--heritage-terracotta) !important;
+  border-color: rgba(185, 82, 50, .28) !important;
+  background: rgba(185, 82, 50, .08) !important;
+  box-shadow: none !important;
+}
+
+.civic-admin-access-badge,
+.civic-admin-live-badge {
+  color: var(--heritage-leaf) !important;
+  border-color: rgba(57, 115, 90, .28) !important;
+  background: rgba(57, 115, 90, .07) !important;
+}
+
+@media (max-width: 1023px) {
+  .civic-admin-city-lanes { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 767px) {
+  .civic-admin-command-center { padding: 1rem .8rem 3rem !important; }
+  .civic-admin-command-center > .flex:first-child { padding-top: 0; }
+  .civic-admin-command-center > .flex:first-child h1 { font-size: 2.2rem !important; }
+  .civic-admin-telemetry-hero h2 { font-size: 2.25rem !important; }
+  .civic-admin-telemetry-meta { width: 100%; }
+  .civic-admin-telemetry-meta > div { flex: 1; min-width: 0; }
+  .civic-admin-stage-track { overflow-x: auto; grid-template-columns: repeat(5, minmax(5.8rem, 1fr)); }
+  .civic-admin-stage-card { min-height: 6.6rem; }
+  .civic-admin-stage-card__copy > span { font-size: .57rem !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .civic-admin-command-center::before,
+  .civic-admin-command-center::after,
+  .civic-admin-telemetry-hero::before { animation: none !important; }
+}

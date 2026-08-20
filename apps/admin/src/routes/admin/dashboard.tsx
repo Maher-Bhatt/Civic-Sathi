@@ -59,14 +59,14 @@ const LIVE_CITY_NAMES = new Set(["vadodara", "bengaluru"]);
 
 const STATUS_COLORS: Record<string, string> = {
   DRAFT: "#6c757d",
-  PUBLISHED: "#3498db",
-  "IN PROGRESS": "#f39c12",
-  COMPLETED: "#27ae60",
-  "INSPECTION PENDING": "#9b59b6",
-  "INSPECTION FAILED": "#e74c3c",
-  REWORK: "#e67e22",
-  CANCELLED: "#95a5a6",
-  CLOSED: "#1abc9c",
+  PUBLISHED: "#B95232",
+  "IN PROGRESS": "#D6922E",
+  COMPLETED: "#39735A",
+  "INSPECTION PENDING": "#8F3B2A",
+  "INSPECTION FAILED": "#A43D3D",
+  REWORK: "#C86B18",
+  CANCELLED: "#9A8A7D",
+  CLOSED: "#176C68",
 };
 
 function AdminDashboardContent() {
@@ -334,7 +334,7 @@ function AdminDashboardContent() {
             {visibleCityLanes.length === 0 ? <DataState icon={Globe2} title="Waiting for city lanes" detail="The scoped backend snapshot has not returned Vadodara or Bengaluru telemetry yet." /> : visibleCityLanes.map((lane: any) => (
               <article key={lane.id} className={`civic-admin-city-lane civic-admin-city-lane--${String(lane.name).toLowerCase().includes("bengaluru") ? "bengaluru" : "vadodara"} ${snapshotLoading ? "is-loading" : ""}`} role="listitem">
                 <div className="civic-admin-city-lane__header">
-                  <div className="civic-admin-city-lane__identity"><div className="civic-admin-city-emblem"><Globe2 className="h-5 w-5" /></div><div><div className="civic-admin-city-kicker">{String(lane.name).toLowerCase().includes("bengaluru") ? "ಬೆಂಗಳೂರು" : "વડોદરા"} · {lane.state_code}</div><h3>{lane.name}</h3><p>{String(lane.name).toLowerCase().includes("bengaluru") ? "BBMP civic network" : "VMC civic network"}</p></div></div>
+                  <div className="civic-admin-city-lane__identity"><div className="civic-admin-city-emblem"><Globe2 className="h-5 w-5" /></div><div><div className="civic-admin-city-kicker">{String(lane.name).toLowerCase().includes("bengaluru") ? "ಬೆಂಗಳೂರು" : "વડોદરા"} · {lane.state_code}</div><h3>{lane.name}</h3><p>{String(lane.name).toLowerCase().includes("bengaluru") ? "BBMP civic network · Garden City stewardship" : "VMC civic network · Sayajirao’s civic legacy"}</p></div></div>
                   <div className={`civic-admin-city-health civic-admin-city-health--${lane.health}`}><span /> {String(lane.health).toUpperCase()}</div>
                 </div>
                 <div className="civic-admin-city-lane__summary"><div><strong>{Number(lane.open_complaints ?? 0).toLocaleString("en-IN")}</strong><span>OPEN SIGNALS</span></div><div><strong>{Number(lane.active_work_orders ?? 0).toLocaleString("en-IN")}</strong><span>ACTIVE WORK</span></div><div className={Number(lane.high_risk_work_orders ?? 0) > 0 ? "is-risk" : ""}><strong>{Number(lane.high_risk_work_orders ?? 0).toLocaleString("en-IN")}</strong><span>HIGH RISK</span></div></div>
