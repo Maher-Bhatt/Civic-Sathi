@@ -6,7 +6,7 @@ import type {
   NearbyReport,
   Severity,
   TimelineEvent,
-  User,
+  
 } from "./types";
 
 /**
@@ -22,15 +22,7 @@ export const WARD_14: LocationInfo = {
   city: "Vadodara",
 };
 
-export const DEMO_USER: User = {
-  id: "usr_demo",
-  name: "Aarav Mehta",
-  email: "aarav.mehta@example.com",
-  phone: "+91 98250 41277",
-  ward: "Ward 14",
-  notifyStatus: true,
-  notifyNearby: true,
-};
+
 
 export const RELATED_SAMPLES = [
   "No water supply since Monday.",

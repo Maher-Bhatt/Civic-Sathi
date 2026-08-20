@@ -92,7 +92,7 @@ function AdminDashboardContent() {
   const [officerForm, setOfficerForm] = useState({
     name: "",
     email: "",
-    password: "Janmind@2026",
+    password: "",
     role: "officer",
     city: "vadodara",
     department: "Roads",
@@ -106,7 +106,7 @@ function AdminDashboardContent() {
     email: "",
     phone: "",
     login_email: "",
-    login_password: "Janmind@2026",
+    login_password: "",
   });
 
   useEffect(() => {
@@ -170,7 +170,7 @@ function AdminDashboardContent() {
       setOfficerForm({
         name: "",
         email: "",
-        password: "Janmind@2026",
+        password: "",
         role: "officer",
         city: "vadodara",
         department: "Roads",
@@ -207,7 +207,7 @@ function AdminDashboardContent() {
         email: "",
         phone: "",
         login_email: "",
-        login_password: "Janmind@2026",
+        login_password: "",
       });
       getPlatformStats()
         .then(setStats)

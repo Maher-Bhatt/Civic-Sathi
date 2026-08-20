@@ -20,13 +20,7 @@ const CTX = createContext<ContractorAuthContextValue | null>(null);
 const LS_KEY = "civicsathi.contractor_session";
 const CONTRACTORS_KEY = "civicsathi.contractors";
 
-const DEMO_SESSION: ContractorSession = {
-  id: "session_ctr",
-  contractorId: "CTR-001",
-  companyName: "Bharat Infrastructure Pvt Ltd",
-  contactPerson: "Suresh Patel",
-  email: "suresh.patel@bharatinfra.in",
-};
+
 
 function readLS<T>(key: string, fallback: T): T {
   if (typeof window === "undefined") return fallback;
@@ -52,9 +46,8 @@ export function ContractorAuthProvider({ children }: { children: React.ReactNode
     // Look up contractor by email in shared store
     const contractors = readLS<Array<{ id: string; companyName: string; contactPerson: string; email: string }>>(CONTRACTORS_KEY, []);
     const match = contractors.find(c => c.email.toLowerCase() === email.toLowerCase());
-    const session: ContractorSession = match
-      ? { id: `session_${match.id}`, contractorId: match.id, companyName: match.companyName, contactPerson: match.contactPerson, email: match.email }
-      : { ...DEMO_SESSION, email };
+    if (!match) throw new Error("Contractor account not found. Contact your municipal administrator.");
+    const session: ContractorSession = { id: `session_${match.id}`, contractorId: match.id, companyName: match.companyName, contactPerson: match.contactPerson, email: match.email };
     localStorage.setItem(LS_KEY, JSON.stringify(session));
     setContractor(session);
     return session;

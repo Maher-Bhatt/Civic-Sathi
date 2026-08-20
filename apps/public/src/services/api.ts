@@ -16,7 +16,6 @@ import type {
 import {
   CATEGORY_KEYWORDS,
   SEVERITY_KEYWORDS,
-  DEMO_USER,
 } from "./mockData";
 
 export function getApiBaseUrl(): string {
@@ -218,7 +217,8 @@ export async function logoutUser(): Promise<void> {
 }
 
 export async function updateProfile(patch: Partial<User>): Promise<User> {
-  const current = (await getCurrentUser()) ?? DEMO_USER;
+  const current = await getCurrentUser();
+  if (!current) throw new Error("You must be signed in to update your profile.");
   const next = { ...current, ...patch };
   write(LS.user, next);
   return next;
