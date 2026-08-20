@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
 import { GlassCard, SectionLabel } from "@/components/ui/glass-card";
@@ -133,13 +133,12 @@ function MuniLoginPage() {
             {t("ui.remember_session")}
           </label>
 
-          <button
-            type="button"
-            className="text-xs text-primary hover:underline"
-            onClick={() => toast.info("Password reset is not available in the prototype.")}
+          <Link
+            to="/forgot-password"
+            className="block text-center text-xs text-primary underline-offset-4 hover:underline"
           >
             {t("ui.forgot_password")}
-          </button>
+          </Link>
 
           <GlassButton type="submit" className="w-full" disabled={busy}>
             {busy ? "Signing in..." : "Sign In"}

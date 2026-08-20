@@ -6,8 +6,11 @@ from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy import func
 from typing import Annotated, Optional
+import datetime
 
 from app.core.database import get_db
+from app.core.config import settings
+
 from app.core.security import (
     create_access_token, hash_password, verify_password, verify_officer_key,
     is_super_admin_user,
@@ -18,6 +21,16 @@ from app.schemas.citizen import CitizenRegisterRequest, CitizenLoginRequest, Cit
 from app.models.user import User
 from app.models.audit import AuditLog
 from app.models.procurement import Contractor, ContractorCityRegistration, City, RegistrationStatus
+from app.services.password_reset import (
+    ResetDeliveryUnavailable,
+    choose_target,
+    deliver_otp,
+    digest_otp,
+    generate_otp,
+    mask_destination,
+    otp_matches,
+)
+
 from uuid import uuid4, UUID
 from pydantic import BaseModel, EmailStr, Field
 
@@ -385,3 +398,122 @@ def contractor_login(
             notifyNearby=True,
         )
     )
+
+
+class PasswordResetRequest(BaseModel):
+    identifier: str = Field(..., min_length=3, max_length=255, description="Account email or phone")
+    channel: str = Field(default="auto", pattern="^(auto|email|sms)$")
+
+
+class PasswordResetRequestResponse(BaseModel):
+    accepted: bool
+    message: str
+    channel: str | None = None
+    destination: str | None = None
+
+
+class PasswordResetConfirm(BaseModel):
+    identifier: str = Field(..., min_length=3, max_length=255)
+    otp: str = Field(..., min_length=6, max_length=6, pattern=r"^\d{6}$")
+    new_password: str = Field(..., min_length=8, max_length=100)
+
+
+class PasswordResetConfirmResponse(BaseModel):
+    success: bool
+    message: str
+
+
+@router.post("/password-reset/request", response_model=PasswordResetRequestResponse, status_code=status.HTTP_202_ACCEPTED)
+async def request_password_reset(
+    reset_data: PasswordResetRequest,
+    db: Session = Depends(get_db),
+):
+    """Issue a short-lived OTP through configured Brevo email or MSG91 SMS delivery."""
+    identifier = reset_data.identifier.strip()
+    email_identifier = identifier.lower()
+    user = db.query(User).filter(func.lower(User.email) == email_identifier).first()
+    if not user:
+        user = db.query(User).filter(User.phone == identifier).first()
+
+    generic_message = "If the account exists, a password reset code has been sent to its verified contact."
+    if not user:
+        return PasswordResetRequestResponse(accepted=True, message=generic_message)
+
+    try:
+        target = choose_target(user, reset_data.channel)
+    except ResetDeliveryUnavailable:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Password reset delivery is not configured yet. Please contact the platform administrator.",
+        )
+
+    otp = generate_otp()
+    now = datetime.datetime.now(datetime.timezone.utc)
+    user.reset_otp_hash = digest_otp(otp)
+    user.reset_otp_expires_at = now + datetime.timedelta(seconds=settings.password_reset_otp_ttl_seconds)
+    user.reset_otp_attempts = 0
+    user.reset_otp_channel = target.channel
+    user.reset_otp_requested_at = now
+    db.commit()
+
+    try:
+        await deliver_otp(target, otp, user.name)
+    except Exception as exc:
+        db.rollback()
+        user = db.get(User, user.id)
+        if user:
+            user.reset_otp_hash = None
+            user.reset_otp_expires_at = None
+            user.reset_otp_attempts = 0
+            user.reset_otp_channel = None
+            user.reset_otp_requested_at = None
+            db.commit()
+        print(f"[PasswordReset] delivery failed: {exc}")
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail="The reset provider could not deliver the code. Please retry or contact the platform administrator.",
+        )
+
+    return PasswordResetRequestResponse(
+        accepted=True,
+        message=generic_message,
+        channel=target.channel,
+        destination=mask_destination(target.channel, target.destination),
+    )
+
+
+@router.post("/password-reset/confirm", response_model=PasswordResetConfirmResponse)
+def confirm_password_reset(
+    reset_data: PasswordResetConfirm,
+    db: Session = Depends(get_db),
+):
+    """Verify an OTP once and replace the account password."""
+    identifier = reset_data.identifier.strip()
+    user = db.query(User).filter(func.lower(User.email) == identifier.lower()).first()
+    if not user:
+        user = db.query(User).filter(User.phone == identifier).first()
+    if not user or not user.reset_otp_hash or not user.reset_otp_expires_at:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The reset code is invalid or expired.")
+
+    now = datetime.datetime.now(datetime.timezone.utc)
+    expires_at = user.reset_otp_expires_at
+    if expires_at.tzinfo is None:
+        expires_at = expires_at.replace(tzinfo=datetime.timezone.utc)
+    if now >= expires_at:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The reset code is invalid or expired.")
+    if user.reset_otp_attempts >= settings.password_reset_max_attempts:
+        raise HTTPException(status_code=status.HTTP_429_TOO_MANY_REQUESTS, detail="Too many reset attempts. Request a new code.")
+
+    user.reset_otp_attempts += 1
+    if not otp_matches(reset_data.otp, user.reset_otp_hash):
+        db.commit()
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The reset code is invalid or expired.")
+
+    user.password_hash = hash_password(reset_data.new_password)
+    user.reset_otp_hash = None
+    user.reset_otp_expires_at = None
+    user.reset_otp_attempts = 0
+    user.reset_otp_channel = None
+    user.reset_otp_requested_at = None
+    db.commit()
+    return PasswordResetConfirmResponse(success=True, message="Password reset successfully. You can now sign in.")

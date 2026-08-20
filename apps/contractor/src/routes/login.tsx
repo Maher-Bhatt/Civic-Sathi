@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { useContractorAuth } from "@/lib/contractor-auth";
 import { GlassCard } from "@/components/ui/glass-card";
@@ -98,6 +98,10 @@ function ContractorLogin() {
             {loading ? "Signing in..." : "Sign In"}
           </button>
         </form>
+
+        <div className="mt-4 text-center text-sm">
+          <Link to="/forgot-password" className="text-primary underline-offset-4 hover:underline">Forgot password?</Link>
+        </div>
 
         <div className="mt-6 border-t border-[var(--glass-border)] pt-5 text-center">
           <p className="text-[11px] font-semibold uppercase tracking-wider text-[var(--muted-foreground)]">

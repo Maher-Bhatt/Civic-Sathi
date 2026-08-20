@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ContractorRouteRouteImport } from './routes/contractor/route'
+import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as ContractorDashboardRouteImport } from './routes/contractor/dashboard'
 import { Route as ContractorPerformanceRouteImport } from './routes/contractor/performance'
@@ -28,6 +29,11 @@ const IndexRoute = IndexRouteImport.update({
 const ContractorRouteRoute = ContractorRouteRouteImport.update({
   id: '/contractor',
   path: '/contractor',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -75,6 +81,7 @@ const ContractorWorkOrdersIdRoute = ContractorWorkOrdersIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/contractor': typeof ContractorRouteRouteWithChildren
+  '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
   '/contractor/dashboard': typeof ContractorDashboardRoute
   '/contractor/performance': typeof ContractorPerformanceRoute
@@ -87,6 +94,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/contractor': typeof ContractorRouteRouteWithChildren
+  '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
   '/contractor/dashboard': typeof ContractorDashboardRoute
   '/contractor/performance': typeof ContractorPerformanceRoute
@@ -100,6 +108,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/contractor': typeof ContractorRouteRouteWithChildren
+  '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
   '/contractor/dashboard': typeof ContractorDashboardRoute
   '/contractor/performance': typeof ContractorPerformanceRoute
@@ -114,6 +123,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/contractor'
+    | '/forgot-password'
     | '/login'
     | '/contractor/dashboard'
     | '/contractor/performance'
@@ -126,6 +136,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/contractor'
+    | '/forgot-password'
     | '/login'
     | '/contractor/dashboard'
     | '/contractor/performance'
@@ -138,6 +149,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/contractor'
+    | '/forgot-password'
     | '/login'
     | '/contractor/dashboard'
     | '/contractor/performance'
@@ -151,6 +163,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ContractorRouteRoute: typeof ContractorRouteRouteWithChildren
+  ForgotPasswordRoute: typeof ForgotPasswordRoute
   LoginRoute: typeof LoginRoute
 }
 
@@ -168,6 +181,13 @@ declare module '@tanstack/react-router' {
       path: '/contractor'
       fullPath: '/contractor'
       preLoaderRoute: typeof ContractorRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/forgot-password': {
+      id: '/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof ForgotPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -256,6 +276,7 @@ const ContractorRouteRouteWithChildren = ContractorRouteRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ContractorRouteRoute: ContractorRouteRouteWithChildren,
+  ForgotPasswordRoute: ForgotPasswordRoute,
   LoginRoute: LoginRoute,
 }
 export const routeTree = rootRouteImport

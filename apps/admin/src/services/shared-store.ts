@@ -852,6 +852,20 @@ export async function adminLogin(email: string, password: string): Promise<Admin
   return admin;
 }
 
+export async function requestAdminPasswordReset(input: { identifier: string; channel?: "auto" | "email" | "sms" }) {
+  return adminApiFetch<{ accepted: boolean; message: string; channel?: string | null; destination?: string | null }>("/api/v1/auth/password-reset/request", {
+    method: "POST",
+    body: JSON.stringify(input),
+  });
+}
+
+export async function confirmAdminPasswordReset(input: { identifier: string; otp: string; new_password: string }) {
+  return adminApiFetch<{ success: boolean; message: string }>("/api/v1/auth/password-reset/confirm", {
+    method: "POST",
+    body: JSON.stringify(input),
+  });
+}
+
 // ── Real backend admin API helpers ────────────────────────────────────────
 
 /** List all users from the real backend. */

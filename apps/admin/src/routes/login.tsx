@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { useAdminAuth } from "@/lib/admin-auth";
 import { GlassCard } from "@/components/ui/glass-card";
@@ -100,6 +100,10 @@ function AdminLogin() {
             )}
           </button>
         </form>
+
+        <div className="mt-4 text-center text-sm">
+          <Link to="/forgot-password" className="text-[var(--primary)] underline-offset-4 hover:underline">Forgot password?</Link>
+        </div>
 
         <div className="mt-6 pt-5 border-t border-[var(--glass-border)] text-center">
           <p className="text-[11px] font-semibold uppercase tracking-wider text-[var(--civic-teal-600)]">

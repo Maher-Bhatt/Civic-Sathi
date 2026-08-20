@@ -21,6 +21,20 @@ services:
         sync: false
       - key: JWT_SECRET
         sync: false
+      - key: PASSWORD_RESET_OTP_TTL_SECONDS
+        value: 600
+      - key: PASSWORD_RESET_MAX_ATTEMPTS
+        value: 5
+      - key: BREVO_API_KEY
+        sync: false
+      - key: BREVO_SENDER_EMAIL
+        sync: false
+      - key: BREVO_SENDER_NAME
+        value: Civic Sathi
+      - key: MSG91_AUTHKEY
+        sync: false
+      - key: MSG91_OTP_TEMPLATE_ID
+        sync: false
       - key: SENTENCE_MODEL_NAME
         value: sentence-transformers/all-MiniLM-L6-v2
       - key: SIMILARITY_THRESHOLD

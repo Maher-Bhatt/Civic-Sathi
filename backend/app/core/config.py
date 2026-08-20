@@ -48,6 +48,15 @@ class Settings(BaseSettings):
         description="Comma-separated city names included in the private command center",
     )
 
+    # Password reset / OTP delivery. Credentials remain environment-only.
+    password_reset_otp_ttl_seconds: int = Field(default=600, ge=60, le=1800)
+    password_reset_max_attempts: int = Field(default=5, ge=1, le=10)
+    brevo_api_key: str | None = Field(default=None, description="Brevo transactional email API key")
+    brevo_sender_email: str | None = Field(default=None, description="Verified Brevo sender email")
+    brevo_sender_name: str = Field(default="Civic Sathi")
+    msg91_authkey: str | None = Field(default=None, description="MSG91 authentication key")
+    msg91_otp_template_id: str | None = Field(default=None, description="MSG91 OTP template id")
+
     # AI / LLM Configuration (Groq, Grok / xAI, etc.)
     groq_api_key: str | None = Field(default=None, description="Groq API key")
     xai_api_key: str | None = Field(default=None, description="xAI API key for Grok models")

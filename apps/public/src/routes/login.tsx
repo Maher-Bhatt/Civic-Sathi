@@ -94,6 +94,16 @@ function LoginPage() {
           </GlassButton>
         </form>
 
+        <div className="mt-4 text-center text-sm">
+          <Link
+            to="/forgot-password"
+            search={{ redirect }}
+            className="text-primary underline-offset-4 transition-opacity hover:underline hover:opacity-80"
+          >
+            {t("login.forgot", "Forgot password?")}
+          </Link>
+        </div>
+
         <p className="mt-6 text-sm text-muted-foreground">
           {t("login.new", "New to Civic Sathi?")}{" "}
           <Link

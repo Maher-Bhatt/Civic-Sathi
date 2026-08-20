@@ -33,6 +33,15 @@ export class Endpoints {
     me: async (): Promise<User> => {
       return this.client.get<any>('/api/v1/auth/me');
     },
+    requestPasswordReset: (data: { identifier: string; channel?: 'auto' | 'email' | 'sms' }) =>
+      this.client.post<{
+        accepted: boolean;
+        message: string;
+        channel?: string | null;
+        destination?: string | null;
+      }>('/api/v1/auth/password-reset/request', data),
+    confirmPasswordReset: (data: { identifier: string; otp: string; new_password: string }) =>
+      this.client.post<{ success: boolean; message: string }>('/api/v1/auth/password-reset/confirm', data),
   };
 
   complaints = {
