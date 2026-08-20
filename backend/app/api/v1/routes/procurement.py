@@ -200,7 +200,7 @@ def list_tenders(
         query = select(Tender).where(
             and_(
                 Tender.city_id == city_id,
-                Tender.status.in_([TenderStatus.PUBLISHED, TenderStatus.CLOSED, TenderStatus.AWARDED]),
+                Tender.status == TenderStatus.PUBLISHED,
             )
         )
     else:

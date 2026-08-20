@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useContractorAuth } from "@/lib/contractor-auth";
 import { getEligibleTenders } from "@/services/api";
 import { useQuery } from "@tanstack/react-query";
-import { LoadingState } from "@/components/ui/states";
+import { ErrorState, LoadingState } from "@/components/ui/states";
 import { GlassCard } from "@/components/ui/glass-card";
 import { useI18n } from "@/lib/i18n";
 
@@ -36,15 +36,21 @@ function TendersIndex() {
   // getEligibleTenders resolves city name slugs to real DB UUIDs internally.
   const cityParam = contractor?.city ?? "vadodara";
 
-  const { data: tenders = [], isLoading: loading } = useQuery({
+  const { data: tenders = [], isLoading: loading, isError, refetch } = useQuery({
     queryKey: ["contractor-tenders", cityParam],
     queryFn: () => getEligibleTenders(cityParam),
     // Only fetch once we have a real contractor id (i.e., logged in)
     enabled: !!contractor?.id,
+    retry: 1,
+    refetchOnWindowFocus: false,
   });
 
   if (loading) {
     return <LoadingState message="Loading tenders..." />;
+  }
+
+  if (isError) {
+    return <ErrorState description="The tender market could not be loaded from the municipal procurement service." onRetry={() => void refetch()} />;
   }
 
   return (
