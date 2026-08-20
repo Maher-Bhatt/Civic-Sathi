@@ -132,107 +132,13 @@ function MuniLoginPage() {
           </GlassButton>
         </form>
 
-        {/* Backend-provisioned QA identities: passwords remain hidden and are only filled into the form. */}
-        <div className="mt-6 pt-5 border-t border-[var(--glass-border)]">
-          <p className="text-[11px] font-semibold uppercase tracking-wider text-[var(--muted-foreground)] mb-1 text-center">
-            Authorized test access
+        <div className="mt-6 border-t border-[var(--glass-border)] pt-5 text-center">
+          <p className="text-[11px] font-semibold uppercase tracking-wider text-[var(--muted-foreground)]">
+            Authorized municipal access
           </p>
-          <p className="mb-2.5 text-center text-[10px] leading-relaxed text-[var(--muted-foreground)]">
-            Select an account to fill its live city and role context. Passwords are never displayed.
+          <p className="mt-1 text-[10px] leading-relaxed text-[var(--muted-foreground)]">
+            Use the professional account issued by your municipal administrator. City and role access are validated by the Civic Sathi backend.
           </p>
-          <div className="space-y-1.5">
-            <button
-              type="button"
-              onClick={() => {
-                setEmail("officer@vmc.gov.in");
-                setPassword("Janmind@2026");
-                setCity("vadodara");
-                setDesignation("Ward Officer");
-              }}
-              className="w-full flex items-center justify-between p-2 rounded-lg bg-[var(--surface)] hover:bg-[var(--surface-elevated)] border border-[var(--glass-border)] text-xs transition text-left"
-            >
-              <div>
-                <span className="font-semibold text-[var(--foreground)]">
-                  Vadodara Officer (VMC)
-                </span>
-                <span className="block text-[11px] text-[var(--muted-foreground)] font-mono">
-                  officer@vmc.gov.in
-                </span>
-              </div>
-              <span className="text-[11px] px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-400 font-medium">
-                Fill form
-              </span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => {
-                setEmail("officer@bbmp.gov.in");
-                setPassword("Janmind@2026");
-                setCity("bengaluru");
-                setDesignation("Ward Officer");
-              }}
-              className="w-full flex items-center justify-between p-2 rounded-lg bg-[var(--surface)] hover:bg-[var(--surface-elevated)] border border-[var(--glass-border)] text-xs transition text-left"
-            >
-              <div>
-                <span className="font-semibold text-[var(--foreground)]">
-                  Bengaluru Officer (BBMP)
-                </span>
-                <span className="block text-[11px] text-[var(--muted-foreground)] font-mono">
-                  officer@bbmp.gov.in
-                </span>
-              </div>
-              <span className="text-[11px] px-2 py-0.5 rounded bg-blue-500/15 text-blue-400 font-medium">
-                Fill form
-              </span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => {
-                setEmail("supervisor@vmc.gov.in");
-                setPassword("Janmind@2026");
-                setCity("vadodara");
-                setDesignation("Municipal Supervisor");
-              }}
-              className="w-full flex items-center justify-between p-2 rounded-lg bg-[var(--surface)] hover:bg-[var(--surface-elevated)] border border-[var(--glass-border)] text-xs transition text-left"
-            >
-              <div>
-                <span className="font-semibold text-[var(--foreground)]">
-                  Municipal Supervisor (VMC)
-                </span>
-                <span className="block text-[11px] text-[var(--muted-foreground)] font-mono">
-                  supervisor@vmc.gov.in
-                </span>
-              </div>
-              <span className="text-[11px] px-2 py-0.5 rounded bg-amber-500/15 text-amber-400 font-medium">
-                Fill form
-              </span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => {
-                setEmail("municipality@vmc.gov.in");
-                setPassword("Janmind@2026");
-                setCity("vadodara");
-                setDesignation("Commissioner");
-              }}
-              className="w-full flex items-center justify-between p-2 rounded-lg bg-[var(--surface)] hover:bg-[var(--surface-elevated)] border border-[var(--glass-border)] text-xs transition text-left"
-            >
-              <div>
-                <span className="font-semibold text-[var(--foreground)]">
-                  Department Head (VMC)
-                </span>
-                <span className="block text-[11px] text-[var(--muted-foreground)] font-mono">
-                  municipality@vmc.gov.in
-                </span>
-              </div>
-              <span className="text-[11px] px-2 py-0.5 rounded bg-purple-500/15 text-purple-400 font-medium">
-                Fill form
-              </span>
-            </button>
-          </div>
         </div>
 
         <p className="mt-6 text-center text-[0.65rem] text-muted-foreground">

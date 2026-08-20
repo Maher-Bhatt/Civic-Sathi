@@ -15,8 +15,9 @@ Usage:
     python seed_master.py
 
 Environment:
-    Reads DATABASE_URL from .env file automatically.
-    Make sure .env has the correct Neon DATABASE_URL.
+    Reads DATABASE_URL and SEED_OFFICER_PASSWORD from .env file automatically.
+    SEED_OFFICER_PASSWORD is required for newly bootstrapped municipal and contractor users.
+    Make sure .env has the correct Neon DATABASE_URL and never commit either secret.
 """
 
 import os
@@ -33,6 +34,10 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 from dotenv import load_dotenv
 load_dotenv()
+
+SEED_OFFICER_PASSWORD = os.getenv("SEED_OFFICER_PASSWORD")
+if not SEED_OFFICER_PASSWORD:
+    raise RuntimeError("SEED_OFFICER_PASSWORD must be set before running seed_master.py")
 
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
@@ -165,14 +170,8 @@ OFFICERS = [
     ("Dhruv Patel",       "dhruv.patel@vmc.gov.in",     "officer",      "vadodara",  "Roads"),
     ("Sneha Desai",       "sneha.desai@vmc.gov.in",     "supervisor",   "vadodara",  "Sanitation"),
     ("Mihir Shah",        "mihir.shah@vmc.gov.in",      "municipality", "vadodara",  "Electricity"),
-    # Frontend demo quick-login accounts
-    ("Demo Admin",        "admin@civicsathi.in",           "admin",        None,        None),
-    ("Demo VMC Officer",  "officer@vmc.gov.in",         "officer",      "vadodara",  "Roads"),
-    ("Demo BBMP Officer", "officer@bbmp.gov.in",        "officer",      "bengaluru", "Roads"),
-    ("Demo Supervisor",   "supervisor@vmc.gov.in",      "supervisor",   "vadodara",  "Administration"),
-    ("Demo Municipality", "municipality@vmc.gov.in",    "municipality", "vadodara",  "Administration"),
-    ("Demo Citizen",      "citizen@civicsathi.in",         "citizen",      "vadodara",  None),
 ]
+
 
 for name, email, role, city, dept in OFFICERS:
     existing = db.query(User).filter(User.email == email).first()
@@ -182,7 +181,7 @@ for name, email, role, city, dept in OFFICERS:
             role=role,
             name=name,
             email=email,
-            password_hash=hash_password("CivicSathi@2026"),
+            password_hash=hash_password(SEED_OFFICER_PASSWORD),
             city=city,
             department=dept,
             ward="Admin",
@@ -191,13 +190,13 @@ for name, email, role, city, dept in OFFICERS:
         db.flush()
         print(f"  ✓ Created officer: {name} ({city})")
     else:
-        existing.password_hash = hash_password("CivicSathi@2026")
+        existing.password_hash = hash_password(SEED_OFFICER_PASSWORD)
         existing.role = role
         db.commit()
         print(f"  · Officer updated: {name}")
 
 db.commit()
-print("  → Default password for all officers: CivicSathi@2026")
+print("  → Officer and contractor passwords were supplied through SEED_OFFICER_PASSWORD")
 
 # ─────────────────────────────────────────────────────────────────
 # 5. Sample Contractors
@@ -229,13 +228,13 @@ for company, contact, email, phone in CONTRACTORS:
             role="contractor",
             name=company,
             email=login_email,
-            password_hash=hash_password("CivicSathi@2026"),
+            password_hash=hash_password(SEED_OFFICER_PASSWORD),
             ward="Contractor",
         )
         db.add(login_user)
         db.flush()
     else:
-        login_user.password_hash = hash_password("CivicSathi@2026")
+        login_user.password_hash = hash_password(SEED_OFFICER_PASSWORD)
         db.commit()
 
     c = Contractor(
@@ -274,27 +273,8 @@ for c in contractor_objs:
             db.add(reg)
 
 db.commit()
-print(f"  → Contractor login: <email>.login@contractor.com / CivicSathi@2026")
+print("  → Contractor login: <email>.login@contractor.com (password supplied through SEED_OFFICER_PASSWORD)")
 
-# Add demo contractor account referenced by frontend quick-login
-demo_contractor_email = "contractor@bharat.in"
-existing_demo = db.query(User).filter(User.email == demo_contractor_email).first()
-if not existing_demo:
-    demo_contractor_user = User(
-        id=uuid4(),
-        role="contractor",
-        name="Demo Contractor",
-        email=demo_contractor_email,
-        password_hash=hash_password("CivicSathi@2026"),
-        ward="Contractor",
-    )
-    db.add(demo_contractor_user)
-    db.commit()
-    print(f"  ✓ Created demo contractor: {demo_contractor_email}")
-else:
-    existing_demo.password_hash = hash_password("CivicSathi@2026")
-    db.commit()
-    print(f"  · Updated demo contractor: {demo_contractor_email}")
 
 # ─────────────────────────────────────────────────────────────────
 # 6. Bengaluru Complaints from Real CSV Data (≤100k records)

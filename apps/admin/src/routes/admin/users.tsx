@@ -27,11 +27,12 @@ export const Route = createFileRoute("/admin/users")({
   component: UserManagementPage,
 });
 
-const ROLES = ["admin", "supervisor", "municipality", "officer", "contractor", "citizen"] as const;
+const ROLES = ["admin", "collector", "supervisor", "municipality", "officer", "contractor", "citizen"] as const;
 type Role = typeof ROLES[number];
 
 const ROLE_COLORS: Record<Role, string> = {
   admin:        "bg-red-500/20 text-red-400 border-red-500/30",
+  collector:    "bg-cyan-500/20 text-cyan-300 border-cyan-500/30",
   supervisor:   "bg-orange-500/20 text-orange-400 border-orange-500/30",
   municipality: "bg-purple-500/20 text-purple-400 border-purple-500/30",
   officer:      "bg-blue-500/20 text-blue-400 border-blue-500/30",
@@ -40,7 +41,7 @@ const ROLE_COLORS: Record<Role, string> = {
 };
 
 const ROLE_ICONS: Record<Role, typeof Shield> = {
-  admin: Shield, supervisor: Shield, municipality: Building2,
+  admin: Shield, collector: Shield, supervisor: Shield, municipality: Building2,
   officer: Shield, contractor: Building2, citizen: User,
 };
 

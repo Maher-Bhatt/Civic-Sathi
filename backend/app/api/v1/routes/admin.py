@@ -71,7 +71,7 @@ class CreateUserRequest(BaseModel):
     name: str = Field(..., min_length=2, max_length=100)
     email: EmailStr
     password: str = Field(..., min_length=8, max_length=100)
-    role: str = Field(..., description="officer | supervisor | municipality | contractor | citizen")
+    role: str = Field(..., description="collector | officer | supervisor | municipality | contractor | citizen")
     city: Optional[str] = None
     department: Optional[str] = None
     phone: Optional[str] = None
@@ -807,11 +807,11 @@ def create_user(
     current: dict = Depends(require_admin),
 ):
     """Create any type of user (officer, municipality, contractor login, etc.). Admin only."""
-    allowed_roles = {"officer", "supervisor", "municipality", "admin", "contractor", "citizen"}
+    allowed_roles = {"collector", "officer", "supervisor", "municipality", "admin", "contractor", "citizen"}
     if body.role not in allowed_roles:
         raise HTTPException(
             status_code=400,
-            detail=f"Invalid role. Must be one of: {', '.join(allowed_roles)}",
+            detail=f"Invalid role. Must be one of: {', '.join(sorted(allowed_roles))}",
         )
     existing = db.query(User).filter(User.email == body.email).first()
     if existing:
