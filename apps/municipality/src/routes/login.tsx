@@ -42,7 +42,21 @@ function MuniLoginPage() {
       void navigate({ to: "/dashboard" as any });
     } catch (err: any) {
       console.error("Municipal login error:", err);
-      setError(err?.message || "Invalid credentials. Please check your email and password.");
+      const status = Number(err?.status ?? 0);
+      const message = String(err?.message ?? "");
+      const userMessage =
+        status === 401
+          ? "Email or password is incorrect. Re-enter the current professional credential."
+          : status === 403
+            ? "This account is not authorized for the selected city or designation."
+            : status === 422
+              ? "The login details are incomplete or invalid. Check the email, city, and designation."
+              : status === 408 || status === 0
+                ? "The Civic Sathi backend could not be reached. Please retry in a moment."
+                : message && message !== "API Request Failed"
+                  ? message
+                  : "The Civic Sathi backend rejected the request. Please retry or contact the platform administrator.";
+      setError(userMessage);
     } finally {
       setBusy(false);
     }
