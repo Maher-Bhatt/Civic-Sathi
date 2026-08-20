@@ -1044,6 +1044,51 @@ def create_contractor(
     )
 
 
+@router.delete("/contractors/{contractor_id}", status_code=status.HTTP_204_NO_CONTENT)
+def retire_sih_demo_contractor(
+    contractor_id: UUID,
+    db: Session = Depends(get_db),
+    current: dict = Depends(require_admin),
+):
+    """Remove only the exact orphaned Test company approved for SIH cleanup."""
+    contractor = db.get(Contractor, contractor_id)
+    if not contractor:
+        raise HTTPException(status_code=404, detail="Contractor not found")
+    if contractor.company_name != "Test" or (contractor.email or "").strip().lower() != "aarya@test.in":
+        raise HTTPException(status_code=403, detail="Only the approved SIH demo contractor can be retired")
+
+    references = {
+        "bids": db.query(Bid).filter(Bid.contractor_id == contractor.id).count(),
+        "work_orders": db.query(WorkOrder).filter(WorkOrder.contractor_id == contractor.id).count(),
+    }
+    if any(references.values()):
+        raise HTTPException(status_code=409, detail=f"Cannot retire contractor with operational history: {references}")
+
+    actor = db.get(User, UUID(current["sub"]))
+    linked_user = None
+    if contractor.auth_user_id:
+        linked_user = db.get(User, UUID(str(contractor.auth_user_id)))
+    if linked_user:
+        db.query(Complaint).filter(Complaint.submitted_by_id == linked_user.id).update({Complaint.submitted_by_id: None}, synchronize_session=False)
+        db.query(Complaint).filter(Complaint.assigned_officer_id == linked_user.id).update({Complaint.assigned_officer_id: None}, synchronize_session=False)
+
+    db.add(AuditLog(
+        actor_id=str(actor.id) if actor else str(current["sub"]),
+        actor_name=actor.name if actor else "Super Admin",
+        actor_role=actor.role if actor else "admin",
+        action="DELETE_SIH_DEMO_CONTRACTOR",
+        entity_type="Contractor",
+        entity_id=str(contractor.id),
+        entity_label=contractor.company_name,
+        reason="Approved removal of the exact stray SIH demo contractor; operational history was empty",
+    ))
+    db.query(ContractorCityRegistration).filter(ContractorCityRegistration.contractor_id == contractor.id).delete(synchronize_session=False)
+    db.delete(contractor)
+    if linked_user:
+        db.delete(linked_user)
+    db.commit()
+
+
 @router.post("/contractors/{contractor_id}/login", response_model=ContractorOut)
 def reset_contractor_login(
     contractor_id: UUID,
