@@ -3028,3 +3028,34 @@ body:has(.admin-app-shell) {
     justify-content: center;
   }
 }
+
+/* Admin v6 - zoom-safe shell and restrained navigation density. */
+.admin-app-shell {
+  min-height: 100dvh;
+  height: auto;
+  min-width: 0;
+  overflow-x: clip;
+  overflow-y: visible;
+}
+.admin-main { min-width: 0; min-height: 100dvh; }
+.admin-content { min-width: 0; overflow-x: clip; overflow-y: visible; }
+.admin-sidebar { overflow: hidden; }
+.admin-navigation { min-height: 0; overflow-y: auto; scrollbar-width: none; }
+.admin-navigation::-webkit-scrollbar { display: none; width: 0; height: 0; }
+.admin-nav-item { min-width: 0; }
+@media (min-width: 1024px) and (max-width: 1550px) {
+  .admin-sidebar { width: 14rem; }
+  .admin-nav-item { gap: .55rem; padding: .55rem .72rem; font-size: .76rem; }
+  .admin-nav-label { margin-bottom: .35rem; font-size: .58rem; }
+  .admin-nav-group { margin-bottom: .8rem; }
+  .admin-brand-lockup { padding: .9rem .85rem; }
+  .admin-scope-strip { margin-inline: .75rem; padding: .55rem .65rem; font-size: .68rem; }
+  .admin-sidebar-footer { padding: .75rem; }
+  .admin-profile-card { padding: .65rem; }
+  .admin-signout-button { padding-block: .55rem; }
+  .admin-content { padding: 1rem; }
+}
+@media (max-width: 1023px) {
+  .admin-sidebar { overflow-y: auto; scrollbar-width: none; }
+  .admin-sidebar::-webkit-scrollbar { display: none; }
+}

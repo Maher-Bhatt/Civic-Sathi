@@ -157,8 +157,8 @@ function MuniDashboardPage() {
         <KpiCard label={t('ui.area_hotspots')} value={kpis.areaHotspots} delay={300} />
       </div>
 
-      <div className="grid gap-6 xl:grid-cols-3">
-        <GlassCard elevation="raised" className="overflow-hidden xl:col-span-2">
+      <div className="muni-dashboard-map-layout grid gap-6 xl:grid-cols-[minmax(0,1.65fr)_minmax(18rem,0.65fr)]">
+        <GlassCard elevation="raised" className="muni-dashboard-map-card overflow-hidden">
           <div className="border-b border-[var(--glass-border)] p-5">
             <SectionLabel>{t('ui.city_health')}</SectionLabel>
             <div className="mt-3 flex flex-wrap gap-4">
@@ -182,13 +182,14 @@ function MuniDashboardPage() {
               points={points}
               selectedAreaId={null}
               onSelectArea={() => {}}
-              compact
-              className="h-[280px] sm:h-[320px]"
+              className="h-[clamp(30rem,58vh,44rem)] min-h-[30rem] sm:h-[clamp(34rem,62vh,48rem)]"
             />
           </div>
         </GlassCard>
 
-        <LiveActivityFeed activities={live} />
+        <div className="muni-live-activity-rail">
+          <LiveActivityFeed activities={live} />
+        </div>
       </div>
 
       <div className="grid gap-4 lg:grid-cols-3">

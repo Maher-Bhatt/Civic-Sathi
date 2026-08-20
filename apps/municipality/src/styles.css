@@ -1035,3 +1035,90 @@ body::after {
 .civic-city-shell > div {
   position: relative !important;
 }
+
+
+/* Civic Sathi municipality v7 — heritage-first theme and map-dominant operations layout. */
+:root {
+  --civic-indigo-950: #541F2B;
+  --civic-indigo-700: #8F3F34;
+  --civic-teal-600: #176C68;
+  --civic-sand-100: #F5EFE5;
+  --civic-paper: #FFFCF7;
+  --civic-saffron-600: #B95232;
+  --civic-green-700: #39735A;
+  --civic-red-700: #9E3F39;
+  --civic-ink: #3A1D23;
+  --civic-muted: #75635E;
+  --background: #F5EFE5;
+  --background-secondary: #EDE1D1;
+  --surface: rgb(255 252 247 / 0.86);
+  --surface-elevated: #FFFCF7;
+  --glass: rgb(255 252 247 / 0.72);
+  --glass-strong: rgb(255 252 247 / 0.92);
+  --glass-border: rgb(84 31 43 / 0.16);
+  --primary: #B95232;
+  --primary-foreground: #FFF9F0;
+  --secondary: #EAD4BC;
+  --secondary-foreground: #3A1D23;
+  --foreground: #3A1D23;
+  --muted-foreground: #75635E;
+  --subtle-foreground: #937E73;
+  --ring: #B95232;
+  --success: #39735A;
+  --warning: #D6922E;
+  --critical: #9E3F39;
+  --chart-1: #B95232;
+  --chart-2: #D6922E;
+  --chart-3: #39735A;
+  --chart-4: #176C68;
+  --chart-5: #8F3F34;
+}
+.dark {
+  --background: #2C121B;
+  --background-secondary: #3A1824;
+  --surface: rgb(84 31 43 / 0.82);
+  --surface-elevated: #4B202C;
+  --glass: rgb(84 31 43 / 0.64);
+  --glass-strong: rgb(84 31 43 / 0.90);
+  --glass-border: rgb(234 212 188 / 0.20);
+  --primary: #D4774C;
+  --primary-foreground: #2C121B;
+  --foreground: #FFF4E6;
+  --card: #3A1824;
+  --card-foreground: #FFF4E6;
+  --muted-foreground: #D6BDAA;
+  --subtle-foreground: #B99B89;
+  --ring: #D4774C;
+  --success: #77A77F;
+  --warning: #E2A844;
+  --critical: #F08B86;
+}
+.civic-heritage-shell,
+.civic-city-shell {
+  background-image:
+    radial-gradient(circle at 8% 8%, rgb(185 82 50 / 0.13), transparent 24rem),
+    radial-gradient(circle at 92% 12%, rgb(214 146 46 / 0.10), transparent 26rem),
+    linear-gradient(135deg, #F5EFE5 0%, #FFF9F0 58%, #EDE1D1 100%);
+  color: var(--foreground);
+}
+.civic-heritage-shell::before,
+.civic-city-shell::before { opacity: 0.12; }
+.muni-dashboard-map-layout { align-items: stretch; }
+.muni-dashboard-map-card { min-width: 0; }
+.muni-dashboard-map-card .jm-map-frame,
+.muni-dashboard-map-card .jm-map-frame > *,
+.muni-dashboard-map-card .leaflet-container {
+  min-height: clamp(30rem, 58vh, 44rem);
+}
+.muni-dashboard-map-card .leaflet-container { height: 100% !important; }
+.muni-live-activity-rail { min-width: 0; }
+.muni-live-activity-rail > * { height: 100%; }
+@media (max-width: 1279px) {
+  .muni-dashboard-map-layout { grid-template-columns: minmax(0, 1fr) !important; }
+  .muni-live-activity-rail > * { height: auto; }
+}
+@media (max-width: 640px) {
+  .muni-dashboard-map-card .jm-map-frame,
+  .muni-dashboard-map-card .jm-map-frame > *,
+  .muni-dashboard-map-card .leaflet-container { min-height: 27rem; }
+}
