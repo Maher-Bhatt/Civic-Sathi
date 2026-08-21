@@ -32,8 +32,8 @@ class IssueRepository:
                 joinedload(IssueCluster.root_causes),
                 joinedload(IssueCluster.recommendations)
             )
-        ).scalar_one_or_none()
-    
+        ).unique().scalar_one_or_none()
+
     def list_issues(
         self,
         risk: RiskLevel | None = None,
