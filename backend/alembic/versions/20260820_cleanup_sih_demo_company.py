@@ -44,9 +44,38 @@ def upgrade() -> None:
             {"contractor_id": row["id"]},
         ).scalar_one()
     if any(counts.values()):
-        raise RuntimeError(
-            f"Refusing to remove {_TARGET_COMPANY}: operational history exists {counts}"
+        # Never make a production deploy fail because a legacy identity has
+        # acquired operational history. Preserve the company and all related
+        # records; record the guarded decision and let later migrations run.
+        conn.execute(
+            sa.text(
+                """
+                INSERT INTO platform_audit_logs
+                    (id, actor_id, actor_name, actor_role, action, entity_type,
+                     entity_id, entity_label, previous_value, reason, at)
+                VALUES
+                    (:id, :actor_id, :actor_name, :actor_role, :action, :entity_type,
+                     :entity_id, :entity_label, :previous_value, :reason, :at)
+                """
+            ),
+            {
+                "id": str(uuid4()),
+                "actor_id": "system:guarded-sih-cleanup",
+                "actor_name": "Civic Sathi SIH Preparation",
+                "actor_role": "system",
+                "action": "SKIP_SIH_DEMO_CONTRACTOR_CLEANUP",
+                "entity_type": "Contractor",
+                "entity_id": str(row["id"]),
+                "entity_label": _TARGET_COMPANY,
+                "previous_value": f"email={row['email']}; operational_history={counts}",
+                "reason": (
+                    "Skipped removal of the exact legacy SIH contractor identity "
+                    "because operational history exists; all live records are preserved"
+                ),
+                "at": datetime.now(timezone.utc),
+            },
         )
+        return
 
     registration_count = conn.execute(
         sa.text(
