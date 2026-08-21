@@ -1,6 +1,6 @@
 """Allow real field evidence data URLs to be stored without truncation.
 
-Revision ID: 20260821_field_evidence_photo_text
+Revision ID: 20260821_evidence_photo_text
 Revises: 20260820_password_reset
 Create Date: 2026-08-21
 """
@@ -9,7 +9,7 @@ from typing import Sequence, Union
 from alembic import op
 import sqlalchemy as sa
 
-revision: str = "20260821_field_evidence_photo_text"
+revision: str = "20260821_evidence_photo_text"
 down_revision: Union[str, None] = "20260820_password_reset"
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
