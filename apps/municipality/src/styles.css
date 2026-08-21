@@ -1162,6 +1162,7 @@ body::after {
 /* Final specificity guard: this must win over the older civic-city-shell > aside navy patch. */
 .civic-city-shell > aside.civic-heritage-sidebar {
   color: #F7E9D8 !important;
+  z-index: 50 !important;
   pointer-events: auto !important;
   background:
     linear-gradient(180deg, rgb(185 82 50 / 0.22), transparent 17rem),
