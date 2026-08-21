@@ -29,6 +29,7 @@ function ComplaintDetailPage() {
   const [complaint, setComplaint] = useState<MuniComplaint | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [actionBusy, setActionBusy] = useState<"accept" | "reject" | null>(null);
   const [rejectOpen, setRejectOpen] = useState(false);
   const [rejectReason, setRejectReason] = useState("");
@@ -45,7 +46,10 @@ function ComplaintDetailPage() {
         if (!c) setError(true);
         else setComplaint(c);
       })
-      .catch(() => setError(true))
+      .catch((cause: any) => {
+        setError(true);
+        setErrorMessage(cause?.message || "Unable to load the complaint from the backend.");
+      })
       .finally(() => setLoading(false));
 
     getCivicIssues().then(setCivicIssues).catch(() => {});
@@ -135,7 +139,7 @@ function ComplaintDetailPage() {
   if (error || !complaint) {
     return (
       <ErrorState
-        description="Complaint not found."
+        description={errorMessage || "Complaint not found."}
         onRetry={() => window.location.reload()}
       />
     );

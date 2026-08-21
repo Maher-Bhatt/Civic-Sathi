@@ -521,12 +521,8 @@ export async function getMuniComplaints(
 }
 
 export async function getMuniComplaint(id: string): Promise<MuniComplaint | null> {
-  try {
-    const raw = await api.complaints.get(id);
-    return raw ? normalizeMuniComplaint(raw, currentMuniCity()) : null;
-  } catch {
-    return null;
-  }
+  const raw = await api.complaints.get(id);
+  return raw ? normalizeMuniComplaint(raw, currentMuniCity()) : null;
 }
 
 export async function updateComplaintStatus(
