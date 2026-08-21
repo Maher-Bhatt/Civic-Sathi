@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { safeFormat } from "@/lib/safe-format";
 import { ArrowLeft, Split, Merge, AlertTriangle, Check, ShieldAlert } from "lucide-react";
@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { GlassCard, SectionLabel } from "@/components/ui/glass-card";
 import { ErrorState, LoadingState } from "@/components/ui/states";
 import { SeverityBadge, StatusBadge } from "@/components/municipality/status-badge";
-import { getCivicIssues } from "@/services/api";
+import { getCivicIssues, materializeCivicIssue } from "@/services/api";
 import { useI18n } from "@/lib/i18n";
 import { useMuniAuth } from "@/lib/muni-auth";
 
@@ -27,6 +27,8 @@ function CivicIssueDetailPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [merging, setMerging] = useState(false);
+  const [materializing, setMaterializing] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     getCivicIssues(city)
@@ -50,6 +52,29 @@ function CivicIssueDetailPage() {
 
   const handleSplit = () => {
     toast.info("Complaint splitting requires a backend civic-issue cluster.");
+  };
+
+  const handleCreateWorkPackage = async () => {
+    setMaterializing(true);
+    try {
+      const approvedIssue = await materializeCivicIssue(String(issue.id));
+      toast.success("Civic issue approved for procurement.");
+      await navigate({
+        to: "/tenders/new" as any,
+        search: {
+          civicIssueId: String(approvedIssue.id),
+          title: approvedIssue.title ?? issue.title,
+          description: approvedIssue.summary ?? issue.description,
+          departmentId: approvedIssue.department_id ?? "",
+          department: approvedIssue.department ?? issue.category,
+          ward: String(approvedIssue.ward_number ?? issue.ward ?? ""),
+        } as any,
+      });
+    } catch (error: any) {
+      toast.error(error?.message ?? "Unable to approve this civic issue for procurement");
+    } finally {
+      setMaterializing(false);
+    }
   };
 
   return (
@@ -144,10 +169,11 @@ function CivicIssueDetailPage() {
               {t('ui.this_civic_issue_is_ready_to_b')}</p>
             <button
               type="button"
-              onClick={() => toast.info("Work package creation requires an approved backend civic issue.")}
-              className="action-btn w-full mt-4 bg-primary text-primary-foreground hover:bg-primary/90"
+              onClick={() => void handleCreateWorkPackage()}
+              disabled={materializing}
+              className="action-btn w-full mt-4 bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-60"
             >
-              {t('ui.create_work_package')}</button>
+              {materializing ? "Approving issue..." : t('ui.create_work_package')}</button>
           </GlassCard>
         </div>
       </div>

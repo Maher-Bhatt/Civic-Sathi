@@ -39,6 +39,7 @@ class IssueListItem(BaseModel):
     title: str
     category: ComplaintCategory
     department: str
+    department_id: UUID
     ward_number: int | None
     complaint_count: int
     risk_level: RiskLevel
@@ -60,6 +61,7 @@ class IssueDetailResponse(BaseModel):
     summary: str | None
     category: ComplaintCategory
     department: str
+    department_id: UUID
     ward_number: int | None
     status: str
     risk_level: RiskLevel

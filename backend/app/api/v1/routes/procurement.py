@@ -1,3 +1,5 @@
+from datetime import datetime, timezone
+
 from fastapi import APIRouter, Depends, HTTPException, Body
 from sqlalchemy.orm import Session
 from sqlalchemy import func, select, and_
@@ -146,6 +148,32 @@ def _enrich_work_order(db: Session, wo: WorkOrder) -> dict:
 
 # ── Tenders ───────────────────────────────────────────────────────────────────
 
+def _resolve_city(db: Session, value: str) -> City:
+    raw = str(value).strip()
+    try:
+        city = db.get(City, UUID(raw))
+    except (ValueError, TypeError):
+        city = db.query(City).filter(func.lower(City.name) == raw.lower()).first()
+    if not city:
+        raise HTTPException(status_code=422, detail="Unknown city")
+    return city
+
+
+def _resolve_department(db: Session, value: str):
+    from app.models.user import Department
+
+    raw = str(value).strip()
+    try:
+        department = db.get(Department, UUID(raw))
+    except (ValueError, TypeError):
+        department = db.query(Department).filter(func.lower(Department.name) == raw.lower()).first()
+        if not department:
+            department = db.query(Department).filter(func.lower(Department.slug) == raw.lower()).first()
+    if not department:
+        raise HTTPException(status_code=422, detail="Unknown department")
+    return department
+
+
 @router.post("/tenders", response_model=TenderResponse)
 def create_tender(
     tender_in: TenderCreate,
@@ -153,17 +181,50 @@ def create_tender(
     current_user: User = Depends(require_officer_permission("tenders.manage")),
 ):
     """(Officer Only) Create a new procurement tender."""
+    city = _resolve_city(db, tender_in.city_id)
+    department = _resolve_department(db, tender_in.department_id)
+    enforce_city_scope(db, current_user, city.id)
+
+    if tender_in.civic_issue_id:
+        issue = db.get(IssueCluster, tender_in.civic_issue_id)
+        if not issue:
+            raise HTTPException(status_code=422, detail="Civic issue not found")
+        if issue.city_id != city.id or issue.department_id != department.id:
+            raise HTTPException(status_code=422, detail="Civic issue, city, and department must match")
+        if str(issue.status).lower() not in {"approved", "open", "assigned", "investigating"}:
+            raise HTTPException(status_code=409, detail="Civic issue must be approved before procurement")
+
     tender = Tender(
-        city_id=tender_in.city_id,
-        department_id=tender_in.department_id,
+        city_id=city.id,
+        department_id=department.id,
         civic_issue_id=tender_in.civic_issue_id,
-        title=tender_in.title,
-        description=tender_in.description,
+        title=tender_in.title.strip(),
+        description=tender_in.description.strip(),
         scope_of_work=tender_in.scope_of_work,
         estimated_budget=tender_in.estimated_budget,
         status=TenderStatus.DRAFT,
     )
     db.add(tender)
+    db.commit()
+    db.refresh(tender)
+    return tender
+
+
+@router.post("/tenders/{tender_id}/publish", response_model=TenderResponse)
+def publish_tender(
+    tender_id: UUID,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_officer_permission("tenders.manage")),
+):
+    """Publish a municipal draft tender after validating the officer city scope."""
+    tender = db.get(Tender, tender_id)
+    if not tender:
+        raise HTTPException(status_code=404, detail="Tender not found")
+    enforce_city_scope(db, current_user, tender.city_id)
+    if tender.status != TenderStatus.DRAFT:
+        raise HTTPException(status_code=400, detail=f"Tender is already {tender.status.value}")
+    tender.status = TenderStatus.PUBLISHED
+    tender.published_at = datetime.now(timezone.utc)
     db.commit()
     db.refresh(tender)
     return tender

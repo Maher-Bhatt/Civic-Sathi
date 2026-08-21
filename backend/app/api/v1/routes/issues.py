@@ -1,14 +1,18 @@
 """Issue API endpoints"""
 
+from datetime import datetime, timezone
 from uuid import UUID
-from fastapi import APIRouter, Depends, status
+
+from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
 from app.core.security import get_current_officer
-from app.models.user import User
+from app.models.complaint import Complaint
+from app.models.issue import IssueCluster, IssueComplaint
 from app.models.procurement import City
-from sqlalchemy import func
+from app.models.user import User
 from app.schemas.issue import IssueDetailResponse, RebuildIssuesResponse
 from app.services.issue_service import IssueService
 
@@ -60,3 +64,95 @@ def rebuild_issues(db: Session = Depends(get_db)):
     """Rebuild issue clusters from complaints (officer only)"""
     service = IssueService(db)
     return service.rebuild_issues()
+
+
+@router.post("/materialize/{complaint_id}", response_model=IssueDetailResponse)
+def materialize_complaint_issue(
+    complaint_id: str,
+    db: Session = Depends(get_db),
+    current: dict = Depends(get_current_officer),
+):
+    """Create or return an approved civic issue for a complaint-backed demo handoff.
+
+    This makes the human-approved municipality action explicit: a complaint-derived
+    fallback card is converted into a persistent IssueCluster and linked through
+    IssueComplaint before procurement can reference it.
+    """
+    officer = db.get(User, UUID(current["sub"]))
+    if not officer:
+        raise HTTPException(status_code=401, detail="Officer session not found")
+
+    existing_issue = None
+    try:
+        issue_uuid = UUID(complaint_id)
+        existing_issue = db.get(IssueCluster, issue_uuid)
+    except (ValueError, TypeError):
+        pass
+
+    if existing_issue:
+        if officer.role != "admin" and officer.city:
+            city = db.query(City).filter(func.lower(City.name) == officer.city.strip().lower()).first()
+            if not city or city.id != existing_issue.city_id:
+                raise HTTPException(status_code=403, detail="This account cannot materialize an issue in another city")
+        if existing_issue.status.lower() not in {"approved", "open", "assigned", "investigating"}:
+            existing_issue.status = "approved"
+            db.commit()
+        return IssueService(db).get_issue(existing_issue.id)
+
+    try:
+        complaint_uuid = UUID(complaint_id)
+        complaint = db.get(Complaint, complaint_uuid)
+    except (ValueError, TypeError):
+        complaint = db.query(Complaint).filter(Complaint.public_id == complaint_id.strip()).first()
+
+    if not complaint:
+        raise HTTPException(status_code=404, detail="Complaint not found")
+
+    if officer.role != "admin" and officer.city:
+        city = db.query(City).filter(func.lower(City.name) == officer.city.strip().lower()).first()
+        if not city or city.id != complaint.city_id:
+            raise HTTPException(status_code=403, detail="This account cannot materialize an issue in another city")
+
+    existing_link = db.query(IssueComplaint).filter(IssueComplaint.complaint_id == complaint.id).first()
+    if existing_link:
+        existing_issue = db.get(IssueCluster, existing_link.issue_id)
+        if existing_issue:
+            if existing_issue.status.lower() not in {"approved", "open", "assigned", "investigating"}:
+                existing_issue.status = "approved"
+                db.commit()
+            return IssueService(db).get_issue(existing_issue.id)
+
+    now = datetime.now(timezone.utc)
+    severity = str(complaint.priority or "moderate").lower()
+    risk_level = "critical" if severity == "critical" else "high" if severity == "high" else "medium"
+    issue = IssueCluster(
+        title=complaint.title,
+        summary=complaint.description,
+        category=complaint.category,
+        department_id=complaint.department_id,
+        ward_id=complaint.ward_id,
+        city_id=complaint.city_id,
+        status="approved",
+        risk_level=risk_level,
+        risk_score=int(complaint.risk_score or complaint.severity_score or 0),
+        complaint_count=1,
+        centroid_lat=complaint.lat,
+        centroid_lng=complaint.lng,
+        first_seen_at=complaint.created_at or now,
+        last_seen_at=complaint.created_at or now,
+    )
+    db.add(issue)
+    db.flush()
+    db.add(IssueComplaint(
+        issue_id=issue.id,
+        complaint_id=complaint.id,
+        similarity_score=1.0,
+        relationship_type="PRIMARY",
+        confidence_score=1.0,
+        added_at=now,
+    ))
+    if complaint.analysis and not complaint.analysis.candidate_issue_id:
+        complaint.analysis.candidate_issue_id = issue.id
+    db.commit()
+    db.refresh(issue)
+    return IssueService(db).get_issue(issue.id)

@@ -252,6 +252,10 @@ export async function getSystemicIssue(id: string): Promise<SystemicIssue | null
   return client.get<SystemicIssue>(`/api/v1/issues/${id}`);
 }
 
+export async function materializeCivicIssue(id: string): Promise<any> {
+  return client.post<any>(`/api/v1/issues/materialize/${encodeURIComponent(id)}`, {});
+}
+
 export async function updateSystemicIssue(
   id: string,
   patch: Partial<SystemicIssue>,
@@ -532,7 +536,14 @@ export async function getTender(id: string) {
   return await api.tenders.get(id);
 }
 export async function createTender(data: any) {
-  return await api.tenders.create(data);
+  const payload = { ...data };
+  if (payload.city_id && (!String(payload.city_id).includes("-") || String(payload.city_id).length !== 36)) {
+    payload.city_id = await resolveCityId(String(payload.city_id));
+  }
+  return await api.tenders.create(payload);
+}
+export async function publishTender(id: string) {
+  return await client.post<any>(`/api/v1/procurement/tenders/${id}/publish`, {});
 }
 export async function listBids(tenderId: string) {
   return await api.tenders.listBids(tenderId);

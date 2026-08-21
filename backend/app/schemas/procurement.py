@@ -12,8 +12,10 @@ class TenderBase(BaseModel):
     estimated_budget: float
 
 class TenderCreate(TenderBase):
-    city_id: UUID
-    department_id: UUID
+    # Accept UUIDs from API clients and city/department display values from the
+    # municipality form; the route normalizes both to foreign-key UUIDs.
+    city_id: str
+    department_id: str
     civic_issue_id: Optional[UUID] = None
 
 class TenderResponse(TenderBase):

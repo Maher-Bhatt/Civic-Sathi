@@ -1,9 +1,11 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
 import { toast } from "sonner";
 import { GlassCard, SectionLabel } from "@/components/ui/glass-card";
 import { useMuniAuth } from "@/lib/muni-auth";
-import { createTender } from "@/services/api";
+import { createTender, publishTender } from "@/services/api";
+
 import { DEPARTMENTS, ISSUE_TYPES } from "@/services/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useI18n } from "@/lib/i18n";
@@ -22,6 +24,22 @@ function NewTenderPage() {
     title: "", description: "", category: "Road Damage", department: "Public Works",
     ward: "", area: "", estimatedCost: "", scope: "", civicIssueIds: "", priority: "Moderate"
   });
+  const [sourceIssueId, setSourceIssueId] = useState("");
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const civicIssueId = params.get("civicIssueId") ?? "";
+    setSourceIssueId(civicIssueId);
+    setForm((prev) => ({
+      ...prev,
+      title: params.get("title") ?? prev.title,
+      description: params.get("description") ?? prev.description,
+      department: params.get("department") ?? prev.department,
+      ward: params.get("ward") ?? prev.ward,
+      civicIssueIds: civicIssueId || prev.civicIssueIds,
+      scope: params.get("scope") ?? prev.scope,
+    }));
+  }, []);
 
   const set = (k: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
     setForm(prev => ({ ...prev, [k]: e.target.value }));
@@ -30,7 +48,7 @@ function NewTenderPage() {
     mutationFn: async () => {
       if (!officer?.city) throw new Error("Officer city is missing");
       const ids = form.civicIssueIds.split(",").map(s => s.trim()).filter(Boolean);
-      return createTender({
+            return createTender({
         title: form.title,
         description: form.description,
         city_id: officer.city,
@@ -39,12 +57,20 @@ function NewTenderPage() {
         scope_of_work: form.scope,
         estimated_budget: Number(form.estimatedCost) || 0,
       });
+
     },
-    onSuccess: (tender) => {
-      toast.success(`Tender published successfully!`);
-      queryClient.invalidateQueries({ queryKey: ["muni-tenders"] });
-      void navigate({ to: "/tenders/$id" as any, params: { id: tender.id } as any });
+        onSuccess: async (tender) => {
+      try {
+        const published = await publishTender(tender.id);
+        toast.success(`Tender published successfully!`);
+        queryClient.invalidateQueries({ queryKey: ["muni-tenders"] });
+        await navigate({ to: "/tenders/$id" as any, params: { id: published.id } as any });
+      } catch (error: any) {
+        toast.error(error?.message ?? "Tender was created but could not be published");
+        await navigate({ to: "/tenders/$id" as any, params: { id: tender.id } as any });
+      }
     },
+
     onError: () => toast.error("Failed to publish tender"),
   });
 
@@ -59,8 +85,14 @@ function NewTenderPage() {
         <SectionLabel>{t('ui.publish_tender')}</SectionLabel>
         <h1 className="mt-2 text-2xl font-semibold">{t('ui.define_public_procurement_requ')}</h1>
       </header>
-      <GlassCard elevation="raised" className="p-6">
-        <form onSubmit={e => void handleSubmit(e)} className="space-y-5">
+                <GlassCard elevation="raised" className="p-6">
+            {sourceIssueId && (
+              <div className="mb-5 rounded-xl border border-primary/30 bg-primary/5 p-3 text-sm text-muted-foreground">
+                This tender is linked to approved civic issue <span className="font-semibold text-foreground">{sourceIssueId}</span>. Review the generated scope and publish it to eligible contractors.
+              </div>
+            )}
+            <form onSubmit={e => void handleSubmit(e)} className="space-y-5">
+
           <div className="space-y-1.5">
             <label className="label-xs" htmlFor="wp-title">{t('ui.title')}</label>
             <input id="wp-title" value={form.title} onChange={set("title")} required className="filter-input" placeholder={t('ui.road_repair_ward_14_sarvodaya_')} />
