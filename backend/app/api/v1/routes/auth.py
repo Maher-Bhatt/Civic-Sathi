@@ -132,8 +132,10 @@ def officer_login(
 
     if login_data.city and user.city and normalize_context(login_data.city) != normalize_context(user.city):
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="This officer account is assigned to a different city")
-    if login_data.designation and user.designation and normalize_context(login_data.designation) != normalize_context(user.designation):
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Select the designation assigned to this officer account")
+    # Designation is returned from the account record and is not an
+    # authentication factor. Older municipality bundles still submit a
+    # default designation, so never reject a valid account for that legacy
+    # client value.
 
     # Record a durable authentication event for the admin audit trail.
     db.add(AuditLog(
