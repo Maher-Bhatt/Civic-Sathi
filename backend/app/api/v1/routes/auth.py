@@ -155,6 +155,7 @@ def officer_login(
         data={"sub": str(user.id), "email": user.email, "role": user.role}
     )
 
+    authoritative_designation = user.designation or ("Commissioner" if user.role == "collector" else None)
     return OfficerLoginResponse(
         access_token=access_token,
         token_type="bearer",
@@ -163,7 +164,7 @@ def officer_login(
             name=user.name,
             email=user.email,
             department=user.department or "General",
-            designation=user.designation,
+            designation=authoritative_designation,
             role=user.role.title(),
             city=user.city or "",
             is_super_admin=is_super_admin_user(user),
