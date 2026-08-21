@@ -898,7 +898,7 @@ def update_user(
         if len(phone) < 7:
             raise HTTPException(status_code=400, detail="A valid mobile number is required")
         user.phone = phone
-    elif not (user.phone or "").strip() and patch.password is None:
+    elif patch.password is None and not (user.phone or "").strip():
         raise HTTPException(status_code=400, detail="A verified mobile number is required for every user")
     if patch.password is not None:
         user.password_hash = hash_password(patch.password)
