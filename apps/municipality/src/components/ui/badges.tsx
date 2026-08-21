@@ -11,6 +11,7 @@ const statusStyles: Record<ComplaintStatus, string> = {
   Resolved:
     "text-success border-[color-mix(in_oklab,var(--success)_40%,transparent)] bg-[color-mix(in_oklab,var(--success)_12%,transparent)]",
   Closed: "text-subtle border-border bg-[var(--glass)]",
+  Rejected: "text-critical border-[color-mix(in_oklab,var(--critical)_45%,transparent)] bg-[color-mix(in_oklab,var(--critical)_12%,transparent)]",
 };
 
 export function StatusBadge({

@@ -171,56 +171,51 @@ function ComplaintDetailPage() {
         <div className="space-y-6 xl:col-span-2">
           <GlassCard elevation="raised" className="p-6">
             <SectionLabel>{t('ui.report_details')}</SectionLabel>
-            <h1 className="mt-3 text-xl font-semibold">{complaint.category}</h1>
-            <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-              {complaint.description}
+            <h1 className="mt-3 text-xl font-semibold">{complaint.title}</h1>
+            <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+              <span className="rounded-full border border-[var(--glass-border)] px-2 py-1">{complaint.category}</span>
+              <span className="rounded-full border border-[var(--glass-border)] px-2 py-1">Priority: {complaint.priority}</span>
+              <span className="rounded-full border border-[var(--glass-border)] px-2 py-1">Source: backend record</span>
+            </div>
+            <p className="mt-4 text-sm leading-relaxed text-foreground">
+              {complaint.description || "No description was supplied in the backend record."}
             </p>
-            <dl className="mt-6 grid gap-4 sm:grid-cols-2">
-              <div>
-                <dt className="label-xs">{t('ui.area')}</dt>
-                <dd className="mt-1 text-sm font-medium">{complaint.area}</dd>
-              </div>
-              <div>
-                <dt className="label-xs">{t('ui.ward')}</dt>
-                <dd className="mt-1 text-sm font-medium">{complaint.ward}</dd>
-              </div>
-              <div>
-                <dt className="label-xs">{t('ui.department')}</dt>
-                <dd className="mt-1 text-sm font-medium">{complaint.department}</dd>
-              </div>
-              <div>
-                <dt className="label-xs">{t('ui.assigned_to')}</dt>
-                <dd className="mt-1 text-sm font-medium">{complaint.assignedOfficerName ?? complaint.assignedTo ?? "—"}</dd>
-              </div>
-              <div>
-                <dt className="label-xs">{t('ui.created')}</dt>
-                <dd className="mt-1 text-sm">
-                  {safeFormat(complaint.createdAt, "dd MMM yyyy, HH:mm")}
-                </dd>
-              </div>
-              <div>
-                <dt className="label-xs">{t('ui.last_updated')}</dt>
-                <dd className="mt-1 text-sm">
-                  {safeFormat(complaint.updatedAt, "dd MMM yyyy, HH:mm")}
-                </dd>
-              </div>
+            <dl className="mt-6 grid gap-x-5 gap-y-4 sm:grid-cols-2 lg:grid-cols-3">
+              <div><dt className="label-xs">{t('ui.area')}</dt><dd className="mt-1 text-sm font-medium">{complaint.area}</dd></div>
+              <div><dt className="label-xs">{t('ui.ward')}</dt><dd className="mt-1 text-sm font-medium">{complaint.ward}</dd></div>
+              <div><dt className="label-xs">City</dt><dd className="mt-1 text-sm font-medium">{complaint.city}</dd></div>
+              <div><dt className="label-xs">Address</dt><dd className="mt-1 text-sm font-medium">{complaint.addressText || "Not provided"}</dd></div>
+              <div><dt className="label-xs">{t('ui.department')}</dt><dd className="mt-1 text-sm font-medium">{complaint.department}</dd></div>
+              <div><dt className="label-xs">{t('ui.assigned_to')}</dt><dd className="mt-1 text-sm font-medium">{complaint.assignedOfficerName ?? complaint.assignedTo ?? "Not assigned"}</dd></div>
+              <div><dt className="label-xs">Severity score</dt><dd className="mt-1 text-sm font-medium tabular-nums">{complaint.severityScore}/100</dd></div>
+              <div><dt className="label-xs">Risk score</dt><dd className="mt-1 text-sm font-medium tabular-nums">{complaint.riskScore}/100</dd></div>
+              <div><dt className="label-xs">Reporter</dt><dd className="mt-1 text-sm font-medium">{complaint.submittedByName || "Protected citizen"}</dd></div>
+              <div><dt className="label-xs">Privacy</dt><dd className="mt-1 text-sm font-medium">{complaint.privacyStatus || "Protected"}</dd></div>
+              <div><dt className="label-xs">{t('ui.created')}</dt><dd className="mt-1 text-sm">{safeFormat(complaint.createdAt, "dd MMM yyyy, HH:mm")}</dd></div>
+              <div><dt className="label-xs">{t('ui.last_updated')}</dt><dd className="mt-1 text-sm">{safeFormat(complaint.updatedAt, "dd MMM yyyy, HH:mm")}</dd></div>
             </dl>
           </GlassCard>
 
-          {(complaint.interpretedText || complaint.suggestedAction || complaint.language) && (
+          {(complaint.interpretedText || complaint.suggestedAction || complaint.language || complaint.analysisDetails) && (
             <GlassCard elevation="raised" className="border-l-4 border-l-[var(--civic-teal-600)] p-6">
               <SectionLabel>Backend AI interpretation</SectionLabel>
-              <p className="mt-3 text-sm leading-relaxed text-foreground">
-                {complaint.interpretedText || "The citizen's original report is available for officer review."}
-              </p>
+              {complaint.interpretedText && (
+                <p className="mt-3 text-sm leading-relaxed text-foreground">{complaint.interpretedText}</p>
+              )}
               {complaint.suggestedAction && (
                 <div className="mt-4 rounded-xl bg-[color-mix(in_oklab,var(--civic-teal-600)_8%,transparent)] p-3">
                   <div className="label-xs">Suggested municipal action</div>
                   <p className="mt-1 text-sm leading-relaxed">{complaint.suggestedAction}</p>
                 </div>
               )}
-              {complaint.language && (
-                <p className="mt-3 text-xs text-muted-foreground">Detected report language: {complaint.language.toUpperCase()}</p>
+              <dl className="mt-4 grid gap-3 sm:grid-cols-2">
+                <div><dt className="label-xs">Detected language</dt><dd className="mt-1 text-sm">{complaint.language?.toUpperCase() || "Not available"}</dd></div>
+                <div><dt className="label-xs">Analysis confidence</dt><dd className="mt-1 text-sm tabular-nums">{complaint.analysisDetails?.confidenceScore == null ? "Not available" : `${Math.round(complaint.analysisDetails.confidenceScore * 100)}%`}</dd></div>
+                <div><dt className="label-xs">Similar complaints</dt><dd className="mt-1 text-sm tabular-nums">{complaint.analysisDetails?.similarCount ?? 0}</dd></div>
+                <div><dt className="label-xs">Possible duplicate</dt><dd className="mt-1 text-sm">{complaint.analysisDetails?.possibleDuplicate ? "Yes — review" : "No match flagged"}</dd></div>
+              </dl>
+              {!!complaint.analysisDetails?.keywords?.length && (
+                <p className="mt-3 text-xs text-muted-foreground">Keywords: {complaint.analysisDetails.keywords.join(", ")}</p>
               )}
             </GlassCard>
           )}
@@ -239,7 +234,11 @@ function ComplaintDetailPage() {
                 </div>
                 <div>
                   <dt className="label-xs">{t('ui.similarity_match')}</dt>
-                  <dd className="mt-1 text-sm tabular-nums">{complaint.aiAnalysis.similarity}%</dd>
+                  <dd className="mt-1 text-sm tabular-nums">{complaint.aiAnalysis.similarity ? `${Math.round(complaint.aiAnalysis.similarity * 100)}%` : "No match scored"}</dd>
+                </div>
+                <div>
+                  <dt className="label-xs">Analysis confidence</dt>
+                  <dd className="mt-1 text-sm tabular-nums">{complaint.aiAnalysis.confidenceScore == null ? "Not available" : `${Math.round(complaint.aiAnalysis.confidenceScore * 100)}%`}</dd>
                 </div>
                 {complaint.aiAnalysis.cluster && (
                   <div className="sm:col-span-2">

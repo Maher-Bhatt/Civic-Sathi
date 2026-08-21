@@ -116,7 +116,11 @@ export function ComplaintTable({
                   {c.id}
                 </Link>
               </TableCell>
-              <TableCell className="text-sm">{c.category}</TableCell>
+              <TableCell className="min-w-[18rem]">
+                <div className="text-sm font-medium">{c.title}</div>
+                <div className="mt-1 line-clamp-2 text-xs text-muted-foreground">{c.description || "No description supplied"}</div>
+                <div className="mt-1 text-[0.65rem] uppercase tracking-wide text-primary">{c.category}</div>
+              </TableCell>
               <TableCell className="text-sm text-muted-foreground">{c.area}</TableCell>
               <TableCell className="text-sm text-muted-foreground">{c.ward}</TableCell>
               <TableCell>

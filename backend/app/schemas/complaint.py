@@ -97,6 +97,8 @@ class ComplaintResponse(BaseModel):
     rejected_at: datetime | None = None
     category: str
     department: str
+    city_id: UUID
+    city_name: str
     priority: str
     severity_score: int
     risk_score: int
@@ -133,6 +135,8 @@ class ComplaintListItem(BaseModel):
     rejected_at: datetime | None = None
     category: str
     department: str | None = None
+    city_id: UUID
+    city_name: str
     priority: str
     severity_score: int = 0
     risk_score: int = 0

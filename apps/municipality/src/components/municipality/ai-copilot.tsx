@@ -12,7 +12,7 @@ export function AiCopilotWidget() {
     { role: "ai", text: "Hello! I am your Civic Sathi AI Copilot. I can help you analyze project risks, review contractor performance, or summarize systemic issues. How can I help you today?" }
   ]);
   const [input, setInput] = useState("");
-  const [snapshot, setSnapshot] = useState<{ total: number; active: number; critical: number; resolved: number; issues: Array<{ title?: string; category?: string; risk_score?: number; complaint_count?: number }> } | null>(null);
+  const [snapshot, setSnapshot] = useState<{ total: number; active: number; critical: number; resolved: number; issues: Array<{ title?: string; category?: string; area?: string; reports?: number; risk?: number; risk_score?: number; complaint_count?: number }> } | null>(null);
   const [loadingSnapshot, setLoadingSnapshot] = useState(false);
   const { officer } = useMuniAuth();
 

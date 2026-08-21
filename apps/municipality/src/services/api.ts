@@ -7,6 +7,7 @@ import type {
   LiveActivity,
   MuniAlert,
   MuniComplaint,
+  AreaOverview,
   MuniSettings,
   Officer,
   OfficerNotification,
@@ -16,9 +17,8 @@ import type {
   ComplaintStatus,
   WorkOrder,
   WorkOrderEvent,
-  alertPriority,
 } from "./types";
-import { DEFAULT_COMPLAINT_FILTERS } from "./types";
+import { DEFAULT_COMPLAINT_FILTERS, alertPriority } from "./types";
 import { nearestArea } from "@/services/geography";
 // Mocks removed
 
@@ -352,28 +352,51 @@ const STATUS_TO_BACKEND: Record<string, string> = {
   Rejected: "rejected",
 };
 
-function isComplaintInCity(raw: any, city: CityId): boolean {
-  const requested = String(city).toLowerCase().replace(/[_-]+/g, " ").trim();
-  if (requested === "all") return true;
-  const address = String(raw?.address_text ?? raw?.area ?? raw?.title ?? "").toLowerCase();
-  const lat = Number(raw?.lat);
-  const lng = Number(raw?.lng);
-  const isBengaluru = requested === "bengaluru" || requested === "bangalore";
-  const isVadodara = requested === "vadodara" || requested === "baroda";
-  const bengaluruAddress = /bengaluru|bangalore|indiranagar|yelahanka|electronic city|whitefield|hsr layout|jayanagar|basavanagudi|vijayanagar|marathahalli|btm layout|malleshwaram|hebbal|peenya|bommanahalli|kengeri|rajajinagar|shivajinagar|bellandur|banaswadi|mahadevapura|koramangala/.test(address);
-  const vadodaraAddress = /vadodara|baroda|gotri|manjalpur|bhayli|atladara|vasna|fatehgunj|sevasi|sayajigunj|karelibaug|alkapuri|makarpura|waghodia|akota|tarsali|harni|ajwa/.test(address);
-  const bengaluruCoordinates = Number.isFinite(lat) && Number.isFinite(lng) && lat >= 12.70 && lat <= 13.25 && lng >= 77.30 && lng <= 77.85;
-  const vadodaraCoordinates = Number.isFinite(lat) && Number.isFinite(lng) && lat >= 21.95 && lat <= 22.55 && lng >= 72.85 && lng <= 73.55;
-  if (isBengaluru) return !vadodaraAddress && !vadodaraCoordinates;
-  if (isVadodara) return !bengaluruAddress && !bengaluruCoordinates;
-  return true;
+const CATEGORY_LABELS: Record<string, MuniComplaint["category"]> = {
+  water_supply: "Water Supply",
+  road_damage: "Road Damage",
+  garbage_collection: "Garbage Collection",
+  drainage: "Drainage",
+  sewage: "Sewage",
+  street_lighting: "Street Lighting",
+  electricity: "Electricity",
+  public_transport: "Public Transport",
+  sanitation: "Sanitation",
+  other: "Other",
+};
+
+function categoryLabel(rawCategory: unknown): MuniComplaint["category"] {
+  const key = String(rawCategory ?? "other").trim().toLowerCase().replace(/[ -]+/g, "_");
+  return CATEGORY_LABELS[key] ?? (String(rawCategory ?? "Other").trim() || "Other") as MuniComplaint["category"];
+}
+
+function categoryQueryValue(value: string): string {
+  const key = value.trim().toLowerCase().replace(/[ -]+/g, "_");
+  return CATEGORY_LABELS[key] ? key : Object.entries(CATEGORY_LABELS).find(([, label]) => label.toLowerCase() === value.trim().toLowerCase())?.[0] ?? value;
+}
+
+function cityIdFromValue(value: unknown, fallbackCity: CityId): CityId {
+  const normalized = String(value ?? "").trim().toLowerCase();
+  if (normalized === "vadodara" || normalized === "baroda") return "vadodara";
+  if (normalized === "bengaluru" || normalized === "bangalore") return "bengaluru";
+  return fallbackCity;
+}
+
+function areaFromAddress(address: string | null, fallbackCity: CityId): string {
+  if (!address) return "Unspecified area";
+  const withoutCity = address.replace(/^\s*(Vadodara|Bengaluru|Bangalore|Baroda)\s*[·,|-]\s*/i, "");
+  const area = withoutCity.split(/\s*\(\s*Ward\b/i)[0]?.trim();
+  return area || fallbackCity;
 }
 
 function normalizeMuniComplaint(raw: any, fallbackCity: CityId): MuniComplaint {
-  const score = Number(raw.severity_score ?? raw.risk_score ?? 0);
-  const severity =
-    raw.severity ||
-    (score >= 80 ? "Critical" : score >= 60 ? "High" : score >= 35 ? "Moderate" : "Low");
+  const severityScore = Number(raw?.severity_score ?? 0);
+  const riskScore = Number(raw?.risk_score ?? severityScore);
+  const score = Number.isFinite(severityScore) ? severityScore : riskScore;
+  const severityValue = String(raw?.severity ?? "").toLowerCase();
+  const severity = (severityValue === "critical" || severityValue === "high" || severityValue === "moderate" || severityValue === "low")
+    ? severityValue[0]!.toUpperCase() + severityValue.slice(1)
+    : score >= 80 ? "Critical" : score >= 60 ? "High" : score >= 35 ? "Moderate" : "Low";
   const statusMap: Record<string, ComplaintStatus> = {
     received: "Received",
     in_review: "Under Review",
@@ -384,54 +407,86 @@ function normalizeMuniComplaint(raw: any, fallbackCity: CityId): MuniComplaint {
     closed: "Closed",
     rejected: "Rejected",
   };
-  const rawStatus = String(raw.status || "received").toLowerCase();
-  const createdAt = raw.createdAt || raw.created_at || new Date().toISOString();
-  const ward = raw.ward || (raw.ward_number ? `Ward ${raw.ward_number}` : "Unassigned");
-  const city = (raw.city || fallbackCity) as CityId;
+  const rawStatus = String(raw?.status ?? "received").toLowerCase();
+  const createdAt = raw?.createdAt || raw?.created_at || new Date().toISOString();
+  const addressText = raw?.address_text ?? raw?.addressText ?? null;
+  const ward = raw?.ward || (raw?.ward_number ? `Ward ${raw.ward_number}` : addressText?.match(/ward\s*[-#]?\s*\d+/i)?.[0] ?? "Unassigned");
+  const city = cityIdFromValue(raw?.city ?? raw?.city_name, fallbackCity);
+  const categoryKey = String(raw?.category ?? "other").trim().toLowerCase().replace(/[ -]+/g, "_");
+  const analysis = raw?.analysis && typeof raw.analysis === "object" ? raw.analysis : null;
+  const confidenceScore = analysis?.confidence_score == null ? null : Number(analysis.confidence_score);
+  const timeline = Array.isArray(raw?.timeline)
+    ? raw.timeline.map((event: any) => ({
+        label: String(event?.label ?? "Status updated"),
+        at: event?.at ?? createdAt,
+        actor: event?.actor,
+        reason: event?.reason,
+      }))
+    : [];
 
   return {
-    id: raw.public_id || raw.id,
-    description: raw.description || raw.title || "No description provided",
-    category: (raw.category || "Sanitation") as MuniComplaint["category"],
+    id: String(raw?.public_id ?? raw?.id ?? ""),
+    backendId: raw?.id ? String(raw.id) : undefined,
+    publicId: raw?.public_id ? String(raw.public_id) : undefined,
+    title: String(raw?.title ?? raw?.description ?? "Untitled complaint"),
+    description: String(raw?.description ?? ""),
+    category: categoryLabel(raw?.category),
+    categoryKey,
     severity: severity as MuniComplaint["severity"],
-    area: raw.area || raw.address_text || city,
+    priority: String(raw?.priority ?? "unassigned"),
+    severityScore: Number.isFinite(severityScore) ? severityScore : 0,
+    riskScore: Number.isFinite(riskScore) ? riskScore : 0,
+    area: String(raw?.area ?? areaFromAddress(addressText, fallbackCity)),
     ward,
     city,
-    department: (raw.department || "Municipal Water") as MuniComplaint["department"],
-    status: statusMap[rawStatus] || (raw.status as ComplaintStatus) || "Received",
-    assignedOfficerId: raw.assigned_officer_id ?? raw.assignedOfficerId ?? null,
-    assignedOfficerName: raw.assigned_officer_name ?? raw.assignedOfficerName ?? null,
-    assignedAt: raw.assigned_at ?? raw.assignedAt ?? null,
-    assignmentNotes: raw.assignment_notes ?? raw.assignmentNotes ?? null,
-    rejectionReason: raw.rejection_reason ?? raw.rejectionReason ?? null,
-    rejectedByName: raw.rejected_by_name ?? raw.rejectedByName ?? null,
-    rejectedAt: raw.rejected_at ?? raw.rejectedAt ?? null,
-    lat: Number(raw.lat ?? 0),
-    lng: Number(raw.lng ?? 0),
+    department: String(raw?.department ?? "Unassigned department"),
+    addressText,
+    status: statusMap[rawStatus] || (raw?.status as ComplaintStatus) || "Received",
+    rawStatus,
+    assignedOfficerId: raw?.assigned_officer_id ?? raw?.assignedOfficerId ?? null,
+    assignedOfficerName: raw?.assigned_officer_name ?? raw?.assignedOfficerName ?? null,
+    assignedAt: raw?.assigned_at ?? raw?.assignedAt ?? null,
+    assignmentNotes: raw?.assignment_notes ?? raw?.assignmentNotes ?? null,
+    rejectionReason: raw?.rejection_reason ?? raw?.rejectionReason ?? null,
+    rejectedByName: raw?.rejected_by_name ?? raw?.rejectedByName ?? null,
+    rejectedAt: raw?.rejected_at ?? raw?.rejectedAt ?? null,
+    lat: Number(raw?.lat ?? 0),
+    lng: Number(raw?.lng ?? 0),
+    submittedByName: raw?.submitted_by_name ?? raw?.submittedByName ?? null,
+    submittedByPhone: raw?.submitted_by_phone ?? raw?.submittedByPhone ?? null,
+    privacyStatus: raw?.privacy_status ?? undefined,
     createdAt,
-    updatedAt: raw.updatedAt || raw.updated_at || createdAt,
-    language: raw.language || raw.analysis?.language || undefined,
-    interpretedText: raw.interpreted_text || raw.analysis?.interpreted_text || undefined,
-    suggestedAction: raw.suggested_action || raw.analysis?.suggested_action || undefined,
-    timeline: Array.isArray(raw.timeline)
-      ? raw.timeline.map((event: any) => ({
-          label: String(event.label ?? "Status updated"),
-          at: event.at ?? createdAt,
-          actor: event.actor,
-          reason: event.reason,
-        }))
-      : [{ label: "Report Received", at: createdAt }],
-    ...(raw.analysis
+    updatedAt: raw?.updatedAt || raw?.updated_at || createdAt,
+    language: raw?.language || analysis?.language || undefined,
+    interpretedText: raw?.interpreted_text || analysis?.interpreted_text || undefined,
+    suggestedAction: raw?.suggested_action || analysis?.suggested_action || undefined,
+    analysisDetails: analysis
+      ? {
+          language: analysis.language ?? null,
+          keywords: Array.isArray(analysis.keywords) ? analysis.keywords.map(String) : [],
+          entities: Array.isArray(analysis.entities) ? analysis.entities : [],
+          similarCount: Number(analysis.similar_count ?? 0),
+          possibleDuplicate: Boolean(analysis.possible_duplicate),
+          confidenceScore,
+        }
+      : undefined,
+    timeline,
+    ...(analysis
       ? {
           aiAnalysis: {
-            category: (raw.category || "Sanitation") as MuniComplaint["category"],
+            category: categoryLabel(raw?.category),
             severity: severity as MuniComplaint["severity"],
             sentiment: "Neutral" as const,
-            similarity: Number(raw.analysis.confidence_score ?? 0),
+            similarity: Number(raw?.similarity ?? 0),
+            confidenceScore,
           },
         }
       : {}),
   };
+}
+
+function currentMuniCity(): CityId {
+  return read<Officer | null>(LS.officer, null)?.city ?? "vadodara";
 }
 
 export async function getMuniComplaints(
@@ -443,21 +498,19 @@ export async function getMuniComplaints(
     const wardNumber = Number(String(filters.ward).replace(/\D/g, ""));
     if (Number.isFinite(wardNumber) && wardNumber > 0) query["ward"] = wardNumber;
   }
-  if (filters?.category && filters.category !== "all") query["category"] = filters.category;
+  if (filters?.category && filters.category !== "all") query["category"] = categoryQueryValue(filters.category);
   if (filters?.status && filters.status !== "all")
     query["status"] = STATUS_TO_BACKEND[filters.status] || filters.status;
 
   const res = await api.complaints.list(query);
   const items = res?.items ?? res?.data ?? res;
-  const requestedCity = (filters?.city && filters.city !== "all" ? filters.city : "all") as CityId;
-  const cityScopedItems = (Array.isArray(items) ? items : []).filter((item) =>
-    isComplaintInCity(item, requestedCity),
-  );
-  const normalized = cityScopedItems.map((item) =>
-    normalizeMuniComplaint(
-      item,
-      (filters?.city === "all" ? "vadodara" : filters?.city || "vadodara") as CityId,
-    ),
+  // The backend applies authoritative city scoping from the authenticated
+  // officer. Do not re-filter by address text or coordinates in the browser:
+  // those heuristics can discard legitimate records and cannot identify the
+  // city reliably for an administrator viewing multiple cities.
+  const fallbackCity = (filters?.city && filters.city !== "all" ? filters.city : currentMuniCity()) as CityId;
+  const normalized = (Array.isArray(items) ? items : []).map((item) =>
+    normalizeMuniComplaint(item, fallbackCity),
   );
 
   if (!filters?.search) return normalized;
@@ -470,7 +523,7 @@ export async function getMuniComplaints(
 export async function getMuniComplaint(id: string): Promise<MuniComplaint | null> {
   try {
     const raw = await api.complaints.get(id);
-    return raw ? normalizeMuniComplaint(raw, "vadodara" as CityId) : null;
+    return raw ? normalizeMuniComplaint(raw, currentMuniCity()) : null;
   } catch {
     return null;
   }
@@ -482,7 +535,7 @@ export async function updateComplaintStatus(
   notes?: string,
 ): Promise<MuniComplaint> {
   const raw = await api.complaints.updateStatus(id, STATUS_TO_BACKEND[status] || status, notes);
-  return normalizeMuniComplaint(raw, "vadodara");
+  return normalizeMuniComplaint(raw, currentMuniCity());
 }
 
 export async function updateMuniComplaint(
@@ -491,12 +544,12 @@ export async function updateMuniComplaint(
 ): Promise<MuniComplaint> {
   if (patch.status) return updateComplaintStatus(id, patch.status);
   const raw = await client.patch<any>(`/api/v1/complaints/${id}`, patch);
-  return normalizeMuniComplaint(raw, "vadodara");
+  return normalizeMuniComplaint(raw, currentMuniCity());
 }
 
 export async function assignComplaint(
   id: string,
-  input: { department: Department; team?: string; officer?: string; notes?: string },
+  input: { department: string; team?: string; officer?: string; notes?: string },
 ): Promise<MuniComplaint> {
   if (!input.officer) {
     throw new Error("Select a municipal officer before assigning this complaint");
@@ -505,7 +558,7 @@ export async function assignComplaint(
     officer_id: input.officer,
     notes: input.notes || undefined,
   });
-  return normalizeMuniComplaint(raw, "vadodara");
+  return normalizeMuniComplaint(raw, currentMuniCity());
 }
 
 export async function bulkUpdateComplaints(
@@ -729,7 +782,7 @@ export async function getAlerts(city?: CityId): Promise<MuniAlert[]> {
     grouped.set(key, [...(grouped.get(key) ?? []), complaint]);
   }
   return Array.from(grouped.entries()).map(([key, rows]) => {
-    const [area, category] = key.split("|");
+    const [area = "Unspecified area", category = "Other"] = key.split("|");
     const score = Math.max(...rows.map((row) => row.severity === "Critical" ? 90 : row.severity === "High" ? 70 : 45));
     return {
       id: `alert-${targetCity}-${area}-${category}`,
@@ -787,7 +840,7 @@ export async function getDepartment(id: string): Promise<DepartmentStats | null>
 }
 
 /* ------------------------------------------------------------------ areas */
-export async function getAreaOverviews(city: CityId) {
+export async function getAreaOverviews(city: CityId): Promise<AreaOverview[]> {
   const complaints = await getMuniComplaints({ city });
   const grouped = new Map<string, MuniComplaint[]>();
   for (const complaint of complaints) {
@@ -810,13 +863,13 @@ export async function getAreaOverviews(city: CityId) {
       name,
       ward: rows[0]?.ward ?? "Unassigned",
       city,
-      activity: risk >= 85 ? "Critical" : risk >= 70 ? "High" : risk >= 40 ? "Moderate" : "Low",
       reports: rows.length,
       critical,
       trendPct: 0,
-      topIssue,
       risk,
-      health: risk >= 85 ? "critical" : risk >= 70 ? "high" : risk >= 40 ? "moderate" : "low",
+      health: (risk >= 85 ? "critical" : risk >= 70 ? "high" : risk >= 40 ? "moderate" : "low") as AreaOverview["health"],
+      activity: (risk >= 85 ? "Critical" : risk >= 70 ? "High" : risk >= 40 ? "Moderate" : "Low") as AreaOverview["activity"],
+      topIssue: topIssue as AreaOverview["topIssue"],
     };
   });
 }

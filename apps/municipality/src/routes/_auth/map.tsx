@@ -129,7 +129,7 @@ function MuniMapPage() {
   const trendData = useMemo(() => {
     const daily = Array.isArray(mapData?.daily_trends) ? mapData.daily_trends : [];
     const labels = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-    const byDay = new Map(daily.map((item: any) => [String(item.date).slice(5), Number(item.count ?? 0)]));
+    const byDay = new Map<string, number>(daily.map((item: any) => [String(item.date).slice(5), Number(item.count ?? 0)] as [string, number]));
     return labels.map((day) => ({ day, reports: byDay.get(day) ?? 0 }));
   }, [mapData]);
   const healthData = useMemo(() => {

@@ -5,6 +5,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.dialects.postgresql import UUID, JSONB
 
 from app.models.base import Base, UUIDMixin, TimestampMixin
+from app.models.procurement import City
 from datetime import datetime
 
 

@@ -11,6 +11,7 @@ export const ISSUE_TYPES = [
   "Electricity",
   "Public Transport",
   "Sanitation",
+  "Other",
 ] as const;
 
 export type IssueCategory = (typeof ISSUE_TYPES)[number];
@@ -92,17 +93,37 @@ export interface SystemicIssue {
 
 export interface MuniComplaint {
   id: string;
+  backendId?: string | undefined;
+  publicId?: string | undefined;
+  title: string;
   description: string;
   category: IssueCategory;
+  categoryKey?: string | undefined;
   severity: Severity;
+  priority: string;
+  severityScore: number;
+  riskScore: number;
   area: string;
   ward: string;
   city: CityId;
-  department: Department;
+  department: string;
+  addressText?: string | null;
   status: ComplaintStatus;
   lat: number;
   lng: number;
   photo?: string | null;
+  submittedByName?: string | null;
+  submittedByPhone?: string | null;
+  privacyStatus?: string | undefined;
+  rawStatus?: string | undefined;
+  analysisDetails?: {
+    language?: string | null;
+    keywords: string[];
+    entities: Array<{ text: string; label: string; start?: number | null; end?: number | null }>;
+    similarCount: number;
+    possibleDuplicate: boolean;
+    confidenceScore?: number | null | undefined;
+  } | undefined;
   createdAt: string;
   updatedAt: string;
   assignedOfficerId?: string | null;
@@ -123,6 +144,7 @@ export interface MuniComplaint {
     severity: Severity;
     sentiment: "Negative" | "Neutral" | "Urgent";
     similarity: number;
+    confidenceScore?: number | null;
     cluster?: string;
   };
   timeline: Array<{
@@ -809,7 +831,8 @@ export const DEFAULT_PROOF_POLICIES: Record<IssueCategory, ProofPolicy> = {
   "Sewage": { category: "Sewage", requiredStages: ["BEFORE", "START", "DURING", "COMPLETION"], requiresGPS: true, requiresTimestamp: true, requiresMeasurement: true, requiresInspection: true, maxGeofenceRadiusMeters: 50 },
   "Electricity": { category: "Electricity", requiredStages: ["BEFORE", "COMPLETION"], requiresGPS: true, requiresTimestamp: true, requiresMeasurement: false, requiresInspection: true, maxGeofenceRadiusMeters: 30 },
   "Public Transport": { category: "Public Transport", requiredStages: ["BEFORE", "COMPLETION"], requiresGPS: true, requiresTimestamp: true, requiresMeasurement: false, requiresInspection: true, maxGeofenceRadiusMeters: 100 },
-  "Sanitation": { category: "Sanitation", requiredStages: ["BEFORE", "COMPLETION"], requiresGPS: true, requiresTimestamp: true, requiresMeasurement: false, requiresInspection: false, maxGeofenceRadiusMeters: 100 }
+  "Sanitation": { category: "Sanitation", requiredStages: ["BEFORE", "COMPLETION"], requiresGPS: true, requiresTimestamp: true, requiresMeasurement: false, requiresInspection: false, maxGeofenceRadiusMeters: 100 },
+  "Other": { category: "Other", requiredStages: ["BEFORE", "COMPLETION"], requiresGPS: true, requiresTimestamp: true, requiresMeasurement: false, requiresInspection: true, maxGeofenceRadiusMeters: 100 }
 };
 
 // ------------------------------------------------------------- Inspection

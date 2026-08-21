@@ -75,9 +75,9 @@ function ProfilePage() {
         {!performance && !performanceError ? <p className="text-sm text-muted-foreground">Loading verified municipal metrics…</p> : null}
         {performance ? (
           <div className="grid gap-3 sm:grid-cols-3">
-            <Metric label="Handled complaints" value={metrics.handled_complaints ?? 0} />
-            <Metric label="Resolved complaints" value={metrics.resolved_complaints ?? 0} />
-            <Metric label="Resolution rate" value={`${metrics.resolution_rate ?? 0}%`} />
+            <Metric label="Handled complaints" value={metrics["handled_complaints"] ?? 0} />
+            <Metric label="Resolved complaints" value={metrics["resolved_complaints"] ?? 0} />
+            <Metric label="Resolution rate" value={`${metrics["resolution_rate"] ?? 0}%`} />
           </div>
         ) : null}
         <p className="text-xs text-muted-foreground">The current score is based on live complaint outcomes. SLA adherence, citizen confirmation, inspection quality, and rework signals will expand the score as those verified workflow events are available.</p>
