@@ -101,6 +101,15 @@ class AdminSetupResponse(BaseModel):
     role: str
 
 
+class DemoAccountPasswordUpdate(BaseModel):
+    email: EmailStr
+    password: str = Field(..., min_length=8, max_length=100)
+
+
+class DemoAccountRepairRequest(BaseModel):
+    accounts: list[DemoAccountPasswordUpdate] = Field(..., min_length=1, max_length=10)
+
+
 @router.post("/officer-login", response_model=OfficerLoginResponse)
 def officer_login(
     login_data: OfficerLoginRequest,
@@ -249,6 +258,41 @@ def demo_account_audit(db: Session = Depends(get_db)):
         }
         for email in DEMO_ACCOUNT_EMAILS
     ]
+
+
+@router.post("/demo-account-repair", dependencies=[Depends(verify_officer_key)])
+def demo_account_repair(
+    repair_data: DemoAccountRepairRequest,
+    db: Session = Depends(get_db),
+):
+    """Rotate passwords only for the documented demo identities.
+
+    This endpoint never changes roles, cities, phone numbers, complaints, or
+    contractor profiles. It is protected by the existing officer key and
+    rejects every email outside the explicit demo allowlist.
+    """
+    requested = {str(item.email).strip().lower(): item.password for item in repair_data.accounts}
+    unknown = sorted(set(requested) - set(DEMO_ACCOUNT_EMAILS))
+    if unknown:
+        raise HTTPException(status_code=400, detail=f"Email not in demo allowlist: {unknown[0]}")
+
+    users = {
+        user.email.lower(): user
+        for user in db.query(User).filter(func.lower(User.email).in_(list(requested))).all()
+    }
+    missing = sorted(set(requested) - set(users))
+    if missing:
+        raise HTTPException(status_code=404, detail=f"Demo account not found: {missing[0]}")
+
+    for email, password in requested.items():
+        users[email].password_hash = hash_password(password)
+    db.commit()
+    return {
+        "updated": sorted(requested),
+        "roles_preserved": {email: users[email].role for email in sorted(requested)},
+        "phone_missing": sorted(email for email in requested if not (users[email].phone or "").strip()),
+        "message": "Demo passwords rotated without changing live records.",
+    }
 
 
 @router.post("/register", response_model=CitizenAuthResponse)
