@@ -189,28 +189,35 @@ export async function getMuniOfficer(): Promise<Officer | null> {
 /* ----------------------------------------------------------- dashboard */
 
 export async function getDashboardKPIs(): Promise<DashboardKPIs> {
-  const data = await client.get<any>("/api/v1/analytics/summary");
-  if (data) {
-    const total = Number(data.total_complaints ?? 0);
-    const statusDist = data.status_distribution || {};
-    const resolved = Number(statusDist.resolved ?? 0);
-    const active = Number(data.unresolved_complaints ?? Math.max(0, total - resolved));
-    return {
-      totalReports: total,
-      critical: Number(data.risk_distribution?.critical ?? data.critical_issues ?? 0),
-      active,
-      resolved,
-      emergingIssues: Number(data.total_issues ?? 0),
-      areaHotspots: Number(data.hotspot_count ?? 0),
-    };
-  }
+  const [summaryResult, issuesResult, hotspotsResult] = await Promise.allSettled([
+    client.get<any>("/api/v1/analytics/summary"),
+    getSystemicIssues(),
+    getHotspotRankings(),
+  ]);
+  const data = summaryResult.status === "fulfilled" ? summaryResult.value : null;
+  const issues = issuesResult.status === "fulfilled" && Array.isArray(issuesResult.value)
+    ? issuesResult.value
+    : [];
+  const hotspots = hotspotsResult.status === "fulfilled" && Array.isArray(hotspotsResult.value)
+    ? hotspotsResult.value
+    : [];
+
+  const total = Number(data?.total_complaints ?? 0);
+  const statusDist = data?.status_distribution || {};
+  const resolved = Number(statusDist.resolved ?? 0);
+  const active = Number(data?.unresolved_complaints ?? Math.max(0, total - resolved));
+  const openIssues = issues.filter((issue: any) => {
+    const status = String(issue?.status ?? "open").toLowerCase();
+    return status !== "resolved" && status !== "closed";
+  }).length;
+
   return {
-    totalReports: 0,
-    critical: 0,
-    active: 0,
-    resolved: 0,
-    emergingIssues: 0,
-    areaHotspots: 0,
+    totalReports: total,
+    critical: Number(data?.risk_distribution?.critical ?? data?.critical_issues ?? 0),
+    active,
+    resolved,
+    emergingIssues: Math.max(Number(data?.total_issues ?? 0), openIssues),
+    areaHotspots: Math.max(Number(data?.hotspot_count ?? 0), hotspots.length),
   };
 }
 
