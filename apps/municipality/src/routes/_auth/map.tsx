@@ -188,8 +188,8 @@ function MuniMapPage() {
         ))}
       </div>
 
-      <div className="grid gap-4 xl:grid-cols-[1fr_340px]">
-        <GlassCard elevation="raised" className="overflow-hidden">
+      <div className="grid min-w-0 gap-4 xl:grid-cols-[minmax(0,1fr)_340px]">
+        <GlassCard elevation="raised" className="min-w-0 overflow-hidden">
           <div className="jm-map-frame">
             <ClientCivicMap
               cityId={city}
@@ -212,15 +212,15 @@ function MuniMapPage() {
           </div>
         </GlassCard>
 
-        <div className="space-y-4">
-          <GlassCard elevation="raised" className="jm-chart-card p-5">
+        <div className="min-w-0 space-y-4">
+          <GlassCard elevation="raised" className="jm-chart-card min-w-0 p-5">
             <SectionLabel>{t('ui.7_day_pulse')}</SectionLabel>
             <ActivityTrendChart data={trendData} className="mt-2 h-[140px]" />
           </GlassCard>
-          <GlassCard elevation="raised" className="jm-chart-card p-5">
+          <GlassCard elevation="raised" className="jm-chart-card min-w-0 p-5">
             <SectionLabel>{t('ui.severity_mix')}</SectionLabel>
             {healthData.length > 0 ? (
-              <HealthPieChart data={healthData} className="h-[160px]" />
+              <HealthPieChart data={healthData} className="h-[180px] sm:h-[200px]" />
             ) : (
               <p className="mt-4 text-sm text-muted-foreground">{t('ui.no_data_under_filters')}</p>
             )}

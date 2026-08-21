@@ -174,6 +174,7 @@ export interface CivicProfileSummary {
   sharing_opt_in: boolean;
   animation_enabled: boolean;
   reward_notifications_enabled: boolean;
+  reports_submitted: number;
   verified_contributions: number;
   resolutions_supported: number;
 }

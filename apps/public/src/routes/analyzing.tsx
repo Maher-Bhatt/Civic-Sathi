@@ -252,17 +252,17 @@ function AnalyzingPage() {
           <dl className="grid gap-4 sm:grid-cols-3">
             <div>
               <dt className="label-xs">{t("ui.ai_suggested_category")}</dt>
-              <dd className="mt-1.5 text-sm font-medium">{result.category}</dd>
+              <dd className="mt-1.5 text-sm font-medium">{complaint.category}</dd>
             </div>
             <div>
               <dt className="label-xs">{t("ui.severity")}</dt>
               <dd className="mt-1.5">
-                <SeverityBadge severity={result.severity} />
+                <SeverityBadge severity={complaint.severity} />
               </dd>
             </div>
             <div>
               <dt className="label-xs">{t("ui.location")}</dt>
-              <dd className="mt-1.5 text-sm font-medium">{result.location.ward}</dd>
+              <dd className="mt-1.5 text-sm font-medium">{complaint.location.ward}</dd>
             </div>
           </dl>
         </GlassCard>

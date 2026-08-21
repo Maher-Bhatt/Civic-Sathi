@@ -173,9 +173,11 @@ function ProfilePage() {
               </p>
             </div>
             <div className="rounded-2xl border border-border/80 bg-background/35 px-4 py-3 text-right">
-              <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground">{t("profile.verifiedContributions", "Verified contributions")}</p>
-              <p className="mt-1 text-2xl font-semibold">{civic?.verified_contributions ?? 0}</p>
-              <p className="text-xs text-muted-foreground">{civic?.resolutions_supported ?? 0} {t("profile.resolutionsSupported", "resolutions supported")}</p>
+              <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground">{t("profile.reportsSubmitted", "Reports submitted")}</p>
+              <p className="mt-1 text-2xl font-semibold">{civic?.reports_submitted ?? 0}</p>
+              <p className="text-xs text-muted-foreground">
+                {civic?.verified_contributions ?? 0} {t("profile.verifiedShort", "verified")} · {civic?.resolutions_supported ?? 0} {t("profile.resolutionsSupported", "resolutions supported")}
+              </p>
             </div>
           </div>
           <div className="mt-6" aria-label={`${t("ui.level", "Level")} ${t("ui.progress", "progress")}: ${levelProgress}%`}>

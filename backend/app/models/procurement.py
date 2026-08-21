@@ -143,7 +143,7 @@ class FieldEvidence(Base, UUIDMixin, TimestampMixin):
     __tablename__ = "field_evidence"
     
     work_order_id = mapped_column(ForeignKey("work_orders.id"), nullable=False, index=True)
-    photo_url: Mapped[str] = mapped_column(String(1024), nullable=False)
+    photo_url: Mapped[str] = mapped_column(Text, nullable=False)
     description: Mapped[str | None] = mapped_column(Text)
 
 

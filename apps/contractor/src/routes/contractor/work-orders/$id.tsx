@@ -56,6 +56,31 @@ const CONTRACTOR_NEXT_LABEL: Record<string, string> = {
   REWORK: "Resubmit for Inspection",
 };
 
+async function encodeEvidencePhoto(file: File): Promise<string> {
+  const objectUrl = URL.createObjectURL(file);
+  try {
+    const image = new Image();
+    image.decoding = "async";
+    image.src = objectUrl;
+    await new Promise<void>((resolve, reject) => {
+      image.onload = () => resolve();
+      image.onerror = () => reject(new Error("Unable to read the selected photo."));
+    });
+
+    const maxDimension = 1600;
+    const scale = Math.min(1, maxDimension / Math.max(image.naturalWidth, image.naturalHeight));
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.max(1, Math.round(image.naturalWidth * scale));
+    canvas.height = Math.max(1, Math.round(image.naturalHeight * scale));
+    const context = canvas.getContext("2d");
+    if (!context) throw new Error("Photo processing is unavailable in this browser.");
+    context.drawImage(image, 0, 0, canvas.width, canvas.height);
+    return canvas.toDataURL("image/jpeg", 0.82);
+  } finally {
+    URL.revokeObjectURL(objectUrl);
+  }
+}
+
 function ContractorWorkOrderDetail() {
     const { t } = useI18n();
   const { id } = Route.useParams();
@@ -317,11 +342,10 @@ function ContractorWorkOrderDetail() {
                     accept="image/*"
                     onChange={(e) => {
                       const file = e.target.files?.[0];
-                      if (file) {
-                        const reader = new FileReader();
-                        reader.onloadend = () => setFileData(reader.result as string);
-                        reader.readAsDataURL(file);
-                      }
+                      if (!file) return;
+                      void encodeEvidencePhoto(file)
+                        .then(setFileData)
+                        .catch((err: Error) => toast.error(err.message));
                     }}
                     className="w-full text-sm text-[var(--muted-foreground)] file:mr-3 file:py-1.5 file:px-3 file:rounded file:border-0 file:text-xs file:font-medium file:bg-[var(--surface-elevated)] file:text-[var(--foreground)] hover:file:bg-[var(--primary)]/10"
                     required

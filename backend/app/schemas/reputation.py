@@ -64,6 +64,7 @@ class CivicProfileSummaryOut(BaseModel):
     sharing_opt_in: bool
     animation_enabled: bool
     reward_notifications_enabled: bool
+    reports_submitted: int = 0
     verified_contributions: int = 0
     resolutions_supported: int = 0
 

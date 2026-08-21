@@ -331,6 +331,10 @@ def profile_summary(db: Session, user: User, profile: CivicProfile) -> dict[str,
     level, current_xp, level_name, next_xp = level_for_xp(int(profile.xp_total or 0))
     denominator = max(1, next_xp - current_xp)
     pct = int(min(100, max(0, ((int(profile.xp_total or 0) - current_xp) / denominator) * 100)))
+    reports_submitted = db.query(func.count(Complaint.id)).filter(
+        Complaint.submitted_by_id == user.id,
+        Complaint.status != "rejected",
+    ).scalar()
     verified = db.query(func.count(distinct(IssueComplaint.complaint_id))).join(
         Complaint, Complaint.id == IssueComplaint.complaint_id
     ).filter(Complaint.submitted_by_id == user.id, Complaint.status != "rejected").scalar()
@@ -356,6 +360,7 @@ def profile_summary(db: Session, user: User, profile: CivicProfile) -> dict[str,
         "sharing_opt_in": profile.sharing_opt_in,
         "animation_enabled": profile.animation_enabled,
         "reward_notifications_enabled": profile.reward_notifications_enabled,
+        "reports_submitted": int(reports_submitted or 0),
         "verified_contributions": int(verified or 0),
         "resolutions_supported": int(resolutions or 0),
     }
