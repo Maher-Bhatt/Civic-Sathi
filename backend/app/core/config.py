@@ -68,6 +68,9 @@ class Settings(BaseSettings):
     # ML Configuration
     sentence_model_name: str = "sentence-transformers/all-MiniLM-L6-v2"
     similarity_threshold: float = 0.72
+    canonical_group_similarity_threshold: float = Field(default=0.52, ge=0.0, le=1.0)
+    canonical_group_radius_meters: float = Field(default=500.0, gt=0.0, le=5000.0)
+    canonical_group_window_days: int = Field(default=30, ge=1, le=3650)
     min_cluster_size: int = 5
     systemic_window_days: int = 30
     

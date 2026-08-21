@@ -54,6 +54,15 @@ export interface TimelineEvent {
   done: boolean;
 }
 
+export interface RelatedComplaint {
+  id: string;
+  public_id?: string;
+  title: string;
+  category: string;
+  similarity_score?: number | null;
+  created_at: string;
+}
+
 export interface Complaint {
   id: string;
   description: string;
@@ -65,6 +74,9 @@ export interface Complaint {
   status: ComplaintStatus;
   relatedCount: number;
   nearbyCount: number;
+  problemGroupId?: string | null;
+  relatedComplaints: RelatedComplaint[];
+  matchingState: "complete" | "pending" | "failed";
   timeline: TimelineEvent[];
 }
 

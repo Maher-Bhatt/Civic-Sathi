@@ -67,6 +67,24 @@ class ComplaintAnalysisResponse(BaseModel):
     suggested_action: str | None = None
 
 
+class RelatedComplaint(BaseModel):
+    """A complaint member of the current complaint's canonical problem group."""
+    id: UUID
+    public_id: str
+    title: str
+    category: str
+    similarity_score: float | None = None
+    created_at: datetime
+
+
+class ProblemGroupResponse(BaseModel):
+    """Authoritative canonical group membership returned with a complaint."""
+    id: UUID
+    related_count: int
+    members: list[RelatedComplaint] = []
+    matching_state: str = "complete"
+
+
 class ComplaintLinks(BaseModel):
     """HATEOAS links for complaint resource"""
     self: str
@@ -113,6 +131,10 @@ class ComplaintResponse(BaseModel):
     updated_at: datetime
     timeline: list[ComplaintTimelineEvent] = []
     analysis: ComplaintAnalysisResponse | None = None
+    problem_group_id: UUID | None = None
+    related_count: int = 0
+    related_complaints: list[RelatedComplaint] = []
+    matching_state: str = "complete"
     links: ComplaintLinks | None = None
     
     class Config:
@@ -174,4 +196,7 @@ class SimilarComplaintsResponse(BaseModel):
     """Response for similar complaints endpoint"""
     complaint_id: UUID
     embedding_model: str
+    problem_group_id: UUID | None = None
+    related_count: int = 0
+    matching_state: str = "complete"
     items: list[SimilarComplaintItem]

@@ -57,15 +57,6 @@ function ComplaintDetail() {
   const city = data ? nearestCity(location.lat, location.lng) : null;
   const mapCityId = city?.id ?? "vadodara";
 
-  const getRelatedSamples = (category: string) => {
-    const cat = category.toLowerCase();
-    if (cat.includes("water")) return ["No water supply for 2 days", "Contaminated drinking water", "Low water pressure in morning"];
-    if (cat.includes("garbage") || cat.includes("waste")) return ["Garbage not collected", "Overflowing community bin", "Debris dumped on sidewalk"];
-    if (cat.includes("drainage") || cat.includes("sewage")) return ["Sewage overflow on street", "Blocked storm drain", "Foul smell from open drain"];
-    if (cat.includes("light")) return ["Streetlights not working", "Pole leaning dangerously", "Lights blinking continuously"];
-    return ["Pothole on main road", "Road cave-in near circle", "Broken asphalt after rain"];
-  };
-
   return (
     <PageShell className="max-w-3xl">
       <Link
@@ -148,14 +139,25 @@ function ComplaintDetail() {
                 ariaLabel={`Map of civic activity near ${location.ward}`}
                 showLegend={false}
               />
-              <ul className="space-y-2 px-2.5 py-4">
-                {getRelatedSamples(data.category).map((s) => (
-                  <li key={s} className="flex items-start gap-2.5 text-sm text-muted-foreground">
-                    <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-critical opacity-70" />
-                    "{s}"
-                  </li>
-                ))}
-              </ul>
+              <div className="px-2.5 py-4">
+                {data.matchingState === "pending" ? (
+                  <p className="text-sm text-muted-foreground">Civic Sathi is still matching this report with nearby complaints.</p>
+                ) : data.relatedComplaints.length > 0 ? (
+                  <ul className="space-y-2">
+                    {data.relatedComplaints.map((related) => (
+                      <li key={related.id} className="flex items-start gap-2.5 text-sm text-muted-foreground">
+                        <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-critical opacity-70" />
+                        <span>
+                          <span className="font-medium text-foreground">{related.public_id || related.id}</span>{" "}
+                          {related.title}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="text-sm text-muted-foreground">No other complaint is currently in this canonical problem group.</p>
+                )}
+              </div>
             </GlassCard>
 
             <GlassCard elevation="raised" className="animate-rise p-5 sm:p-7">

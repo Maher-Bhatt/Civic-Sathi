@@ -12,6 +12,7 @@ from app.ml.pipeline import analyze_complaint
 from app.ml.deduplication import get_candidate_issues, calculate_similarity_score
 from app.schemas.complaint import ComplaintCreate
 from app.ml.similarity import find_similar_complaints
+from app.services.canonical_grouping import assign_canonical_group
 
 
 class JobService:
@@ -101,6 +102,16 @@ class JobService:
         analysis.embedding_model = ml_result.embedding_model
         analysis.embedding_vector = ml_result.embedding_vector
         analysis.confidence_score = ml_result.confidence_score
+
+        # Legacy queued jobs must use the same durable, symmetric group source
+        # of truth as synchronous complaint creation. This also repairs older
+        # complaints that were created before canonical grouping was deployed.
+        group_id, matches, _operation = assign_canonical_group(self.db, complaint, ml_result.embedding_vector)
+        analysis.candidate_issue_id = group_id
+        analysis.duplicate_score = max((score for _, score, _ in matches), default=1.0)
+        analysis.ai_status = "DUPLICATE" if matches else "UNIQUE"
+        self.db.flush()
+        return
         
         # 2. Candidate Retrieval (Stage 1)
         candidates = get_candidate_issues(

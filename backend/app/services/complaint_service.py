@@ -1,18 +1,33 @@
 from uuid import UUID
 from datetime import datetime, timezone
+import logging
 import re
 from sqlalchemy.orm import Session
 from fastapi import HTTPException
 
 from app.models.complaint import Complaint, ComplaintAnalysis
+from app.models.issue import IssueComplaint
+from app.models.job import AnalysisJob
 from app.models.audit import AuditLog
 from app.models.user import Ward, Department, User
 from app.repositories.complaint_repository import ComplaintRepository
-from app.schemas.complaint import ComplaintCreate, ComplaintResponse, ComplaintAnalysisResponse, ComplaintLinks
+from app.schemas.complaint import (
+    ComplaintCreate,
+    ComplaintResponse,
+    ComplaintAnalysisResponse,
+    ComplaintLinks,
+    RelatedComplaint,
+)
 from app.schemas.common import ComplaintStatus, EntityResult
 from app.ml.similarity import find_similar_complaints
+from app.ml.preprocessing import preprocess_text
+from app.ml.embeddings import embed_text, get_embedding_model_name
+from app.services.canonical_grouping import assign_canonical_group, group_members, normalize_category
 from app.core.config import settings
 from app.core.errors import NotFoundException
+
+
+logger = logging.getLogger(__name__)
 
 
 class ComplaintService:
@@ -151,50 +166,79 @@ class ComplaintService:
             timeline_json=[{"label": "Report Received", "at": datetime.now(timezone.utc).isoformat()}],
         )
 
-        complaint = self.repo.create(complaint)
+        # Keep the complaint, analysis, group link, reputation ledger, and job
+        # record in one transaction. The old implementation committed here,
+        # queued matching, and returned before any group existed.
+        self.db.add(complaint)
+        self.db.flush()
+        self.db.refresh(complaint)
+
+        comparison_text = f"{complaint.title}. {complaint.description}"
+        try:
+            prepared = preprocess_text(comparison_text)
+            embedding = embed_text(prepared["cleaned_text"])
+            embedding_model = get_embedding_model_name()
+        except Exception as exc:
+            logger.warning("complaint_matching_embedding_unavailable complaint_id=%s error=%s", complaint.id, type(exc).__name__)
+            prepared = {"language": complaint_data.language or "unknown", "cleaned_text": comparison_text, "keywords": [], "entities": []}
+            embedding = None
+            embedding_model = None
+
+        metadata = []
+        if complaint_data.ai_interpreted_text:
+            metadata.append({"text": complaint_data.ai_interpreted_text, "label": "ai_interpretation"})
+        if complaint_data.ai_suggested_action:
+            metadata.append({"text": complaint_data.ai_suggested_action, "label": "municipality_action"})
+        analysis = ComplaintAnalysis(
+            complaint_id=complaint.id,
+            language=complaint_data.language or prepared["language"],
+            cleaned_text=prepared["cleaned_text"],
+            entities_json=[entity.model_dump() for entity in prepared["entities"]] + metadata,
+            keywords_json=prepared["keywords"],
+            embedding_model=embedding_model,
+            embedding_vector=embedding,
+            confidence_score=1.0 if complaint_data.ai_interpreted_text else 0.7,
+            ai_status="MATCHING",
+        )
+        self.db.add(analysis)
+        self.db.flush()
+
+        group_id, matches, operation = assign_canonical_group(self.db, complaint, embedding)
+        analysis.candidate_issue_id = group_id
+        analysis.duplicate_score = max((score for _, score, _ in matches), default=1.0)
+        analysis.ai_status = "DUPLICATE" if matches else "UNIQUE"
 
         # Start the civic identity loop from the persisted complaint itself. The
         # ledger key is stable, so profile reconciliation cannot double-award it.
         if submitted_by_id:
             from app.services.reputation_service import award_xp
-            award_xp(
-                self.db,
-                self.db.get(User, submitted_by_id),
-                amount=5,
-                action="report_submitted",
-                reason="Genuine civic report entered the platform",
-                source_type="complaint",
-                source_id=str(complaint.id),
-                idempotency_key=f"report:{complaint.id}",
-                metadata={"public_id": complaint.public_id},
-            )
-            self.db.commit()
+            submitter = self.db.get(User, submitted_by_id)
+            if submitter:
+                award_xp(
+                    self.db,
+                    submitter,
+                    amount=5,
+                    action="report_submitted",
+                    reason="Genuine civic report entered the platform",
+                    source_type="complaint",
+                    source_id=str(complaint.id),
+                    idempotency_key=f"report:{complaint.id}",
+                    metadata={"public_id": complaint.public_id},
+                )
 
-        # Preserve the backend AI interpretation for municipal officers.
-        # These
-        # metadata entries live in the existing JSONB analysis payload so this
-        # repair does not require a destructive schema migration.
-        if complaint_data.language or complaint_data.ai_interpreted_text or complaint_data.ai_suggested_action:
-            metadata = []
-            if complaint_data.ai_interpreted_text:
-                metadata.append({"text": complaint_data.ai_interpreted_text, "label": "ai_interpretation"})
-            if complaint_data.ai_suggested_action:
-                metadata.append({"text": complaint_data.ai_suggested_action, "label": "municipality_action"})
-            self.db.add(ComplaintAnalysis(
-                complaint_id=complaint.id,
-                language=complaint_data.language,
-                cleaned_text=complaint_data.ai_interpreted_text or complaint.description,
-                entities_json=metadata,
-                keywords_json=[],
-                confidence_score=1.0 if complaint_data.ai_interpreted_text else None,
-                ai_status="AI_ROUTED" if metadata else "PENDING",
-            ))
-            self.db.commit()
-
-        from app.services.job_service import JobService
-        JobService(self.db).create_analysis_job(complaint.id)
-
+        now = datetime.now(timezone.utc)
+        self.db.add(AnalysisJob(
+            job_type="COMPLAINT_ANALYSIS",
+            complaint_id=complaint.id,
+            status="COMPLETED",
+            attempt_count=1,
+            available_at=now,
+            started_at=now,
+            completed_at=now,
+        ))
+        self.db.commit()
         self.db.refresh(complaint)
+        logger.info("complaint_created_with_group complaint_id=%s group_id=%s operation=%s related_count=%d", complaint.id, group_id, operation, len(matches))
         return self._to_response(complaint, include_links=True)
 
     def get_complaint(self, complaint_id: UUID) -> ComplaintResponse:
@@ -407,55 +451,53 @@ class ComplaintService:
         self.db.refresh(complaint)
         return self._to_response(complaint)
 
+    def _group_payload(self, complaint: Complaint, limit: int | None = None) -> tuple[UUID | None, list[RelatedComplaint]]:
+        """Read group membership from IssueComplaint, never from a volatile index."""
+        group_row = self.db.query(IssueComplaint.issue_id).join(
+            Complaint, Complaint.id == IssueComplaint.complaint_id
+        ).filter(IssueComplaint.complaint_id == complaint.id).order_by(IssueComplaint.issue_id.asc()).first()
+        group_id = group_row[0] if group_row else None
+        if not group_id:
+            return None, []
+        member_rows = group_members(self.db, group_id, exclude_id=complaint.id)
+        if limit is not None:
+            member_rows = member_rows[:limit]
+        members = [
+            RelatedComplaint(
+                id=member.id,
+                public_id=member.public_id,
+                title=member.title,
+                category=member.category,
+                similarity_score=link.similarity_score,
+                created_at=member.created_at,
+            )
+            for member, link in member_rows
+        ]
+        return group_id, members
+
     def get_similar_complaints(self, complaint_id: UUID, limit: int = 5):
-        """Get similar complaints."""
+        """Return the canonical group members, symmetrically for every complaint."""
         complaint = self.repo.get_by_id(complaint_id)
         if not complaint:
             raise NotFoundException("Complaint not found")
-
-        if not complaint.analysis or not complaint.analysis.embedding_vector:
-            return {
-                "complaint_id": complaint_id,
-                "embedding_model": settings.sentence_model_name,
-                "items": [],
-            }
-
-        similar_results = find_similar_complaints(
-            complaint.analysis.embedding_vector,
-            k=limit,
-            exclude_id=complaint_id,
-        )
-
-        items = []
-        for similar_id, similarity_score in similar_results:
-            similar_complaint = self.repo.get_by_id(similar_id)
-            if similar_complaint:
-                distance_meters = None
-                if (
-                    complaint.lat
-                    and complaint.lng
-                    and similar_complaint.lat
-                    and similar_complaint.lng
-                ):
-                    distance_meters = self._calculate_distance(
-                        complaint.lat,
-                        complaint.lng,
-                        similar_complaint.lat,
-                        similar_complaint.lng,
-                    )
-                items.append({
-                    "id": similar_complaint.id,
-                    "public_id": similar_complaint.public_id,
-                    "title": similar_complaint.title,
-                    "similarity_score": round(similarity_score, 3),
-                    "distance_meters": distance_meters,
-                    "created_at": similar_complaint.created_at,
-                })
-
+        group_id, members = self._group_payload(complaint, limit=limit)
         return {
             "complaint_id": complaint_id,
-            "embedding_model": complaint.analysis.embedding_model,
-            "items": items,
+            "embedding_model": complaint.analysis.embedding_model if complaint.analysis and complaint.analysis.embedding_model else settings.sentence_model_name,
+            "problem_group_id": group_id,
+            "related_count": len(self._group_payload(complaint)[1]),
+            "matching_state": "complete" if group_id else "pending",
+            "items": [
+                {
+                    "id": member.id,
+                    "public_id": member.public_id,
+                    "title": member.title,
+                    "similarity_score": round(member.similarity_score or 0.0, 3),
+                    "distance_meters": None,
+                    "created_at": member.created_at,
+                }
+                for member in members
+            ],
         }
 
     def _to_response(
@@ -467,6 +509,8 @@ class ComplaintService:
         """Convert complaint model to a privacy-aware response schema."""
         from app.models.procurement import City
         city = self.db.get(City, complaint.city_id)
+        group_id, related_members = self._group_payload(complaint)
+        related_count = len(related_members)
         analysis_response = None
         if complaint.analysis:
             raw_entities = complaint.analysis.entities_json or []
@@ -489,8 +533,8 @@ class ComplaintService:
                 language=complaint.analysis.language,
                 keywords=complaint.analysis.keywords_json or [],
                 entities=public_entities,
-                similar_count=0,
-                possible_duplicate=False,
+                similar_count=related_count,
+                possible_duplicate=related_count > 0,
                 confidence_score=complaint.analysis.confidence_score,
                 interpreted_text=ai_metadata.get("ai_interpretation") or complaint.analysis.cleaned_text,
                 suggested_action=ai_metadata.get("municipality_action"),
@@ -558,6 +602,10 @@ class ComplaintService:
                 if isinstance(event, dict)
             ],
             analysis=analysis_response,
+            problem_group_id=group_id,
+            related_count=related_count,
+            related_complaints=related_members,
+            matching_state="complete" if group_id else "pending",
             links=links,
         )
 

@@ -301,6 +301,11 @@ function normalizeComplaint(raw: any, fallbackInput?: any): Complaint {
       source.relatedCount ?? source.related_count ?? source.analysis?.similar_count ?? 0,
     ),
     nearbyCount: Number(source.nearbyCount ?? source.nearby_count ?? 0),
+    problemGroupId: source.problemGroupId ?? source.problem_group_id ?? null,
+    relatedComplaints: Array.isArray(source.relatedComplaints ?? source.related_complaints)
+      ? (source.relatedComplaints ?? source.related_complaints)
+      : [],
+    matchingState: source.matchingState ?? source.matching_state ?? (source.problem_group_id ? "complete" : "pending"),
     timeline,
   } as Complaint;
 }
