@@ -272,20 +272,10 @@ export function CivicMap({
 
     for (const a of activities.filter((x) => x.hotspot)) {
       const hex = AREA_HEALTH_HEX[a.health];
-      // This is an activity halo, not a ward boundary. Keep it bounded and
-      // scale it by the square root of persisted volume so one large area
-      // cannot cover the entire city map.
-      const haloRadius = Math.max(120, Math.min(650, 90 + Math.sqrt(Math.max(a.total, 1)) * 28));
-      L.circle(a.area.center, {
-        radius: haloRadius,
-        color: hex,
-        weight: 1,
-        opacity: 0.62,
-        dashArray: "4 8",
-        fillColor: hex,
-        fillOpacity: 0.08,
-        interactive: false,
-      }).addTo(layer);
+      // Keep hotspot markers precise and lightweight. The former activity
+      // halo circles were visually noisy on the city-health map and could be
+      // mistaken for official boundaries, so hotspot state is represented by
+      // the labelled marker only.
       const trend = a.trendPct >= 0 ? `+${a.trendPct}%` : `${a.trendPct}%`;
       const icon = L.divIcon({
         className: "jm-cluster-icon",
