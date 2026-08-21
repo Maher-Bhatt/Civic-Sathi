@@ -92,6 +92,7 @@ class IssueService:
             
             complaints_data.append({
                 'id': c.id,
+                'city_id': c.city_id,
                 'category': c.category,
                 'ward_id': c.ward_id,
                 'ward_number': ward_number,
@@ -245,6 +246,7 @@ class IssueService:
                 title=issue.title,
                 category=issue.category,
                 department=issue.department.name if issue.department else "General",
+                department_id=issue.department_id,
                 ward_number=ward_number,
                 complaint_count=issue.complaint_count,
                 risk_level=RiskLevel(issue.risk_level),
@@ -282,6 +284,7 @@ class IssueService:
             summary=issue.summary,
             category=issue.category,
             department=issue.department.name if issue.department else "General",
+            department_id=issue.department_id,
             ward_number=ward_number,
             status=issue.status,
             risk_level=issue.risk_level,

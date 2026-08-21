@@ -13,8 +13,10 @@ class ComplaintCluster:
     
     def __init__(self):
         self.complaint_ids: list[UUID] = []
+        self.city_id: UUID | None = None
         self.category: str = ""
         self.ward_id: UUID | None = None
+
         self.ward_number: int | None = None
         self.keywords: list[str] = []
         self.created_ats: list[datetime] = []
@@ -24,8 +26,10 @@ class ComplaintCluster:
     def add_complaint(
         self,
         complaint_id: UUID,
+        city_id: UUID,
         category: str,
         ward_id: UUID | None,
+
         ward_number: int | None,
         keywords: list[str],
         created_at: datetime,
@@ -35,8 +39,11 @@ class ComplaintCluster:
     ):
         """Add a complaint to the cluster"""
         self.complaint_ids.append(complaint_id)
+        if self.city_id is None:
+            self.city_id = city_id
         
         if not self.category:
+
             self.category = category
         
         if not self.ward_id and ward_id:
@@ -115,17 +122,22 @@ def group_complaints_by_similarity(
         similarity_threshold = settings.similarity_threshold
     
     # Group by category and ward first
-    groups: dict[tuple[str, int | None], ComplaintCluster] = {}
+    groups: dict[tuple[UUID, str, int | None], ComplaintCluster] = {}
     
     for complaint in complaints_data:
-        key = (complaint['category'], complaint.get('ward_number'))
-        
+        city_id = complaint.get('city_id')
+        if city_id is None:
+            continue
+        key = (city_id, complaint['category'], complaint.get('ward_number'))
+
         if key not in groups:
             groups[key] = ComplaintCluster()
         
         groups[key].add_complaint(
             complaint_id=complaint['id'],
+            city_id=city_id,
             category=complaint['category'],
+
             ward_id=complaint.get('ward_id'),
             ward_number=complaint.get('ward_number'),
             keywords=complaint.get('keywords', []),
