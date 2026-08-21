@@ -221,6 +221,36 @@ def admin_setup(
     )
 
 
+DEMO_ACCOUNT_EMAILS = (
+    "maherbhatt01@gmail.com",
+    "collector.office@vmc.gov.in",
+    "collector.office@bbmp.gov.in",
+    "operations@bharatinfra.in",
+    "citizen@civicsathi.in",
+    "buildright.login@contractor.com",
+)
+
+
+@router.get("/demo-account-audit", dependencies=[Depends(verify_officer_key)])
+def demo_account_audit(db: Session = Depends(get_db)):
+    """Return safe provisioning metadata for the documented demo identities."""
+    users = {
+        user.email.lower(): user
+        for user in db.query(User).filter(func.lower(User.email).in_(DEMO_ACCOUNT_EMAILS)).all()
+    }
+    return [
+        {
+            "email": email,
+            "exists": email in users,
+            "role": users[email].role if email in users else None,
+            "city": users[email].city if email in users else None,
+            "phone_present": bool((users[email].phone or "").strip()) if email in users else False,
+            "password_configured": bool(users[email].password_hash) if email in users else False,
+        }
+        for email in DEMO_ACCOUNT_EMAILS
+    ]
+
+
 @router.post("/register", response_model=CitizenAuthResponse)
 def citizen_register(
     register_data: CitizenRegisterRequest,
