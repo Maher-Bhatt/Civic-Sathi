@@ -83,6 +83,7 @@ class UpdateUserRequest(BaseModel):
     role: Optional[str] = None
     city: Optional[str] = None
     department: Optional[str] = None
+    designation: Optional[str] = Field(None, min_length=2, max_length=100)
     phone: Optional[str] = None
     password: Optional[str] = Field(None, min_length=8, max_length=100)
 
@@ -893,6 +894,8 @@ def update_user(
         user.city = patch.city
     if patch.department is not None:
         user.department = patch.department
+    if patch.designation is not None:
+        user.designation = patch.designation.strip()
     if patch.phone is not None:
         phone = patch.phone.strip()
         if len(phone) < 7:
