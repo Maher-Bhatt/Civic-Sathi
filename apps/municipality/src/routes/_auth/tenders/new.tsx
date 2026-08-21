@@ -25,16 +25,28 @@ function NewTenderPage() {
     ward: "", area: "", estimatedCost: "", scope: "", civicIssueIds: "", priority: "Moderate"
   });
   const [sourceIssueId, setSourceIssueId] = useState("");
+  const [sourceDepartmentId, setSourceDepartmentId] = useState("");
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const civicIssueId = params.get("civicIssueId") ?? "";
+    const departmentId = params.get("departmentId") ?? "";
+    const departmentName = params.get("department") ?? "";
+    const departmentLabel = ({
+      "Water Works Department": "Municipal Water",
+      "Public Works Department": "Public Works",
+      "Sanitation Department": "Sanitation",
+      "Drainage Department": "Drainage",
+      "Electrical Department": "Electrical",
+      "Transport Department": "Transport",
+    } as Record<string, string>)[departmentName] ?? departmentName;
     setSourceIssueId(civicIssueId);
+    setSourceDepartmentId(departmentId);
     setForm((prev) => ({
       ...prev,
       title: params.get("title") ?? prev.title,
       description: params.get("description") ?? prev.description,
-      department: params.get("department") ?? prev.department,
+      department: departmentLabel || prev.department,
       ward: params.get("ward") ?? prev.ward,
       civicIssueIds: civicIssueId || prev.civicIssueIds,
       scope: params.get("scope") ?? prev.scope,
@@ -52,7 +64,7 @@ function NewTenderPage() {
         title: form.title,
         description: form.description,
         city_id: officer.city,
-        department_id: form.department,
+        department_id: sourceDepartmentId || form.department,
         civic_issue_id: ids.length > 0 ? ids[0] : null,
         scope_of_work: form.scope,
         estimated_budget: Number(form.estimatedCost) || 0,
