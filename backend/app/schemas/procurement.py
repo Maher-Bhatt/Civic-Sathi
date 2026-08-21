@@ -118,6 +118,13 @@ class ContractorReviewCreate(BaseModel):
     evidence_urls: Optional[List[str]] = None
 
 
+class ContractorRatingWorkOrder(BaseModel):
+    id: UUID
+    title: str
+    city_id: Optional[UUID] = None
+    status: WorkOrderStatus
+
+
 class ContractorReviewResponse(BaseModel):
     id: UUID
     contractor_id: UUID
@@ -145,6 +152,14 @@ class ContractorProfileResponse(BaseModel):
     overall_rating: Optional[float] = None
     total_reviews_count: int = 0
     ai_insights: Optional[List[str]] = None
+    rating_work_orders: List[ContractorRatingWorkOrder] = Field(default_factory=list)
+    verification_status: Optional[str] = None
+    service_areas: List[str] = Field(default_factory=list)
+    rank_label: Optional[str] = None
+    public_satisfaction_pct: Optional[float] = None
+    defect_recurrence_pct: Optional[float] = None
+    first_time_pass_rate_pct: Optional[float] = None
+    history: List[dict] = Field(default_factory=list)
     
     class Config:
         from_attributes = True

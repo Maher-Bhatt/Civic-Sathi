@@ -76,32 +76,42 @@ function write<T>(key: string, value: T) {
   } catch {}
 }
 
-export async function getPublicCityAggregate(city: "vadodara" | "bengaluru") {
+export async function getPublicCityAggregate(
+  city: "vadodara" | "bengaluru",
+  filters: { time?: string; issue?: string; health?: string } = {},
+) {
+  const params = new URLSearchParams({
+    city,
+    time: filters.time ?? "30d",
+    issue: filters.issue ?? "all",
+    health: filters.health ?? "all",
+  });
   return client.get<{
     city: string;
+    time: string;
     total_reports: number;
     last7_days: number;
     aggregate_points: number;
+    resolved_total?: number;
+    health_distribution?: Record<string, number>;
     daily_trends: Array<{ date: string; count: number }>;
-    points: Array<{ id: string; lat: number; lng: number; category: string; health: string; days_ago: number; count: number; resolved: number }>;
-  }>(`/api/v1/analytics/public-map?city=${encodeURIComponent(city)}&time=30d&issue=all&health=all`);
+    points: Array<{ id: string; lat: number; lng: number; category: string; health: string; days_ago: number; count: number; resolved: number; risk?: number }>;
+  }>(`/api/v1/analytics/public-map?${params.toString()}`);
 }
 
 export async function listPublicContractors() {
-  try {
-    return await api.contractors.list();
-  } catch {
-    return [];
-  }
+  return await api.contractors.list();
 }
 
 export async function submitPublicRating(
   contractorId: string,
+  workOrderId: string,
   rating: number,
   comment: string,
   category: string,
 ) {
   return await api.contractors.submitRating(contractorId, {
+    work_order_id: workOrderId,
     rating,
     comment,
     category,

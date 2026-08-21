@@ -92,8 +92,8 @@ function ContractorPerformance() {
         <div className="flex items-center gap-3 px-4 py-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400">
           <ShieldCheck className="h-5 w-5 shrink-0" />
           <div className="text-xs">
-                        <span className="font-semibold block">{data.verification_status || "Verification status unavailable"}</span>
-            <span>{Array.isArray(data.service_areas) && data.service_areas.length > 0 ? data.service_areas.join(" · ") : "Service-area data unavailable"}</span>
+                        <span className="font-semibold block">{data.verification_status || "Verification status not yet available"}</span>
+            <span>{Array.isArray(data.service_areas) && data.service_areas.length > 0 ? data.service_areas.join(" · ") : "No approved service area recorded"}</span>
 
           </div>
         </div>
@@ -115,7 +115,7 @@ function ContractorPerformance() {
             </div>
 
             <div className="flex items-baseline gap-2 mt-2">
-              <span className="text-4xl font-extrabold text-[var(--foreground)]">{pubRating == null ? "Unavailable" : pubRating.toFixed(1)}</span>
+              <span className="text-4xl font-extrabold text-[var(--foreground)]">{pubRating == null ? "Not yet rated" : pubRating.toFixed(1)}</span>
               <span className="text-sm text-[var(--muted-foreground)]">/ 5.0</span>
             </div>
 
@@ -138,34 +138,34 @@ function ContractorPerformance() {
 
           <div className="mt-5 pt-3 border-t border-[var(--glass-border)] flex items-center justify-between text-xs">
             <span className="text-[var(--muted-foreground)]">Citizen Satisfaction:</span>
-                        <span className="font-semibold text-[var(--muted-foreground)]">{data.public_satisfaction_pct == null ? "Unavailable" : `${data.public_satisfaction_pct}%`}</span>
+                        <span className="font-semibold text-[var(--muted-foreground)]">{data.public_satisfaction_pct == null ? "Not available" : `${data.public_satisfaction_pct}%`}</span>
 
           </div>
         </GlassCard>
 
         {/* 2. AI Quality Score */}
-        <GlassCard className="p-6 glass-strong lift flex flex-col justify-between border-t-4 border-t-blue-500">
+        <GlassCard className="p-6 glass-strong lift flex flex-col justify-between border-t-4 border-t-orange-500">
           <div>
             <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-2 text-blue-600 dark:text-blue-400">
+              <div className="flex items-center gap-2 text-orange-700 dark:text-orange-300">
                 <Bot className="h-5 w-5" />
                 <span className="text-xs font-bold uppercase tracking-wider">2. AI Quality Rating</span>
               </div>
-              <span className="text-[11px] px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 font-medium">
+              <span className="text-[11px] px-2 py-0.5 rounded-full bg-orange-500/10 text-orange-700 dark:text-orange-300 font-medium">
                 AI Audit
               </span>
             </div>
 
             <div className="flex items-baseline gap-2 mt-2">
-              <span className="text-4xl font-extrabold text-[var(--foreground)]">{aiRating == null ? "Unavailable" : aiRating.toFixed(1)}</span>
+              <span className="text-4xl font-extrabold text-[var(--foreground)]">{aiRating == null ? "Not yet rated" : aiRating.toFixed(1)}</span>
               <span className="text-sm text-[var(--muted-foreground)]">/ 5.0</span>
             </div>
 
-            <div className="flex items-center gap-1 mt-2 text-blue-500">
+            <div className="flex items-center gap-1 mt-2 text-orange-500">
               {[1, 2, 3, 4, 5].map((s) => (
                 <Star
                   key={s}
-                  className={`h-4 w-4 ${s <= Math.round(aiRating ?? 0) ? "fill-blue-500" : "text-gray-300 dark:text-gray-700"}`}
+                  className={`h-4 w-4 ${s <= Math.round(aiRating ?? 0) ? "fill-orange-500" : "text-gray-300 dark:text-gray-700"}`}
                 />
               ))}
               <span className="text-xs text-[var(--muted-foreground)] ml-2">Algorithmic SLA</span>
@@ -178,7 +178,7 @@ function ContractorPerformance() {
 
           <div className="mt-5 pt-3 border-t border-[var(--glass-border)] flex items-center justify-between text-xs">
             <span className="text-[var(--muted-foreground)]">Defect Recurrence Rate:</span>
-                        <span className="font-semibold text-[var(--muted-foreground)]">{data.defect_recurrence_pct == null ? "Unavailable" : `${data.defect_recurrence_pct}%`}</span>
+                        <span className="font-semibold text-[var(--muted-foreground)]">{data.defect_recurrence_pct == null ? "Not available" : `${data.defect_recurrence_pct}%`}</span>
 
           </div>
         </GlassCard>
@@ -197,7 +197,7 @@ function ContractorPerformance() {
             </div>
 
             <div className="flex items-baseline gap-2 mt-2">
-              <span className="text-4xl font-extrabold text-[var(--foreground)]">{offRating == null ? "Unavailable" : offRating.toFixed(1)}</span>
+              <span className="text-4xl font-extrabold text-[var(--foreground)]">{offRating == null ? "Not yet rated" : offRating.toFixed(1)}</span>
               <span className="text-sm text-[var(--muted-foreground)]">/ 5.0</span>
             </div>
 
@@ -218,7 +218,7 @@ function ContractorPerformance() {
 
           <div className="mt-5 pt-3 border-t border-[var(--glass-border)] flex items-center justify-between text-xs">
             <span className="text-[var(--muted-foreground)]">First-Time Pass Rate:</span>
-                        <span className="font-semibold text-[var(--muted-foreground)]">{data.first_time_pass_rate_pct == null ? "Unavailable" : `${data.first_time_pass_rate_pct}%`}</span>
+                        <span className="font-semibold text-[var(--muted-foreground)]">{data.first_time_pass_rate_pct == null ? "Not available" : `${data.first_time_pass_rate_pct}%`}</span>
 
           </div>
         </GlassCard>
@@ -231,12 +231,12 @@ function ContractorPerformance() {
           <SectionLabel className="mb-4">Composite Civic Sathi Trust Index</SectionLabel>
           <div className="relative w-44 h-44 rounded-full border-8 border-emerald-500 flex items-center justify-center bg-[var(--surface)] shadow-xl">
             <div className="flex flex-col items-center">
-              <span className="text-5xl font-extrabold text-emerald-500">{overall == null ? "Unavailable" : overall.toFixed(1)}</span>
+              <span className="text-5xl font-extrabold text-emerald-500">{overall == null ? "Not yet rated" : overall.toFixed(1)}</span>
               <span className="text-[11px] text-[var(--muted-foreground)] uppercase tracking-widest mt-1">Out of 5.0</span>
             </div>
           </div>
           <div className="mt-6 px-4 py-1.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-semibold text-xs border border-emerald-500/20">
-                        {data.rank_label || "Performance tier unavailable"}
+                        {data.rank_label || "Tier pending verified ratings"}
 
           </div>
           <p className="text-xs text-[var(--muted-foreground)] mt-3">
@@ -248,7 +248,7 @@ function ContractorPerformance() {
         <GlassCard className="lg:col-span-2 p-6 glass-strong flex flex-col justify-between">
           <div>
             <div className="flex items-center gap-2 mb-4">
-              <Sparkles className="h-5 w-5 text-purple-500" />
+              <Sparkles className="h-5 w-5 text-[var(--primary)]" />
               <SectionLabel>AI Quality Audit & Recommendations</SectionLabel>
             </div>
 
@@ -266,8 +266,8 @@ function ContractorPerformance() {
             </div>
           </div>
 
-          <div className="mt-6 p-4 rounded-xl bg-purple-500/10 border border-purple-500/20 text-xs flex items-center gap-3">
-            <Bot className="h-6 w-6 text-purple-500 shrink-0" />
+          <div className="mt-6 p-4 rounded-xl bg-[var(--primary)]/10 border border-[var(--primary)]/20 text-xs flex items-center gap-3">
+            <Bot className="h-6 w-6 text-[var(--primary)] shrink-0" />
             <div>
                             <span className="font-semibold text-[var(--foreground)] block">Tender eligibility is backend-controlled</span>
               <span className="text-[var(--muted-foreground)]">
@@ -296,7 +296,7 @@ function ContractorPerformance() {
             const badgeColor = isPublic
               ? "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20"
               : isAI
-              ? "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20"
+              ? "bg-orange-500/10 text-orange-700 dark:text-orange-300 border-orange-500/20"
               : "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20";
 
             return (

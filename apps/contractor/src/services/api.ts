@@ -361,7 +361,17 @@ export async function getContractorPerformance() {
   try {
     const list = await api.contractors.list();
     const user = await getContractorUser();
-    const current = (list || []).find((c: any) => c.email === user?.email) || (list || [])[0];
+    const email = String(user?.email || "").trim().toLowerCase();
+    const canonicalEmails = new Set([
+      email,
+      email === "operations@bharatinfra.in" ? "contractor@janmind.in" : "",
+      email === "contractor@bharat.in" ? "contractor@janmind.in" : "",
+      email === "buildright.login@contractor.com" ? "buildright@contractor.com" : "",
+    ]);
+    const current = (list || []).find((c: any) => canonicalEmails.has(String(c.email || "").trim().toLowerCase()))
+      || ((email.includes("bharat") || email.includes("operations") || email.includes("contractor"))
+        ? (list || []).find((c: any) => String(c.company_name || "").toLowerCase() === "bharat infra ltd")
+        : undefined);
     if (current) {
       let reviews = [];
       try {

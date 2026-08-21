@@ -32,22 +32,17 @@ import {
   ISSUE_KEYS,
   ISSUE_LABEL,
   TIME_WINDOWS,
-  areaActivity,
   areaDailyTrend,
-  cityDailyTrend,
   cityGeography,
-  cityHealthDistribution,
-  cityIssueBreakdown,
-  complaintPoints,
-  filterPoints,
   getLocalityHeritage,
   nearestArea,
   searchAreas,
   type AreaActivity,
-  type MapFilters,
 } from "@/services/geography";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/lib/i18n";
+import { getPublicCityAggregate } from "@/services/api";
+import { buildLiveMapModel, liveHealthData, liveIssueData, liveTrendData, type LiveMapAggregate } from "@/services/live-map";
 
 export const Route = createFileRoute("/map")({
   head: () => ({
@@ -166,8 +161,43 @@ function CivicMapPage() {
   }, []);
 
   const geography = cityGeography(cityId);
-  const activities = useMemo(() => areaActivity(cityId, filters), [cityId, filters]);
-  const points = useMemo(() => filterPoints(complaintPoints(cityId), filters), [cityId, filters]);
+  const [liveAggregate, setLiveAggregate] = useState<LiveMapAggregate | null>(null);
+  const [mapLoading, setMapLoading] = useState(true);
+  const [mapError, setMapError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    setMapLoading(true);
+    setMapError(null);
+    setLiveAggregate(null);
+    getPublicCityAggregate(cityId, {
+      time: filters.time,
+      issue: filters.issue,
+      health: filters.health,
+    })
+      .then((aggregate) => {
+        if (!cancelled) setLiveAggregate(aggregate as LiveMapAggregate);
+      })
+      .catch((error: any) => {
+        if (!cancelled) {
+          setMapError(error?.message || "Live civic-map data could not be loaded.");
+          setLiveAggregate(null);
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setMapLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [cityId, filters.health, filters.issue, filters.time]);
+
+  const liveModel = useMemo(
+    () => liveAggregate ? buildLiveMapModel(cityId, liveAggregate, filters) : { activities: [], points: [] },
+    [cityId, filters, liveAggregate],
+  );
+  const activities = liveModel.activities;
+  const points = liveModel.points;
 
   const ranked = useMemo(() => [...activities].sort((a, b) => b.total - a.total), [activities]);
   const hotspots = useMemo(() => ranked.filter((a) => a.hotspot).slice(0, 6), [ranked]);
@@ -185,13 +215,10 @@ function CivicMapPage() {
     [activities],
   );
 
-  const trendData = useMemo(() => cityDailyTrend(cityId, filters), [cityId, filters]);
-  const issueData = useMemo(() => cityIssueBreakdown(cityId, filters), [cityId, filters]);
-  const healthData = useMemo(() => cityHealthDistribution(cityId, filters), [cityId, filters]);
-  const areaTrend = useMemo(
-    () => (selectedArea ? areaDailyTrend(selectedArea.area.id, filters) : []),
-    [selectedArea, filters],
-  );
+  const trendData = useMemo(() => liveAggregate ? liveTrendData(liveAggregate) : [], [liveAggregate]);
+  const issueData = useMemo(() => liveAggregate ? liveIssueData(liveAggregate) : [], [liveAggregate]);
+  const healthData = useMemo(() => liveAggregate ? liveHealthData(liveAggregate) : [], [liveAggregate]);
+  const areaTrend = [] as ReturnType<typeof areaDailyTrend>;
 
   useEffect(() => {
     setSelected(null);
@@ -278,11 +305,11 @@ function CivicMapPage() {
             className={cn(
               "press flex items-center gap-2 rounded-xl border px-4 py-2 text-xs font-semibold tracking-wide transition-all duration-200 shadow-sm",
               cityId === "bengaluru"
-                ? "border-blue-500/50 bg-blue-500/15 text-blue-800 dark:text-blue-300 shadow-[0_0_15px_rgba(59,130,246,0.15)]"
+                ? "border-orange-500/50 bg-orange-500/15 text-orange-800 dark:text-orange-300 shadow-[0_0_15px_rgba(234,88,12,0.15)]"
                 : "border-[var(--glass-border)] bg-[var(--glass)] text-muted-foreground hover:text-foreground",
             )}
           >
-            <span className="h-2 w-2 rounded-full bg-blue-400" />
+            <span className="h-2 w-2 rounded-full bg-orange-500" />
             <span>{t("map.city.bengaluru", "Bengaluru · BBMP")}</span>
             <span className="text-[10px] font-normal opacity-75">· 35 {t("ui.localities", "Areas")} (8 {t("ui.zones", "Zones")})</span>
           </button>
@@ -430,8 +457,18 @@ function CivicMapPage() {
         </div>
       </div>
 
-      {/* map + stats split */}
-      <div className="mt-5 grid items-start gap-5 lg:grid-cols-[1fr_320px]">
+        {mapError && (
+          <GlassCard className="mt-5 border border-critical/30 bg-critical/5 p-4 text-sm text-critical">
+            <p className="font-semibold">Live civic-map data is unavailable.</p>
+            <p className="mt-1 text-xs text-muted-foreground">{mapError} Reset the filters or retry in a moment.</p>
+          </GlassCard>
+        )}
+        {mapLoading && (
+          <p className="mt-4 text-xs text-muted-foreground" role="status">Loading live civic-map data…</p>
+        )}
+
+        {/* map + stats split */}
+      <div className="mt-5 grid items-start gap-5 lg:grid-cols-[minmax(0,1fr)_320px]">
         <div className="space-y-4">
           <div className="relative">
             <ClientCivicMap
@@ -442,7 +479,7 @@ function CivicMapPage() {
               selectedAreaId={selected}
               onSelectArea={(id) => setSelected(id)}
               focus={focus}
-              className="h-[480px] sm:h-[580px]"
+              className="h-[520px] sm:h-[640px] lg:h-[700px]"
             />
           </div>
 
@@ -477,12 +514,12 @@ function CivicMapPage() {
               </p>
             </GlassCard>
 
-            <GlassCard className="jm-stat-card animate-rise p-3 border-blue-500/30 bg-blue-500/5">
-              <p className="text-lg font-bold tabular-nums text-blue-700 dark:text-blue-400">
-                ~<AnimatedStat value={totals.affectedPeople} />
+            <GlassCard className="jm-stat-card animate-rise p-3 border-[var(--glass-border)] bg-[var(--glass)]">
+              <p className="text-lg font-bold tabular-nums text-[var(--foreground)]">
+                {totals.affectedPeople > 0 ? `~${totals.affectedPeople.toLocaleString('en-IN')}` : "—"}
               </p>
-              <p className="text-[0.66rem] tracking-[0.08em] text-blue-700 dark:text-blue-300 font-medium uppercase">
-                {t("map.stat.affected", "Citizens Affected")}
+              <p className="text-[0.66rem] tracking-[0.08em] text-muted-foreground font-medium uppercase">
+                {t("map.stat.affected", "Affected measure")}
               </p>
             </GlassCard>
           </div>
@@ -632,11 +669,11 @@ function AreaPanel({
               ~{(area.population || 80000).toLocaleString('en-IN')}
             </p>
           </div>
-          <div className="p-2.5 rounded-xl bg-blue-500/10 border border-blue-500/30">
-            <p className="label-xs text-blue-700 dark:text-blue-300 font-medium">{t("map.stat.affected", "Citizens Affected")}</p>
-            <p className="mt-0.5 text-base font-bold text-blue-700 dark:text-blue-400 tabular-nums">
-              ~{(activity.affectedPopulation || 0).toLocaleString('en-IN')}
-              <span className="text-xs font-normal opacity-80 ml-1">({activity.affectedPercent}%)</span>
+          <div className="p-2.5 rounded-xl bg-[var(--surface)] border border-[var(--glass-border)]">
+            <p className="label-xs text-muted-foreground font-medium">{t("map.stat.affected", "Affected measure")}</p>
+            <p className="mt-0.5 text-base font-bold text-[var(--foreground)] tabular-nums">
+              {activity.affectedPopulation > 0 ? `~${activity.affectedPopulation.toLocaleString('en-IN')}` : "Not available"}
+              {activity.affectedPopulation > 0 && <span className="text-xs font-normal opacity-80 ml-1">({activity.affectedPercent}%)</span>}
             </p>
           </div>
           <div className="p-2.5 rounded-xl bg-[var(--surface)] border border-[var(--glass-border)]">

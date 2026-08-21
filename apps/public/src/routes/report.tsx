@@ -221,6 +221,7 @@ function ReportPage() {
             <h2 className="text-lg font-semibold">{t('ui.add_photo_or_evidence')}</h2>
             <PhotoUploader
               photo={draft.photo}
+              description={draft.description}
               onPhoto={(photo) => update({ photo })}
               onCategorySuggestion={(category) => update({ category })}
             />

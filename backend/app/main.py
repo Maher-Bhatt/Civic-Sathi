@@ -78,3 +78,12 @@ def root():
         "environment": settings.environment,
         "docs": f"{settings.api_v1_prefix}/docs" if settings.docs_enabled else None,
     }
+
+
+@app.get("/health")
+def health_alias():
+    """Compatibility health endpoint for deployment monitors and demo checklists."""
+    from app.core.database import check_db_connection
+    if not check_db_connection():
+        return {"status": "degraded", "database": "unavailable"}
+    return {"status": "healthy", "database": "connected"}

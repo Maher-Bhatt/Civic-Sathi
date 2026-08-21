@@ -10,10 +10,12 @@ import { useI18n } from "@/lib/i18n";
 
 export function PhotoUploader({
   photo,
+  description,
   onPhoto,
   onCategorySuggestion,
 }: {
   photo: string | null;
+  description?: string;
   onPhoto: (dataUrl: string | null) => void;
   onCategorySuggestion: (category: IssueCategory) => void;
 }) {
@@ -39,10 +41,10 @@ export function PhotoUploader({
       onPhoto(dataUrl);
       setProgress(100);
       setAnalyzing(true);
-      const result = await analyzeComplaintPhoto(dataUrl);
+      const result = await analyzeComplaintPhoto(dataUrl, description);
       setAnalysis(result);
-    } catch {
-      setError("We couldn't process that image. Try another photo.");
+    } catch (error: any) {
+      setError(error?.message || "We couldn't process that image. Try another photo.");
     } finally {
       clearInterval(tick);
       setUploading(false);

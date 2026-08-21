@@ -59,4 +59,7 @@ async def analyze_complaint_image(
     """Analyze actual image bytes with a vision-capable provider when configured."""
     _validate_image_data_url(request.data_url)
     result = await ai_service.analyze_image(request.data_url, request.description)
-    return {"source": "vision-model" if ai_service.vision_configured else "manual-review-fallback", **result}
+    # The service can fall back after a configured provider returns an error;
+    # trust its explicit source marker rather than the static configuration flag.
+    source = str(result.pop("source", "vision-model" if ai_service.vision_configured else "manual-review-fallback"))
+    return {"source": source, **result}

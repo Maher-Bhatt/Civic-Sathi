@@ -193,6 +193,7 @@ class AIService:
                     if confidence not in {"Low", "Medium", "High"}:
                         confidence = "Low"
                     return {
+                        "source": "vision-model",
                         "detected": str(parsed.get("detected") or "Civic condition visible; verify during field inspection"),
                         "category": category,
                         "confidence": confidence,
@@ -214,9 +215,17 @@ class AIService:
             category = "drainage"
         elif any(word in text for word in ("leak", "tap", "pipeline", "no water")):
             category = "water_supply"
-        elif any(word in text for word in ("garbage", "waste", "trash", "dump")):
+        elif any(word in text for word in ("garbage", "waste", "trash", "dump", "કચરો", "ગંદકી", "કચરાપેટી", "ಕಸ", "ತ್ಯಾಜ್ಯ", "कचरा")):
             category = "garbage_collection"
+        elif any(word in text for word in (
+            "street light", "streetlight", "lamp", "pole", "fixture", "dark road", "lighting",
+            "બત્તી", "લાઇટ", "સ્ટ્રીટ લાઇટ", "દીવો", "રોશની",
+            "बत्ती", "रोशनी", "खंभा", "दिवा",
+            "ಬೀದಿ ದೀಪ", "ಬೆಳಕು", "ದೀಪ",
+        )):
+            category = "street_lighting"
         return {
+            "source": "manual-review-fallback",
             "detected": "Image received; manual municipal verification required",
             "category": category,
             "confidence": "Low",

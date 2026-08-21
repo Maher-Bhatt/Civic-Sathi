@@ -46,6 +46,32 @@ def _scorecard_for_contractor(db: Session, contractor: Contractor) -> dict:
             by_type.setdefault(review.author_type, []).append(float(review.rating))
     average = lambda values: round(sum(values) / len(values), 2) if values else None
     ai_reviews = by_type.get(ReviewAuthorType.AI, [])
+    registrations = (
+        db.query(ContractorCityRegistration, City.name)
+        .join(City, City.id == ContractorCityRegistration.city_id)
+        .filter(
+            ContractorCityRegistration.contractor_id == contractor.id,
+            ContractorCityRegistration.status == RegistrationStatus.APPROVED,
+        )
+        .order_by(City.name.asc())
+        .all()
+    )
+    service_areas = [str(city_name) for _, city_name in registrations if city_name]
+    eligible_orders = (
+        db.query(WorkOrder, Tender.title)
+        .join(Tender, Tender.id == WorkOrder.tender_id)
+        .filter(
+            WorkOrder.contractor_id == contractor.id,
+            WorkOrder.status.in_([
+                WorkOrderStatus.INSPECTION_PENDING,
+                WorkOrderStatus.COMPLETED,
+                WorkOrderStatus.CLOSED,
+            ]),
+        )
+        .order_by(WorkOrder.created_at.desc())
+        .limit(25)
+        .all()
+    )
     return {
         "public_rating": average(by_type.get(ReviewAuthorType.PUBLIC, [])),
         "ai_rating": average(ai_reviews),
@@ -57,6 +83,21 @@ def _scorecard_for_contractor(db: Session, contractor: Contractor) -> dict:
         ) if score is not None]),
         "total_reviews_count": len(reviews),
         "ai_insights": contractor.ai_insights if ai_reviews and contractor.ai_insights else [],
+        "rating_work_orders": [
+            {"id": work_order.id, "title": title or "Completed civic work order", "city_id": None, "status": work_order.status}
+            for work_order, title in eligible_orders
+        ],
+        "verification_status": (
+            f"Verified · {len(registrations)} approved city registration(s)"
+            if registrations else "Pending municipal registration"
+        ),
+        "service_areas": service_areas,
+        "rank_label": (
+            "Elite verified performance" if overall is not None and overall >= 4.5
+            else "Strong verified performance" if overall is not None and overall >= 4.0
+            else "Tier pending verified ratings"
+        ),
+        "history": [],
     }
 
 
@@ -713,9 +754,24 @@ def submit_contractor_rating(
     work_order = db.get(WorkOrder, review_in.work_order_id)
     if not work_order or work_order.contractor_id != contractor_id:
         raise HTTPException(status_code=422, detail="The referenced work order does not belong to this contractor")
-    
+    if work_order.status not in {
+        WorkOrderStatus.INSPECTION_PENDING,
+        WorkOrderStatus.COMPLETED,
+        WorkOrderStatus.CLOSED,
+    }:
+        raise HTTPException(status_code=422, detail="Ratings are available only for inspected or completed work orders")
+
     author_type = ReviewAuthorType.OFFICER if current_user.role in ["officer", "supervisor", "municipality", "admin"] else ReviewAuthorType.PUBLIC
     
+    existing_review = db.query(ContractorReview).filter(
+        ContractorReview.contractor_id == contractor_id,
+        ContractorReview.work_order_id == review_in.work_order_id,
+        ContractorReview.author_id == str(current_user.id),
+        ContractorReview.author_type == author_type,
+    ).first()
+    if existing_review:
+        raise HTTPException(status_code=409, detail="You have already submitted a rating for this work order")
+
     review = ContractorReview(
         contractor_id=contractor_id,
         work_order_id=review_in.work_order_id,

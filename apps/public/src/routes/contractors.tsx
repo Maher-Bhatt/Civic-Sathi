@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { GlassCard, SectionLabel } from "@/components/ui/glass-card";
-import { LoadingState } from "@/components/ui/states";
+import { LoadingState, ErrorState } from "@/components/ui/states";
 import { listPublicContractors, submitPublicRating } from "@/services/api";
 import {
   Star,
@@ -24,8 +24,10 @@ export const Route = createFileRoute("/contractors")({
 function ContractorsPublicPage() {
   const [contractors, setContractors] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<Error | null>(null);
   const [selectedContractor, setSelectedContractor] = useState<any | null>(null);
-  const [ratingVal, setRatingVal] = useState(5);
+  const [ratingVal, setRatingVal] = useState<number | null>(null);
+  const [selectedWorkOrderId, setSelectedWorkOrderId] = useState("");
   const [categoryVal, setCategoryVal] = useState("Road Quality & Smoothness");
   const [commentVal, setCommentVal] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -35,17 +37,26 @@ function ContractorsPublicPage() {
       .then((data) => {
         setContractors(Array.isArray(data) ? data : []);
       })
+      .catch((error: any) => {
+        setLoadError(error instanceof Error ? error : new Error("Contractor data could not be loaded."));
+      })
       .finally(() => setLoading(false));
   }, []);
 
   async function handleRateSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!selectedContractor) return;
+    if (ratingVal === null || !selectedWorkOrderId || !commentVal.trim()) {
+      toast.error("Choose a star rating, an inspected work order, and add a comment before submitting.");
+      return;
+    }
     setSubmitting(true);
     try {
-      await submitPublicRating(selectedContractor.id, ratingVal, commentVal, categoryVal);
+      await submitPublicRating(selectedContractor.id, selectedWorkOrderId, ratingVal, commentVal.trim(), categoryVal);
       toast.success(`Thank you! Your verified rating for ${selectedContractor.company_name} has been recorded.`);
       setSelectedContractor(null);
+      setRatingVal(null);
+      setSelectedWorkOrderId("");
       setCommentVal("");
       // Refresh
       const updated = await listPublicContractors();
@@ -58,6 +69,7 @@ function ContractorsPublicPage() {
   }
 
   if (loading) return <LoadingState message="Loading verified civic contractors..." />;
+  if (loadError) return <ErrorState description={loadError.message} />;
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8 space-y-8 animate-fade">
@@ -81,14 +93,18 @@ function ContractorsPublicPage() {
       {/* Contractor List */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {contractors.map((c) => {
-          const pub = Number.isFinite(Number(c.public_rating)) ? Number(c.public_rating) : null;
-          const ai = Number.isFinite(Number(c.ai_rating)) ? Number(c.ai_rating) : null;
-          const off = Number.isFinite(Number(c.officer_rating)) ? Number(c.officer_rating) : null;
-          const overall = Number.isFinite(Number(c.overall_rating))
-            ? Number(c.overall_rating)
-            : pub !== null && ai !== null && off !== null
+          const toRating = (value: unknown) => {
+            if (value === null || value === undefined || value === "") return null;
+            const parsed = Number(value);
+            return Number.isFinite(parsed) && parsed > 0 ? parsed : null;
+          };
+          const pub = toRating(c.public_rating);
+          const ai = toRating(c.ai_rating);
+          const off = toRating(c.officer_rating);
+          const overall = toRating(c.overall_rating)
+            ?? (pub !== null && ai !== null && off !== null
               ? Number((pub * 0.35 + ai * 0.35 + off * 0.30).toFixed(1))
-              : null;
+              : null);
 
           return (
             <GlassCard key={c.id} className="p-6 glass-strong lift flex flex-col justify-between">
@@ -101,7 +117,7 @@ function ContractorsPublicPage() {
                     </p>
                   </div>
                   <div className="text-right shrink-0">
-                    <span className="text-2xl font-extrabold text-emerald-500">{overall === null ? "—" : overall.toFixed(1)}</span>
+                    <span className="text-lg font-extrabold text-emerald-600 dark:text-emerald-400">{overall === null ? "Not yet rated" : overall.toFixed(1)}</span>
                     <span className="text-xs text-[var(--muted-foreground)] block">Composite Index</span>
                   </div>
                 </div>
@@ -121,12 +137,12 @@ function ContractorsPublicPage() {
                   </div>
 
                   {/* AI */}
-                  <div className="p-3 rounded-xl bg-blue-500/10 border border-blue-500/20 text-center">
-                    <div className="flex items-center justify-center gap-1 text-blue-600 dark:text-blue-400 mb-1">
+                  <div className="p-3 rounded-xl bg-orange-500/10 border border-orange-500/20 text-center">
+                    <div className="flex items-center justify-center gap-1 text-orange-700 dark:text-orange-300 mb-1">
                       <Bot className="h-3.5 w-3.5" />
                       <span className="text-[10px] font-bold uppercase">AI Quality</span>
                     </div>
-                    <span className="text-lg font-black text-blue-600 dark:text-blue-400">
+                    <span className="text-lg font-black text-orange-700 dark:text-orange-300">
                       {ai === null ? "—" : ai.toFixed(1)} {ai !== null && <span className="text-[10px] font-normal">/ 5</span>}
                     </span>
                     <span className="block text-[9px] text-[var(--muted-foreground)] mt-0.5">SLA & Evidence</span>
@@ -162,11 +178,16 @@ function ContractorsPublicPage() {
 
               <div className="mt-6 pt-4 border-t border-[var(--glass-border)] flex items-center justify-between">
                 <span className="text-xs text-[var(--muted-foreground)]">
-                  {Number(c.total_reviews_count ?? 0)} total citizen reviews
+                  {Number(c.total_reviews_count ?? 0)} verified reviews
                 </span>
                 <button
                   type="button"
-                  onClick={() => setSelectedContractor(c)}
+                  onClick={() => {
+                    setSelectedContractor(c);
+                    setRatingVal(null);
+                    setSelectedWorkOrderId("");
+                    setCommentVal("");
+                  }}
                   className="px-4 py-1.5 rounded-lg bg-[var(--primary)] text-white text-xs font-semibold hover:opacity-90 transition"
                 >
                   Rate This Contractor
@@ -205,23 +226,50 @@ function ContractorsPublicPage() {
                     <button
                       key={num}
                       type="button"
+                      aria-label={`Rate ${num} out of 5`}
+                      aria-pressed={ratingVal === num}
                       onClick={() => setRatingVal(num)}
                       className="p-2 rounded-lg hover:bg-[var(--surface-elevated)]"
                     >
                       <Star
                         className={`h-6 w-6 ${
-                          num <= ratingVal ? "fill-amber-500 text-amber-500" : "text-gray-300 dark:text-gray-700"
+                          ratingVal !== null && num <= ratingVal ? "fill-amber-500 text-amber-500" : "text-gray-300 dark:text-gray-700"
                         }`}
                       />
                     </button>
                   ))}
-                  <span className="font-bold text-sm ml-2">{ratingVal}.0 / 5.0</span>
+                  <span className="font-bold text-sm ml-2">{ratingVal === null ? "Choose a rating" : `${ratingVal}.0 / 5.0`}</span>
                 </div>
               </div>
 
               <div>
-                <label className="block font-semibold mb-1">Category of Work</label>
+                <label className="block font-semibold mb-1" htmlFor="rating-work-order">Verified Work Order</label>
+                {Array.isArray(selectedContractor.rating_work_orders) && selectedContractor.rating_work_orders.length > 0 ? (
+                  <select
+                    id="rating-work-order"
+                    required
+                    value={selectedWorkOrderId}
+                    onChange={(e) => setSelectedWorkOrderId(e.target.value)}
+                    className="w-full p-2.5 rounded-lg bg-[var(--surface)] border border-[var(--glass-border)] text-xs"
+                  >
+                    <option value="">Choose an inspected or completed work order</option>
+                    {selectedContractor.rating_work_orders.map((workOrder: any) => (
+                      <option key={workOrder.id} value={workOrder.id}>
+                        {workOrder.title} · {String(workOrder.status).replaceAll("_", " ")}
+                      </option>
+                    ))}
+                  </select>
+                ) : (
+                  <p className="rounded-lg border border-amber-500/25 bg-amber-500/10 p-3 text-xs text-amber-800 dark:text-amber-200">
+                    This contractor has no inspected or completed work order available for public verification yet.
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <label className="block font-semibold mb-1" htmlFor="rating-category">Category of Work</label>
                 <select
+                  id="rating-category"
                   value={categoryVal}
                   onChange={(e) => setCategoryVal(e.target.value)}
                   className="w-full p-2.5 rounded-lg bg-[var(--surface)] border border-[var(--glass-border)] text-xs"
@@ -256,7 +304,7 @@ function ContractorsPublicPage() {
                 </button>
                 <button
                   type="submit"
-                  disabled={submitting}
+                  disabled={submitting || ratingVal === null || !selectedWorkOrderId || !commentVal.trim()}
                   className="px-5 py-2 rounded-lg bg-emerald-600 text-white text-xs font-semibold hover:bg-emerald-700 disabled:opacity-50"
                 >
                   {submitting ? "Submitting..." : "Submit Verified Rating"}
