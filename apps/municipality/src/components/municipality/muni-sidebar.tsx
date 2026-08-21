@@ -142,10 +142,10 @@ export function MuniSidebar({
         </div>
 
         {/* Show designation badge when sidebar is expanded */}
-        {!collapsed && officer?.designation && (
+        {!collapsed && officer && (
           <div className="border-b border-[var(--glass-border)] px-4 py-2">
             <p className="text-[0.6rem] uppercase tracking-wider text-muted-foreground">Role</p>
-            <p className="text-xs font-medium text-foreground truncate">{officer.designation}</p>
+            <p className="text-xs font-medium text-foreground truncate">{officer.designation || officer.role}</p>
           </div>
         )}
 

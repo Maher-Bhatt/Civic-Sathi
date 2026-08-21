@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { GlassCard, SectionLabel } from "@/components/ui/glass-card";
 import { GlassButton } from "@/components/ui/glass-button";
@@ -22,22 +22,24 @@ function MuniLoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [city, setCity] = useState<CityId>("vadodara");
-  const [designation, setDesignation] = useState("Ward Officer");
   const [remember, setRemember] = useState(true);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  if (ready && officer) {
-    void navigate({ to: "/dashboard" as any, replace: true });
-    return null;
-  }
+  useEffect(() => {
+    if (ready && officer) {
+      void navigate({ to: "/dashboard" as any, replace: true });
+    }
+  }, [navigate, officer, ready]);
+
+  if (ready && officer) return null;
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setBusy(true);
     setError(null);
     try {
-      await signIn(email.trim().toLowerCase(), password, city, designation);
+      await signIn(email.trim().toLowerCase(), password, city);
       toast.success("Signed in to Municipal Intelligence");
       void navigate({ to: "/dashboard" as any });
     } catch (err: any) {
@@ -107,21 +109,9 @@ function MuniLoginPage() {
             </select>
           </div>
 
-          <div>
-            <label className="label-xs mb-1.5 block">{t("ui.designation") || "Designation"}</label>
-            <select
-              value={designation}
-              onChange={(e) => setDesignation(e.target.value)}
-              className="filter-input"
-            >
-              <option value="Ward Officer">Ward Officer</option>
-              <option value="Field Inspector">Field Inspector</option>
-              <option value="Municipal Supervisor">Municipal Supervisor</option>
-              <option value="Triage Officer">Triage Officer</option>
-              <option value="Chief Engineer">Chief Engineer</option>
-              <option value="Commissioner">Commissioner</option>
-            </select>
-          </div>
+          <p className="rounded-lg border border-[var(--glass-border)] bg-[var(--glass)] px-3 py-2 text-xs text-muted-foreground">
+            Your municipal role and department are loaded from the authorized backend account after sign-in.
+          </p>
 
           <label className="flex items-center gap-2 text-sm text-muted-foreground">
             <input

@@ -82,7 +82,6 @@ function write<T>(key: string, value: T) {
 function normalizeOfficer(
   userData: any,
   fallbackCity: CityId = "vadodara",
-  fallbackDesignation?: string,
 ): Officer {
   const backendRole = String(userData?.role ?? "officer").toLowerCase();
   const role: Officer["role"] =
@@ -96,7 +95,7 @@ function normalizeOfficer(
               ? "Collector"
               : "Officer";
   const city = String(userData?.city ?? fallbackCity).toLowerCase() as CityId;
-  const designation = userData?.designation ?? fallbackDesignation;
+  const designation = userData?.designation ? String(userData.designation) : undefined;
   return {
     id: String(userData?.id ?? ""),
     name: String(userData?.name ?? ""),
@@ -132,7 +131,7 @@ export async function muniLogin(input: {
       throw new Error("Access denied: this account does not have officer permissions");
     }
 
-    const officer = normalizeOfficer(backendUser, input.city, input.designation);
+    const officer = normalizeOfficer(backendUser, input.city);
     write(LS.officer, officer);
     return officer;
   } catch (error: any) {
@@ -168,7 +167,7 @@ export async function getMuniOfficer(): Promise<Officer | null> {
       const me = await api.auth.me();
       const roleLower = String((me as any)?.role || "").toLowerCase();
       if (me && ["officer", "supervisor", "admin", "municipality", "collector"].includes(roleLower)) {
-        const officer = normalizeOfficer(me, cached?.city ?? "vadodara", cached?.designation);
+        const officer = normalizeOfficer(me, cached?.city ?? "vadodara");
         write(LS.officer, officer);
         return officer;
       }
