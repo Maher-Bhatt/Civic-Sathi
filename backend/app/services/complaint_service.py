@@ -465,6 +465,8 @@ class ComplaintService:
         include_private: bool = True,
     ) -> ComplaintResponse:
         """Convert complaint model to a privacy-aware response schema."""
+        from app.models.procurement import City
+        city = self.db.get(City, complaint.city_id)
         analysis_response = None
         if complaint.analysis:
             raw_entities = complaint.analysis.entities_json or []
@@ -532,7 +534,7 @@ class ComplaintService:
             category=complaint.category,
             department=complaint.department.name if complaint.department else "Municipal Administration",
             city_id=complaint.city_id,
-            city_name=complaint.city.name if complaint.city else "Unknown city",
+            city_name=city.name if city else "Unknown city",
             priority=complaint.priority,
             severity_score=complaint.severity_score,
             risk_score=complaint.risk_score,
@@ -560,7 +562,9 @@ class ComplaintService:
         )
 
     def _to_list_item(self, complaint: Complaint):
+        from app.models.procurement import City
         from app.schemas.complaint import ComplaintListItem
+        city = self.db.get(City, complaint.city_id)
         ward_number = complaint.ward.ward_number if complaint.ward else None
         if ward_number is None and complaint.address_text:
             ward_match = re.search(r"\bward\s*[-#]?\s*(\d{1,3})\b", complaint.address_text, re.IGNORECASE)
@@ -590,7 +594,7 @@ class ComplaintService:
             category=complaint.category,
             department=complaint.department.name if complaint.department else None,
             city_id=complaint.city_id,
-            city_name=complaint.city.name if complaint.city else "Unknown city",
+            city_name=city.name if city else "Unknown city",
             priority=complaint.priority,
             severity_score=complaint.severity_score,
             risk_score=complaint.risk_score,
