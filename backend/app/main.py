@@ -51,10 +51,20 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-# CORS middleware
+# CORS middleware. A wildcard origin cannot be combined with credentials in
+# browsers; Render environments that use CORS_ORIGINS=* must still receive an
+# explicit allowlist for the authenticated Vercel portals.
+configured_origins = [origin for origin in settings.cors_origins if origin != "*"]
+if not configured_origins:
+    configured_origins = [
+        "https://janmind-public.vercel.app",
+        "https://janmind-municipality.vercel.app",
+        "https://janmind-contractor.vercel.app",
+        "https://janmind-admin.vercel.app",
+    ]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.cors_origins,
+    allow_origins=configured_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
