@@ -91,6 +91,7 @@ class AdminSetupRequest(BaseModel):
     role: str = Field(default="admin", description="admin | officer | supervisor | municipality | collector")
     city: str | None = None
     department: str | None = None
+    phone: str = Field(..., min_length=7, max_length=20)
 
 
 class AdminSetupResponse(BaseModel):
@@ -197,6 +198,7 @@ def admin_setup(
         password_hash=hash_password(setup_data.password),
         city=setup_data.city,
         department=setup_data.department,
+        phone=setup_data.phone.strip(),
         ward="Admin",
     )
 

@@ -158,8 +158,8 @@ function AdminDashboardContent() {
 
   const handleCreateOfficer = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!officerForm.name.trim() || !officerForm.email.trim()) {
-      toast.error("Please fill in name and email");
+    if (!officerForm.name.trim() || !officerForm.email.trim() || officerForm.phone.trim().length < 7) {
+      toast.error("Name, email, and a valid mobile number are required");
       return;
     }
     setSavingUser(true);
@@ -765,10 +765,12 @@ function AdminDashboardContent() {
                 </div>
                 <div>
                   <label className="text-xs font-semibold text-[var(--muted-foreground)]">
-                    Phone
+                    Phone *
                   </label>
                   <input
-                    type="text"
+                    type="tel"
+                    required
+                    minLength={7}
                     placeholder="+91 98250 12345"
                     value={officerForm.phone}
                     onChange={(e) => setOfficerForm({ ...officerForm, phone: e.target.value })}

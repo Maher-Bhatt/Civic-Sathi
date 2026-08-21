@@ -74,7 +74,7 @@ class CreateUserRequest(BaseModel):
     role: str = Field(..., description="collector | officer | supervisor | municipality | contractor | citizen")
     city: Optional[str] = None
     department: Optional[str] = None
-    phone: Optional[str] = None
+    phone: str = Field(..., min_length=7, max_length=20)
 
 
 class UpdateUserRequest(BaseModel):
@@ -821,12 +821,15 @@ def create_user(
     existing = db.query(User).filter(User.email == body.email).first()
     if existing:
         raise HTTPException(status_code=409, detail=f"Email {body.email} already exists")
+    phone = body.phone.strip()
+    if len(phone) < 7:
+        raise HTTPException(status_code=400, detail="A valid mobile number is required")
     user = User(
         id=uuid4(),
         role=body.role,
         name=body.name,
         email=body.email,
-        phone=body.phone,
+        phone=phone,
         password_hash=hash_password(body.password),
         city=body.city,
         department=body.department,
@@ -891,7 +894,12 @@ def update_user(
     if patch.department is not None:
         user.department = patch.department
     if patch.phone is not None:
-        user.phone = patch.phone
+        phone = patch.phone.strip()
+        if len(phone) < 7:
+            raise HTTPException(status_code=400, detail="A valid mobile number is required")
+        user.phone = phone
+    elif not (user.phone or "").strip():
+        raise HTTPException(status_code=400, detail="A verified mobile number is required for every user")
     if patch.password is not None:
         user.password_hash = hash_password(patch.password)
     db.commit()
@@ -1016,6 +1024,7 @@ def create_contractor(
             role="contractor",
             name=body.company_name,
             email=body.login_email,
+            phone=body.phone.strip(),
             password_hash=hash_password(body.login_password),
             ward="Contractor",
         )

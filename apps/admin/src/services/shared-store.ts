@@ -901,7 +901,7 @@ export async function createUser(data: {
   role: string;
   city?: string;
   department?: string;
-  phone?: string;
+  phone: string;
 }): Promise<any> {
   return adminApiFetch<any>("/api/v1/admin/users", { method: "POST", body: JSON.stringify(data) });
 }

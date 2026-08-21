@@ -140,10 +140,15 @@ function UserManagementPage() {
   };
 
   const handleSave = async () => {
-    if (!form.name.trim() || !form.role) { toast.error("Name and role are required"); return; }
-    if (!editUser && (!form.email.trim() || !form.password.trim())) {
-      toast.error("Email and password required for new users"); return;
+    if (!form.name.trim() || !form.role || form.phone.trim().length < 7) {
+      toast.error("Name, role, and a valid mobile number are required");
+      return;
     }
+    if (!editUser && (!form.email.trim() || !form.password.trim())) {
+      toast.error("Email and password required for new users");
+      return;
+    }
+
     setSaving(true);
     try {
       if (editUser) {
@@ -348,8 +353,18 @@ function UserManagementPage() {
                 <input className="ambient-field w-full mt-1" value={form.department} onChange={e => setForm(f => ({...f, department: e.target.value}))} placeholder={t('ui.e_g_roads')} />
               </div>
               <div>
-                <label className="label-xs">{t('ui.phone')}</label>
-                <input className="ambient-field w-full mt-1" value={form.phone} onChange={e => setForm(f => ({...f, phone: e.target.value}))} placeholder="+91 00000 00000" />
+                <label className="label-xs">{t('ui.phone')} *</label>
+                <input
+                  type="tel"
+                  required
+                  minLength={7}
+                  className="ambient-field w-full mt-1"
+                  value={form.phone}
+                  onChange={e => setForm(f => ({...f, phone: e.target.value}))}
+                  placeholder="+91 00000 00000"
+                />
+
+
               </div>
             </div>
 
