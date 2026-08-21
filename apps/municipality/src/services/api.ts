@@ -177,8 +177,10 @@ export async function getMuniOfficer(): Promise<Officer | null> {
   };
 
   if (cached) {
-    const fresh = await refreshFromServer();
-    return fresh ?? cached;
+    // Render the authenticated shell immediately. Refresh identity in the background
+    // so a slow or temporarily unavailable backend cannot strand the dashboard.
+    void refreshFromServer();
+    return cached;
   }
 
   return refreshFromServer();

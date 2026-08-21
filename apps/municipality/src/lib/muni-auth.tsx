@@ -9,6 +9,14 @@ import {
 import type { CityId } from "@/services/cities";
 import type { MuniSettings, Officer } from "@/services/types";
 
+const DEFAULT_SETTINGS: MuniSettings = {
+  theme: "system",
+  compactMode: false,
+  defaultCity: "vadodara",
+  defaultMapMode: "health",
+  notifications: { critical: true, assignments: true, riskChanges: true, dailyDigest: false },
+};
+
 interface MuniAuthContextValue {
   officer: Officer | null;
   ready: boolean;
@@ -27,12 +35,27 @@ export function MuniAuthProvider({ children }: { children: React.ReactNode }) {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    Promise.all([getMuniOfficer(), getMuniSettings()])
-      .then(([o, s]) => {
-        setOfficer(o);
-        setSettings(s);
-      })
-      .finally(() => setReady(true));
+    let active = true;
+    const timeout = <T,>(fallback: T, ms = 4500) =>
+      new Promise<T>((resolve) => window.setTimeout(() => resolve(fallback), ms));
+
+    const bootstrap = async () => {
+      const [officerResult, settingsResult] = await Promise.allSettled([
+        Promise.race([getMuniOfficer(), timeout<Officer | null>(null)]),
+        Promise.race([getMuniSettings(), timeout<MuniSettings>(DEFAULT_SETTINGS)]),
+      ]);
+      if (!active) return;
+      setOfficer(officerResult.status === "fulfilled" ? officerResult.value : null);
+      setSettings(
+        settingsResult.status === "fulfilled" ? settingsResult.value : DEFAULT_SETTINGS,
+      );
+      setReady(true);
+    };
+
+    void bootstrap();
+    return () => {
+      active = false;
+    };
   }, []);
 
   const signIn = useCallback(async (email: string, password: string, city: CityId, designation?: string) => {

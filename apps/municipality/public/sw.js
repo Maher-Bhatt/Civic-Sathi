@@ -1,4 +1,4 @@
-const CACHE = "civic-sathi-municipality-shell-v3";
+const CACHE = "civic-sathi-municipality-shell-v4";
 const SHELL = [
   "/",
   "/manifest.webmanifest",
