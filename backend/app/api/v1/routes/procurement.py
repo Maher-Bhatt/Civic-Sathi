@@ -45,6 +45,10 @@ def _scorecard_for_contractor(db: Session, contractor: Contractor) -> dict:
         if review.rating is not None:
             by_type.setdefault(review.author_type, []).append(float(review.rating))
     average = lambda values: round(sum(values) / len(values), 2) if values else None
+    public_rating = average(by_type.get(ReviewAuthorType.PUBLIC, []))
+    ai_rating = average(by_type.get(ReviewAuthorType.AI, []))
+    officer_rating = average(by_type.get(ReviewAuthorType.OFFICER, []))
+    overall = average([score for score in (public_rating, ai_rating, officer_rating) if score is not None])
     ai_reviews = by_type.get(ReviewAuthorType.AI, [])
     registrations = (
         db.query(ContractorCityRegistration, City.name)
@@ -73,14 +77,10 @@ def _scorecard_for_contractor(db: Session, contractor: Contractor) -> dict:
         .all()
     )
     return {
-        "public_rating": average(by_type.get(ReviewAuthorType.PUBLIC, [])),
-        "ai_rating": average(ai_reviews),
-        "officer_rating": average(by_type.get(ReviewAuthorType.OFFICER, [])),
-        "overall_rating": average([score for score in (
-            average(by_type.get(ReviewAuthorType.PUBLIC, [])),
-            average(ai_reviews),
-            average(by_type.get(ReviewAuthorType.OFFICER, [])),
-        ) if score is not None]),
+        "public_rating": public_rating,
+        "ai_rating": ai_rating,
+        "officer_rating": officer_rating,
+        "overall_rating": overall,
         "total_reviews_count": len(reviews),
         "ai_insights": contractor.ai_insights if ai_reviews and contractor.ai_insights else [],
         "rating_work_orders": [
