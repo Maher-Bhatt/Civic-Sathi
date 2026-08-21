@@ -40,14 +40,24 @@ function NewTenderPage() {
       "Electrical Department": "Electrical",
       "Transport Department": "Transport",
     } as Record<string, string>)[departmentName] ?? departmentName;
+    const categoryName = params.get("category") ?? "";
+    const categoryLabel = ({
+      water_supply: "Water Supply",
+      road_damage: "Road Damage",
+      garbage_collection: "Garbage Collection",
+      street_lighting: "Street Lighting",
+      public_transport: "Public Transport",
+    } as Record<string, string>)[categoryName] ?? categoryName;
     setSourceIssueId(civicIssueId);
     setSourceDepartmentId(departmentId);
     setForm((prev) => ({
       ...prev,
       title: params.get("title") ?? prev.title,
       description: params.get("description") ?? prev.description,
+      category: categoryLabel || prev.category,
       department: departmentLabel || prev.department,
       ward: params.get("ward") ?? prev.ward,
+      area: params.get("area") ?? prev.area,
       civicIssueIds: civicIssueId || prev.civicIssueIds,
       scope: params.get("scope") ?? prev.scope,
     }));

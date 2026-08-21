@@ -67,7 +67,10 @@ function CivicIssueDetailPage() {
           description: approvedIssue.summary ?? issue.description,
           departmentId: approvedIssue.department_id ?? "",
           department: approvedIssue.department ?? issue.category,
+          category: approvedIssue.category ?? issue.category,
           ward: String(approvedIssue.ward_number ?? issue.ward ?? ""),
+          area: issue.area ?? "",
+          scope: `1. Inspect the reported ${approvedIssue.category ?? issue.category} condition at the linked location.\n2. Restore safe public service and complete the required municipal repair.\n3. Submit photographic evidence and completion notes for inspection.`,
         } as any,
       });
     } catch (error: any) {
