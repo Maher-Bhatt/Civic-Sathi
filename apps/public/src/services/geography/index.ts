@@ -157,9 +157,13 @@ export interface ComplaintPoint {
   id: string;
   areaId: string;
   issue: IssueKey;
+  category: string;
+  count: number;
+  resolved: number;
+  risk: number;
   health: AreaHealth;
   daysAgo: number;
-  /** Privacy-safe: coarse coordinate inside the locality catchment only. */
+  /** Privacy-safe coordinate rounded by the backend to a small map cell. */
   lat: number;
   lng: number;
 }
@@ -226,14 +230,20 @@ function buildPoints(city: CityId): ComplaintPoint[] {
       const angle = r() * Math.PI * 2;
       const dist = Math.sqrt(r()) * a.radiusMeters * 0.82;
       const mPerDegLng = M_PER_DEG_LAT * Math.cos((a.center[0] * Math.PI) / 180);
-      points.push({
-        id: `${a.id}-${i}`,
-        areaId: a.id,
-        issue,
-        health: (["low", "moderate", "moderate", "high", "critical"] as AreaHealth[])[
+              const health = (["low", "moderate", "moderate", "high", "critical"] as AreaHealth[])[
           Math.floor(r() * 5)
-        ]!,
-        daysAgo,
+        ]!;
+        points.push({
+          id: `${a.id}-${i}`,
+          areaId: a.id,
+          issue,
+          category: ISSUE_LABEL[issue],
+          count: 1,
+          resolved: 0,
+          risk: HEALTH_RANK[health] * 25,
+          health,
+          daysAgo,
+
         // rounded to ~50m so no exact private location is ever published
         lat: Math.round((a.center[0] + (dist * Math.sin(angle)) / M_PER_DEG_LAT) * 2200) / 2200,
         lng: Math.round((a.center[1] + (dist * Math.cos(angle)) / mPerDegLng) * 2200) / 2200,
@@ -395,8 +405,10 @@ export interface PointCluster {
   lat: number;
   lng: number;
   count: number;
+  resolved: number;
   health: AreaHealth;
   areaId: string;
+  issueCounts: Partial<Record<IssueKey, number>>;
 }
 
 const HEALTH_RANK: Record<AreaHealth, number> = { low: 0, moderate: 1, high: 2, critical: 3 };
@@ -409,43 +421,52 @@ export function clusterPoints(points: ComplaintPoint[], zoom: number): PointClus
       id: p.id,
       lat: p.lat,
       lng: p.lng,
-      count: 1,
+      count: p.count || 1,
+      resolved: p.resolved,
       health: p.health,
       areaId: p.areaId,
+      issueCounts: { [p.issue]: p.count || 1 },
     }));
   }
   const cell =
     zoom >= 15 ? 0.004 : zoom >= 14 ? 0.008 : zoom >= 13 ? 0.016 : zoom >= 12 ? 0.03 : 0.06;
   const buckets = new Map<
     string,
-    { lat: number; lng: number; n: number; rankSum: number; areaId: string }
+    { lat: number; lng: number; count: number; resolved: number; rankSum: number; areaId: string; issueCounts: Partial<Record<IssueKey, number>> }
   >();
   for (const p of points) {
-    const key = `${Math.floor(p.lat / cell)}:${Math.floor(p.lng / cell)}`;
+    const key = `${p.areaId}:${Math.floor(p.lat / cell)}:${Math.floor(p.lng / cell)}`;
+    const weight = p.count || 1;
     const b = buckets.get(key);
     if (b) {
-      b.lat += p.lat;
-      b.lng += p.lng;
-      b.n += 1;
-      b.rankSum += HEALTH_RANK[p.health];
+      b.lat += p.lat * weight;
+      b.lng += p.lng * weight;
+      b.count += weight;
+      b.resolved += p.resolved;
+      b.rankSum += HEALTH_RANK[p.health] * weight;
+      b.issueCounts[p.issue] = (b.issueCounts[p.issue] || 0) + weight;
     } else {
       buckets.set(key, {
-        lat: p.lat,
-        lng: p.lng,
-        n: 1,
-        rankSum: HEALTH_RANK[p.health],
+        lat: p.lat * weight,
+        lng: p.lng * weight,
+        count: weight,
+        resolved: p.resolved,
+        rankSum: HEALTH_RANK[p.health] * weight,
         areaId: p.areaId,
+        issueCounts: { [p.issue]: weight },
       });
     }
   }
   return Array.from(buckets.entries()).map(([key, b]) => ({
     id: key,
-    lat: b.lat / b.n,
-    lng: b.lng / b.n,
-    count: b.n,
-    // dominant (mean) severity keeps clusters readable instead of all-red
-    health: RANK_HEALTH[Math.round(b.rankSum / b.n)]!,
+    lat: b.lat / Math.max(1, b.count),
+    lng: b.lng / Math.max(1, b.count),
+    count: b.count,
+    resolved: b.resolved,
+    // dominant (weighted mean) severity keeps clusters readable instead of all-red
+    health: RANK_HEALTH[Math.round(b.rankSum / Math.max(1, b.count))]!,
     areaId: b.areaId,
+    issueCounts: b.issueCounts,
   }));
 }
 

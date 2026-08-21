@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type * as Leaflet from "leaflet";
-import { Crosshair, Minus, Plus, RotateCcw } from "lucide-react";
+import { Crosshair, Minus, Plus, RotateCcw, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTheme } from "@/lib/theme";
 import { ATTRIBUTION, TILES, getCity, type CityId } from "@/services/cities";
@@ -67,6 +67,7 @@ export function CivicMap({
   const { resolved } = useTheme();
   const [ready, setReady] = useState(false);
   const [zoom, setZoom] = useState(getCity(cityId).zoom);
+  const [selectedPoint, setSelectedPoint] = useState<import("@/services/geography").PointCluster | null>(null);
 
   const activityById = useMemo(() => new Map(activities.map((a) => [a.area.id, a])), [activities]);
   const activityRef = useRef(activityById);
@@ -116,7 +117,10 @@ export function CivicMap({
         attributionControl: true,
         scrollWheelZoom: true,
       });
-      map.on("click", () => onSelectRef.current(null));
+      map.on("click", () => {
+        onSelectRef.current(null);
+        setSelectedPoint(null);
+      });
       map.on("zoomend", () => setZoom(map.getZoom()));
       mapRef.current = map;
       pointLayer.current = L.layerGroup().addTo(map);
@@ -233,7 +237,8 @@ export function CivicMap({
     const layer = pointLayer.current;
     if (!L || !layer || !ready) return;
     layer.clearLayers();
-    if (mode !== "activity") return;
+    setSelectedPoint(null);
+    if (mode !== "activity" || zoom < 15) return;
 
     const validPoints = points.filter(p => p.lat !== 0 && p.lng !== 0);
     for (const c of clusterPoints(validPoints, zoom)) {
@@ -251,12 +256,13 @@ export function CivicMap({
       const m = L.marker([c.lat, c.lng], {
         icon,
         keyboard: false,
-        title: `${c.count} aggregated reports`,
-        alt: `${c.count} aggregated reports`,
+        title: `${c.count} ${c.count === 1 ? "mapped civic report" : "mapped civic reports"} — click for details`,
+        alt: `${c.count} ${c.count === 1 ? "mapped civic report" : "mapped civic reports"}`,
       });
       m.on("click", (e) => {
         L.DomEvent.stopPropagation(e as unknown as Event);
         onSelectRef.current(c.areaId);
+        setSelectedPoint(c);
       });
       m.addTo(layer);
     }
@@ -388,6 +394,43 @@ export function CivicMap({
           </>
         )}
       </div>
+
+      {selectedPoint && (
+        <div className="animate-rise absolute inset-x-2 bottom-2 z-[600] sm:inset-x-auto sm:right-3 sm:bottom-3 sm:w-[21rem]" aria-live="polite">
+          <div className="rounded-2xl border border-[var(--glass-border)] bg-[var(--glass-strong)] p-4 shadow-[var(--shadow-lift)] backdrop-blur-2xl">
+            <div className="flex items-start justify-between gap-3">
+              <div className="min-w-0">
+                <span className="label-xs" style={{ color: AREA_HEALTH_HEX[selectedPoint.health] }}>
+                  {selectedPoint.count === 1 ? "Mapped civic report" : `${selectedPoint.count} reports in this map cell`}
+                </span>
+                <h3 className="mt-1 text-base font-semibold">
+                  {Object.entries(selectedPoint.issueCounts)
+                    .filter(([, count]) => Number(count || 0) > 0)
+                    .sort(([, left], [, right]) => Number(right || 0) - Number(left || 0))
+                    .map(([issue, count]) => `${ISSUE_LABEL[issue as keyof typeof ISSUE_LABEL]} (${count})`)
+                    .join(" · ") || "Civic issue activity"}
+                </h3>
+              </div>
+              <button
+                type="button"
+                aria-label={t("ui.close_report_details")}
+                onClick={() => setSelectedPoint(null)}
+                className="press -mt-1 -mr-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-subtle hover:bg-[var(--glass)] hover:text-foreground"
+              >
+                <X className="h-3.5 w-3.5" aria-hidden />
+              </button>
+            </div>
+            <dl className="mt-3 grid grid-cols-2 gap-x-3 gap-y-2 border-t border-border pt-3 text-xs">
+              <div><dt className="label-xs">Mapped area</dt><dd className="mt-0.5 truncate text-foreground">{activityRef.current.get(selectedPoint.areaId)?.area.name || "City map"}</dd></div>
+              <div><dt className="label-xs">Severity</dt><dd className="mt-0.5 capitalize text-foreground">{selectedPoint.health}</dd></div>
+              <div className="col-span-2"><dt className="label-xs">Map coordinates</dt><dd className="mt-0.5 font-mono tabular-nums text-foreground">{selectedPoint.lat.toFixed(5)}, {selectedPoint.lng.toFixed(5)}</dd></div>
+              <div><dt className="label-xs">Resolved</dt><dd className="mt-0.5 text-foreground">{selectedPoint.resolved} of {selectedPoint.count}</dd></div>
+              <div><dt className="label-xs">Reports</dt><dd className="mt-0.5 text-foreground">{selectedPoint.count}</dd></div>
+            </dl>
+            <p className="mt-3 text-[0.68rem] leading-relaxed text-subtle">Zoom further in to separate nearby markers. Citizen identities are never shown.</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

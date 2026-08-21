@@ -295,7 +295,7 @@ class AnalyticsService:
     ) -> dict:
         """Return bounded, city-scoped map aggregates from persisted complaints."""
         from datetime import datetime, timedelta, timezone
-        from sqlalchemy import Numeric, and_, case, func
+        from sqlalchemy import and_, case, func
         from app.models.complaint import Complaint
         from app.models.procurement import City
 
@@ -321,69 +321,53 @@ class AnalyticsService:
             filters.append(Complaint.category.ilike(f"%{requested_issue}%"))
         base = and_(*filters) if filters else True
 
-        def health_case(avg_risk):
-            return case(
-                (avg_risk >= 80, "critical"),
-                (avg_risk >= 60, "high"),
-                (avg_risk >= 35, "moderate"),
-                else_="low",
-            )
-
-        # Complaint has persisted numeric severity/risk fields plus a priority
-        # string; it does not have a Complaint.severity ORM column. Referencing
-        # a non-existent column here caused every public-map request to return
-        # HTTP 500 and forced clients toward misleading fallback visuals.
-        severity_risk = case(
-            (func.lower(func.coalesce(Complaint.priority, "")) == "critical", 95),
-            (func.lower(func.coalesce(Complaint.priority, "")) == "high", 75),
-            (func.lower(func.coalesce(Complaint.priority, "")) == "medium", 48),
-            (Complaint.severity_score >= 80, 95),
-            (Complaint.severity_score >= 60, 75),
-            (Complaint.severity_score >= 35, 48),
-            else_=func.coalesce(Complaint.risk_score, 20),
-        )
-        avg_risk = func.avg(func.greatest(func.coalesce(Complaint.risk_score, 20), severity_risk))
-        lat_cell = func.round(Complaint.lat.cast(Numeric), 2)
-        lng_cell = func.round(Complaint.lng.cast(Numeric), 2)
+        # Complaint-level risk is derived below from each persisted record's
+        # risk/priority fields so the returned pin can be inspected at zoom.
+        # Return one privacy-safe mapped point per persisted complaint instead
+        # of grouping by a rounded 0.01-degree cell. The client still clusters
+        # these points when zoomed out, but zooming in now reveals the actual
+        # mapped location and issue category behind each count bubble.
         rows = self.db.query(
-            lat_cell.label("lat_cell"),
-            lng_cell.label("lng_cell"),
+            Complaint.id,
+            Complaint.lat,
+            Complaint.lng,
             Complaint.category,
-            func.count(Complaint.id).label("count"),
-            func.avg(Complaint.lat).label("lat"),
-            func.avg(Complaint.lng).label("lng"),
-            avg_risk.label("avg_risk"),
-            func.sum(case((Complaint.status.in_(["resolved", "closed"]), 1), else_=0)).label("resolved"),
-            func.max(Complaint.created_at).label("last_seen"),
-        ).filter(and_(base, Complaint.lat.isnot(None), Complaint.lng.isnot(None))).group_by(
-            lat_cell,
-            lng_cell,
-            Complaint.category,
+            Complaint.status,
+            Complaint.priority,
+            Complaint.severity_score,
+            Complaint.risk_score,
+            Complaint.created_at,
+        ).filter(and_(base, Complaint.lat.isnot(None), Complaint.lng.isnot(None))).order_by(
+            Complaint.created_at.desc(), Complaint.id.asc()
         ).limit(2500).all()
 
         points = []
         for row in rows:
-            density_risk = min(100, int(row.count or 0) * 2)
-            risk = min(100, max(int(round(float(row.avg_risk or 0))), density_risk))
+            priority = str(row.priority or "").lower()
+            risk = min(100, max(
+                int(row.risk_score or 0),
+                95 if priority == "critical" else 75 if priority == "high" else 48 if priority == "medium" else int(row.severity_score or 0),
+            ))
             health = "critical" if risk >= 80 else "high" if risk >= 60 else "moderate" if risk >= 35 else "low"
             if health_filter != "all" and health != health_filter:
                 continue
-            last_seen = row.last_seen
-            days_ago = max(0, (now - last_seen).days) if last_seen else 999
+            days_ago = max(0, (now - row.created_at).days) if row.created_at else 999
             points.append({
-                "id": f"{row.lat_cell}:{row.lng_cell}:{row.category}",
-                "lat": float(row.lat or 0),
-                "lng": float(row.lng or 0),
+                "id": str(row.id),
+                "lat": round(float(row.lat or 0), 5),
+                "lng": round(float(row.lng or 0), 5),
                 "category": row.category or "other",
-                "count": int(row.count or 0),
-                "resolved": int(row.resolved or 0),
+                "count": 1,
+                "resolved": 1 if row.status in {"resolved", "closed"} else 0,
                 "risk": risk,
                 "health": health,
                 "days_ago": days_ago,
             })
 
-        total = sum(point["count"] for point in points)
-        resolved = sum(point["resolved"] for point in points)
+        total_query = self.db.query(func.count(Complaint.id)).filter(and_(base, Complaint.lat.isnot(None), Complaint.lng.isnot(None)))
+        resolved_query = total_query.filter(Complaint.status.in_(["resolved", "closed"]))
+        total = int(total_query.scalar() or 0)
+        resolved = int(resolved_query.scalar() or 0)
         health_distribution = {key: sum(point["count"] for point in points if point["health"] == key) for key in ("low", "moderate", "high", "critical")}
         trend_rows = self.db.query(
             func.date_trunc("day", Complaint.created_at).label("dt"),

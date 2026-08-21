@@ -157,8 +157,10 @@ export interface ComplaintPoint {
   id: string;
   areaId: string;
   issue: IssueKey;
+  category?: string;
   health: AreaHealth;
   daysAgo: number;
+  risk?: number;
   /** Privacy-safe: coarse coordinate inside the locality catchment only. */
   lat: number;
   lng: number;
@@ -282,8 +284,10 @@ export interface PointCluster {
   lat: number;
   lng: number;
   count: number;
+  resolved: number;
   health: AreaHealth;
   areaId: string;
+  issueCounts: Partial<Record<IssueKey, number>>;
 }
 
 const HEALTH_RANK: Record<AreaHealth, number> = { low: 0, moderate: 1, high: 2, critical: 3 };
@@ -292,38 +296,44 @@ const RANK_HEALTH: AreaHealth[] = ["low", "moderate", "high", "critical"];
 /** Grid clustering: coarse when zoomed out, individual points when zoomed in. */
 export function clusterPoints(points: ComplaintPoint[], zoom: number): PointCluster[] {
   if (zoom >= 16) {
-          return points.map((p) => ({
-        id: p.id,
-        lat: p.lat,
-        lng: p.lng,
-        count: Math.max(1, Number(p.count ?? 1)),
-        health: p.health,
-        areaId: p.areaId,
-      }));
-
+    return points.map((p) => ({
+      id: p.id,
+      lat: p.lat,
+      lng: p.lng,
+      count: Math.max(1, Number(p.count ?? 1)),
+      resolved: Math.max(0, Number(p.resolved ?? 0)),
+      health: p.health,
+      areaId: p.areaId,
+      issueCounts: { [p.issue]: Math.max(1, Number(p.count ?? 1)) },
+    }));
   }
   const cell =
     zoom >= 15 ? 0.004 : zoom >= 14 ? 0.008 : zoom >= 13 ? 0.016 : zoom >= 12 ? 0.03 : 0.06;
   const buckets = new Map<
     string,
-    { lat: number; lng: number; n: number; rankSum: number; areaId: string }
+    { lat: number; lng: number; n: number; resolved: number; rankSum: number; areaId: string; issueCounts: Partial<Record<IssueKey, number>> }
   >();
   for (const p of points) {
     const key = `${Math.floor(p.lat / cell)}:${Math.floor(p.lng / cell)}`;
     const b = buckets.get(key);
     if (b) {
-      b.lat += p.lat;
-      b.lng += p.lng;
-              b.n += Math.max(1, Number(p.count ?? 1));
-        b.rankSum += HEALTH_RANK[p.health] * Math.max(1, Number(p.count ?? 1));
+      const weight = Math.max(1, Number(p.count ?? 1));
+      b.lat += p.lat * weight;
+      b.lng += p.lng * weight;
+      b.n += weight;
+      b.resolved += Math.max(0, Number(p.resolved ?? 0));
+      b.rankSum += HEALTH_RANK[p.health] * weight;
+      b.issueCounts[p.issue] = (b.issueCounts[p.issue] || 0) + weight;
 
     } else {
       buckets.set(key, {
-        lat: p.lat,
-        lng: p.lng,
+        lat: p.lat * Math.max(1, Number(p.count ?? 1)),
+        lng: p.lng * Math.max(1, Number(p.count ?? 1)),
         n: Math.max(1, Number(p.count ?? 1)),
+        resolved: Math.max(0, Number(p.resolved ?? 0)),
         rankSum: HEALTH_RANK[p.health] * Math.max(1, Number(p.count ?? 1)),
         areaId: p.areaId,
+        issueCounts: { [p.issue]: Math.max(1, Number(p.count ?? 1)) },
       });
     }
   }
@@ -332,9 +342,11 @@ export function clusterPoints(points: ComplaintPoint[], zoom: number): PointClus
     lat: b.lat / b.n,
     lng: b.lng / b.n,
     count: b.n,
+    resolved: b.resolved,
     // dominant (mean) severity keeps clusters readable instead of all-red
     health: RANK_HEALTH[Math.round(b.rankSum / b.n)]!,
     areaId: b.areaId,
+    issueCounts: b.issueCounts,
   }));
 }
 

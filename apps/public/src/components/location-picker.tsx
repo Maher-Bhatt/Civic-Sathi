@@ -147,18 +147,32 @@ export function LocationPicker({
               setPhase("ready");
             }}
           />
-          <ClientCityMap
-            cityId={city}
-            clusters={clustersForCity(city)}
-            className="h-[300px] sm:h-[380px]"
-            marker={marker}
-            onMarkerChange={(pos) => commit(pos, city)}
-            focus={marker}
-            showLegend={false}
-            ariaLabel="Map for choosing the location of your report"
-          />
-          <p className="text-xs leading-relaxed text-subtle">
-            {t('ui.tap_the_map_or_drag_the_marker')}</p>
+          <div className="relative">
+            <ClientCityMap
+              cityId={city}
+              clusters={clustersForCity(city)}
+              className="h-[300px] sm:h-[380px]"
+              marker={marker}
+              onMarkerChange={(pos) => commit(pos, city)}
+              focus={marker}
+              showLegend={false}
+              ariaLabel="Map for choosing the location of your report"
+            />
+            <div className="pointer-events-none absolute inset-x-3 top-3 z-[500] flex justify-center sm:justify-start">
+              <div className="rounded-xl border border-[var(--glass-border)] bg-[var(--glass-strong)] px-3 py-2 text-xs text-foreground shadow-[var(--shadow-soft)] backdrop-blur-xl">
+                <span className="font-semibold">Place the report pin</span>
+                <span className="ml-1.5 text-muted-foreground">Tap the exact spot or drag the pin.</span>
+              </div>
+            </div>
+          </div>
+          <div className="flex items-start gap-2 rounded-xl border border-[color-mix(in_oklab,var(--primary)_25%,transparent)] bg-[color-mix(in_oklab,var(--primary)_7%,transparent)] px-3 py-2.5 text-xs leading-relaxed text-muted-foreground" role="status" aria-live="polite">
+            <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary" aria-hidden />
+            <span>
+              {marker && location
+                ? <>Selected report point: <strong className="font-mono text-foreground">{location.lat.toFixed(5)}, {location.lng.toFixed(5)}</strong> · {location.area}</>
+                : t('ui.tap_the_map_or_drag_the_marker')}
+            </span>
+          </div>
         </div>
       )}
     </div>
