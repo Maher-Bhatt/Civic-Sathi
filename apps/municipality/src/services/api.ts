@@ -17,6 +17,8 @@ import type {
   ComplaintStatus,
   WorkOrder,
   WorkOrderEvent,
+  MergeProposalResponse,
+  MergeConfirmResponse,
 } from "./types";
 import { DEFAULT_COMPLAINT_FILTERS, alertPriority } from "./types";
 import { nearestArea } from "@/services/geography";
@@ -254,6 +256,23 @@ export async function getSystemicIssue(id: string): Promise<SystemicIssue | null
 
 export async function materializeCivicIssue(id: string): Promise<any> {
   return client.post<any>(`/api/v1/issues/materialize/${encodeURIComponent(id)}`, {});
+}
+
+export async function proposeAiMergeGroups(complaintIds: string[] = [], maxGroups = 50): Promise<MergeProposalResponse> {
+  return client.post<MergeProposalResponse>("/api/v1/issues/merge-proposals", {
+    complaint_ids: complaintIds,
+    max_groups: maxGroups,
+  });
+}
+
+export async function confirmAiMergeGroup(
+  proposalKey: string,
+  complaintIds: string[],
+): Promise<MergeConfirmResponse> {
+  return client.post<MergeConfirmResponse>("/api/v1/issues/merge-proposals/confirm", {
+    proposal_key: proposalKey,
+    complaint_ids: complaintIds,
+  });
 }
 
 export async function updateSystemicIssue(

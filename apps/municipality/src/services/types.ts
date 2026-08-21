@@ -1083,3 +1083,52 @@ export interface CivicRolePerformance {
   metrics: Record<string, unknown>;
   achievements: Array<{ code: string; name: string; description: string; awarded_at?: string | null }>;
 }
+
+
+export interface MergeMember {
+  id: string;
+  public_id: string;
+  title: string;
+  description: string;
+  category: string;
+  status: string;
+  priority?: string | null;
+  risk_score: number;
+  city_id: string;
+  ward_number?: number | null;
+  address_text?: string | null;
+  lat?: number | null;
+  lng?: number | null;
+  created_at: string;
+}
+
+export interface MergeProposal {
+  proposal_key: string;
+  category: string;
+  city_id: string;
+  ward_number?: number | null;
+  area_label?: string | null;
+  complaint_count: number;
+  complaint_ids: string[];
+  members: MergeMember[];
+  confidence_score: number;
+  min_distance_meters?: number | null;
+  existing_issue_ids: string[];
+  explanation: string;
+}
+
+export interface MergeProposalResponse {
+  city: string;
+  city_id: string;
+  scanned_count: number;
+  proposals: MergeProposal[];
+  threshold: number;
+}
+
+export interface MergeConfirmResponse {
+  success: boolean;
+  issue: unknown;
+  complaint_ids: string[];
+  operation: string;
+  audit_action: string;
+}

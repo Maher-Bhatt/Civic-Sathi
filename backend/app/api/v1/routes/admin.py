@@ -898,10 +898,20 @@ def update_user(
         if len(phone) < 7:
             raise HTTPException(status_code=400, detail="A valid mobile number is required")
         user.phone = phone
-    elif not (user.phone or "").strip():
+    elif not (user.phone or "").strip() and patch.password is None:
         raise HTTPException(status_code=400, detail="A verified mobile number is required for every user")
     if patch.password is not None:
         user.password_hash = hash_password(patch.password)
+        db.add(AuditLog(
+            actor_id=str(current.get("sub")),
+            actor_name="Super Admin",
+            actor_role="admin",
+            action="ROTATE_USER_LOGIN",
+            entity_type="user",
+            entity_id=str(user.id),
+            entity_label=user.email,
+            reason="Guarded SIH credential handoff rotation; existing phone metadata preserved",
+        ))
     db.commit()
     db.refresh(user)
     return UserOut(

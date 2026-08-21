@@ -8,13 +8,21 @@ from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
-from app.core.security import get_current_officer
+from app.core.security import get_current_officer, require_officer_permission
 from app.models.complaint import Complaint
 from app.models.issue import IssueCluster, IssueComplaint
 from app.models.procurement import City
 from app.models.user import User
-from app.schemas.issue import IssueDetailResponse, RebuildIssuesResponse
+from app.schemas.issue import (
+    IssueDetailResponse,
+    RebuildIssuesResponse,
+    MergeConfirmRequest,
+    MergeConfirmResponse,
+    MergeProposalRequest,
+    MergeProposalResponse,
+)
 from app.services.issue_service import IssueService
+from app.services.merge_service import build_merge_proposals, confirm_merge
 
 router = APIRouter()
 
@@ -36,6 +44,41 @@ def list_issues(
             city_id = city.id if city else None
     service = IssueService(db)
     return service.list_issues(risk=risk, status=status, ward=ward, city_id=city_id)
+
+
+@router.post("/merge-proposals", response_model=MergeProposalResponse)
+def propose_ai_merge_groups(
+    body: MergeProposalRequest,
+    db: Session = Depends(get_db),
+    officer: User = Depends(require_officer_permission("issues.merge")),
+):
+    """Return reviewable, non-mutating AI-assisted complaint grouping proposals."""
+    try:
+        return build_merge_proposals(db, officer, body.complaint_ids or None, body.max_groups)
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+
+
+@router.post("/merge-proposals/confirm", response_model=MergeConfirmResponse)
+def confirm_ai_merge_group(
+    body: MergeConfirmRequest,
+    db: Session = Depends(get_db),
+    officer: User = Depends(require_officer_permission("issues.merge")),
+):
+    """Confirm one reviewed proposal and persist one canonical civic issue."""
+    try:
+        issue, operation = confirm_merge(db, officer, body)
+        issue_response = IssueService(db).get_issue(issue.id)
+        return MergeConfirmResponse(
+            success=True,
+            issue=issue_response,
+            complaint_ids=body.complaint_ids,
+            operation=operation,
+            audit_action="AI_GROUP_MERGE_CONFIRMED",
+        )
+    except ValueError as exc:
+        db.rollback()
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
 
 
 @router.get("/{issue_id}", response_model=IssueDetailResponse, dependencies=[Depends(get_current_officer)])

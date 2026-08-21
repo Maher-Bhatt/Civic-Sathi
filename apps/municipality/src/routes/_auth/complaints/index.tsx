@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { Download, Filter } from "lucide-react";
+import { Check, Download, Filter, Sparkles, X } from "lucide-react";
 import { toast } from "sonner";
 import { ComplaintTable } from "@/components/municipality/complaint-table";
 import { FilterDrawer } from "@/components/municipality/filter-drawer";
@@ -8,10 +8,18 @@ import { GlassCard, SectionLabel } from "@/components/ui/glass-card";
 import { GlassButton } from "@/components/ui/glass-button";
 import { ErrorState, LoadingState } from "@/components/ui/states";
 import { useMuniAuth } from "@/lib/muni-auth";
-import { bulkUpdateComplaints, getMuniComplaints, getSavedViews } from "@/services/api";
+import {
+  bulkUpdateComplaints,
+  confirmAiMergeGroup,
+  getMuniComplaints,
+  getSavedViews,
+  proposeAiMergeGroups,
+} from "@/services/api";
 import {
   DEFAULT_COMPLAINT_FILTERS,
   type ComplaintFilters,
+  type MergeProposal,
+  type MergeProposalResponse,
   type MuniComplaint,
 } from "@/services/types";
 import { DEPARTMENTS } from "@/services/types";
@@ -33,6 +41,7 @@ export const Route = createFileRoute("/_auth/complaints/")({
 function ComplaintsPage() {
   const { t } = useI18n();
   const { officer } = useMuniAuth();
+  const navigate = useNavigate();
   const { area: areaSearch } = Route.useSearch();
   const [complaints, setComplaints] = useState<MuniComplaint[]>([]);
   const [loading, setLoading] = useState(true);
@@ -47,6 +56,8 @@ function ComplaintsPage() {
   const [sortKey, setSortKey] = useState<SortKey>("createdAt");
   const [sortDir, setSortDir] = useState<"asc" | "desc">("desc");
   const [savedViews, setSavedViews] = useState<Awaited<ReturnType<typeof getSavedViews>>>([]);
+  const [mergeProposal, setMergeProposal] = useState<MergeProposalResponse | null>(null);
+  const [mergeBusy, setMergeBusy] = useState(false);
 
   useEffect(() => {
     if (areaSearch) setFilters((f) => ({ ...f, area: areaSearch }));
@@ -92,6 +103,83 @@ function ComplaintsPage() {
     else {
       setSortKey(key);
       setSortDir("asc");
+    }
+  }
+
+  async function proposeAiGroups() {
+    if (selected.size < 2) {
+      toast.info("Select at least two complaints for AI grouping.");
+      return;
+    }
+    const backendIds = complaints
+      .filter((complaint) => selected.has(complaint.id))
+      .map((complaint) => complaint.backendId || complaint.id)
+      .filter(Boolean);
+    if (backendIds.length < 2) {
+      toast.error("The selected complaints are missing backend IDs. Refresh the queue and try again.");
+      return;
+    }
+    setMergeBusy(true);
+    try {
+      const response = await proposeAiMergeGroups(backendIds);
+      setMergeProposal(response);
+      if (response.proposals.length === 0) {
+        toast.info("No same-area, same-issue group was found in the selected complaints.");
+      } else {
+        toast.success(`${response.proposals.length} reviewable AI group${response.proposals.length === 1 ? "" : "s"} found.`);
+      }
+    } catch (error: any) {
+      toast.error(error?.message ?? "AI grouping could not be completed.");
+    } finally {
+      setMergeBusy(false);
+    }
+  }
+
+  function removeProposalMember(proposalKey: string, complaintId: string) {
+    setMergeProposal((current) => {
+      if (!current) return current;
+      return {
+        ...current,
+        proposals: current.proposals
+          .map((proposal) => {
+            if (proposal.proposal_key !== proposalKey) return proposal;
+            const complaintIds = proposal.complaint_ids.filter((id) => id !== complaintId);
+            return {
+              ...proposal,
+              complaint_ids: complaintIds,
+              complaint_count: complaintIds.length,
+              members: proposal.members.filter((member) => member.id !== complaintId),
+            };
+          })
+          .filter((proposal) => proposal.complaint_count >= 2),
+      };
+    });
+  }
+
+  async function confirmProposal(proposal: MergeProposal) {
+    if (proposal.complaint_ids.length < 2) return;
+    setMergeBusy(true);
+    try {
+      const confirmed = await confirmAiMergeGroup(proposal.proposal_key, proposal.complaint_ids);
+      toast.success(`Confirmed ${proposal.complaint_count} complaints into one Civic Issue.`);
+      const mergedIds = new Set(proposal.complaint_ids);
+      setSelected((current) => {
+        const next = new Set(current);
+        complaints.forEach((complaint) => {
+          if (mergedIds.has(complaint.backendId || complaint.id)) next.delete(complaint.id);
+        });
+        return next;
+      });
+      setMergeProposal((current) => current ? { ...current, proposals: current.proposals.filter((item) => item.proposal_key !== proposal.proposal_key) } : current);
+      setComplaints(await getMuniComplaints(filters));
+      const issueId = String((confirmed.issue as any)?.id ?? "");
+      if (issueId) {
+        await navigate({ to: "/civic-issues/$id" as any, params: { id: issueId } as any });
+      }
+    } catch (error: any) {
+      toast.error(error?.message ?? "The AI group became stale. Run grouping again before confirming.");
+    } finally {
+      setMergeBusy(false);
     }
   }
 
@@ -186,11 +274,65 @@ function ComplaintsPage() {
           </button>
           <button
             type="button"
-            onClick={() => toast.success("Opening bulk classification...")}
-            className="action-btn"
+            onClick={() => void proposeAiGroups()}
+            disabled={mergeBusy}
+            className="action-btn border border-primary/30 bg-primary/10 text-primary hover:bg-primary/20 disabled:opacity-60"
           >
-            {t("ui.bulk_classify")}
+            <Sparkles className="h-3.5 w-3.5" />
+            {mergeBusy ? "Analyzing groups..." : "AI Group Similar Complaints"}
           </button>
+        </GlassCard>
+      )}
+
+      {mergeProposal && (
+        <GlassCard elevation="raised" className="space-y-4 border-primary/25 bg-primary/5 p-5">
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <SectionLabel className="flex items-center gap-2 text-primary"><Sparkles className="h-4 w-4" /> AI grouping review</SectionLabel>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Review the evidence before confirmation. Nothing changes in the database until you confirm a group.
+              </p>
+            </div>
+            <button type="button" className="press rounded-lg p-1 text-muted-foreground hover:bg-[var(--glass)]" onClick={() => setMergeProposal(null)} aria-label="Close AI grouping review">
+              <X className="h-4 w-4" />
+            </button>
+          </div>
+          {mergeProposal.proposals.length === 0 ? (
+            <p className="rounded-xl border border-[var(--glass-border)] bg-[var(--glass)] p-4 text-sm text-muted-foreground">
+              No selected complaints meet the same-city, same-category, same-area, and text-similarity rules.
+            </p>
+          ) : (
+            <div className="grid gap-4 lg:grid-cols-2">
+              {mergeProposal.proposals.map((proposal) => (
+                <div key={proposal.proposal_key} className="rounded-xl border border-[var(--glass-border)] bg-[var(--glass)] p-4">
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <p className="font-semibold capitalize">{proposal.category.replaceAll("_", " ")}</p>
+                      <p className="text-xs text-muted-foreground">{proposal.area_label ?? "Mapped area"} · {proposal.complaint_count} complaints · {Math.round(proposal.confidence_score * 100)}% confidence</p>
+                    </div>
+                    <span className="rounded-full bg-primary/10 px-2 py-1 text-[0.65rem] font-semibold text-primary">REVIEW</span>
+                  </div>
+                  <p className="mt-3 text-xs leading-relaxed text-muted-foreground">{proposal.explanation}</p>
+                  <div className="mt-3 space-y-2">
+                    {proposal.members.map((member) => (
+                      <div key={member.id} className="flex items-center justify-between gap-2 rounded-lg border border-[var(--glass-border)] px-3 py-2 text-xs">
+                        <div className="min-w-0">
+                          <p className="truncate font-medium">{member.public_id}</p>
+                          <p className="truncate text-muted-foreground">{member.title} · {member.ward_number ? `Ward ${member.ward_number}` : member.address_text ?? "Mapped location"}</p>
+                        </div>
+                        <button type="button" onClick={() => removeProposalMember(proposal.proposal_key, member.id)} className="shrink-0 rounded-md p-1 text-muted-foreground hover:bg-critical/10 hover:text-critical" aria-label={`Remove ${member.public_id} from proposal`}>
+                          <X className="h-3.5 w-3.5" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                  <button type="button" disabled={mergeBusy || proposal.complaint_count < 2} onClick={() => void confirmProposal(proposal)} className="action-btn mt-4 w-full bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-50">
+                    <Check className="h-3.5 w-3.5" /> Confirm Merge into Civic Issue
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
         </GlassCard>
       )}
 

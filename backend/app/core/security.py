@@ -134,9 +134,9 @@ OFFICER_ROLES = {"officer", "supervisor", "admin", "municipality", "collector"}
 DESIGNATION_PERMISSIONS: dict[str, set[str]] = {
     "Ward Officer": {"dashboard.read", "map.read", "complaints.read", "complaints.update", "alerts.read"},
     "Field Inspector": {"dashboard.read", "map.read", "complaints.read", "complaints.update", "areas.read", "work_orders.inspect"},
-    "Triage Officer": {"dashboard.read", "map.read", "complaints.read", "issues.read", "triage.review"},
+    "Triage Officer": {"dashboard.read", "map.read", "complaints.read", "issues.read", "issues.merge", "triage.review"},
     "Municipal Supervisor": {"*"},
-    "Chief Engineer": {"dashboard.read", "map.read", "complaints.read", "tenders.manage", "work_orders.manage", "work_orders.inspect", "analytics.read"},
+    "Chief Engineer": {"dashboard.read", "map.read", "complaints.read", "issues.read", "issues.merge", "tenders.manage", "work_orders.manage", "work_orders.inspect", "analytics.read"},
     "Commissioner": {"*"},
     "Department Head": {"*"},
 }

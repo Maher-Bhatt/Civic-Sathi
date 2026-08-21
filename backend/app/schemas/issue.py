@@ -84,3 +84,62 @@ class RebuildIssuesResponse(BaseModel):
     issues_updated: int
     complaints_processed: int
     duration_ms: int
+
+
+class MergeProposalRequest(BaseModel):
+    """Optional selected complaint IDs; empty means scan the officer's city queue."""
+    complaint_ids: list[UUID] = []
+    max_groups: int = 50
+
+
+class MergeMemberResponse(BaseModel):
+    id: UUID
+    public_id: str
+    title: str
+    description: str
+    category: str
+    status: str
+    priority: str | None = None
+    risk_score: int = 0
+    city_id: UUID
+    ward_number: int | None = None
+    address_text: str | None = None
+    lat: float | None = None
+    lng: float | None = None
+    created_at: datetime
+
+
+class MergeProposal(BaseModel):
+    proposal_key: str
+    category: str
+    city_id: UUID
+    ward_number: int | None = None
+    area_label: str | None = None
+    complaint_count: int
+    complaint_ids: list[UUID]
+    members: list[MergeMemberResponse]
+    confidence_score: float
+    min_distance_meters: float | None = None
+    existing_issue_ids: list[UUID] = []
+    explanation: str
+
+
+class MergeProposalResponse(BaseModel):
+    city: str
+    city_id: UUID
+    scanned_count: int
+    proposals: list[MergeProposal]
+    threshold: float
+
+
+class MergeConfirmRequest(BaseModel):
+    proposal_key: str
+    complaint_ids: list[UUID]
+
+
+class MergeConfirmResponse(BaseModel):
+    success: bool
+    issue: IssueDetailResponse
+    complaint_ids: list[UUID]
+    operation: str
+    audit_action: str
