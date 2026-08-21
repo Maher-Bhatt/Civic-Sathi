@@ -308,37 +308,12 @@ export async function getAuthoritativeMapData(
 
 export async function getCivicIssues(city?: CityId): Promise<any[]> {
   try {
-    const res = await client.get<any[]>(`/api/v1/issues${city ? `?city=${encodeURIComponent(city)}` : ""}`);
-    if (Array.isArray(res) && res.length > 0) return res;
+    const res = await client.get<any[] | { items?: any[] }>(`/api/v1/issues${city ? `?city=${encodeURIComponent(city)}` : ""}`);
+    if (Array.isArray(res)) return res;
+    return Array.isArray(res?.items) ? res.items : [];
   } catch {
-    // Fall through to complaint-backed map points when issue clustering is empty.
-  }
-
-  try {
-    const complaints = await getMuniComplaints(city ? { city } : undefined);
-    const impactBySeverity: Record<string, number> = {
-      Critical: 100,
-      High: 80,
-      Moderate: 60,
-      Low: 35,
-    };
-    return complaints.map((complaint) => ({
-      id: complaint.id,
-      title: `${complaint.category} issue near ${complaint.area}`,
-      description: complaint.description,
-      category: complaint.category,
-      severity: complaint.severity,
-      status: complaint.status,
-      reportCount: 1,
-      impactScore: impactBySeverity[complaint.severity] ?? 35,
-      firstReportedAt: complaint.createdAt,
-      createdAt: complaint.createdAt,
-      ward: complaint.ward,
-      area: complaint.area,
-      lat: complaint.lat,
-      lng: complaint.lng,
-    }));
-  } catch {
+    // An empty or failed issue query must remain distinguishable from complaint intake.
+    // Do not fabricate one Civic Issue per complaint; grouping requires officer review.
     return [];
   }
 }
