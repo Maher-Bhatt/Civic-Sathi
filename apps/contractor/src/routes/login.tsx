@@ -27,9 +27,15 @@ function ContractorLogin() {
       await signIn(email.trim().toLowerCase(), password, city);
       navigate({ to: "/contractor/dashboard" as any });
     } catch (err: any) {
-      setError(
-        err.message || "Invalid email or password. Please check your credentials and try again.",
-      );
+      const status = Number(err?.status ?? err?.statusCode ?? 0);
+      const detail = String(err?.message || "");
+      if (status === 401) {
+        setError("Login rejected. Use the current official SIH handoff password for this account; the old shared demo password is no longer active.");
+      } else if (status === 403 && detail.toLowerCase().includes("approved")) {
+        setError(`This contractor is not approved for ${city === "vadodara" ? "Vadodara" : "Bengaluru"}. Select the municipality shown on your registration.`);
+      } else {
+        setError(detail || "Unable to sign in right now. Please retry and confirm the municipality selection.");
+      }
     } finally {
       setLoading(false);
     }
@@ -82,6 +88,7 @@ function ContractorLogin() {
             </label>
             <input
               type="password"
+              autoComplete="current-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="filter-input w-full ambient-field px-4 py-2 rounded-md bg-[var(--surface)] text-[var(--foreground)] border border-[var(--glass-border)] focus:outline-none focus:ring-1 focus:ring-[var(--primary)]"
