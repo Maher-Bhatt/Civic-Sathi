@@ -33,7 +33,6 @@ import {
   ISSUE_LABEL,
   TIME_WINDOWS,
   areaDailyTrend,
-  cityGeography,
   getLocalityHeritage,
   nearestArea,
   searchAreas,
@@ -160,7 +159,6 @@ function CivicMapPage() {
     };
   }, []);
 
-  const geography = cityGeography(cityId);
   const [liveAggregate, setLiveAggregate] = useState<LiveMapAggregate | null>(null);
   const [mapLoading, setMapLoading] = useState(true);
   const [mapError, setMapError] = useState<string | null>(null);
@@ -207,12 +205,12 @@ function CivicMapPage() {
 
   const totals = useMemo(
     () => ({
-      reports: activities.reduce((n, a) => n + a.total, 0),
-      last7: activities.reduce((n, a) => n + a.last7, 0),
-      areas: activities.length,
-      affectedPeople: activities.reduce((n, a) => n + (a.affectedPopulation || 0), 0),
+      reports: Number(liveAggregate?.total_reports ?? 0),
+      last7: Number(liveAggregate?.last7_days ?? 0),
+      areas: activities.filter((activity) => activity.total > 0).length,
+      resolved: Number(liveAggregate?.resolved_total ?? 0),
     }),
-    [activities],
+    [activities, liveAggregate],
   );
 
   const trendData = useMemo(() => liveAggregate ? liveTrendData(liveAggregate) : [], [liveAggregate]);
@@ -485,7 +483,7 @@ function CivicMapPage() {
 
           {locationNote && <p className="text-xs text-muted-foreground">{locationNote}</p>}
 
-          {/* 4-stat metrics grid including Affected Population */}
+          {/* Authoritative backend totals plus mapped-locality coverage */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
             <GlassCard className="jm-stat-card animate-rise p-3">
               <p className="text-lg font-semibold tabular-nums text-[var(--foreground)]">
@@ -516,10 +514,10 @@ function CivicMapPage() {
 
             <GlassCard className="jm-stat-card animate-rise p-3 border-[var(--glass-border)] bg-[var(--glass)]">
               <p className="text-lg font-bold tabular-nums text-[var(--foreground)]">
-                {totals.affectedPeople > 0 ? `~${totals.affectedPeople.toLocaleString('en-IN')}` : "—"}
+                <AnimatedStat value={totals.resolved} />
               </p>
               <p className="text-[0.66rem] tracking-[0.08em] text-muted-foreground font-medium uppercase">
-                {t("map.stat.affected", "Affected measure")}
+                {t("map.stat.resolved", "Resolved reports")}
               </p>
             </GlassCard>
           </div>
@@ -543,7 +541,8 @@ function CivicMapPage() {
           <p className="flex items-start gap-2 text-xs text-subtle">
             <Info className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden />
             <span>
-              {geography.dataNote} {t('ui.shaded_polygons_are_an_approxi')}</span>
+              {t("map.liveDataNote", "Totals come from persisted backend complaints. Locality outlines are indicative; pins represent mapped complaints.")}
+            </span>
           </p>
           <p className="flex items-start gap-2 text-xs text-subtle">
             <ShieldCheck className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden />
@@ -586,7 +585,7 @@ function CivicMapPage() {
                     <span className="min-w-0 flex-1">
                       <span className="block truncate text-sm">{a.area.name}</span>
                       <span className="block text-[0.66rem] tracking-[0.08em] text-subtle uppercase">
-                        {AREA_HEALTH_LABEL[a.health]} · ~{(a.affectedPopulation || 0).toLocaleString('en-IN')} {t("map.sidebar.affected", "affected")}
+                        {AREA_HEALTH_LABEL[a.health]} · {a.total} {t("map.sidebar.mapped", "mapped")} · {a.resolved} {t("map.sidebar.resolved", "resolved")}
                       </span>
                     </span>
                     <span className="text-sm text-muted-foreground">{a.total}</span>
@@ -655,29 +654,28 @@ function AreaPanel({
           </button>
         </div>
 
-        {/* Demographic & Population Impact Metrics */}
+        {/* Persisted mapped-report metrics only; no population estimate is implied. */}
         <div className="mt-4 grid grid-cols-2 gap-2.5 sm:grid-cols-4">
           <div className="p-2.5 rounded-xl bg-[var(--surface)] border border-[var(--glass-border)]">
-            <p className="label-xs text-muted-foreground">{t('ui.reports')}</p>
+            <p className="label-xs text-muted-foreground">{t("map.area.mappedReports", "Mapped reports")}</p>
             <p className="mt-0.5 text-base font-semibold tabular-nums">
               <AnimatedStat value={activity.total} />
             </p>
           </div>
           <div className="p-2.5 rounded-xl bg-[var(--surface)] border border-[var(--glass-border)]">
-            <p className="label-xs text-muted-foreground">{t("map.area.population", "Ward Population")}</p>
+            <p className="label-xs text-muted-foreground">{t("map.area.resolvedReports", "Resolved reports")}</p>
             <p className="mt-0.5 text-base font-semibold tabular-nums text-[var(--foreground)]">
-              ~{(area.population || 80000).toLocaleString('en-IN')}
+              <AnimatedStat value={activity.resolved} />
             </p>
           </div>
           <div className="p-2.5 rounded-xl bg-[var(--surface)] border border-[var(--glass-border)]">
-            <p className="label-xs text-muted-foreground font-medium">{t("map.stat.affected", "Affected measure")}</p>
-            <p className="mt-0.5 text-base font-bold text-[var(--foreground)] tabular-nums">
-              {activity.affectedPopulation > 0 ? `~${activity.affectedPopulation.toLocaleString('en-IN')}` : "Not available"}
-              {activity.affectedPopulation > 0 && <span className="text-xs font-normal opacity-80 ml-1">({activity.affectedPercent}%)</span>}
+            <p className="label-xs text-muted-foreground">{t("map.area.topIssue", "Top issue")}</p>
+            <p className="mt-0.5 text-sm font-bold text-[var(--foreground)]">
+              {ISSUE_LABEL[activity.topIssue]}
             </p>
           </div>
           <div className="p-2.5 rounded-xl bg-[var(--surface)] border border-[var(--glass-border)]">
-            <p className="label-xs text-muted-foreground">{t("map.area.impact", "Impact Rating")}</p>
+            <p className="label-xs text-muted-foreground">{t("map.area.impact", "Impact rating")}</p>
             <p className="mt-0.5 text-xs font-bold" style={{ color: AREA_HEALTH_HEX[activity.health] }}>
               {activity.impactLevel}
             </p>

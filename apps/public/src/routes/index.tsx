@@ -13,10 +13,11 @@ import { GlassCard, SectionLabel } from "@/components/ui/glass-card";
 import { GlassButton } from "@/components/ui/glass-button";
 import { ClientCivicMap } from "@/components/civic-map-panel";
 import { CityHeritagePanel, CityHeritageSignal } from "@/components/city-heritage-panel";
-import { DEFAULT_FILTERS, areaActivity, nearestArea, type ComplaintPoint, type IssueKey, type AreaHealth } from "@/services/geography";
+import { DEFAULT_FILTERS } from "@/services/geography";
 import { getDefaultCity, setPreferredCity, type CityId } from "@/services/cities";
 import { useI18n } from "@/lib/i18n";
 import { getPublicCityAggregate } from "@/services/api";
+import { buildLiveMapModel } from "@/services/live-map";
 import { getCityVisuals } from "@civicsathi/visual-system";
 
 export const Route = createFileRoute("/")({
@@ -97,17 +98,14 @@ function Landing() {
     return () => { cancelled = true; };
   }, [cityId]);
 
-  const publicPoints: ComplaintPoint[] = useMemo(() => (cityAggregate?.points ?? []).flatMap((point: any) => {
-    const lat = Number(point.lat);
-    const lng = Number(point.lng);
-    if (!Number.isFinite(lat) || !Number.isFinite(lng)) return [];
-    const category = String(point.category ?? "").toLowerCase();
-    const issue: IssueKey = category.includes("water") ? "water" : category.includes("road") ? "roads" : category.includes("garbage") ? "garbage" : category.includes("drainage") ? "drainage" : category.includes("light") ? "lighting" : "other";
-    const health = (["low", "moderate", "high", "critical"] as AreaHealth[]).includes(point.health) ? point.health as AreaHealth : "low";
-    const area = nearestArea(cityId, lat, lng);
-    return [{ id: String(point.id), areaId: area?.id ?? `${cityId}-unassigned`, issue, category: String(point.category ?? "other"), health, daysAgo: Math.max(0, Number(point.days_ago ?? 0)), lat, lng, count: Math.max(1, Number(point.count ?? 1)), resolved: Math.max(0, Number(point.resolved ?? 0)), risk: Math.max(0, Number(point.risk ?? 0)) }];
-  }), [cityAggregate, cityId]);
-  const publicActivities = useMemo(() => areaActivity(cityId, DEFAULT_FILTERS, publicPoints), [cityId, publicPoints]);
+  const publicModel = useMemo(
+    () => cityAggregate
+      ? buildLiveMapModel(cityId, cityAggregate, DEFAULT_FILTERS)
+      : { activities: [], points: [] },
+    [cityAggregate, cityId],
+  );
+  const publicActivities = publicModel.activities;
+  const publicPoints = publicModel.points;
 
   const handleCitySelect = (c: CityId) => {
     setCityId(c);
