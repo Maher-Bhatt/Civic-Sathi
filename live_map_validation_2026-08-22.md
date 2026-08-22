@@ -14,3 +14,13 @@ The map response is privacy-safe and marked `source: backend-complaints`; mapped
 The unsupported affected-population display was removed from summary cards, area panels, area tooltips, and hotspot tooltips. The UI now labels locality figures as mapped reports and resolved reports, and discloses that locality outlines are indicative while pins represent mapped complaints.
 
 The municipality bulk-verify test selected real Received complaints `JN-2026-112938` and `JN-2026-112934`; the live backend returned `in_review` for both and the municipality UI displayed `Under Review` after refresh. The fix is in commit `0c79551`, included in the later public-map commit deployment state.
+
+## Final marker verification
+
+After commit `73652dc`, the public Vadodara Civic Map loaded with 5,310 reports, 806 last-seven-day reports, 24 mapped localities, and 830 resolved reports. The former shaded locality circles are absent. The default Area Health view now renders real numeric complaint clusters/pins using the persisted point coordinates, while the Hotspots mode remains the only mode that draws optional hotspot emphasis circles. The page renders the backend note and no longer displays the unsupported “citizens affected” metric.
+
+## Severity-zone restoration — final deployment
+
+After commit `e261fc4`, the map restored the live severity-zone layer and an in-map legend for Low, Moderate, High, and Critical. The zone fill is driven by each locality’s current persisted complaint activity health, while complaint markers remain visible for precise mapped records. After commit `2287911`, switching from Vadodara to Bengaluru recenters the map to Bengaluru instead of leaving the viewport at Vadodara.
+
+Live browser checks confirmed the Vadodara map displays its colored locality zones, live severity legend, 5,302–5,310 reports depending on the live request moment, and 24 mapped localities. Bengaluru displays its own centered map, colored locality coverage, live legend, approximately 43,975 reports in the selected 30-day window, 32 mapped localities, and the independent severity distribution Low 323, Moderate 785, High 844, Critical 548.
