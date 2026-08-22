@@ -8,7 +8,6 @@ import {
   AREA_HEALTH_HEX,
   AREA_HEALTH_LABEL,
   ISSUE_LABEL,
-  areaFeatureCollection,
   clusterPoints,
   type AreaActivity,
   type ComplaintPoint,
@@ -61,7 +60,6 @@ export function CivicMap({
   const LRef = useRef<typeof Leaflet | null>(null);
   const baseRef = useRef<Leaflet.TileLayer | null>(null);
   const labelRef = useRef<Leaflet.TileLayer | null>(null);
-  const areaLayer = useRef<Leaflet.GeoJSON | null>(null);
   const pointLayer = useRef<Leaflet.LayerGroup | null>(null);
   const hotspotLayer = useRef<Leaflet.LayerGroup | null>(null);
 
@@ -73,35 +71,9 @@ export function CivicMap({
   const activityById = useMemo(() => new Map(activities.map((a) => [a.area.id, a])), [activities]);
   const activityRef = useRef(activityById);
   activityRef.current = activityById;
-  const modeRef = useRef(mode);
-  modeRef.current = mode;
-  const selectedRef = useRef(selectedAreaId);
-  selectedRef.current = selectedAreaId;
+
   const onSelectRef = useRef(onSelectArea);
   onSelectRef.current = onSelectArea;
-
-  const styleFor = useCallback((areaId: string): Leaflet.PathOptions => {
-    const a = activityRef.current.get(areaId);
-    const health = a?.health ?? "low";
-    const hex = AREA_HEALTH_HEX[health];
-    const active = selectedRef.current === areaId;
-    if (modeRef.current !== "health") {
-      return {
-        color: hex,
-        weight: active ? 2 : 0.8,
-        opacity: active ? 0.9 : 0.32,
-        fillColor: hex,
-        fillOpacity: active ? 0.16 : 0.05,
-      };
-    }
-    return {
-      color: hex,
-      weight: active ? 2.4 : 1,
-      opacity: active ? 0.95 : 0.5,
-      fillColor: hex,
-      fillOpacity: active ? 0.5 : health === "low" ? 0.18 : 0.32,
-    };
-  }, []);
 
   /* ---------------------------------------------------------- create map */
   useEffect(() => {
@@ -135,7 +107,6 @@ export function CivicMap({
       cancelled = true;
       mapRef.current?.remove();
       mapRef.current = null;
-      areaLayer.current = null;
       pointLayer.current = null;
       hotspotLayer.current = null;
       baseRef.current = null;
@@ -168,70 +139,15 @@ export function CivicMap({
     labelRef.current?.remove();
     baseRef.current = L.tileLayer(tiles.url, { attribution: ATTRIBUTION, maxZoom: 19 }).addTo(map);
     labelRef.current = L.tileLayer(tiles.labels, { maxZoom: 19, opacity: 0.85 }).addTo(map);
-    areaLayer.current?.bringToFront();
   }, [resolved, ready]);
 
-  /* ------------------------------------------------------- area polygons */
+  /* ------------------------------------------------------- complaint markers */
   useEffect(() => {
-    const L = LRef.current;
     const map = mapRef.current;
-    if (!L || !map || !ready) return;
-    areaLayer.current?.remove();
-    const layer = L.geoJSON(areaFeatureCollection(cityId), {
-      style: (f) => styleFor(String(f?.properties?.["areaId"])),
-      onEachFeature: (feature, lyr) => {
-        const areaId = String(feature.properties?.["areaId"]);
-        lyr.on("click", (e) => {
-          L.DomEvent.stopPropagation(e as unknown as Event);
-          onSelectRef.current(areaId);
-        });
-        lyr.on("mouseover", () => {
-          const a = activityRef.current.get(areaId);
-          if (!a) return;
-          const div = a.area.admin.division ? ` · <span style="opacity:0.8;font-size:10px">${escapeHtml(a.area.admin.division)}</span>` : "";
-          const tip = `<span class="jm-ward-tip"><strong>${escapeHtml(a.area.name)}</strong>${div}<br/>
-            ${AREA_HEALTH_LABEL[a.health]} severity · ${a.total} mapped reports · ${a.resolved} resolved<br/>
-            <span class="jm-tip-sub">Top: ${ISSUE_LABEL[a.topIssue]} · Impact: ${a.impactLevel}</span></span>`;
-          lyr.bindTooltip(tip, {
-            sticky: true,
-            direction: "top",
-            opacity: 1,
-            className: "jm-ward-tooltip",
-          });
-          lyr.openTooltip();
-          (lyr as Leaflet.Path).setStyle({ weight: 2.4, opacity: 0.95 });
-        });
-        lyr.on("mouseout", () => {
-          lyr.closeTooltip();
-          (lyr as Leaflet.Path).setStyle(styleFor(areaId));
-        });
-      },
-    }).addTo(map);
-    areaLayer.current = layer;
-    try {
-      if (!compact) {
-        map.fitBounds(layer.getBounds(), { padding: [24, 24] });
-      } else {
-        const city = getCity(cityId);
-        map.setView(city.center, city.zoom);
-      }
-    } catch {
-      /* empty geometry */
-    }
-    return () => {
-      layer.remove();
-    };
-  }, [cityId, ready, styleFor]);
-
-  /* ------------------------------------------------------------ restyle */
-  useEffect(() => {
-    const layer = areaLayer.current;
-    if (!layer) return;
-    layer.eachLayer((lyr) => {
-      const f = (lyr as unknown as { feature?: GeoJSON.Feature }).feature;
-      (lyr as Leaflet.Path).setStyle(styleFor(String(f?.properties?.["areaId"])));
-    });
-  }, [mode, selectedAreaId, activities, styleFor]);
+    if (!map || !ready) return;
+    const city = getCity(cityId);
+    if (compact) map.setView(city.center, city.zoom);
+  }, [cityId, compact, ready]);
 
   /* --------------------------------------------- complaint activity mode */
   useEffect(() => {
@@ -240,7 +156,7 @@ export function CivicMap({
     if (!L || !layer || !ready) return;
     layer.clearLayers();
     setSelectedPoint(null);
-    if (mode !== "activity" || zoom < 15) return;
+    if (mode !== "activity" || zoom < 12) return;
 
     for (const c of clusterPoints(points, zoom)) {
       const hex = AREA_HEALTH_HEX[c.health];
@@ -332,14 +248,7 @@ export function CivicMap({
 
   const resetView = () => {
     const map = mapRef.current;
-    const layer = areaLayer.current;
-    if (map && layer) {
-      try {
-        map.fitBounds(layer.getBounds(), { padding: [24, 24] });
-      } catch {
-        map.setView(getCity(cityId).center, getCity(cityId).zoom);
-      }
-    }
+    if (map) map.setView(getCity(cityId).center, getCity(cityId).zoom);
     onResetView?.();
   };
 
