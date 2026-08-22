@@ -200,7 +200,7 @@ export function CivicMap({
     const map = mapRef.current;
     if (!map || !ready) return;
     const city = getCity(cityId);
-    if (compact) map.setView(city.center, city.zoom);
+    map.setView(city.center, city.zoom);
   }, [cityId, compact, ready]);
 
   /* --------------------------------------------- complaint activity mode */
