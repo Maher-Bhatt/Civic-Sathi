@@ -541,7 +541,7 @@ function CivicMapPage() {
           <p className="flex items-start gap-2 text-xs text-subtle">
             <Info className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden />
             <span>
-              {t("map.liveDataNote", "Totals come from persisted backend complaints. Locality outlines are indicative; pins represent mapped complaints.")}
+              {t("map.liveDataNote", "Totals come from persisted backend complaints. Pins represent mapped complaints with available coordinates; records without coordinates are not drawn on the map.")}
             </span>
           </p>
           <p className="flex items-start gap-2 text-xs text-subtle">

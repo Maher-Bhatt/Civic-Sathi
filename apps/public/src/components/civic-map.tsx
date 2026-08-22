@@ -156,7 +156,7 @@ export function CivicMap({
     if (!L || !layer || !ready) return;
     layer.clearLayers();
     setSelectedPoint(null);
-    if (mode !== "activity" || zoom < 12) return;
+    if (mode === "hotspots" || zoom < 12) return;
 
     for (const c of clusterPoints(points, zoom)) {
       const hex = AREA_HEALTH_HEX[c.health];
