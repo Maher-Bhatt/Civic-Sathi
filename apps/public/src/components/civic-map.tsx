@@ -186,6 +186,15 @@ export function CivicMap({
     return () => layer.remove();
   }, [cityId, ready, styleFor]);
 
+  useEffect(() => {
+    const layer = areaLayer.current;
+    if (!layer) return;
+    layer.eachLayer((leafletLayer) => {
+      const feature = (leafletLayer as unknown as { feature?: GeoJSON.Feature }).feature;
+      (leafletLayer as Leaflet.Path).setStyle(styleFor(String(feature?.properties?.["areaId"] ?? "")));
+    });
+  }, [activities, mode, selectedAreaId, styleFor]);
+
   /* ------------------------------------------------------- complaint markers */
   useEffect(() => {
     const map = mapRef.current;
@@ -375,6 +384,23 @@ export function CivicMap({
           </>
         )}
       </div>
+
+      {mode === "health" && (
+        <div
+          className="absolute bottom-3 left-3 z-[500] rounded-xl border border-[var(--glass-border)] bg-[var(--glass-strong)] px-3 py-2 shadow-[var(--shadow-soft)] backdrop-blur-xl"
+          aria-label="Live severity legend"
+        >
+          <p className="mb-1 text-[0.6rem] font-bold tracking-[0.1em] text-subtle uppercase">Live severity zones</p>
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[0.65rem] text-foreground">
+            {(["low", "moderate", "high", "critical"] as const).map((health) => (
+              <span key={health} className="inline-flex items-center gap-1">
+                <span className="h-2.5 w-2.5 rounded-full" style={{ background: AREA_HEALTH_HEX[health] }} aria-hidden />
+                {AREA_HEALTH_LABEL[health]}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
 
       {selectedPoint && (
         <div className="animate-rise absolute inset-x-2 bottom-2 z-[600] sm:inset-x-auto sm:right-3 sm:bottom-3 sm:w-[21rem]" aria-live="polite">
