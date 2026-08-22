@@ -22,7 +22,6 @@ import {
   type MergeProposalResponse,
   type MuniComplaint,
 } from "@/services/types";
-import { DEPARTMENTS } from "@/services/types";
 import { useI18n } from "@/lib/i18n";
 
 type SortKey = keyof Pick<
@@ -58,6 +57,7 @@ function ComplaintsPage() {
   const [savedViews, setSavedViews] = useState<Awaited<ReturnType<typeof getSavedViews>>>([]);
   const [mergeProposal, setMergeProposal] = useState<MergeProposalResponse | null>(null);
   const [mergeBusy, setMergeBusy] = useState(false);
+  const [bulkBusy, setBulkBusy] = useState(false);
 
   useEffect(() => {
     if (areaSearch) setFilters((f) => ({ ...f, area: areaSearch }));
@@ -183,13 +183,26 @@ function ComplaintsPage() {
     }
   }
 
-  async function bulkAssign(dept: (typeof DEPARTMENTS)[number]) {
-    if (selected.size === 0) return;
-    await bulkUpdateComplaints([...selected], { department: dept, status: "Assigned" });
-    toast.success(`Assigned ${selected.size} complaints to ${dept}`);
-    setSelected(new Set());
-    const refreshed = await getMuniComplaints(filters);
-    setComplaints(refreshed);
+  async function bulkVerify() {
+    if (selected.size === 0 || bulkBusy) return;
+    const ids = complaints
+      .filter((complaint) => selected.has(complaint.id) && complaint.status === "Received")
+      .map((complaint) => complaint.id);
+    if (ids.length === 0) {
+      toast.info("Only complaints with Received status can be bulk verified.");
+      return;
+    }
+    setBulkBusy(true);
+    try {
+      await bulkUpdateComplaints(ids, { status: "Under Review" });
+      toast.success(`Verified and accepted ${ids.length} complaint${ids.length === 1 ? "" : "s"}.`);
+      setSelected(new Set());
+      setComplaints(await getMuniComplaints(filters));
+    } catch (error: any) {
+      toast.error(error?.message ?? "Bulk verification failed. No further complaints were changed.");
+    } finally {
+      setBulkBusy(false);
+    }
   }
 
   if (loading) return <LoadingState message="Loading complaints..." />;
@@ -267,10 +280,11 @@ function ComplaintsPage() {
           </span>
           <button
             type="button"
-            onClick={() => void bulkAssign("Water Supply" as any)}
-            className="action-btn bg-green-500/10 text-green-600 hover:bg-green-500/20 border-green-500/20"
+            onClick={() => void bulkVerify()}
+            disabled={bulkBusy || mergeBusy}
+            className="action-btn bg-green-500/10 text-green-600 hover:bg-green-500/20 border-green-500/20 disabled:cursor-not-allowed disabled:opacity-50"
           >
-            {t("ui.bulk_verify")}
+            {bulkBusy ? "Verifying..." : t("ui.bulk_verify")}
           </button>
           <button
             type="button"
