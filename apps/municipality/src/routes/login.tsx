@@ -109,9 +109,10 @@ function MuniLoginPage() {
             </select>
           </div>
 
-          <p className="rounded-lg border border-[var(--glass-border)] bg-[var(--glass)] px-3 py-2 text-xs text-muted-foreground">
-            Your municipal role and department are loaded from the authorized backend account after sign-in.
-          </p>
+          <div className="rounded-lg border border-[var(--glass-border)] bg-[var(--glass)] px-3 py-2 text-xs text-muted-foreground">
+            <p>Your role is assigned to your professional account and verified by the backend. It cannot be selected or changed on the login screen.</p>
+            <p className="mt-1.5 text-[11px] text-foreground/75">Supported municipal roles: Commissioner / Collector, Department Head, Supervisor, and Ward Officer.</p>
+          </div>
 
           <label className="flex items-center gap-2 text-sm text-muted-foreground">
             <input
