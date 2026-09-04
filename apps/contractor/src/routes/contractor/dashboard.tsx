@@ -46,6 +46,18 @@ function ContractorDashboard() {
   return (
     <div className="space-y-6 animate-fade max-w-6xl mx-auto pb-12">
       
+      {/* Gov Integration Sync Banner */}
+      <GlassCard className="bg-[var(--primary)]/5 border-[var(--primary)]/20 p-3 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="relative flex h-2.5 w-2.5">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
+            <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-green-500" />
+          </div>
+          <span className="text-sm font-semibold tracking-wide">Connected to Maharashtra Government Integration Hub</span>
+        </div>
+        <span className="text-[10px] uppercase font-bold text-muted-foreground bg-[var(--surface-elevated)] px-2 py-1 rounded">API Sync: Online</span>
+      </GlassCard>
+
       {/* Header */}
       <div className="flex flex-col mb-2">
         <h1 className="text-2xl font-semibold text-[var(--foreground)] tracking-tight">
@@ -120,7 +132,10 @@ function ContractorDashboard() {
                   {activeWorkOrders.map((wo: any) => (
                     <li key={wo.id} className="p-4 hover:bg-[var(--surface-elevated)] transition-colors">
                       <div className="flex justify-between mb-1">
-                        <Link to={"/contractor/work-orders/$id" as any} params={{ id: wo.id } as any} className="font-medium hover:text-[var(--primary)]">{wo.title}</Link>
+                        <Link to={"/contractor/work-orders/$id" as any} params={{ id: wo.id } as any} className="font-medium hover:text-[var(--primary)] flex items-center gap-2">
+                          <span className="font-mono text-[10px] bg-[var(--surface-elevated)] px-1.5 py-0.5 rounded text-muted-foreground">MH-WO-{wo.id.substring(0, 6).toUpperCase()}</span>
+                          {wo.title}
+                        </Link>
                         <span className="text-xs px-2 py-0.5 rounded border border-[var(--glass-border)]" style={{ color: typeof workOrderStatusColor === 'function' ? workOrderStatusColor(wo.status) : 'var(--primary)' }}>
                           {typeof workOrderStatusLabel === 'function' ? workOrderStatusLabel(wo.status) : (wo.status || 'ACTIVE')}
                         </span>

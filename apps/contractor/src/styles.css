@@ -890,3 +890,24 @@ body::after {
 .civic-brand-wordmark--internal { font-size: .88rem; letter-spacing: .08em; }
 .dark .civic-brand-wordmark { color: var(--foreground); }
 @media (max-width: 767px) { .civic-brand-lockup { width: 2.2rem; height: 2.2rem; } .civic-brand-wordmark { font-size: .78rem; letter-spacing: .08em; } }
+
+/* Historic Map Overlay */
+.jm-map-frame {
+  position: relative;
+}
+.jm-map-frame::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 400; /* above tiles, below controls */
+  pointer-events: none;
+  background-image: var(--civic-city-atmosphere);
+  background-size: cover;
+  background-position: center;
+  mix-blend-mode: multiply;
+  opacity: 0.15;
+}
+.dark .jm-map-frame::after {
+  mix-blend-mode: screen;
+  opacity: 0.08;
+}
