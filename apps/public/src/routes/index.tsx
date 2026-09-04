@@ -27,7 +27,7 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Report civic problems in Vadodara and Bengaluru with real-time evidence. Civic Sathi connects complaints into transparent public patterns.",
+          "Report civic problems in Pune, Mumbai, Nagpur and Chhatrapati Sambhajinagar with real-time evidence. Civic Sathi connects complaints into transparent public patterns.",
       },
       { property: "og:title", content: "Civic Sathi — Indian Civic Intelligence & Heritage" },
       {

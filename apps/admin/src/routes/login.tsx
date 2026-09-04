@@ -23,15 +23,15 @@ function AdminLogin() {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const success = await signIn(email.trim().toLowerCase(), password);
-      if (success) {
+      const user = await signIn(email.trim().toLowerCase(), password);
+      if (user) {
         toast.success("Signed in successfully");
         void navigate({ to: "/admin/dashboard" as any, replace: true });
       } else {
         toast.error("Invalid credentials");
       }
     } catch (error) {
-      toast.error("An error occurred during sign in");
+      toast.error(error instanceof Error ? error.message : "An error occurred during sign in");
     } finally {
       setIsLoading(false);
     }

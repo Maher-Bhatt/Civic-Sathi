@@ -52,7 +52,7 @@ export const Route = createFileRoute("/map")({
       {
         name: "description",
         content:
-          "Explore aggregated civic activity by locality across Vadodara and Bengaluru: area health, complaint activity and emerging hotspots.",
+          "Explore aggregated civic activity by locality across Pune, Mumbai, Nagpur and Chhatrapati Sambhajinagar: area health, complaint activity and emerging hotspots.",
       },
       { property: "og:title", content: "Civic Map — locality civic activity | Civic Sathi" },
       {

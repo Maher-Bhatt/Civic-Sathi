@@ -42,7 +42,7 @@ export const TILES = {
 } as const;
 
 export const ATTRIBUTION =
-  '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors | Government of Maharashtra (SIH26129)';
+  '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors | Civic Sathi (SIH26129)';
 
 /** Muted severity palette used for map geometry (SVG cannot read CSS variables). */
 export const SEVERITY_HEX: Record<Severity | "Normal", string> = {

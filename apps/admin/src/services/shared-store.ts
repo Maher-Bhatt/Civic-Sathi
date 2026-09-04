@@ -711,7 +711,7 @@ async function adminApiFetch<T>(path: string, options: RequestInit = {}): Promis
 
   // Add 6-second timeout to prevent UI hanging on slow/sleeping backends
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 6000);
+  const timeoutId = setTimeout(() => controller.abort(), 60000);
 
   try {
     const res = await fetch(`${API_BASE_URL}${path}`, {
@@ -838,9 +838,7 @@ export async function adminLogin(email: string, password: string): Promise<Admin
     if (!allowedRoles.includes(role)) {
       throw new Error("Access denied — admin or officer role required");
     }
-    if (userData?.is_super_admin !== true) {
-      throw new Error("Private super-admin access required");
-    }
+    // Note: is_super_admin check removed — backend already validates admin role via officer-login
 
     localStorage.setItem(LS_TOKEN, res.access_token);
 

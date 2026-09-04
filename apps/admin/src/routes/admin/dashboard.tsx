@@ -321,7 +321,7 @@ function AdminDashboardContent() {
               <p className="mt-2 max-w-2xl text-sm leading-6 text-[var(--muted-foreground)]">A real-time control surface for the citizen signal, municipal decision, procurement gate, contractor execution, and resolution loop.</p>
             </div>
             <div className="civic-admin-telemetry-meta">
-              <div><span>LOCKED SCOPE</span><strong>{pipelineScope.length ? pipelineScope.join(" × ") : "Maharashtra Unified Scope"}</strong></div>
+              <div><span>LOCKED SCOPE</span><strong>{pipelineScope.length ? pipelineScope.join(" × ") : "Statewide Unified Scope"}</strong></div>
               <div><span>STREAM STATE</span><strong className={snapshotError ? "text-amber-300" : "text-emerald-300"}>{snapshotLoading ? "SYNCING" : snapshotError ? "DEGRADED" : "SYNCED"}</strong></div>
             </div>
           </div>
@@ -339,11 +339,11 @@ function AdminDashboardContent() {
             </div>
             <div className="civic-admin-next-sync"><span className="civic-admin-pulse-dot" /> NEXT SYNC IN <strong>{refreshCountdown}s</strong></div>
           </div>
-          <div className="civic-admin-city-lanes mt-4" role="list" aria-label="Maharashtra live civic workflow pipeline">
-            {visibleCityLanes.length === 0 ? <DataState icon={Globe2} title="Waiting for city lanes" detail="The scoped backend snapshot has not returned Maharashtra municipal telemetry yet." /> : visibleCityLanes.map((lane: any) => (
+          <div className="civic-admin-city-lanes mt-4" role="list" aria-label="Live civic workflow pipeline">
+            {visibleCityLanes.length === 0 ? <DataState icon={Globe2} title="Waiting for city lanes" detail="The scoped backend snapshot has not returned municipal telemetry yet." /> : visibleCityLanes.map((lane: any) => (
               <article key={lane.id} className={`civic-admin-city-lane civic-admin-city-lane--${String(lane.name).toLowerCase()} ${snapshotLoading ? "is-loading" : ""}`} role="listitem">
                 <div className="civic-admin-city-lane__header">
-                  <div className="civic-admin-city-lane__identity"><div className="civic-admin-city-emblem"><Globe2 className="h-5 w-5" /></div><div><div className="civic-admin-city-kicker">{lane.vernacularName || "महाराष्ट्र शासन"} · {lane.state_code || "MH"}</div><h3>{lane.name}</h3><p>{lane.epithet || "Maharashtra Municipal Corporation"}</p></div></div>
+                  <div className="civic-admin-city-lane__identity"><div className="civic-admin-city-emblem"><Globe2 className="h-5 w-5" /></div><div><div className="civic-admin-city-kicker">{lane.vernacularName || "नगरपालिका"} · {lane.state_code || "MH"}</div><h3>{lane.name}</h3><p>{lane.epithet || "Municipal Corporation"}</p></div></div>
                   <div className={`civic-admin-city-health civic-admin-city-health--${lane.health}`}><span /> {String(lane.health).toUpperCase()}</div>
                 </div>
                 <div className="civic-admin-city-lane__summary"><div><strong>{Number(lane.open_complaints ?? 0).toLocaleString("en-IN")}</strong><span>OPEN SIGNALS</span></div><div><strong>{Number(lane.active_work_orders ?? 0).toLocaleString("en-IN")}</strong><span>ACTIVE WORK</span></div><div className={Number(lane.high_risk_work_orders ?? 0) > 0 ? "is-risk" : ""}><strong>{Number(lane.high_risk_work_orders ?? 0).toLocaleString("en-IN")}</strong><span>HIGH RISK</span></div></div>
@@ -362,7 +362,7 @@ function AdminDashboardContent() {
             ))}
           </div>
           <div className="mt-6 flex flex-col gap-3 border-t border-white/10 pt-4 text-[10px] uppercase tracking-[0.16em] text-[var(--muted-foreground)] sm:flex-row sm:items-center sm:justify-between">
-            <span className="inline-flex items-center gap-2"><Globe2 className="h-3.5 w-3.5 text-[var(--civic-city-accent)]" /> Statewide Maharashtra Unified Scope (PMC · BMC · NMC · CSMC)</span>
+            <span className="inline-flex items-center gap-2"><Globe2 className="h-3.5 w-3.5 text-[var(--civic-city-accent)]" /> Statewide Unified Scope (PMC · BMC · NMC · CSMC)</span>
             <span className="inline-flex items-center gap-2"><Clock3 className="h-3.5 w-3.5" /> {generatedAt ? `Snapshot ${generatedAt.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" })}` : "Awaiting first snapshot"} · 30 SEC REFRESH</span>
           </div>
         </div>
@@ -459,7 +459,7 @@ function AdminDashboardContent() {
           <AdminSignal label="Authorization" value="JWT + allowlist" />
           <AdminSignal label="Audit trail" value="Persisted" />
           <AdminSignal label="Data source" value="Live backend" />
-          <AdminSignal label="Scope lock" value="Maharashtra Statewide" />
+          <AdminSignal label="Scope lock" value="Statewide" />
         </div>
       </GlassCard>
 
@@ -489,7 +489,7 @@ function AdminDashboardContent() {
           <div className="flex items-start justify-between gap-3">
             <div>
               <SectionLabel>City operations pulse</SectionLabel>
-              <h2 className="text-lg font-semibold">Maharashtra Municipal Live Comparison</h2>
+              <h2 className="text-lg font-semibold">Municipal Live Comparison</h2>
               <p className="mt-1 text-xs text-[var(--muted-foreground)]">Open complaints, resolved complaints, and active execution work orders.</p>
             </div>
             <div className="civic-admin-live-badge"><Activity className="h-3.5 w-3.5" /> LIVE</div>
