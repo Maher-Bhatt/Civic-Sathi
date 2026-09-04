@@ -774,7 +774,7 @@ body::after {
 /* Civic Sathi city atmosphere layer — contractor operations remain data first. */
 :root { --civic-architecture-line: rgba(16, 27, 61, 0.10); --civic-city-accent: #C86B18; --civic-city-accent-soft: #F1D2A8; --civic-city-atmosphere: url('/city-atmosphere/maharashtra-civic-atmosphere.jpg'); }
 .dark { --civic-architecture-line: rgba(214, 226, 245, 0.12); --civic-city-accent: #E0A25B; --civic-city-accent-soft: #6E573F; }
-.civic-city-shell { position: relative; isolation: isolate; overflow-x: clip; background-image: linear-gradient(180deg, color-mix(in srgb, var(--civic-paper) 90%, transparent), color-mix(in srgb, var(--civic-sand-100) 98%, transparent)), var(--civic-city-atmosphere); background-position: center top; background-size: cover; background-attachment: fixed; }
+.civic-city-shell { position: relative; isolation: isolate; overflow-x: clip; background-image: linear-gradient(180deg, color-mix(in srgb, var(--civic-paper) 60%, transparent), color-mix(in srgb, var(--civic-sand-100) 80%, transparent)), var(--civic-city-atmosphere); background-position: center top; background-size: cover; background-attachment: fixed; }
 .civic-city-shell::before { content: ''; position: fixed; inset: 0; z-index: -1; pointer-events: none; opacity: .30; background: repeating-linear-gradient(0deg, transparent 0 5rem, var(--civic-architecture-line) 5.05rem 5.12rem, transparent 5.18rem 10rem); mask-image: linear-gradient(180deg, black, transparent 70%); }
 .civic-city-shell[data-city='bengaluru'] { --civic-city-accent: #0E766E; --civic-city-accent-soft: #B7DDD5; --civic-city-atmosphere: url('/city-atmosphere/bengaluru-civic-atmosphere.webp'); }
 .civic-atmosphere-panel { position: relative; overflow: hidden; border: 1px solid color-mix(in srgb, var(--civic-city-accent) 26%, var(--glass-border)); background: white; box-shadow: 0 20px 48px -20px color-mix(in srgb, var(--civic-city-accent) 25%, transparent);  }
@@ -905,9 +905,9 @@ body::after {
   background-size: cover;
   background-position: center;
   mix-blend-mode: multiply;
-  opacity: 0.15;
+  opacity: 0.45;
 }
 .dark .jm-map-frame::after {
   mix-blend-mode: screen;
-  opacity: 0.08;
+  opacity: 0.25;
 }

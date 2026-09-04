@@ -809,7 +809,7 @@ body::after {
 /* Civic Sathi city atmosphere layer — operational shell safe, data first. */
 :root { --civic-architecture-line: rgba(16, 27, 61, 0.10); --civic-city-accent: #C86B18; --civic-city-accent-soft: #F1D2A8; --civic-city-atmosphere: url('/city-atmosphere/maharashtra-civic-atmosphere.jpg'); }
 .dark { --civic-architecture-line: rgba(214, 226, 245, 0.12); --civic-city-accent: #E0A25B; --civic-city-accent-soft: #6E573F; }
-.civic-city-shell { position: relative; isolation: isolate; overflow-x: clip; background-image: linear-gradient(180deg, color-mix(in srgb, var(--civic-paper) 90%, transparent), color-mix(in srgb, var(--civic-sand-100) 98%, transparent)), var(--civic-city-atmosphere); background-position: center top; background-size: cover; background-attachment: fixed; }
+.civic-city-shell { position: relative; isolation: isolate; overflow-x: clip; background-image: linear-gradient(180deg, color-mix(in srgb, var(--civic-paper) 60%, transparent), color-mix(in srgb, var(--civic-sand-100) 80%, transparent)), var(--civic-city-atmosphere); background-position: center top; background-size: cover; background-attachment: fixed; }
 .civic-city-shell::before { content: ''; position: fixed; inset: 0; z-index: -1; pointer-events: none; opacity: .30; background: repeating-linear-gradient(0deg, transparent 0 5rem, var(--civic-architecture-line) 5.05rem 5.12rem, transparent 5.18rem 10rem); mask-image: linear-gradient(180deg, black, transparent 70%); }
 .civic-city-shell[data-city='bengaluru'] { --civic-city-accent: #0E766E; --civic-city-accent-soft: #B7DDD5; --civic-city-atmosphere: url('/city-atmosphere/bengaluru-civic-atmosphere.webp'); }
 .civic-atmosphere-panel { position: relative; overflow: hidden; border: 1px solid color-mix(in srgb, var(--civic-city-accent) 26%, var(--glass-border)); background: white; box-shadow: 0 20px 48px -20px color-mix(in srgb, var(--civic-city-accent) 25%, transparent);  }
@@ -1124,15 +1124,15 @@ body::after {
 
 .civic-heritage-sidebar {
   color: #F7E9D8 !important;
-  border-right-color: rgb(232 214 191 / 0.22) !important;
+  border-right-color: rgba(255, 255, 255, 0.1) !important;
   background:
     linear-gradient(180deg, rgb(185 82 50 / 0.22), transparent 17rem),
-    linear-gradient(160deg, #541F2B 0%, #38131F 72%, #28101B 100%) !important;
-  box-shadow: 14px 0 36px -28px rgb(84 31 43 / 0.70);
+    linear-gradient(160deg, #1e293b 0%, #0f172a 72%, #020617 100%) !important;
+  box-shadow: 14px 0 36px -28px rgb(15 23 42 / 0.70);
 }
 .civic-heritage-sidebar .civic-heritage-strip {
-  border-bottom-color: rgb(232 214 191 / 0.22) !important;
-  background: linear-gradient(90deg, rgb(214 146 46 / 0.14), transparent 74%);
+  border-bottom-color: rgba(255, 255, 255, 0.1) !important;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.05), transparent 74%);
 }
 .civic-heritage-sidebar nav a { color: #D7BDA8 !important; }
 .civic-heritage-sidebar nav a:hover {
@@ -1142,7 +1142,7 @@ body::after {
 .civic-heritage-sidebar nav a[aria-current="page"] {
   color: #FFFAF2 !important;
   background: white !important;
-  box-shadow: inset 3px 0 0 #D6922E, 0 10px 24px -18px rgb(185 82 50 / 0.90) !important;
+  box-shadow: inset 3px 0 0 #3b82f6, 0 10px 24px -18px rgba(59, 130, 246, 0.5) !important;
 }
 .civic-heritage-sidebar .text-muted-foreground { color: #B69480 !important; }
 .civic-heritage-sidebar .text-foreground { color: #FFF9F0 !important; }
@@ -1156,8 +1156,8 @@ body::after {
   pointer-events: auto !important;
   background:
     linear-gradient(180deg, rgb(185 82 50 / 0.22), transparent 17rem),
-    linear-gradient(160deg, #541F2B 0%, #38131F 72%, #28101B 100%) !important;
-  border-right-color: rgb(232 214 191 / 0.22) !important;
+    linear-gradient(160deg, #1e293b 0%, #0f172a 72%, #020617 100%) !important;
+  border-right-color: rgba(255, 255, 255, 0.1) !important;
 }
 .civic-city-shell > aside.civic-heritage-sidebar nav {
   position: relative;
@@ -1180,7 +1180,7 @@ body::after {
   .civic-city-shell > aside.civic-heritage-sidebar {
     background:
       linear-gradient(180deg, rgb(185 82 50 / 0.24), transparent 17rem),
-      linear-gradient(160deg, #541F2B 0%, #38131F 72%, #28101B 100%) !important;
+      linear-gradient(160deg, #1e293b 0%, #0f172a 72%, #020617 100%) !important;
   }
 }
 
@@ -1198,9 +1198,9 @@ body::after {
   background-size: cover;
   background-position: center;
   mix-blend-mode: multiply;
-  opacity: 0.15;
+  opacity: 0.45;
 }
 .dark .jm-map-frame::after {
   mix-blend-mode: screen;
-  opacity: 0.08;
+  opacity: 0.25;
 }

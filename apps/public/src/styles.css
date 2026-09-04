@@ -981,9 +981,9 @@ body.civic-heritage-shell [class*="to-emerald-50/"] {
   background-size: cover;
   background-position: center;
   mix-blend-mode: multiply;
-  opacity: 0.15;
+  opacity: 0.45;
 }
 .dark .jm-map-frame::after {
   mix-blend-mode: screen;
-  opacity: 0.08;
+  opacity: 0.25;
 }
