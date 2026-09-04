@@ -375,12 +375,12 @@ function Landing() {
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-2">
             <span className="font-bold tracking-[0.14em] uppercase text-amber-900 dark:text-amber-200">
-              Civic Sathi · જન મન
+              Civic Sathi · जन मन
             </span>
             <span className="text-[10px] text-muted-foreground">· {t("home.footer.built", "Built for Indian Cities")}</span>
           </div>
           <span className="text-muted-foreground font-medium">
-            સત્યમેવ જયતે · सत्यमेव जयते · Satyameva Jayate
+            सत्यमेव जयते · Satyameva Jayate
           </span>
         </div>
       </footer>
