@@ -3,6 +3,7 @@ import { Landmark, Sparkles, Building2, Droplets, Crown, Scroll, ChevronRight } 
 import { type CityId } from "@/services/cities";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/lib/i18n";
+import { getCityVisuals } from "@civicsathi/visual-system";
 
 interface HeritageStory {
   id: string;
@@ -41,7 +42,7 @@ const HERITAGE_DATA: Record<CityId, {
         category: "palace",
         tagline: "Indo-Saracenic Marvel, Four Times the Size of Buckingham Palace",
         civicLegacy: "Commissioned by Maharaja Sayajirao Gaekwad III, Laxmi Vilas Palace is an Indo-Saracenic architectural masterpiece spread over 700 acres. Its intricate mosaics, Venetian glass, and sprawling gardens reflect the Gaekwad dynasty's vision for blending Eastern and Western aesthetics into a symbol of progressive Indian governance.",
-        quote: ""A palace built not merely for royalty, but as a testament to what Indian civic ambition can achieve."",
+        quote: "A palace built not merely for royalty, but as a testament to what Indian civic ambition can achieve.",
         icon: Crown,
         color: "#C86B18",
         gradient: "from-amber-500/20 via-orange-500/10 to-transparent",
@@ -54,7 +55,7 @@ const HERITAGE_DATA: Record<CityId, {
         category: "nature",
         tagline: "Historic 113-Acre Urban Garden with Museum, Zoo & Planetarium",
         civicLegacy: "Designed by Maharaja Sayajirao III, these sprawling gardens house the Baroda Museum, a zoo, a planetarium, and a health museum. They stand as a pioneering example of public civic infrastructure in colonial India, bringing education and recreation to all citizens regardless of caste.",
-        quote: ""Sayajirao opened these gates for every citizen of Vadodara — a radical act of inclusion in 19th-century India."",
+        quote: "Sayajirao opened these gates for every citizen of Vadodara — a radical act of inclusion in 19th-century India.",
         icon: Landmark,
         color: "#16A34A",
         gradient: "from-green-500/20 via-emerald-500/10 to-transparent",
@@ -67,7 +68,7 @@ const HERITAGE_DATA: Record<CityId, {
         category: "civic",
         tagline: "Hindu-Gothic Memorial with Murals by Nandalal Bose",
         civicLegacy: "A memorial to the Gaekwad royal family, Kirti Mandir features stunning murals by the legendary painter Nandalal Bose, depicting scenes from the life of the Gaekwads. It serves as a cultural anchor connecting modern Vadodara to its royal past.",
-        quote: ""Within these walls, the story of Vadodara's enlightened rulers lives on through art and stone."",
+        quote: "Within these walls, the story of Vadodara's enlightened rulers lives on through art and stone.",
         icon: Building2,
         color: "#B91C1C",
         gradient: "from-red-500/20 via-rose-500/10 to-transparent",
@@ -80,7 +81,7 @@ const HERITAGE_DATA: Record<CityId, {
         category: "water",
         tagline: "Iconic Urban Lake with 120-ft Shiva Statue",
         civicLegacy: "Located in the heart of old Vadodara, Sursagar Lake has been a civic gathering space for centuries. Its recent beautification, centered around a towering 120-ft statue of Lord Shiva, transformed it into a landmark of urban rejuvenation and community pride.",
-        quote: ""From a neglected tank to the jewel of Vadodara's skyline — Sursagar embodies civic renewal."",
+        quote: "From a neglected tank to the jewel of Vadodara's skyline — Sursagar embodies civic renewal.",
         icon: Droplets,
         color: "#0E7490",
         gradient: "from-cyan-500/20 via-teal-500/10 to-transparent",
@@ -102,7 +103,7 @@ const HERITAGE_DATA: Record<CityId, {
         category: "civic",
         tagline: "Indo-Saracenic Arch Overlooking the Arabian Sea",
         civicLegacy: "Built to commemorate the landing of King George V and Queen Mary, the Gateway of India later witnessed the departure of the last British troops in 1948. This iconic arch, blending Hindu and Muslim architectural motifs, stands as Mumbai's eternal symbol of resilience and transformation.",
-        quote: ""Through this gate, an empire arrived — and through it, a nation reclaimed its destiny."",
+        quote: "Through this gate, an empire arrived — and through it, a nation reclaimed its destiny.",
         icon: Landmark,
         color: "#1D4ED8",
         gradient: "from-blue-500/20 via-indigo-500/10 to-transparent",
@@ -115,7 +116,7 @@ const HERITAGE_DATA: Record<CityId, {
         category: "civic",
         tagline: "Victorian-Gothic Railway Cathedral, UNESCO World Heritage Site",
         civicLegacy: "Originally named Victoria Terminus, CST is a masterpiece of Victorian-Gothic architecture fused with traditional Indian elements. Designed by F.W. Stevens, it has served as Mumbai's lifeline — handling over 3 million commuters daily. Its stained glass, ornate stonework, and soaring dome make it one of the finest railway stations ever built.",
-        quote: ""More than a station, CST is the beating heart of Mumbai — where millions begin their journey every dawn."",
+        quote: "More than a station, CST is the beating heart of Mumbai — where millions begin their journey every dawn.",
         icon: Building2,
         color: "#9333EA",
         gradient: "from-purple-500/20 via-violet-500/10 to-transparent",
@@ -128,7 +129,7 @@ const HERITAGE_DATA: Record<CityId, {
         category: "nature",
         tagline: "3.6 km Art Deco Promenade Along Back Bay",
         civicLegacy: "This sweeping crescent-shaped boulevard lined with Art Deco buildings is Mumbai's most iconic promenade. When lit at night, its streetlights form a glittering arc known as the Queen's Necklace. It represents a triumph of early 20th-century urban planning and coastal engineering.",
-        quote: ""Mumbai's soul lives on Marine Drive — where the city meets the sea under a necklace of lights."",
+        quote: "Mumbai's soul lives on Marine Drive — where the city meets the sea under a necklace of lights.",
         icon: Crown,
         color: "#C86B18",
         gradient: "from-amber-500/20 via-orange-500/10 to-transparent",
@@ -141,7 +142,7 @@ const HERITAGE_DATA: Record<CityId, {
         category: "palace",
         tagline: "Rock-Cut Cave Temples Dedicated to Lord Shiva",
         civicLegacy: "Located on Elephanta Island in Mumbai Harbour, these magnificent rock-cut cave temples contain some of the finest examples of Indian rock art. The 20-foot Trimurti sculpture of Shiva is considered one of the masterpieces of Indian sculpture. Designated a UNESCO World Heritage Site in 1987.",
-        quote: ""Carved from living rock, the Elephanta Trimurti embodies the eternal creative force of Indian civilization."",
+        quote: "Carved from living rock, the Elephanta Trimurti embodies the eternal creative force of Indian civilization.",
         icon: Scroll,
         color: "#059669",
         gradient: "from-emerald-500/20 via-teal-500/10 to-transparent",
@@ -163,7 +164,7 @@ const HERITAGE_DATA: Record<CityId, {
         category: "civic",
         tagline: "Neo-Dravidian Granite Legislative Assembly Building",
         civicLegacy: "One of the most impressive legislative buildings in India, Vidhana Soudha was built by Chief Minister Kengal Hanumanthaiah to showcase Indian talent and craftsmanship. Constructed entirely with Indian materials and labor, its inscription 'Government Work is God's Work' captures the spirit of public service.",
-        quote: ""Built by the people, for the people — Vidhana Soudha is democracy carved in granite."",
+        quote: "Built by the people, for the people — Vidhana Soudha is democracy carved in granite.",
         icon: Building2,
         color: "#B91C1C",
         gradient: "from-red-500/20 via-rose-500/10 to-transparent",
@@ -176,7 +177,7 @@ const HERITAGE_DATA: Record<CityId, {
         category: "nature",
         tagline: "240-Acre Garden with 1,854 Species of Plants",
         civicLegacy: "Founded by Hyder Ali and expanded by Tipu Sultan, Lalbagh is home to one of the largest collections of tropical and sub-tropical plants in India. Its iconic Glass House, modeled after London's Crystal Palace, hosts the famous biannual flower shows that draw millions of visitors.",
-        quote: ""From Hyder Ali's royal garden to Bengaluru's green lung — Lalbagh breathes life into the city."",
+        quote: "From Hyder Ali's royal garden to Bengaluru's green lung — Lalbagh breathes life into the city.",
         icon: Landmark,
         color: "#16A34A",
         gradient: "from-green-500/20 via-emerald-500/10 to-transparent",
@@ -189,7 +190,7 @@ const HERITAGE_DATA: Record<CityId, {
         category: "palace",
         tagline: "English Tudor-Style Palace on 454-Acre Grounds",
         civicLegacy: "Inspired by England's Windsor Castle, Bangalore Palace was built by the Wadiyar dynasty and features fortified towers, Gothic windows, and elegant wooden interiors. The surrounding grounds, now in the heart of the city, serve as a major cultural and event venue.",
-        quote: ""A slice of Tudor England in tropical India — the Palace bridges two worlds across centuries."",
+        quote: "A slice of Tudor England in tropical India — the Palace bridges two worlds across centuries.",
         icon: Crown,
         color: "#C86B18",
         gradient: "from-amber-500/20 via-orange-500/10 to-transparent",
@@ -202,7 +203,7 @@ const HERITAGE_DATA: Record<CityId, {
         category: "palace",
         tagline: "Indo-Islamic Teak Palace with Ornate Frescoes",
         civicLegacy: "Known as 'Rash-e-Jannat' (Envy of Heaven), this entirely teak-built palace served as Tipu Sultan's summer retreat. Its ornate arches, balconies, and floral frescoes showcase the finest Indo-Islamic architecture. Today it houses a museum dedicated to the Tiger of Mysore.",
-        quote: ""Tipu dreamed of paradise on earth — and built it in wood, paint, and defiance."",
+        quote: "Tipu dreamed of paradise on earth — and built it in wood, paint, and defiance.",
         icon: Scroll,
         color: "#059669",
         gradient: "from-emerald-500/20 via-teal-500/10 to-transparent",
@@ -224,7 +225,7 @@ const HERITAGE_DATA: Record<CityId, {
         category: "palace",
         tagline: "Mughal Citadel Where India's Independence Was Proclaimed",
         civicLegacy: "Commissioned by Emperor Shah Jahan, the Red Fort served as the main residence of Mughal emperors for nearly 200 years. Every year on India's Independence Day, the Prime Minister hoists the national flag from its ramparts and addresses the nation — making it the living symbol of Indian sovereignty.",
-        quote: ""From these ramparts, the tricolor was unfurled to declare a nation's freedom — a moment carved into eternity."",
+        quote: "From these ramparts, the tricolor was unfurled to declare a nation's freedom — a moment carved into eternity.",
         icon: Crown,
         color: "#B91C1C",
         gradient: "from-red-500/20 via-rose-500/10 to-transparent",
@@ -237,7 +238,7 @@ const HERITAGE_DATA: Record<CityId, {
         category: "civic",
         tagline: "42-Metre War Memorial on Rajpath",
         civicLegacy: "Originally named the All India War Memorial, India Gate commemorates the 82,000 soldiers of the British Indian Army who died in World War I and the Third Anglo-Afghan War. The Amar Jawan Jyoti beneath its arch burns as an eternal flame honoring India's fallen warriors.",
-        quote: ""India Gate stands where grief meets gratitude — a nation's salute to those who gave everything."",
+        quote: "India Gate stands where grief meets gratitude — a nation's salute to those who gave everything.",
         icon: Landmark,
         color: "#C86B18",
         gradient: "from-amber-500/20 via-orange-500/10 to-transparent",
@@ -250,7 +251,7 @@ const HERITAGE_DATA: Record<CityId, {
         category: "civic",
         tagline: "73-Metre Victory Tower, World's Tallest Brick Minaret",
         civicLegacy: "The Qutub Minar complex marks the beginning of Islamic rule in India. This soaring five-storey tower of red sandstone and marble, with its intricate Quranic inscriptions and geometric patterns, is surrounded by a complex of historically significant monuments including the Iron Pillar of Delhi.",
-        quote: ""Eight centuries tall and still reaching — Qutub Minar is Delhi's oldest sentinel."",
+        quote: "Eight centuries tall and still reaching — Qutub Minar is Delhi's oldest sentinel.",
         icon: Building2,
         color: "#9333EA",
         gradient: "from-purple-500/20 via-violet-500/10 to-transparent",
@@ -263,7 +264,7 @@ const HERITAGE_DATA: Record<CityId, {
         category: "palace",
         tagline: "Mughal Garden Tomb, Precursor to the Taj Mahal",
         civicLegacy: "Commissioned by Empress Bega Begum, Humayun's Tomb was the first garden-tomb on the Indian subcontinent and inspired the architectural lineage that culminated in the Taj Mahal. Its Persian charbagh garden, red sandstone facade, and white marble dome set new standards for Mughal funerary architecture.",
-        quote: ""In this garden of eternity, a grieving queen created the architectural language that would birth the Taj Mahal."",
+        quote: "In this garden of eternity, a grieving queen created the architectural language that would birth the Taj Mahal.",
         icon: Scroll,
         color: "#059669",
         gradient: "from-emerald-500/20 via-teal-500/10 to-transparent",
@@ -271,6 +272,31 @@ const HERITAGE_DATA: Record<CityId, {
     ],
   },
 };
+
+export function CityHeritageSignal({ cityId }: { cityId: CityId }) {
+  const cityData = HERITAGE_DATA[cityId] || HERITAGE_DATA.vadodara;
+  const cityVisuals = getCityVisuals(cityId);
+  const story = cityData.stories[0]!;
+  const Icon = story.icon;
+
+  return (
+    <div className="civic-heritage-signal" style={{ "--heritage-accent": cityVisuals.accent } as React.CSSProperties}>
+      <div className="flex min-w-0 items-start gap-3">
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border border-[var(--heritage-accent)]/30 bg-[var(--heritage-accent)]/10 text-[var(--heritage-accent)]">
+          <Icon className="h-4 w-4" aria-hidden />
+        </span>
+        <div className="min-w-0">
+          <p className="text-[0.62rem] font-bold uppercase tracking-[0.16em] text-[var(--heritage-accent)]">{cityVisuals.authority} · Civic heritage signal</p>
+          <p className="mt-1 truncate text-sm font-bold text-[var(--foreground)]">{story.title}</p>
+          <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-muted-foreground">{story.tagline} · {cityVisuals.architecture}</p>
+        </div>
+      </div>
+      <a href="#city-heritage" className="mt-3 inline-flex items-center gap-1 text-xs font-bold text-[var(--heritage-accent)] underline-offset-4 hover:underline">
+        Explore {cityData.cityName} heritage <ChevronRight className="h-3.5 w-3.5" aria-hidden />
+      </a>
+    </div>
+  );
+}
 
 export function CityHeritagePanel({
   cityId,
