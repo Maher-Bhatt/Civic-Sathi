@@ -1,0 +1,2043 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Sathi Setu — Government Interoperability Platform. Prototype for SIH26129, Smart India Hackathon. Not an official Government of Maharashtra deployment." />
+  <title>Sathi Setu — Government Interoperability Platform</title>
+
+  <!-- Preload critical fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ── Design tokens ── */
+    :root {
+      --navy:       #1a2744;
+      --navy-dark:  #111c35;
+      --navy-mid:   #243358;
+      --navy-light: #2e4070;
+      --saffron:    #f4801a;
+      --saffron-lt: #fdf0e2;
+      --saffron-dk: #d06a10;
+      --white:      #ffffff;
+      --surface:    #f5f6f8;
+      --surface-dk: #ebedf1;
+      --border:     #d1d5db;
+      --text-dark:  #111827;
+      --text-mid:   #374151;
+      --text-muted: #6b7280;
+      --text-inv:   #ffffff;
+
+      /* Status colors — WCAG AA contrast */
+      --green:      #15803d;
+      --green-lt:   #dcfce7;
+      --amber:      #b45309;
+      --amber-lt:   #fef3c7;
+      --red:        #b91c1c;
+      --red-lt:     #fee2e2;
+      --blue:       #1d4ed8;
+      --blue-lt:    #dbeafe;
+      --gray:       #4b5563;
+      --gray-lt:    #f3f4f6;
+
+      --radius:     6px;
+      --shadow:     0 1px 3px rgba(0,0,0,0.12);
+      --shadow-md:  0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    /* ── Reset & base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', 'Noto Sans Devanagari', system-ui, sans-serif;
+      background: var(--surface);
+      color: var(--text-dark);
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+    }
+
+    /* ── Accessibility ── */
+    .skip-link {
+      position: absolute; top: -100%; left: 0;
+      background: var(--saffron); color: var(--white);
+      padding: 0.5rem 1rem; font-weight: 600; z-index: 9999;
+      border-radius: 0 0 var(--radius) 0;
+    }
+    .skip-link:focus { top: 0; }
+    :focus-visible {
+      outline: 3px solid var(--saffron);
+      outline-offset: 2px;
+    }
+    .sr-only {
+      position: absolute; width: 1px; height: 1px;
+      padding: 0; margin: -1px; overflow: hidden;
+      clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+    }
+
+    /* ── Government header ── */
+    .gov-strip {
+      background: var(--navy-dark);
+      padding: 0.4rem 1.5rem;
+      display: flex; align-items: center; gap: 0.75rem;
+    }
+    .gov-strip-text {
+      color: rgba(255,255,255,0.7);
+      font-size: 0.75rem;
+      letter-spacing: 0.02em;
+    }
+    .gov-strip-text strong { color: rgba(255,255,255,0.95); }
+
+    .header {
+      background: var(--navy);
+      color: var(--text-inv);
+      padding: 0 1.5rem;
+      display: flex; align-items: center; gap: 1.5rem;
+      height: 64px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+
+    /* Sathi Setu SVG logo mark */
+    .logo-mark {
+      flex-shrink: 0;
+      width: 40px; height: 40px;
+    }
+
+    .header-brand { flex: 1; }
+    .header-brand h1 {
+      font-size: 1.125rem; font-weight: 700;
+      letter-spacing: 0.05em;
+      color: var(--white);
+    }
+    .header-brand .subtitle {
+      font-size: 0.7rem; color: rgba(255,255,255,0.6);
+      letter-spacing: 0.04em;
+      margin-top: 1px;
+    }
+    .prototype-badge {
+      background: var(--saffron);
+      color: var(--white);
+      font-size: 0.6rem; font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 3px;
+      letter-spacing: 0.08em;
+    }
+    .header-actions {
+      display: flex; align-items: center; gap: 1rem;
+    }
+
+    /* Language switcher */
+    .lang-switch {
+      background: var(--navy-light); border: 1px solid rgba(255,255,255,0.2);
+      color: var(--white); border-radius: var(--radius);
+      padding: 0.25rem 0.5rem; font-size: 0.8rem; cursor: pointer;
+      display: flex; align-items: center; gap: 0.35rem;
+    }
+    .lang-switch:hover { background: var(--navy-mid); }
+
+    /* ── Navigation ── */
+    .nav {
+      background: var(--navy-mid);
+      padding: 0 1.5rem;
+      display: flex; gap: 0;
+      overflow-x: auto;
+      border-bottom: 2px solid var(--navy-dark);
+    }
+    .nav-btn {
+      background: none; border: none; color: rgba(255,255,255,0.7);
+      padding: 0.75rem 1rem; font-size: 0.8rem; font-weight: 500;
+      cursor: pointer; white-space: nowrap;
+      border-bottom: 3px solid transparent;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .nav-btn:hover { color: var(--white); }
+    .nav-btn.active {
+      color: var(--saffron);
+      border-bottom-color: var(--saffron);
+      font-weight: 600;
+    }
+
+    /* ── Disclaimer banner ── */
+    .disclaimer {
+      background: var(--amber-lt); border-left: 4px solid var(--amber);
+      padding: 0.6rem 1.5rem; font-size: 0.78rem; color: var(--amber);
+      display: flex; align-items: center; gap: 0.5rem;
+    }
+
+    /* ── Layout ── */
+    .main { padding: 1.5rem; max-width: 1280px; margin: 0 auto; }
+
+    /* ── Cards ── */
+    .card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .card-header {
+      padding: 0.9rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      background: var(--white);
+    }
+    .card-header h2 {
+      font-size: 0.95rem; font-weight: 600; color: var(--text-dark);
+    }
+    .card-body { padding: 1.25rem; }
+
+    /* ── Grid layouts ── */
+    .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+    @media (max-width: 1100px) { .grid-4 { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 768px) {
+      .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+      .header { height: auto; padding: 0.75rem 1rem; flex-wrap: wrap; }
+    }
+
+    /* ── KPI tiles ── */
+    .kpi-tile {
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 1.1rem 1.25rem;
+      box-shadow: var(--shadow);
+    }
+    .kpi-label { font-size: 0.72rem; color: var(--text-muted); font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; }
+    .kpi-value { font-size: 2rem; font-weight: 700; color: var(--navy); margin: 0.35rem 0 0; }
+    .kpi-sub { font-size: 0.75rem; color: var(--text-muted); }
+
+    /* ── Badges ── */
+    .badge {
+      display: inline-flex; align-items: center;
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 0.06em;
+      padding: 2px 8px; border-radius: 3px;
+      text-transform: uppercase;
+    }
+    .badge-reference { background: var(--blue-lt); color: var(--blue); }
+    .badge-mock      { background: var(--gray-lt); color: var(--gray); }
+    .badge-sandbox   { background: var(--amber-lt); color: var(--amber); }
+    .badge-live      { background: var(--green-lt); color: var(--green); }
+    .badge-unavail   { background: var(--red-lt); color: var(--red); }
+    .badge-open      { background: var(--red-lt); color: var(--red); }
+    .badge-granted   { background: var(--green-lt); color: var(--green); }
+    .badge-pending   { background: var(--amber-lt); color: var(--amber); }
+    .badge-revoked   { background: var(--gray-lt); color: var(--gray); }
+    .badge-high      { background: var(--red-lt); color: var(--red); }
+    .badge-medium    { background: var(--amber-lt); color: var(--amber); }
+    .badge-low       { background: var(--blue-lt); color: var(--blue); }
+
+    /* ── Tables ── */
+    .tbl-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    th {
+      text-align: left; padding: 0.6rem 0.8rem;
+      font-size: 0.72rem; font-weight: 600; color: var(--text-muted);
+      letter-spacing: 0.04em; text-transform: uppercase;
+      background: var(--surface); border-bottom: 1px solid var(--border);
+    }
+    td { padding: 0.65rem 0.8rem; border-bottom: 1px solid var(--surface-dk); color: var(--text-mid); }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: var(--surface); }
+
+    /* ── Buttons ── */
+    .btn {
+      display: inline-flex; align-items: center; gap: 0.3rem;
+      padding: 0.45rem 1rem; border-radius: var(--radius);
+      font-size: 0.83rem; font-weight: 600; cursor: pointer;
+      border: none; transition: background 0.15s, box-shadow 0.15s;
+    }
+    .btn-primary { background: var(--saffron); color: var(--white); }
+    .btn-primary:hover { background: var(--saffron-dk); }
+    .btn-navy { background: var(--navy); color: var(--white); }
+    .btn-navy:hover { background: var(--navy-dark); }
+    .btn-ghost { background: none; color: var(--navy); border: 1px solid var(--border); }
+    .btn-ghost:hover { background: var(--surface); }
+    .btn-danger { background: var(--red); color: var(--white); }
+    .btn-danger:hover { background: #991b1b; }
+    .btn-success { background: var(--green); color: var(--white); }
+    .btn-success:hover { background: #166534; }
+    .btn-sm { padding: 0.3rem 0.65rem; font-size: 0.75rem; }
+
+    /* ── Forms ── */
+    .form-group { display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 1rem; }
+    label { font-size: 0.82rem; font-weight: 600; color: var(--text-mid); }
+    input, select, textarea {
+      padding: 0.5rem 0.75rem; border: 1px solid var(--border);
+      border-radius: var(--radius); font-size: 0.85rem;
+      font-family: inherit; background: var(--white);
+      color: var(--text-dark);
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none; border-color: var(--saffron);
+      box-shadow: 0 0 0 3px rgba(244,128,26,0.2);
+    }
+    textarea { resize: vertical; min-height: 80px; }
+
+    /* ── Sections & pages ── */
+    .page { display: none; }
+    .page.active { display: block; }
+
+    .section-title {
+      font-size: 1.05rem; font-weight: 700; color: var(--navy);
+      margin-bottom: 0.35rem;
+    }
+    .section-desc { font-size: 0.83rem; color: var(--text-muted); margin-bottom: 1.25rem; }
+
+    /* ── Status indicator ── */
+    .dot {
+      display: inline-block; width: 8px; height: 8px;
+      border-radius: 50%; margin-right: 4px;
+    }
+    .dot-green { background: var(--green); }
+    .dot-amber { background: var(--amber); }
+    .dot-red   { background: var(--red); }
+    .dot-gray  { background: var(--gray); }
+
+    /* ── System card ── */
+    .system-card {
+      border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 1rem 1.25rem; background: var(--white);
+      box-shadow: var(--shadow);
+    }
+    .system-card-header {
+      display: flex; align-items: flex-start; justify-content: space-between;
+      margin-bottom: 0.6rem;
+    }
+    .system-name { font-size: 0.95rem; font-weight: 700; color: var(--navy); }
+    .system-key { font-size: 0.72rem; color: var(--text-muted); font-family: monospace; margin-top: 2px; }
+    .system-desc { font-size: 0.8rem; color: var(--text-muted); margin: 0.5rem 0; }
+    .system-mapping {
+      font-size: 0.75rem; color: var(--text-muted); margin-top: 0.5rem;
+      background: var(--surface); border-radius: 4px; padding: 0.5rem 0.75rem;
+      font-family: monospace;
+    }
+
+    /* ── Audit timeline ── */
+    .timeline { list-style: none; position: relative; }
+    .timeline::before {
+      content: ''; position: absolute; left: 12px; top: 0; bottom: 0;
+      width: 2px; background: var(--border);
+    }
+    .tl-item {
+      position: relative; padding: 0 0 1.25rem 2.25rem;
+    }
+    .tl-dot {
+      position: absolute; left: 6px; top: 4px;
+      width: 14px; height: 14px; border-radius: 50%;
+      background: var(--navy); border: 2px solid var(--white);
+      box-shadow: 0 0 0 2px var(--border);
+    }
+    .tl-action { font-size: 0.85rem; font-weight: 600; color: var(--text-dark); }
+    .tl-meta { font-size: 0.75rem; color: var(--text-muted); }
+    .tl-resource { font-size: 0.78rem; font-family: monospace; color: var(--blue); }
+
+    /* ── Wizard ── */
+    .wizard-steps {
+      display: flex; gap: 0; margin-bottom: 2rem;
+      border-bottom: 2px solid var(--border);
+    }
+    .wizard-step {
+      padding: 0.65rem 1rem; font-size: 0.78rem; font-weight: 600;
+      color: var(--text-muted); cursor: default;
+      border-bottom: 3px solid transparent; margin-bottom: -2px;
+    }
+    .wizard-step.active { color: var(--navy); border-bottom-color: var(--saffron); }
+    .wizard-step.done { color: var(--green); border-bottom-color: var(--green); }
+
+    .wizard-panel { display: none; }
+    .wizard-panel.active { display: block; }
+
+    /* ── Identity card ── */
+    .identity-card {
+      background: var(--navy); color: var(--white);
+      border-radius: var(--radius); padding: 1.25rem;
+      margin-bottom: 1rem;
+    }
+    .identity-id {
+      font-family: monospace; font-size: 1.1rem; font-weight: 700;
+      color: var(--saffron); letter-spacing: 0.04em;
+    }
+    .identity-name { font-size: 0.95rem; margin-top: 0.35rem; }
+    .identity-links { margin-top: 1rem; display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .identity-link-chip {
+      background: rgba(255,255,255,0.1); border-radius: 3px;
+      padding: 3px 10px; font-size: 0.75rem; font-family: monospace;
+    }
+
+    /* ── Consent dialog ── */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.5);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 100; padding: 1rem;
+    }
+    .modal-overlay.hidden { display: none; }
+    .modal {
+      background: var(--white); border-radius: 8px;
+      max-width: 480px; width: 100%; box-shadow: var(--shadow-md);
+      max-height: 90vh; overflow-y: auto;
+    }
+    .modal-header {
+      padding: 1.1rem 1.25rem; border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .modal-header h3 { font-size: 1rem; font-weight: 700; color: var(--navy); }
+    .modal-body { padding: 1.25rem; }
+    .modal-footer {
+      padding: 0.9rem 1.25rem; border-top: 1px solid var(--border);
+      display: flex; gap: 0.75rem; justify-content: flex-end;
+    }
+    .btn-close {
+      background: none; border: none; cursor: pointer;
+      font-size: 1.25rem; color: var(--text-muted);
+    }
+
+    /* ── Consent notice ── */
+    .consent-notice {
+      background: var(--blue-lt); border: 1px solid var(--blue);
+      border-radius: var(--radius); padding: 0.75rem 1rem;
+      font-size: 0.82rem; color: var(--blue); margin-bottom: 1rem;
+    }
+    .access-denied {
+      background: var(--red-lt); border: 1px solid var(--red);
+      border-radius: var(--radius); padding: 0.75rem 1rem;
+      font-size: 0.82rem; color: var(--red); margin-bottom: 1rem;
+    }
+    .access-allowed {
+      background: var(--green-lt); border: 1px solid var(--green);
+      border-radius: var(--radius); padding: 0.75rem 1rem;
+      font-size: 0.82rem; color: var(--green); margin-bottom: 1rem;
+    }
+
+    /* ── Loading / empty states ── */
+    .loading { text-align: center; padding: 2rem; color: var(--text-muted); font-size: 0.85rem; }
+    .empty { text-align: center; padding: 2.5rem; color: var(--text-muted); }
+    .empty-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+    .error-msg {
+      background: var(--red-lt); border: 1px solid var(--red);
+      border-radius: var(--radius); padding: 0.65rem 1rem;
+      font-size: 0.82rem; color: var(--red); margin-bottom: 1rem;
+    }
+
+    /* ── Pehchaan page ── */
+    .pehchaan-arch {
+      display: flex; flex-direction: column; align-items: center;
+      gap: 0; margin: 2rem 0;
+    }
+    .pehchaan-node {
+      background: var(--navy); color: var(--white);
+      border-radius: 8px; padding: 0.85rem 2rem;
+      font-weight: 700; font-size: 0.9rem; text-align: center;
+      position: relative;
+    }
+    .pehchaan-central {
+      background: var(--saffron); font-size: 1rem; padding: 1rem 2.5rem;
+    }
+    .pehchaan-arrow {
+      color: var(--text-muted); font-size: 1.25rem; margin: 0.4rem 0;
+    }
+    .pehchaan-branches {
+      display: flex; gap: 3rem; justify-content: center;
+    }
+    .pehchaan-branch-node {
+      background: var(--navy-mid); color: var(--white);
+      border-radius: 8px; padding: 0.7rem 1.5rem;
+      font-size: 0.82rem; text-align: center;
+    }
+
+    /* ── Footer ── */
+    footer {
+      background: var(--navy-dark); color: rgba(255,255,255,0.5);
+      padding: 1rem 1.5rem; font-size: 0.75rem; text-align: center;
+      margin-top: 3rem;
+    }
+    footer strong { color: rgba(255,255,255,0.8); }
+
+    /* ── Tracking result ── */
+    .tracking-result {
+      border: 1px solid var(--border); border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .tracking-header {
+      background: var(--navy); color: var(--white);
+      padding: 1rem 1.25rem;
+    }
+    .tracking-unified-id {
+      font-family: monospace; font-size: 1.25rem; font-weight: 700;
+      color: var(--saffron);
+    }
+    .tracking-sources {
+      display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.75rem;
+    }
+    .tracking-source-chip {
+      background: rgba(255,255,255,0.1); border-radius: 3px;
+      padding: 3px 10px; font-size: 0.75rem; font-family: monospace;
+    }
+    .tracking-body { padding: 1rem 1.25rem; }
+
+    /* Print */
+    @media print {
+      .nav, .gov-strip, .header-actions, .disclaimer { display: none; }
+      .main { padding: 0; }
+    }
+  </style>
+</head>
+<body>
+
+<a href="#main-content" class="skip-link" data-i18n="skip_link">Skip to main content</a>
+
+<!-- Government identity strip -->
+<div class="gov-strip" role="banner" aria-label="Government identity">
+  <span class="gov-strip-text">
+    <strong>महाराष्ट्र शासन</strong> &nbsp;|&nbsp; Government of Maharashtra
+    &nbsp;|&nbsp; Maharashtra State Innovation Society
+  </span>
+</div>
+
+<!-- Main header -->
+<header class="header" role="banner">
+  <!-- Original Sathi Setu SVG mark — bridge/node concept -->
+  <svg class="logo-mark" viewBox="0 0 40 40" fill="none" aria-hidden="true" focusable="false">
+    <!-- Bridge arch -->
+    <path d="M4 28 Q20 8 36 28" stroke="#f4801a" stroke-width="2.5" fill="none"/>
+    <!-- Bridge deck -->
+    <line x1="4" y1="28" x2="36" y2="28" stroke="#f4801a" stroke-width="2" />
+    <!-- Vertical cables -->
+    <line x1="12" y1="28" x2="14" y2="19" stroke="rgba(255,255,255,0.5)" stroke-width="1"/>
+    <line x1="20" y1="28" x2="20" y2="15" stroke="rgba(255,255,255,0.5)" stroke-width="1"/>
+    <line x1="28" y1="28" x2="26" y2="19" stroke="rgba(255,255,255,0.5)" stroke-width="1"/>
+    <!-- Node dots at connection points -->
+    <circle cx="4"  cy="28" r="2.5" fill="#f4801a"/>
+    <circle cx="20" cy="15" r="2.5" fill="#f4801a"/>
+    <circle cx="36" cy="28" r="2.5" fill="#f4801a"/>
+    <circle cx="12" cy="28" r="2" fill="rgba(255,255,255,0.7)"/>
+    <circle cx="28" cy="28" r="2" fill="rgba(255,255,255,0.7)"/>
+  </svg>
+
+  <div class="header-brand">
+    <h1>SATHI SETU</h1>
+    <div class="subtitle" data-i18n="header_subtitle">Government Interoperability Platform &nbsp;·&nbsp; SIH26129</div>
+  </div>
+
+  <div class="header-actions">
+    <span class="prototype-badge" data-i18n="prototype_badge">PROTOTYPE</span>
+
+    <button class="lang-switch" id="langBtn" aria-label="Switch language / भाषा बदला" onclick="toggleLang()">
+      <span id="langLabel">मराठी</span>
+    </button>
+
+    <button class="btn btn-ghost btn-sm" onclick="refreshAll()" aria-label="Refresh all data" title="Refresh">
+      ⟳
+    </button>
+  </div>
+</header>
+
+<!-- Navigation -->
+<nav class="nav" role="navigation" aria-label="Main navigation">
+  <button class="nav-btn active" onclick="showPage('dashboard')" data-i18n="nav_dashboard">Dashboard</button>
+  <button class="nav-btn" onclick="showPage('catalogue')" data-i18n="nav_catalogue">API Catalogue</button>
+  <button class="nav-btn" onclick="showPage('onboarding')" data-i18n="nav_onboarding">Onboard System</button>
+  <button class="nav-btn" onclick="showPage('identity')" data-i18n="nav_identity">Identity Resolution</button>
+  <button class="nav-btn" onclick="showPage('consent')" data-i18n="nav_consent">Sathi Sahamati</button>
+  <button class="nav-btn" onclick="showPage('tracking')" data-i18n="nav_tracking">Unified Tracking</button>
+  <button class="nav-btn" onclick="showPage('dataquality')" data-i18n="nav_dq">Data Quality</button>
+  <button class="nav-btn" onclick="showPage('audit')" data-i18n="nav_audit">Audit Trail</button>
+  <button class="nav-btn" onclick="showPage('events')" data-i18n="nav_events">Events</button>
+  <button class="nav-btn" onclick="showPage('pehchaan')" data-i18n="nav_pehchaan">Sathi Pehchaan</button>
+</nav>
+
+<!-- Disclaimer -->
+<div class="disclaimer" role="status" aria-live="polite">
+  <span>⚠</span>
+  <span data-i18n="disclaimer">Prototype for SIH26129 — Smart India Hackathon. All identities, systems, and data are synthetic. Not an officially deployed Government of Maharashtra service.</span>
+</div>
+
+<main class="main" id="main-content">
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       DASHBOARD PAGE
+  ══════════════════════════════════════════════════════════════════ -->
+  <section class="page active" id="page-dashboard" aria-labelledby="dashboard-title">
+    <h2 class="section-title" id="dashboard-title" data-i18n="dash_title">Interoperability Control Centre</h2>
+    <p class="section-desc" data-i18n="dash_desc">Live view of connected systems, active exchanges, and open issues.</p>
+
+    <div class="grid-4" id="kpi-row">
+      <div class="kpi-tile">
+        <div class="kpi-label" data-i18n="kpi_systems">Connected Systems</div>
+        <div class="kpi-value" id="kpi-systems">—</div>
+        <div class="kpi-sub" data-i18n="kpi_systems_sub">registered in catalogue</div>
+      </div>
+      <div class="kpi-tile">
+        <div class="kpi-label" data-i18n="kpi_apps">Unified Applications</div>
+        <div class="kpi-value" id="kpi-apps">—</div>
+        <div class="kpi-sub" data-i18n="kpi_apps_sub">cross-system records</div>
+      </div>
+      <div class="kpi-tile">
+        <div class="kpi-label" data-i18n="kpi_events">Events (recent)</div>
+        <div class="kpi-value" id="kpi-events">—</div>
+        <div class="kpi-sub" data-i18n="kpi_events_sub">last 10 events</div>
+      </div>
+      <div class="kpi-tile">
+        <div class="kpi-label" data-i18n="kpi_issues">Open DQ Issues</div>
+        <div class="kpi-value" id="kpi-issues">—</div>
+        <div class="kpi-sub" data-i18n="kpi_issues_sub">require review</div>
+      </div>
+    </div>
+
+    <div class="grid-2" style="margin-top:1.25rem">
+      <!-- Connected Systems -->
+      <div class="card">
+        <div class="card-header">
+          <h2 data-i18n="dash_systems">Connected Systems</h2>
+          <button class="btn btn-ghost btn-sm" onclick="showPage('catalogue')" data-i18n="view_all">View All</button>
+        </div>
+        <div class="card-body" id="dash-systems">
+          <div class="loading" data-i18n="loading">Loading…</div>
+        </div>
+      </div>
+
+      <!-- Recent Events -->
+      <div class="card">
+        <div class="card-header">
+          <h2 data-i18n="dash_events">Recent Events</h2>
+          <button class="btn btn-ghost btn-sm" onclick="showPage('events')" data-i18n="view_all">View All</button>
+        </div>
+        <div class="card-body" id="dash-events">
+          <div class="loading" data-i18n="loading">Loading…</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-2" style="margin-top:1.25rem">
+      <!-- Recent Applications -->
+      <div class="card">
+        <div class="card-header">
+          <h2 data-i18n="dash_apps">Recent Unified Applications</h2>
+          <button class="btn btn-ghost btn-sm" onclick="showPage('tracking')" data-i18n="view_all">View All</button>
+        </div>
+        <div class="tbl-wrap" id="dash-apps">
+          <div class="loading" data-i18n="loading">Loading…</div>
+        </div>
+      </div>
+
+      <!-- Open DQ Issues -->
+      <div class="card">
+        <div class="card-header">
+          <h2 data-i18n="dash_dq">Open Data Quality Issues</h2>
+          <button class="btn btn-ghost btn-sm" onclick="showPage('dataquality')" data-i18n="view_all">View All</button>
+        </div>
+        <div class="card-body" id="dash-dq">
+          <div class="loading" data-i18n="loading">Loading…</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       API CATALOGUE PAGE
+  ══════════════════════════════════════════════════════════════════ -->
+  <section class="page" id="page-catalogue" aria-labelledby="cat-title">
+    <h2 class="section-title" id="cat-title" data-i18n="cat_title">API Catalogue</h2>
+    <p class="section-desc" data-i18n="cat_desc">All systems registered in the Sathi Setu interoperability network. Connect your government platform.</p>
+    <div id="catalogue-grid" class="grid-2">
+      <div class="loading" data-i18n="loading">Loading…</div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       ONBOARDING WIZARD PAGE
+  ══════════════════════════════════════════════════════════════════ -->
+  <section class="page" id="page-onboarding" aria-labelledby="ob-title">
+    <h2 class="section-title" id="ob-title" data-i18n="ob_title">Connect a New Government System</h2>
+    <p class="section-desc" data-i18n="ob_desc">Seven-step onboarding wizard to join the interoperability network.</p>
+
+    <div class="card">
+      <div class="card-header">
+        <h2 data-i18n="ob_wizard_title">System Onboarding Wizard</h2>
+        <span class="badge badge-sandbox" data-i18n="ob_demo_mode">Demo Mode</span>
+      </div>
+      <div class="card-body">
+        <div class="wizard-steps" role="tablist" aria-label="Onboarding steps">
+          <div class="wizard-step active" role="tab" aria-selected="true" id="wstep-1" data-i18n="ob_step1">1. System Info</div>
+          <div class="wizard-step" role="tab" aria-selected="false" id="wstep-2" data-i18n="ob_step2">2. Connection</div>
+          <div class="wizard-step" role="tab" aria-selected="false" id="wstep-3" data-i18n="ob_step3">3. Auth</div>
+          <div class="wizard-step" role="tab" aria-selected="false" id="wstep-4" data-i18n="ob_step4">4. Schema Mapping</div>
+          <div class="wizard-step" role="tab" aria-selected="false" id="wstep-5" data-i18n="ob_step5">5. Validation</div>
+          <div class="wizard-step" role="tab" aria-selected="false" id="wstep-6" data-i18n="ob_step6">6. Sandbox Test</div>
+          <div class="wizard-step" role="tab" aria-selected="false" id="wstep-7" data-i18n="ob_step7">7. Activate</div>
+        </div>
+
+        <!-- Step 1: System Info -->
+        <div class="wizard-panel active" id="wp-1" role="tabpanel" aria-labelledby="wstep-1">
+          <div class="form-group">
+            <label for="sys-name" data-i18n="ob_sys_name">System Name</label>
+            <input type="text" id="sys-name" placeholder="e.g. Maharashtra Housing Board Portal" />
+          </div>
+          <div class="form-group">
+            <label for="sys-key" data-i18n="ob_sys_key">System Key (unique identifier)</label>
+            <input type="text" id="sys-key" placeholder="e.g. mhb-housing" pattern="[a-z0-9\-]+" />
+          </div>
+          <div class="form-group">
+            <label for="sys-desc" data-i18n="ob_sys_desc">Description</label>
+            <textarea id="sys-desc" placeholder="Brief description of the system and its purpose"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="sys-dept" data-i18n="ob_sys_dept">Government Department</label>
+            <input type="text" id="sys-dept" placeholder="e.g. Housing Department, Government of Maharashtra" />
+          </div>
+          <div style="display:flex;gap:0.75rem;margin-top:1rem">
+            <button class="btn btn-primary" onclick="wizardNext(1)" data-i18n="btn_next">Next →</button>
+          </div>
+        </div>
+
+        <!-- Step 2: Connection -->
+        <div class="wizard-panel" id="wp-2" role="tabpanel" aria-labelledby="wstep-2">
+          <div class="form-group">
+            <label for="sys-url" data-i18n="ob_sys_url">API Base URL</label>
+            <input type="url" id="sys-url" placeholder="https://api.department.gov.in/v1" />
+          </div>
+          <div class="form-group">
+            <label for="sys-type" data-i18n="ob_sys_type">Connector Type</label>
+            <select id="sys-type">
+              <option value="REST_JSON">REST / JSON</option>
+              <option value="SOAP_XML">SOAP / XML</option>
+              <option value="BATCH_FILE">Batch File</option>
+              <option value="DATABASE">Direct Database</option>
+            </select>
+          </div>
+          <div style="display:flex;gap:0.75rem;margin-top:1rem">
+            <button class="btn btn-ghost" onclick="wizardBack(2)" data-i18n="btn_back">← Back</button>
+            <button class="btn btn-primary" onclick="wizardNext(2)" data-i18n="btn_next">Next →</button>
+          </div>
+        </div>
+
+        <!-- Step 3: Auth -->
+        <div class="wizard-panel" id="wp-3" role="tabpanel" aria-labelledby="wstep-3">
+          <div class="form-group">
+            <label for="sys-auth" data-i18n="ob_auth_type">Authentication Method</label>
+            <select id="sys-auth">
+              <option value="BEARER">Bearer Token</option>
+              <option value="API_KEY">API Key</option>
+              <option value="OAUTH2">OAuth 2.0 Client Credentials</option>
+              <option value="MUTUAL_TLS">Mutual TLS</option>
+            </select>
+          </div>
+          <div class="consent-notice" data-i18n="ob_auth_note">
+            ℹ Credentials are stored only in your local .env and never in source control or the Sathi Setu database.
+          </div>
+          <div style="display:flex;gap:0.75rem;margin-top:1rem">
+            <button class="btn btn-ghost" onclick="wizardBack(3)" data-i18n="btn_back">← Back</button>
+            <button class="btn btn-primary" onclick="wizardNext(3)" data-i18n="btn_next">Next →</button>
+          </div>
+        </div>
+
+        <!-- Step 4: Schema Mapping -->
+        <div class="wizard-panel" id="wp-4" role="tabpanel" aria-labelledby="wstep-4">
+          <p style="font-size:0.83rem;color:var(--text-muted);margin-bottom:1rem" data-i18n="ob_mapping_desc">Map your system's field names to the canonical Sathi Setu schema. Leave blank if not applicable.</p>
+          <div class="form-group">
+            <label data-i18n="ob_map_id">Application/Complaint ID field name</label>
+            <input type="text" id="map-ref" placeholder="e.g. application_id, ref_no, complaint_id" />
+          </div>
+          <div class="form-group">
+            <label data-i18n="ob_map_name">Citizen name field name</label>
+            <input type="text" id="map-name" placeholder="e.g. applicant_name, citizen_name, full_name" />
+          </div>
+          <div class="form-group">
+            <label data-i18n="ob_map_phone">Phone/mobile field name</label>
+            <input type="text" id="map-phone" placeholder="e.g. mobile_no, phone_number, contact" />
+          </div>
+          <div class="form-group">
+            <label data-i18n="ob_map_desc">Description/summary field name</label>
+            <input type="text" id="map-desc" placeholder="e.g. complaint_text, description, details" />
+          </div>
+          <div style="display:flex;gap:0.75rem;margin-top:1rem">
+            <button class="btn btn-ghost" onclick="wizardBack(4)" data-i18n="btn_back">← Back</button>
+            <button class="btn btn-primary" onclick="wizardNext(4)" data-i18n="btn_next">Next →</button>
+          </div>
+        </div>
+
+        <!-- Step 5: Validation -->
+        <div class="wizard-panel" id="wp-5" role="tabpanel" aria-labelledby="wstep-5">
+          <div class="consent-notice" data-i18n="ob_validation_note">
+            ℹ Validation confirms that your API is reachable and returns the expected field names. In this prototype, validation is shown as a demonstration step.
+          </div>
+          <div id="validation-result" style="margin:1rem 0"></div>
+          <div style="display:flex;gap:0.75rem;margin-top:1rem">
+            <button class="btn btn-ghost" onclick="wizardBack(5)" data-i18n="btn_back">← Back</button>
+            <button class="btn btn-navy" onclick="runValidation()" data-i18n="ob_run_validation">Run Validation</button>
+          </div>
+        </div>
+
+        <!-- Step 6: Sandbox Test -->
+        <div class="wizard-panel" id="wp-6" role="tabpanel" aria-labelledby="wstep-6">
+          <p style="font-size:0.83rem;color:var(--text-muted);margin-bottom:1rem" data-i18n="ob_sandbox_desc">Send a synthetic test payload to verify end-to-end mapping before activation.</p>
+          <div id="sandbox-result" style="margin:1rem 0"></div>
+          <div style="display:flex;gap:0.75rem;margin-top:1rem">
+            <button class="btn btn-ghost" onclick="wizardBack(6)" data-i18n="btn_back">← Back</button>
+            <button class="btn btn-navy" onclick="runSandbox()" data-i18n="ob_run_sandbox">Run Sandbox Test</button>
+          </div>
+        </div>
+
+        <!-- Step 7: Activate -->
+        <div class="wizard-panel" id="wp-7" role="tabpanel" aria-labelledby="wstep-7">
+          <div class="access-allowed" data-i18n="ob_ready">
+            ✓ Validation and sandbox test completed. Review your configuration before activating.
+          </div>
+          <div id="onboard-summary" style="font-size:0.85rem;color:var(--text-mid);background:var(--surface);border-radius:4px;padding:1rem;font-family:monospace;white-space:pre-wrap"></div>
+          <div class="consent-notice" style="margin-top:1rem" data-i18n="ob_activate_note">
+            ℹ In this prototype, activation saves the configuration and sets status to SANDBOX. A real deployment would require department-head approval.
+          </div>
+          <div style="display:flex;gap:0.75rem;margin-top:1rem">
+            <button class="btn btn-ghost" onclick="wizardBack(7)" data-i18n="btn_back">← Back</button>
+            <button class="btn btn-success" onclick="activateSystem()" data-i18n="ob_activate">Activate (Sandbox)</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       IDENTITY RESOLUTION PAGE
+  ══════════════════════════════════════════════════════════════════ -->
+  <section class="page" id="page-identity" aria-labelledby="id-title">
+    <h2 class="section-title" id="id-title" data-i18n="id_title">Identity Resolution — Sathi Pehchaan MDM</h2>
+    <p class="section-desc" data-i18n="id_desc">Canonical citizen identities resolved from multiple connected systems using phone fingerprint and name similarity matching.</p>
+
+    <div class="grid-2">
+      <!-- Demo: Submit from Civic Sathi -->
+      <div class="card">
+        <div class="card-header">
+          <h2 data-i18n="id_ingest_cs">Ingest from Civic Sathi</h2>
+          <span class="badge badge-reference">REFERENCE SYSTEM</span>
+        </div>
+        <div class="card-body">
+          <div class="form-group">
+            <label for="cs-name" data-i18n="id_citizen_name">Citizen Name</label>
+            <input type="text" id="cs-name" value="Rahul Kumar" />
+          </div>
+          <div class="form-group">
+            <label for="cs-phone" data-i18n="id_phone">Phone</label>
+            <input type="text" id="cs-phone" value="9876543210" />
+          </div>
+          <div class="form-group">
+            <label for="cs-email" data-i18n="id_email">Email</label>
+            <input type="text" id="cs-email" value="rahul.demo@example.com" />
+          </div>
+          <div class="form-group">
+            <label for="cs-complaint" data-i18n="id_complaint_desc">Complaint Description</label>
+            <textarea id="cs-complaint">Pothole on Tilak Road blocking traffic near Shivaji Nagar</textarea>
+          </div>
+          <div id="cs-ingest-result" style="margin-bottom:0.75rem"></div>
+          <button class="btn btn-primary" onclick="ingestCivicSathi()" data-i18n="id_btn_ingest">Submit to Sathi Setu</button>
+        </div>
+      </div>
+
+      <!-- Demo: Submit from Mock System -->
+      <div class="card">
+        <div class="card-header">
+          <h2 data-i18n="id_ingest_mgs">Ingest from Mock Grievance Service</h2>
+          <span class="badge badge-mock">MOCK SYSTEM</span>
+        </div>
+        <div class="card-body">
+          <p style="font-size:0.75rem;color:var(--text-muted);margin-bottom:0.75rem" data-i18n="id_mgs_note">Note: This system uses different field names (citizen_name, mobile_no, grievance_ref) demonstrating schema heterogeneity.</p>
+          <div class="form-group">
+            <label for="mgs-name" data-i18n="id_citizen_name_mgs">citizen_name</label>
+            <input type="text" id="mgs-name" value="Rahul K." />
+          </div>
+          <div class="form-group">
+            <label for="mgs-phone" data-i18n="id_phone_mgs">mobile_no</label>
+            <input type="text" id="mgs-phone" value="9876543210" />
+          </div>
+          <div class="form-group">
+            <label for="mgs-ref" data-i18n="id_ref_mgs">grievance_ref</label>
+            <input type="text" id="mgs-ref" value="MGS-2026-000001" />
+          </div>
+          <div class="form-group">
+            <label for="mgs-text" data-i18n="id_text_mgs">complaint_text</label>
+            <textarea id="mgs-text">Broken street light on MG Road near Shivaji Nagar signal</textarea>
+          </div>
+          <div id="mgs-ingest-result" style="margin-bottom:0.75rem"></div>
+          <button class="btn btn-primary" onclick="ingestMGS()" data-i18n="id_btn_ingest_mgs">Submit to Sathi Setu</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Identity resolution result -->
+    <div id="identity-result-section" style="display:none;margin-top:1.25rem">
+      <div class="card">
+        <div class="card-header">
+          <h2 data-i18n="id_result_title">Identity Resolution Result</h2>
+        </div>
+        <div class="card-body" id="identity-result-body"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       SATHI SAHAMATI (CONSENT) PAGE
+  ══════════════════════════════════════════════════════════════════ -->
+  <section class="page" id="page-consent" aria-labelledby="con-title">
+    <h2 class="section-title" id="con-title" data-i18n="con_title">Sathi Sahamati — Data Sharing Consent</h2>
+    <p class="section-desc" data-i18n="con_desc">Citizens control how their data is shared across connected systems. Consent is enforced server-side — access is denied without an active grant.</p>
+
+    <div class="grid-2">
+      <!-- Request Consent -->
+      <div class="card">
+        <div class="card-header">
+          <h2 data-i18n="con_request_title">Request Consent</h2>
+        </div>
+        <div class="card-body">
+          <div class="form-group">
+            <label for="con-identity" data-i18n="con_identity">Canonical Identity ID (SAT-ID-XXXXXX)</label>
+            <input type="text" id="con-identity" placeholder="SAT-ID-000001" />
+          </div>
+          <div class="form-group">
+            <label for="con-source" data-i18n="con_source">Source System</label>
+            <select id="con-source">
+              <option value="civic-sathi">Civic Sathi (Reference System)</option>
+              <option value="mock-grievance-service">Maharashtra State Grievance Service (Mock)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="con-target" data-i18n="con_target">Target System</label>
+            <select id="con-target">
+              <option value="mock-grievance-service">Maharashtra State Grievance Service (Mock)</option>
+              <option value="civic-sathi">Civic Sathi (Reference System)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="con-purpose" data-i18n="con_purpose">Purpose</label>
+            <input type="text" id="con-purpose" value="address-sharing" />
+          </div>
+          <div id="con-request-result" style="margin-bottom:0.75rem"></div>
+          <button class="btn btn-primary" onclick="requestConsent()" data-i18n="con_btn_request">Request Consent</button>
+        </div>
+      </div>
+
+      <!-- Consent Decision -->
+      <div class="card">
+        <div class="card-header">
+          <h2 data-i18n="con_decide_title">Consent Decision</h2>
+        </div>
+        <div class="card-body">
+          <div class="form-group">
+            <label for="con-id" data-i18n="con_consent_id">Consent ID (from request above)</label>
+            <input type="text" id="con-id" placeholder="UUID from consent request" />
+          </div>
+          <div id="con-decide-result" style="margin-bottom:0.75rem"></div>
+          <div style="display:flex;gap:0.75rem;flex-wrap:wrap">
+            <button class="btn btn-success" onclick="decideConsent('GRANTED')" data-i18n="con_btn_grant">✓ Grant</button>
+            <button class="btn btn-danger" onclick="decideConsent('DENIED')" data-i18n="con_btn_deny">✗ Deny</button>
+            <button class="btn btn-ghost" onclick="decideConsent('REVOKED')" data-i18n="con_btn_revoke">↩ Revoke</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cross-system access demo -->
+    <div class="card" style="margin-top:1.25rem">
+      <div class="card-header">
+        <h2 data-i18n="con_access_title">Cross-System Access Demo</h2>
+        <span class="badge badge-sandbox" data-i18n="con_enforced">Consent Enforced Server-Side</span>
+      </div>
+      <div class="card-body">
+        <p style="font-size:0.83rem;color:var(--text-muted);margin-bottom:1rem" data-i18n="con_access_desc">Try accessing a shared profile — you will receive 403 Forbidden without an active GRANTED consent. Grant consent above, then retry.</p>
+        <div class="form-group" style="max-width:360px">
+          <label for="acc-identity" data-i18n="con_access_identity">Canonical Identity ID</label>
+          <input type="text" id="acc-identity" placeholder="SAT-ID-000001" />
+        </div>
+        <div id="access-result" style="margin:0.75rem 0"></div>
+        <div style="display:flex;gap:0.75rem">
+          <button class="btn btn-navy" onclick="tryAccess()" data-i18n="con_btn_try_access">Try Cross-System Access</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       UNIFIED TRACKING PAGE
+  ══════════════════════════════════════════════════════════════════ -->
+  <section class="page" id="page-tracking" aria-labelledby="track-title">
+    <h2 class="section-title" id="track-title" data-i18n="track_title">Unified Application Tracking</h2>
+    <p class="section-desc" data-i18n="track_desc">SAT-YYYY-NNNNNN identifiers link records from all connected systems. Source system IDs are preserved, not replaced.</p>
+
+    <div class="card" style="margin-bottom:1.25rem">
+      <div class="card-header"><h2 data-i18n="track_search">Lookup Unified Application</h2></div>
+      <div class="card-body" style="display:flex;gap:0.75rem;align-items:flex-end;flex-wrap:wrap">
+        <div class="form-group" style="margin-bottom:0;flex:1;min-width:200px">
+          <label for="track-id" data-i18n="track_id_label">Unified ID (SAT-YYYY-NNNNNN)</label>
+          <input type="text" id="track-id" placeholder="SAT-2026-000001" />
+        </div>
+        <button class="btn btn-primary" onclick="lookupTracking()" data-i18n="track_btn_lookup">Lookup</button>
+      </div>
+    </div>
+
+    <div id="tracking-result-section"></div>
+
+    <div class="card" style="margin-top:1.25rem">
+      <div class="card-header"><h2 data-i18n="track_recent">Recent Unified Applications</h2></div>
+      <div class="tbl-wrap" id="tracking-table">
+        <div class="loading" data-i18n="loading">Loading…</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       DATA QUALITY PAGE
+  ══════════════════════════════════════════════════════════════════ -->
+  <section class="page" id="page-dataquality" aria-labelledby="dq-title">
+    <h2 class="section-title" id="dq-title" data-i18n="dq_title">Data Quality Queue</h2>
+    <p class="section-desc" data-i18n="dq_desc">Identity conflicts and schema mismatches detected during cross-system ingestion. Every resolution is recorded in the audit trail.</p>
+
+    <div class="card">
+      <div class="card-header">
+        <h2 data-i18n="dq_open_issues">Open Issues</h2>
+        <button class="btn btn-ghost btn-sm" onclick="loadDQ()" data-i18n="btn_refresh">Refresh</button>
+      </div>
+      <div class="tbl-wrap" id="dq-table">
+        <div class="loading" data-i18n="loading">Loading…</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Resolve DQ issue modal -->
+  <div class="modal-overlay hidden" id="dq-modal" role="dialog" aria-modal="true" aria-labelledby="dq-modal-title">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="dq-modal-title" data-i18n="dq_resolve_title">Resolve Data Quality Issue</h3>
+        <button class="btn-close" onclick="closeDQModal()" aria-label="Close">✕</button>
+      </div>
+      <div class="modal-body">
+        <div id="dq-modal-details" style="font-size:0.85rem;color:var(--text-mid);background:var(--surface);border-radius:4px;padding:0.75rem;font-family:monospace;white-space:pre-wrap;margin-bottom:1rem"></div>
+        <div class="form-group">
+          <label for="dq-notes" data-i18n="dq_resolution_notes">Resolution Notes</label>
+          <textarea id="dq-notes" placeholder="Explain your resolution decision…"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-success btn-sm" onclick="resolveDQ('MERGED')" data-i18n="dq_merge">Merge Records</button>
+        <button class="btn btn-ghost btn-sm" onclick="resolveDQ('KEPT_SEPARATE')" data-i18n="dq_keep_sep">Keep Separate</button>
+        <button class="btn btn-ghost btn-sm" onclick="resolveDQ('DISMISSED')" data-i18n="dq_dismiss">Dismiss</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       AUDIT TRAIL PAGE
+  ══════════════════════════════════════════════════════════════════ -->
+  <section class="page" id="page-audit" aria-labelledby="aud-title">
+    <h2 class="section-title" id="aud-title" data-i18n="aud_title">Cross-System Audit Trail</h2>
+    <p class="section-desc" data-i18n="aud_desc">Append-only audit records for every cross-system operation. Each record includes actor, action, resource, correlation ID, and a payload integrity digest.</p>
+
+    <div class="card">
+      <div class="card-header">
+        <h2 data-i18n="aud_entries">Audit Entries (latest 100)</h2>
+        <button class="btn btn-ghost btn-sm" onclick="loadAudit()" data-i18n="btn_refresh">Refresh</button>
+      </div>
+      <div class="tbl-wrap" id="audit-table">
+        <div class="loading" data-i18n="loading">Loading…</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       EVENTS PAGE
+  ══════════════════════════════════════════════════════════════════ -->
+  <section class="page" id="page-events" aria-labelledby="ev-title">
+    <h2 class="section-title" id="ev-title" data-i18n="ev_title">Event Feed</h2>
+    <p class="section-desc" data-i18n="ev_desc">Durable event records with correlation IDs. Supports submitted, status_changed, identity_matched, consent_granted, consent_revoked, duplicate_detected.</p>
+
+    <div class="card">
+      <div class="card-header">
+        <h2 data-i18n="ev_recent">Recent Events (latest 100)</h2>
+        <button class="btn btn-ghost btn-sm" onclick="loadEvents()" data-i18n="btn_refresh">Refresh</button>
+      </div>
+      <div class="tbl-wrap" id="events-table">
+        <div class="loading" data-i18n="loading">Loading…</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       SATHI PEHCHAAN PAGE
+  ══════════════════════════════════════════════════════════════════ -->
+  <section class="page" id="page-pehchaan" aria-labelledby="peh-title">
+    <h2 class="section-title" id="peh-title" data-i18n="peh_title">Sathi Pehchaan — Federated Identity</h2>
+    <p class="section-desc" data-i18n="peh_desc">ONE IDENTITY. ONE LOGIN. MULTIPLE CONNECTED SERVICES.</p>
+
+    <div class="card" style="margin-bottom:1.25rem">
+      <div class="card-body">
+        <div class="access-allowed" data-i18n="peh_disclaimer">
+          ⚠ Sathi Pehchaan is an OAuth2/OIDC-compatible design concept demonstrated in this prototype. It does NOT integrate with Aadhaar, MeriPehchaan, DigiLocker, or any live government identity system. All identities are synthetic.
+        </div>
+
+        <div class="pehchaan-arch" aria-label="Federated identity architecture diagram">
+          <div class="pehchaan-node pehchaan-central">
+            SATHI PEHCHAAN<br/>
+            <small style="font-size:0.7rem;font-weight:400;opacity:0.85">Federated Identity Hub (OAuth2/OIDC Design)</small>
+          </div>
+          <div class="pehchaan-arrow" aria-hidden="true">↓</div>
+          <div class="pehchaan-branches">
+            <div style="text-align:center">
+              <div class="pehchaan-arrow" aria-hidden="true">↙</div>
+              <div class="pehchaan-branch-node">
+                Civic Sathi<br/>
+                <small style="font-size:0.7rem;opacity:0.7">Reference System</small>
+              </div>
+            </div>
+            <div style="text-align:center">
+              <div class="pehchaan-arrow" aria-hidden="true">↓</div>
+              <div class="pehchaan-branch-node">
+                Sathi Setu<br/>
+                <small style="font-size:0.7rem;opacity:0.7">Interoperability Layer</small>
+              </div>
+            </div>
+            <div style="text-align:center">
+              <div class="pehchaan-arrow" aria-hidden="true">↘</div>
+              <div class="pehchaan-branch-node">
+                State Grievance Service<br/>
+                <small style="font-size:0.7rem;opacity:0.7">Mock / Demo System</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-3">
+      <div class="card">
+        <div class="card-header"><h2 data-i18n="peh_how1_title">One Identity</h2></div>
+        <div class="card-body">
+          <p style="font-size:0.85rem;color:var(--text-mid)" data-i18n="peh_how1">A citizen authenticates once. Sathi Pehchaan issues a SAT-ID canonical identity that works across all connected systems without requiring separate registrations.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><h2 data-i18n="peh_how2_title">Consent-Gated Sharing</h2></div>
+        <div class="card-body">
+          <p style="font-size:0.85rem;color:var(--text-mid)" data-i18n="peh_how2">Data from System A is only visible to System B when the citizen has granted explicit, purpose-scoped consent via Sathi Sahamati. Revocation is immediate.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><h2 data-i18n="peh_how3_title">Unified Tracking</h2></div>
+        <div class="card-body">
+          <p style="font-size:0.85rem;color:var(--text-mid)" data-i18n="peh_how3">One SAT-YYYY-NNNNNN tracking ID links the same grievance across Civic Sathi and the State Grievance Service. The citizen sees one status view instead of two separate portals.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:1.25rem">
+      <div class="card-header"><h2 data-i18n="peh_demo_identities">Current Demo Identities</h2></div>
+      <div class="tbl-wrap" id="pehchaan-identities">
+        <div class="loading" data-i18n="loading">Loading…</div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer role="contentinfo">
+  <strong>SATHI SETU</strong> — Government Interoperability Platform &nbsp;|&nbsp;
+  <strong>SIH26129</strong> Smart India Hackathon &nbsp;|&nbsp;
+  महाराष्ट्र शासन — Government of Maharashtra &nbsp;|&nbsp;
+  <span data-i18n="footer_disclaimer">Prototype only. Not an official government deployment. All data is synthetic.</span>
+</footer>
+
+<script>
+// ══════════════════════════════════════════════════════════════════════════
+// TRANSLATIONS
+// ══════════════════════════════════════════════════════════════════════════
+
+const TRANSLATIONS = {
+  en: {
+    skip_link: 'Skip to main content',
+    header_subtitle: 'Government Interoperability Platform · SIH26129',
+    prototype_badge: 'PROTOTYPE',
+    nav_dashboard: 'Dashboard',
+    nav_catalogue: 'API Catalogue',
+    nav_onboarding: 'Onboard System',
+    nav_identity: 'Identity Resolution',
+    nav_consent: 'Sathi Sahamati',
+    nav_tracking: 'Unified Tracking',
+    nav_dq: 'Data Quality',
+    nav_audit: 'Audit Trail',
+    nav_events: 'Events',
+    nav_pehchaan: 'Sathi Pehchaan',
+    disclaimer: 'Prototype for SIH26129 — Smart India Hackathon. All identities, systems, and data are synthetic. Not an officially deployed Government of Maharashtra service.',
+    loading: 'Loading…',
+    view_all: 'View All',
+    btn_refresh: 'Refresh',
+    btn_next: 'Next →',
+    btn_back: '← Back',
+    dash_title: 'Interoperability Control Centre',
+    dash_desc: 'Live view of connected systems, active exchanges, and open issues.',
+    kpi_systems: 'Connected Systems',
+    kpi_systems_sub: 'registered in catalogue',
+    kpi_apps: 'Unified Applications',
+    kpi_apps_sub: 'cross-system records',
+    kpi_events: 'Events (recent)',
+    kpi_events_sub: 'last 10 events',
+    kpi_issues: 'Open DQ Issues',
+    kpi_issues_sub: 'require review',
+    dash_systems: 'Connected Systems',
+    dash_events: 'Recent Events',
+    dash_apps: 'Recent Unified Applications',
+    dash_dq: 'Open Data Quality Issues',
+    cat_title: 'API Catalogue',
+    cat_desc: 'All systems registered in the Sathi Setu interoperability network. Connect your government platform.',
+    ob_title: 'Connect a New Government System',
+    ob_desc: 'Seven-step onboarding wizard to join the interoperability network.',
+    ob_wizard_title: 'System Onboarding Wizard',
+    ob_demo_mode: 'Demo Mode',
+    ob_step1: '1. System Info',
+    ob_step2: '2. Connection',
+    ob_step3: '3. Auth',
+    ob_step4: '4. Schema Mapping',
+    ob_step5: '5. Validation',
+    ob_step6: '6. Sandbox Test',
+    ob_step7: '7. Activate',
+    ob_sys_name: 'System Name',
+    ob_sys_key: 'System Key (unique identifier)',
+    ob_sys_desc: 'Description',
+    ob_sys_dept: 'Government Department',
+    ob_sys_url: 'API Base URL',
+    ob_sys_type: 'Connector Type',
+    ob_auth_type: 'Authentication Method',
+    ob_auth_note: 'ℹ Credentials are stored only in your local .env and never in source control or the Sathi Setu database.',
+    ob_mapping_desc: 'Map your system\'s field names to the canonical Sathi Setu schema.',
+    ob_map_id: 'Application/Complaint ID field name',
+    ob_map_name: 'Citizen name field name',
+    ob_map_phone: 'Phone/mobile field name',
+    ob_map_desc: 'Description/summary field name',
+    ob_validation_note: 'ℹ Validation confirms that your API is reachable and returns the expected field names.',
+    ob_run_validation: 'Run Validation',
+    ob_sandbox_desc: 'Send a synthetic test payload to verify end-to-end mapping before activation.',
+    ob_run_sandbox: 'Run Sandbox Test',
+    ob_ready: '✓ Validation and sandbox test completed. Review your configuration before activating.',
+    ob_activate_note: 'ℹ Activation saves the configuration and sets status to SANDBOX.',
+    ob_activate: 'Activate (Sandbox)',
+    id_title: 'Identity Resolution — Sathi Pehchaan MDM',
+    id_desc: 'Canonical citizen identities resolved from multiple connected systems using phone fingerprint and name similarity matching.',
+    id_ingest_cs: 'Ingest from Civic Sathi',
+    id_ingest_mgs: 'Ingest from Mock Grievance Service',
+    id_citizen_name: 'Citizen Name',
+    id_phone: 'Phone',
+    id_email: 'Email',
+    id_complaint_desc: 'Complaint Description',
+    id_citizen_name_mgs: 'citizen_name',
+    id_phone_mgs: 'mobile_no',
+    id_ref_mgs: 'grievance_ref',
+    id_text_mgs: 'complaint_text',
+    id_btn_ingest: 'Submit to Sathi Setu',
+    id_btn_ingest_mgs: 'Submit to Sathi Setu',
+    id_result_title: 'Identity Resolution Result',
+    id_mgs_note: 'Note: This system uses different field names demonstrating schema heterogeneity.',
+    con_title: 'Sathi Sahamati — Data Sharing Consent',
+    con_desc: 'Citizens control how their data is shared across connected systems. Consent is enforced server-side.',
+    con_request_title: 'Request Consent',
+    con_decide_title: 'Consent Decision',
+    con_identity: 'Canonical Identity ID (SAT-ID-XXXXXX)',
+    con_source: 'Source System',
+    con_target: 'Target System',
+    con_purpose: 'Purpose',
+    con_consent_id: 'Consent ID (from request above)',
+    con_btn_request: 'Request Consent',
+    con_btn_grant: '✓ Grant',
+    con_btn_deny: '✗ Deny',
+    con_btn_revoke: '↩ Revoke',
+    con_access_title: 'Cross-System Access Demo',
+    con_enforced: 'Consent Enforced Server-Side',
+    con_access_desc: 'Try accessing a shared profile — you will receive 403 Forbidden without an active GRANTED consent.',
+    con_access_identity: 'Canonical Identity ID',
+    con_btn_try_access: 'Try Cross-System Access',
+    track_title: 'Unified Application Tracking',
+    track_desc: 'SAT-YYYY-NNNNNN identifiers link records from all connected systems. Source system IDs are preserved.',
+    track_search: 'Lookup Unified Application',
+    track_id_label: 'Unified ID (SAT-YYYY-NNNNNN)',
+    track_btn_lookup: 'Lookup',
+    track_recent: 'Recent Unified Applications',
+    dq_title: 'Data Quality Queue',
+    dq_desc: 'Identity conflicts and schema mismatches detected during cross-system ingestion.',
+    dq_open_issues: 'Open Issues',
+    dq_resolve_title: 'Resolve Data Quality Issue',
+    dq_resolution_notes: 'Resolution Notes',
+    dq_merge: 'Merge Records',
+    dq_keep_sep: 'Keep Separate',
+    dq_dismiss: 'Dismiss',
+    aud_title: 'Cross-System Audit Trail',
+    aud_desc: 'Append-only audit records for every cross-system operation.',
+    aud_entries: 'Audit Entries (latest 100)',
+    ev_title: 'Event Feed',
+    ev_desc: 'Durable event records with correlation IDs.',
+    ev_recent: 'Recent Events (latest 100)',
+    peh_title: 'Sathi Pehchaan — Federated Identity',
+    peh_desc: 'ONE IDENTITY. ONE LOGIN. MULTIPLE CONNECTED SERVICES.',
+    peh_disclaimer: '⚠ Sathi Pehchaan is an OAuth2/OIDC-compatible design concept. It does NOT integrate with Aadhaar or any live government identity system.',
+    peh_how1_title: 'One Identity',
+    peh_how1: 'A citizen authenticates once. Sathi Pehchaan issues a SAT-ID canonical identity that works across all connected systems.',
+    peh_how2_title: 'Consent-Gated Sharing',
+    peh_how2: 'Data from System A is only visible to System B when the citizen has granted explicit consent via Sathi Sahamati.',
+    peh_how3_title: 'Unified Tracking',
+    peh_how3: 'One SAT-YYYY-NNNNNN tracking ID links the same grievance across all connected systems.',
+    peh_demo_identities: 'Current Demo Identities',
+    footer_disclaimer: 'Prototype only. Not an official government deployment. All data is synthetic.',
+  },
+  mr: {
+    skip_link: 'मुख्य सामग्रीवर जा',
+    header_subtitle: 'शासकीय इंटरऑपरेबिलिटी प्लॅटफॉर्म · SIH26129',
+    prototype_badge: 'प्रोटोटाइप',
+    nav_dashboard: 'डॅशबोर्ड',
+    nav_catalogue: 'API सूची',
+    nav_onboarding: 'सिस्टम जोडा',
+    nav_identity: 'ओळख निराकरण',
+    nav_consent: 'साथी सहमती',
+    nav_tracking: 'एकत्रित ट्रॅकिंग',
+    nav_dq: 'डेटा गुणवत्ता',
+    nav_audit: 'ऑडिट रेकॉर्ड',
+    nav_events: 'घटना',
+    nav_pehchaan: 'साथी पहचान',
+    disclaimer: 'SIH26129 साठी प्रोटोटाइप — स्मार्ट इंडिया हॅकेथॉन. सर्व ओळख, प्रणाली आणि डेटा कृत्रिम आहेत.',
+    loading: 'लोड होत आहे…',
+    view_all: 'सर्व पहा',
+    btn_refresh: 'रिफ्रेश',
+    btn_next: 'पुढे →',
+    btn_back: '← मागे',
+    dash_title: 'इंटरऑपरेबिलिटी नियंत्रण केंद्र',
+    dash_desc: 'जोडलेल्या प्रणाली, सक्रिय देवाणघेवाण आणि खुले प्रश्न यांचे लाइव्ह दृश्य.',
+    kpi_systems: 'जोडलेल्या प्रणाली',
+    kpi_systems_sub: 'सूचीमध्ये नोंदणीकृत',
+    kpi_apps: 'एकत्रित अर्ज',
+    kpi_apps_sub: 'आंतर-प्रणाली नोंदी',
+    kpi_events: 'घटना (अलीकडील)',
+    kpi_events_sub: 'शेवटच्या १० घटना',
+    kpi_issues: 'उघडे DQ प्रश्न',
+    kpi_issues_sub: 'पुनरावलोकन आवश्यक',
+    dash_systems: 'जोडलेल्या प्रणाली',
+    dash_events: 'अलीकडील घटना',
+    dash_apps: 'अलीकडील एकत्रित अर्ज',
+    dash_dq: 'उघडे डेटा गुणवत्ता प्रश्न',
+    cat_title: 'API सूची',
+    cat_desc: 'साथी सेतू इंटरऑपरेबिलिटी नेटवर्कमध्ये नोंदणीकृत सर्व प्रणाली.',
+    con_title: 'साथी सहमती — डेटा शेअरिंग सहमती',
+    con_desc: 'नागरिक जोडलेल्या प्रणालींमध्ये त्यांचा डेटा कसा शेअर केला जातो ते नियंत्रित करतात.',
+    con_btn_grant: '✓ मंजूर करा',
+    con_btn_deny: '✗ नकार द्या',
+    con_btn_revoke: '↩ रद्द करा',
+    peh_title: 'साथी पहचान — फेडरेटेड ओळख',
+    peh_desc: 'एक ओळख. एक लॉगिन. अनेक जोडलेल्या सेवा.',
+    footer_disclaimer: 'केवळ प्रोटोटाइप. अधिकृत सरकारी तैनाती नाही. सर्व डेटा कृत्रिम आहे.',
+  }
+};
+
+let currentLang = 'en';
+
+function t(key) {
+  return (TRANSLATIONS[currentLang] && TRANSLATIONS[currentLang][key]) || TRANSLATIONS.en[key] || key;
+}
+
+function applyTranslations() {
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    el.textContent = t(key);
+  });
+}
+
+function toggleLang() {
+  currentLang = currentLang === 'en' ? 'mr' : 'en';
+  document.getElementById('langLabel').textContent = currentLang === 'en' ? 'मराठी' : 'English';
+  document.documentElement.lang = currentLang === 'mr' ? 'mr' : 'en';
+  applyTranslations();
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════════════════════════════════════════════
+
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  const page = document.getElementById('page-' + id);
+  if (page) page.classList.add('active');
+  const btns = document.querySelectorAll('.nav-btn');
+  const map = {dashboard:0, catalogue:1, onboarding:2, identity:3, consent:4, tracking:5, dataquality:6, audit:7, events:8, pehchaan:9};
+  if (btns[map[id]]) btns[map[id]].classList.add('active');
+  loadPageData(id);
+}
+
+function loadPageData(id) {
+  if (id === 'dashboard') loadDashboard();
+  else if (id === 'catalogue') loadCatalogue();
+  else if (id === 'tracking') loadTracking();
+  else if (id === 'dataquality') loadDQ();
+  else if (id === 'audit') loadAudit();
+  else if (id === 'events') loadEvents();
+  else if (id === 'pehchaan') loadPehchaan();
+}
+
+function refreshAll() { loadPageData(currentPage()); }
+
+function currentPage() {
+  const active = document.querySelector('.page.active');
+  return active ? active.id.replace('page-','') : 'dashboard';
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// API CLIENT
+// ══════════════════════════════════════════════════════════════════════════
+
+const API = '/v1';
+let _apiKey = '';
+
+async function initApiKey() {
+  try {
+    const r = await fetch(API + '/demo/config');
+    if (r.ok) {
+      const data = await r.json();
+      _apiKey = data.api_key || '';
+    }
+  } catch (e) {
+    console.warn('Could not fetch demo config — authenticated endpoints will require manual key setup.', e);
+  }
+}
+
+async function apiFetch(path, options = {}) {
+  const headers = { ...(options.headers || {}) };
+  if (_apiKey && !headers['Authorization']) {
+    headers['Authorization'] = 'Bearer ' + _apiKey;
+  }
+  const r = await fetch(API + path, { ...options, headers });
+  if (!r.ok) {
+    const body = await r.json().catch(() => ({ detail: r.statusText }));
+    throw Object.assign(new Error(body.detail || r.statusText), { status: r.status });
+  }
+  return r.json();
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// DASHBOARD
+// ══════════════════════════════════════════════════════════════════════════
+
+async function loadDashboard() {
+  try {
+    const data = await apiFetch('/demo/snapshot');
+
+    // KPIs
+    document.getElementById('kpi-systems').textContent = data.systems.length;
+    document.getElementById('kpi-apps').textContent = data.applications.length;
+    document.getElementById('kpi-events').textContent = data.events.length;
+    document.getElementById('kpi-issues').textContent = data.issues.length;
+
+    // Systems
+    const sysHtml = data.systems.length === 0
+      ? emptyState('No connected systems. Run init_demo.py first.')
+      : data.systems.map(s => `
+        <div class="system-card" style="margin-bottom:0.75rem">
+          <div class="system-card-header">
+            <div>
+              <div class="system-name">${esc(s.name)}</div>
+              <div class="system-key">${esc(s.key)}</div>
+            </div>
+            ${badgeFor(s.classification, s.status)}
+          </div>
+        </div>`).join('');
+    document.getElementById('dash-systems').innerHTML = sysHtml;
+
+    // Events
+    const evHtml = data.events.length === 0
+      ? emptyState('No events yet.')
+      : data.events.slice(0, 6).map(e => `
+        <div style="display:flex;align-items:center;gap:0.5rem;padding:0.35rem 0;border-bottom:1px solid var(--surface-dk)">
+          <span class="badge badge-sandbox" style="font-size:0.65rem">${esc(e.event_type)}</span>
+          <span style="font-size:0.75rem;color:var(--text-muted);font-family:monospace">${esc(e.correlation_id.substring(0,12))}…</span>
+          <span style="font-size:0.72rem;color:var(--text-muted);margin-left:auto">${fmtTime(e.occurred_at)}</span>
+        </div>`).join('');
+    document.getElementById('dash-events').innerHTML = evHtml;
+
+    // Applications
+    const appHtml = data.applications.length === 0
+      ? `<div class="loading">${t('loading')}</div>`
+      : `<table><thead><tr><th>Unified ID</th><th>Type</th><th>Status</th><th>Sources</th></tr></thead><tbody>
+          ${data.applications.map(a => `<tr>
+            <td style="font-family:monospace;color:var(--saffron-dk);font-weight:700">${esc(a.unified_id)}</td>
+            <td>${esc(a.service_type)}</td>
+            <td><span class="badge badge-sandbox">${esc(a.status)}</span></td>
+            <td>${(a.source_records||[]).map(r => `<span style="font-size:0.72rem;font-family:monospace;background:var(--surface);padding:1px 5px;border-radius:3px">${esc(r.system_key)}</span>`).join(' ')}</td>
+          </tr>`).join('')}
+        </tbody></table>`;
+    document.getElementById('dash-apps').innerHTML = appHtml;
+
+    // DQ Issues
+    const dqHtml = data.issues.length === 0
+      ? emptyState('No open data quality issues.')
+      : data.issues.map(i => `
+        <div style="padding:0.6rem 0;border-bottom:1px solid var(--surface-dk)">
+          <div style="display:flex;align-items:center;gap:0.5rem">
+            <span class="badge badge-${i.severity === 'HIGH' ? 'high' : 'medium'}">${esc(i.severity)}</span>
+            <span style="font-size:0.82rem;font-weight:600">${esc(i.issue_type.replace(/_/g,' '))}</span>
+          </div>
+          <div style="font-size:0.75rem;color:var(--text-muted);margin-top:3px">${esc(JSON.stringify(i.details).substring(0, 80))}…</div>
+        </div>`).join('');
+    document.getElementById('dash-dq').innerHTML = dqHtml;
+
+  } catch (e) {
+    console.error('Dashboard load failed', e);
+    ['dash-systems','dash-events','dash-apps','dash-dq'].forEach(id => {
+      document.getElementById(id).innerHTML = `<div class="error-msg">Failed to load: ${esc(e.message)}</div>`;
+    });
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// CATALOGUE
+// ══════════════════════════════════════════════════════════════════════════
+
+async function loadCatalogue() {
+  const el = document.getElementById('catalogue-grid');
+  el.innerHTML = `<div class="loading">${t('loading')}</div>`;
+  try {
+    const data = await apiFetch('/catalogue');
+    if (!data.systems.length) {
+      el.innerHTML = emptyState('No systems registered. Run scripts/init_demo.py first.');
+      return;
+    }
+    el.innerHTML = data.systems.map(s => `
+      <div class="system-card">
+        <div class="system-card-header">
+          <div>
+            <div class="system-name">${esc(s.name)}</div>
+            <div class="system-key">${esc(s.key)}</div>
+          </div>
+          ${badgeFor(s.classification, s.status)}
+        </div>
+        <div class="system-desc">${esc(s.description || '')}</div>
+        ${s.mapping_version != null ? `<div class="system-mapping">Connector mapping v${s.mapping_version}</div>` : ''}
+        <div style="margin-top:0.75rem;display:flex;gap:0.5rem">
+          <button class="btn btn-ghost btn-sm" onclick="alert('In production: shows API docs for ${esc(s.key)}')" aria-label="View API docs for ${esc(s.name)}">API Docs</button>
+          ${s.classification !== 'REFERENCE' ? `<button class="btn btn-navy btn-sm" onclick="showPage('onboarding')">Onboard Similar</button>` : ''}
+        </div>
+      </div>`).join('');
+  } catch (e) {
+    el.innerHTML = `<div class="error-msg">Failed to load catalogue: ${esc(e.message)}</div>`;
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// IDENTITY / INGEST
+// ══════════════════════════════════════════════════════════════════════════
+
+let _lastIngestResult = null;
+
+async function ingestCivicSathi() {
+  const result = document.getElementById('cs-ingest-result');
+  result.innerHTML = `<div class="loading">${t('loading')}</div>`;
+  const payload = {
+    complaint_id: 'CS-DEMO-' + Date.now().toString().slice(-6),
+    description: document.getElementById('cs-complaint').value,
+    status: 'SUBMITTED',
+    category: 'ROAD',
+    city: 'Pune',
+    submitted_by: {
+      citizen_id: 'CIT-' + Math.random().toString(36).slice(2, 8).toUpperCase(),
+      name: document.getElementById('cs-name').value,
+      phone: document.getElementById('cs-phone').value,
+      email: document.getElementById('cs-email').value,
+    },
+  };
+  try {
+    const data = await apiFetch('/applications/ingest', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        source_system_key: 'civic-sathi',
+        payload,
+        correlation_id: 'cs-demo-' + Date.now().toString(36),
+        idempotency_key: 'cs-idem-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2),
+      }),
+    });
+    _lastIngestResult = data;
+    result.innerHTML = `<div class="access-allowed">✓ Ingested — Unified ID: <strong>${esc(data.unified_id)}</strong> · Identity: <strong>${esc(data.identity_id)}</strong>${data.idempotent_replay ? ' (idempotent replay)' : ''}</div>`;
+    showIdentityResult(data);
+    // Prefill consent/tracking forms
+    document.getElementById('con-identity').value = data.identity_id;
+    document.getElementById('acc-identity').value = data.identity_id;
+    document.getElementById('track-id').value = data.unified_id;
+  } catch (e) {
+    result.innerHTML = `<div class="error-msg">Error ${e.status || ''}: ${esc(e.message)}</div>`;
+  }
+}
+
+async function ingestMGS() {
+  const result = document.getElementById('mgs-ingest-result');
+  result.innerHTML = `<div class="loading">${t('loading')}</div>`;
+  const payload = {
+    grievance_ref: document.getElementById('mgs-ref').value,
+    legacy_citizen_ref: 'LEG-' + Math.random().toString(36).slice(2, 8).toUpperCase(),
+    citizen_name: document.getElementById('mgs-name').value,
+    mobile_no: document.getElementById('mgs-phone').value,
+    complaint_text: document.getElementById('mgs-text').value,
+    case_state: 'RECEIVED',
+    district: 'Pune',
+    priority: 'NORMAL',
+  };
+  try {
+    const data = await apiFetch('/applications/ingest', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        source_system_key: 'mock-grievance-service',
+        payload,
+        correlation_id: 'mgs-demo-' + Date.now().toString(36),
+        idempotency_key: 'mgs-idem-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2),
+      }),
+    });
+    _lastIngestResult = data;
+    result.innerHTML = `<div class="access-allowed">✓ Ingested — Unified ID: <strong>${esc(data.unified_id)}</strong> · Identity: <strong>${esc(data.identity_id)}</strong> · ${esc(data.match_reason)}${data.idempotent_replay ? ' (idempotent replay)' : ''}</div>`;
+    showIdentityResult(data);
+    document.getElementById('con-identity').value = data.identity_id;
+    document.getElementById('acc-identity').value = data.identity_id;
+    document.getElementById('track-id').value = data.unified_id;
+  } catch (e) {
+    result.innerHTML = `<div class="error-msg">Error ${e.status || ''}: ${esc(e.message)}</div>`;
+  }
+}
+
+function showIdentityResult(data) {
+  const section = document.getElementById('identity-result-section');
+  const body = document.getElementById('identity-result-body');
+  body.innerHTML = `
+    <div class="identity-card">
+      <div class="kpi-label" style="color:rgba(255,255,255,0.6)">Canonical Identity</div>
+      <div class="identity-id">${esc(data.identity_id)}</div>
+      <div class="identity-links">
+        <div class="identity-link-chip">Unified: ${esc(data.unified_id)}</div>
+      </div>
+    </div>
+    <div style="font-size:0.83rem;color:var(--text-mid)">
+      <strong>Match reason:</strong> ${esc(data.match_reason)}<br/>
+      <strong>Idempotent replay:</strong> ${data.idempotent_replay ? 'Yes (same key reused)' : 'No (new record)'}
+    </div>`;
+  section.style.display = 'block';
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// CONSENT
+// ══════════════════════════════════════════════════════════════════════════
+
+async function requestConsent() {
+  const result = document.getElementById('con-request-result');
+  result.innerHTML = `<div class="loading">${t('loading')}</div>`;
+  try {
+    const data = await apiFetch('/consents', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        identity_id: document.getElementById('con-identity').value,
+        source_system_key: document.getElementById('con-source').value,
+        target_system_key: document.getElementById('con-target').value,
+        purpose: document.getElementById('con-purpose').value,
+      }),
+    });
+    result.innerHTML = `<div class="consent-notice">Consent requested — ID: <strong>${esc(data.consent_id)}</strong> · Status: <span class="badge badge-pending">${esc(data.status)}</span></div>`;
+    document.getElementById('con-id').value = data.consent_id;
+  } catch (e) {
+    result.innerHTML = `<div class="error-msg">Error ${e.status || ''}: ${esc(e.message)}</div>`;
+  }
+}
+
+async function decideConsent(decision) {
+  const result = document.getElementById('con-decide-result');
+  const consentId = document.getElementById('con-id').value.trim();
+  if (!consentId) {
+    result.innerHTML = `<div class="error-msg">Enter a consent ID from the request above.</div>`;
+    return;
+  }
+  result.innerHTML = `<div class="loading">${t('loading')}</div>`;
+  try {
+    const data = await apiFetch(`/consents/${consentId}/decision`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        decision,
+        actor: 'citizen-demo-console',
+        correlation_id: 'con-decision-' + Date.now().toString(36),
+      }),
+    });
+    const cls = decision === 'GRANTED' ? 'access-allowed' : decision === 'DENIED' ? 'access-denied' : 'consent-notice';
+    result.innerHTML = `<div class="${cls}">Decision recorded: <span class="badge badge-${decision === 'GRANTED' ? 'granted' : decision === 'REVOKED' ? 'revoked' : 'pending'}">${esc(data.status)}</span></div>`;
+  } catch (e) {
+    result.innerHTML = `<div class="error-msg">Error ${e.status || ''}: ${esc(e.message)}</div>`;
+  }
+}
+
+async function tryAccess() {
+  const result = document.getElementById('access-result');
+  const identity = document.getElementById('acc-identity').value.trim();
+  if (!identity) {
+    result.innerHTML = `<div class="error-msg">Enter a canonical identity ID.</div>`;
+    return;
+  }
+  result.innerHTML = `<div class="loading">${t('loading')}</div>`;
+  try {
+    const data = await apiFetch(
+      `/identities/${identity}/shared-profile?source_system_key=civic-sathi&target_system_key=mock-grievance-service&purpose=address-sharing`,
+      { headers: {} }
+    );
+    result.innerHTML = `<div class="access-allowed">
+      ✓ ACCESS GRANTED<br/>
+      <strong>Canonical ID:</strong> ${esc(data.canonical_id)}<br/>
+      <strong>Name:</strong> ${esc(data.name)}<br/>
+      <strong>Consent ID:</strong> <code>${esc(data.consent_id)}</code>
+    </div>`;
+  } catch (e) {
+    if (e.status === 403) {
+      result.innerHTML = `<div class="access-denied">✗ ACCESS DENIED — ${esc(e.message)}<br/><small>Grant consent above, then try again.</small></div>`;
+    } else {
+      result.innerHTML = `<div class="error-msg">Error ${e.status || ''}: ${esc(e.message)}</div>`;
+    }
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// TRACKING
+// ══════════════════════════════════════════════════════════════════════════
+
+async function loadTracking() {
+  const el = document.getElementById('tracking-table');
+  el.innerHTML = `<div class="loading">${t('loading')}</div>`;
+  try {
+    const data = await apiFetch('/demo/snapshot');
+    if (!data.applications.length) {
+      el.innerHTML = emptyState('No unified applications yet. Ingest a record from the Identity Resolution page.');
+      return;
+    }
+    el.innerHTML = `<table><thead><tr><th>Unified ID</th><th>Type</th><th>Status</th><th>Summary</th><th>Source Systems</th></tr></thead><tbody>
+      ${data.applications.map(a => `<tr>
+        <td><code style="color:var(--saffron-dk);font-weight:700">${esc(a.unified_id)}</code></td>
+        <td>${esc(a.service_type)}</td>
+        <td><span class="badge badge-sandbox">${esc(a.status)}</span></td>
+        <td style="font-size:0.8rem;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(a.summary)}</td>
+        <td>${(a.source_records||[]).map(r => `<span style="font-size:0.7rem;font-family:monospace;background:var(--surface);padding:1px 6px;border-radius:3px;margin-right:3px">${esc(r.system_key)}: ${esc(r.source_reference)}</span>`).join('')}</td>
+      </tr>`).join('')}
+    </tbody></table>`;
+  } catch (e) {
+    el.innerHTML = `<div class="error-msg">Failed to load: ${esc(e.message)}</div>`;
+  }
+}
+
+async function lookupTracking() {
+  const uid = document.getElementById('track-id').value.trim();
+  const section = document.getElementById('tracking-result-section');
+  if (!uid) { section.innerHTML = ''; return; }
+  section.innerHTML = `<div class="loading">${t('loading')}</div>`;
+  // We use demo/snapshot for now and filter client-side
+  try {
+    const data = await apiFetch('/demo/snapshot');
+    const app = data.applications.find(a => a.unified_id === uid);
+    if (!app) {
+      section.innerHTML = `<div class="error-msg">Unified application '${esc(uid)}' was not found. Try one of the IDs in the table below.</div>`;
+      return;
+    }
+    section.innerHTML = `
+      <div class="tracking-result" style="margin-bottom:1.25rem">
+        <div class="tracking-header">
+          <div style="font-size:0.72rem;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:0.04em">Unified Application</div>
+          <div class="tracking-unified-id">${esc(app.unified_id)}</div>
+          <div class="tracking-sources">
+            ${(app.source_records||[]).map(r => `<div class="tracking-source-chip">${esc(r.system_key)}: ${esc(r.source_reference)}</div>`).join('')}
+          </div>
+        </div>
+        <div class="tracking-body">
+          <div style="display:flex;gap:2rem;flex-wrap:wrap">
+            <div><div class="kpi-label">Service Type</div><div style="font-size:0.95rem;font-weight:600">${esc(app.service_type)}</div></div>
+            <div><div class="kpi-label">Status</div><span class="badge badge-sandbox" style="font-size:0.82rem">${esc(app.status)}</span></div>
+          </div>
+          <div style="margin-top:1rem;font-size:0.85rem;color:var(--text-mid)"><strong>Summary:</strong> ${esc(app.summary)}</div>
+        </div>
+      </div>`;
+  } catch (e) {
+    section.innerHTML = `<div class="error-msg">Lookup failed: ${esc(e.message)}</div>`;
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// DATA QUALITY
+// ══════════════════════════════════════════════════════════════════════════
+
+let _currentDQIssueId = null;
+
+async function loadDQ() {
+  const el = document.getElementById('dq-table');
+  el.innerHTML = `<div class="loading">${t('loading')}</div>`;
+  try {
+    const data = await apiFetch('/data-quality', {
+      headers: {}
+    });
+    if (!data.length) {
+      el.innerHTML = emptyState('No open data quality issues. Ingest two records with the same phone but different names to generate one.');
+      return;
+    }
+    el.innerHTML = `<table><thead><tr><th>Type</th><th>Severity</th><th>Status</th><th>Details</th><th>Action</th></tr></thead><tbody>
+      ${data.map(i => `<tr>
+        <td style="font-weight:600">${esc(i.type)}</td>
+        <td><span class="badge badge-${i.severity === 'HIGH' ? 'high' : 'medium'}">${esc(i.severity)}</span></td>
+        <td><span class="badge badge-${i.status === 'OPEN' ? 'open' : 'granted'}">${esc(i.status)}</span></td>
+        <td style="font-size:0.78rem;max-width:220px">
+          ${i.details.existing_name ? `<b>${esc(i.details.existing_name)}</b> vs <b>${esc(i.details.incoming_name)}</b>` : esc(JSON.stringify(i.details).substring(0,80))}
+        </td>
+        <td>${i.status === 'OPEN' ? `<button class="btn btn-ghost btn-sm" onclick="openDQModal('${esc(i.id)}', ${JSON.stringify(i).replace(/"/g,'&quot;')})">Resolve</button>` : '—'}</td>
+      </tr>`).join('')}
+    </tbody></table>`;
+  } catch (e) {
+    el.innerHTML = `<div class="error-msg">Failed to load: ${esc(e.message)}</div>`;
+  }
+}
+
+function openDQModal(id, issue) {
+  _currentDQIssueId = id;
+  document.getElementById('dq-modal-details').textContent = JSON.stringify(issue.details, null, 2);
+  document.getElementById('dq-notes').value = '';
+  document.getElementById('dq-modal').classList.remove('hidden');
+}
+
+function closeDQModal() {
+  document.getElementById('dq-modal').classList.add('hidden');
+  _currentDQIssueId = null;
+}
+
+async function resolveDQ(action) {
+  if (!_currentDQIssueId) return;
+  const notes = document.getElementById('dq-notes').value.trim();
+  if (!notes) {
+    alert('Resolution notes are required.');
+    return;
+  }
+  try {
+    await apiFetch(`/data-quality/${_currentDQIssueId}/resolve`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        action,
+        actor: 'officer-demo-console',
+        notes,
+        correlation_id: 'dq-res-' + Date.now().toString(36),
+      }),
+    });
+    closeDQModal();
+    loadDQ();
+  } catch (e) {
+    alert('Failed to resolve: ' + e.message);
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// AUDIT
+// ══════════════════════════════════════════════════════════════════════════
+
+async function loadAudit() {
+  const el = document.getElementById('audit-table');
+  el.innerHTML = `<div class="loading">${t('loading')}</div>`;
+  try {
+    const data = await apiFetch('/audit', { headers: {} });
+    if (!data.length) {
+      el.innerHTML = emptyState('No audit entries yet. Ingest a record to generate audit entries.');
+      return;
+    }
+    el.innerHTML = `<table><thead><tr><th>Action</th><th>Resource</th><th>Correlation ID</th><th>Time</th></tr></thead><tbody>
+      ${data.map(row => `<tr>
+        <td style="font-weight:600;font-size:0.8rem;font-family:monospace">${esc(row.action)}</td>
+        <td style="font-size:0.78rem;font-family:monospace;color:var(--blue)">${esc(row.resource)}</td>
+        <td style="font-size:0.72rem;font-family:monospace;color:var(--text-muted)">${esc(String(row.correlation_id||'').substring(0,20))}</td>
+        <td style="font-size:0.75rem;color:var(--text-muted);white-space:nowrap">${fmtTime(row.at)}</td>
+      </tr>`).join('')}
+    </tbody></table>`;
+  } catch (e) {
+    el.innerHTML = `<div class="error-msg">Failed to load: ${esc(e.message)}</div>`;
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// EVENTS
+// ══════════════════════════════════════════════════════════════════════════
+
+async function loadEvents() {
+  const el = document.getElementById('events-table');
+  el.innerHTML = `<div class="loading">${t('loading')}</div>`;
+  try {
+    const data = await apiFetch('/events', { headers: {} });
+    if (!data.length) {
+      el.innerHTML = emptyState('No events yet. Ingest a record to generate events.');
+      return;
+    }
+    el.innerHTML = `<table><thead><tr><th>Type</th><th>ID</th><th>Correlation ID</th><th>Time</th></tr></thead><tbody>
+      ${data.map(e => `<tr>
+        <td><span class="badge badge-sandbox">${esc(e.type)}</span></td>
+        <td style="font-size:0.72rem;font-family:monospace;color:var(--text-muted)">${esc(String(e.id||'').substring(0,16))}…</td>
+        <td style="font-size:0.72rem;font-family:monospace;color:var(--text-muted)">${esc(String(e.correlation_id||'').substring(0,20))}</td>
+        <td style="font-size:0.75rem;color:var(--text-muted);white-space:nowrap">${fmtTime(e.at)}</td>
+      </tr>`).join('')}
+    </tbody></table>`;
+  } catch (e) {
+    el.innerHTML = `<div class="error-msg">Failed to load: ${esc(e.message)}</div>`;
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// SATHI PEHCHAAN
+// ══════════════════════════════════════════════════════════════════════════
+
+async function loadPehchaan() {
+  const el = document.getElementById('pehchaan-identities');
+  el.innerHTML = `<div class="loading">${t('loading')}</div>`;
+  try {
+    const data = await apiFetch('/demo/snapshot');
+    const identities = [...new Map(data.applications.map(a => [a.unified_id, a])).values()];
+    if (!identities.length) {
+      el.innerHTML = emptyState('No identities resolved yet. Ingest records from the Identity Resolution page.');
+      return;
+    }
+    el.innerHTML = `<table><thead><tr><th>Unified Application</th><th>Service Type</th><th>Status</th><th>Linked Systems</th></tr></thead><tbody>
+      ${data.applications.map(a => `<tr>
+        <td style="font-family:monospace;color:var(--saffron-dk);font-weight:700">${esc(a.unified_id)}</td>
+        <td>${esc(a.service_type)}</td>
+        <td><span class="badge badge-sandbox">${esc(a.status)}</span></td>
+        <td>${(a.source_records||[]).map(r => `<span style="font-size:0.7rem;font-family:monospace;background:var(--surface);padding:1px 6px;border-radius:3px">${esc(r.system_key)}</span>`).join(' ')}</td>
+      </tr>`).join('')}
+    </tbody></table>`;
+  } catch (e) {
+    el.innerHTML = `<div class="error-msg">Failed to load: ${esc(e.message)}</div>`;
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// ONBOARDING WIZARD
+// ══════════════════════════════════════════════════════════════════════════
+
+let _wizardStep = 1;
+
+function wizardNext(current) {
+  if (current === 1) {
+    const name = document.getElementById('sys-name').value.trim();
+    const key = document.getElementById('sys-key').value.trim();
+    if (!name || !key) { alert('System name and key are required.'); return; }
+  }
+  _wizardStep = current + 1;
+  updateWizard();
+}
+
+function wizardBack(current) {
+  _wizardStep = current - 1;
+  updateWizard();
+}
+
+function updateWizard() {
+  for (let i = 1; i <= 7; i++) {
+    document.getElementById('wp-' + i).classList.toggle('active', i === _wizardStep);
+    const step = document.getElementById('wstep-' + i);
+    step.classList.remove('active', 'done');
+    if (i === _wizardStep) step.classList.add('active');
+    else if (i < _wizardStep) step.classList.add('done');
+  }
+  if (_wizardStep === 7) buildOnboardSummary();
+}
+
+function runValidation() {
+  const el = document.getElementById('validation-result');
+  el.innerHTML = `<div class="loading">Simulating validation…</div>`;
+  setTimeout(() => {
+    el.innerHTML = `<div class="access-allowed">
+      ✓ Validation passed (demonstration)<br/>
+      <small>API reachable · Field names match schema mapping · Auth token accepted</small>
+    </div>`;
+    document.getElementById('wstep-5').classList.add('done');
+    document.getElementById('wstep-5').classList.remove('active');
+    // Auto-advance after validation
+  }, 1200);
+}
+
+function runSandbox() {
+  const el = document.getElementById('sandbox-result');
+  el.innerHTML = `<div class="loading">Running sandbox ingest…</div>`;
+  setTimeout(() => {
+    const ref = 'DEMO-SB-' + Date.now().toString().slice(-4);
+    el.innerHTML = `<div class="access-allowed">
+      ✓ Sandbox test passed (demonstration)<br/>
+      <small>Test application ${ref} ingested · Identity resolved · Event recorded · No production data modified</small>
+    </div>`;
+  }, 1500);
+}
+
+function buildOnboardSummary() {
+  const summary = {
+    system_name: document.getElementById('sys-name').value,
+    system_key: document.getElementById('sys-key').value,
+    description: document.getElementById('sys-desc').value,
+    department: document.getElementById('sys-dept').value,
+    api_url: document.getElementById('sys-url').value,
+    connector_type: document.getElementById('sys-type').value,
+    auth_method: document.getElementById('sys-auth').value,
+    schema_mapping: {
+      source_reference: document.getElementById('map-ref').value,
+      citizen_name: document.getElementById('map-name').value,
+      phone: document.getElementById('map-phone').value,
+      summary: document.getElementById('map-desc').value,
+    },
+    status: 'SANDBOX',
+    note: 'Prototype demonstration. Not an official government system registration.',
+  };
+  document.getElementById('onboard-summary').textContent = JSON.stringify(summary, null, 2);
+}
+
+function activateSystem() {
+  alert('System activation recorded in SANDBOX mode.\n\nIn production:\n• Mapping saved to database\n• System registered as SANDBOX\n• Department approval workflow initiated\n• API credentials stored in secure vault');
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// UTILITIES
+// ══════════════════════════════════════════════════════════════════════════
+
+function esc(str) {
+  return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function emptyState(msg) {
+  return `<div class="empty"><div class="empty-icon">○</div><div>${esc(msg)}</div></div>`;
+}
+
+function fmtTime(ts) {
+  if (!ts) return '—';
+  try {
+    return new Date(ts).toLocaleString('en-IN', { day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit' });
+  } catch { return String(ts).substring(0, 16); }
+}
+
+function badgeFor(classification, status) {
+  const cls = classification === 'REFERENCE' ? 'badge-reference'
+    : classification === 'MOCK' ? 'badge-mock'
+    : status === 'LIVE' ? 'badge-live'
+    : 'badge-sandbox';
+  const label = classification === 'REFERENCE' ? 'REFERENCE SYSTEM'
+    : classification === 'MOCK' ? 'MOCK / DEMO'
+    : status || classification;
+  return `<span class="badge ${cls}">${esc(label)}</span>`;
+}
+
+// DQ modal keyboard close
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeDQModal();
+});
+document.getElementById('dq-modal').addEventListener('click', e => {
+  if (e.target === document.getElementById('dq-modal')) closeDQModal();
+});
+
+// ══════════════════════════════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════════════════════════════
+
+applyTranslations();
+initApiKey().then(() => loadDashboard());
+</script>
+</body>
+</html>
