@@ -19,9 +19,9 @@ function CommandCenterDashboard() {
   return (
     <div className="muni-page-enter space-y-8 p-6 pb-24 max-w-7xl mx-auto">
       <header>
-        <SectionLabel>State Command Center</SectionLabel>
-        <h1 className="mt-2 text-3xl font-semibold tracking-tight">Maharashtra Integration Hub</h1>
-        <p className="mt-1 text-sm text-muted-foreground">Centralized telemetry, cross-department routing, and SLA tracking.</p>
+        <SectionLabel>National Command Center</SectionLabel>
+        <h1 className="mt-2 text-3xl font-semibold tracking-tight">Civic Sathi Integration Hub</h1>
+        <p className="mt-1 text-sm text-muted-foreground">Multi-city telemetry, cross-department routing, and SLA tracking across India.</p>
       </header>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">

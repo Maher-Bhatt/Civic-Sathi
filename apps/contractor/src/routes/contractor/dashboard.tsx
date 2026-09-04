@@ -18,7 +18,7 @@ export const Route = createFileRoute("/contractor/dashboard")({
 function ContractorDashboard() {
     const { t } = useI18n();
   const { contractor } = useContractorAuth();
-  const cityId = contractor?.city || "pune";
+  const cityId = contractor?.city || "vadodara";
 
   const { data, isLoading: loading, error } = useQuery({
     queryKey: ["contractor-dashboard", contractor?.id, cityId],
@@ -53,7 +53,7 @@ function ContractorDashboard() {
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
             <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-green-500" />
           </div>
-          <span className="text-sm font-semibold tracking-wide">Connected to Maharashtra Government Integration Hub</span>
+          <span className="text-sm font-semibold tracking-wide">Connected to Civic Sathi Government Integration Hub</span>
         </div>
         <span className="text-[10px] uppercase font-bold text-muted-foreground bg-[var(--surface-elevated)] px-2 py-1 rounded">API Sync: Online</span>
       </GlassCard>

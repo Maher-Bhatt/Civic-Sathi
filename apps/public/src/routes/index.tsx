@@ -27,7 +27,7 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Report civic problems in Pune, Mumbai, Nagpur and Chhatrapati Sambhajinagar with real-time evidence. Civic Sathi connects complaints into transparent public patterns.",
+          "Report civic problems in Vadodara, Mumbai, Bengaluru, and Delhi with real-time evidence. Civic Sathi connects complaints into transparent public patterns.",
       },
       { property: "og:title", content: "Civic Sathi — Indian Civic Intelligence & Heritage" },
       {
@@ -175,10 +175,10 @@ function Landing() {
             <div className="flex items-center justify-between gap-2 px-1 pb-1">
               <div className="flex flex-wrap items-center gap-1.5 p-1 rounded-xl bg-white/70 dark:bg-black/30 border border-orange-500/25 shadow-sm">
                 {[
-                  { id: "pune", label: "Pune · PMC" },
+                  { id: "vadodara", label: "Vadodara · VMC" },
                   { id: "mumbai", label: "Mumbai · BMC" },
-                  { id: "nagpur", label: "Nagpur · NMC" },
-                  { id: "chhatrapati_sambhajinagar", label: "Sambhajinagar · CSMC" },
+                  { id: "bengaluru", label: "Bengaluru · BBMP" },
+                  { id: "delhi", label: "Delhi · MCD" },
                 ].map((c) => (
                   <button
                     key={c.id}

@@ -9,23 +9,23 @@ const area = (
   division?: string,
 ): CivicArea => ({
   id: `pun-${id}`,
-  city: "pune",
+  city: "vadodara",
   name,
   center,
   radiusMeters,
   boundarySource: "derived",
   population,
   admin: {
-    body: "Pune Municipal Corporation",
+    body: "Vadodara Municipal Corporation",
     bodyVerified: true,
     ...(division ? { division, divisionVerified: false } : {}),
   },
 });
 
-export const PUNE: CityGeography = {
-  city: "pune",
+export const VADODARA: CityGeography = {
+  city: "vadodara",
   dataNote:
-    "Locality reference points for Pune Municipal Corporation (PMC). Derived catchment geometry for civic telemetry.",
+    "Locality reference points for Vadodara Municipal Corporation (PMC). Derived catchment geometry for civic telemetry.",
   areas: [
     area("kasba-peth", "Kasba Peth & Shaniwar Wada", [18.5196, 73.8553], 1200, 78000, "Zone 1 · Central Heritage"),
     area("shivajinagar", "Shivajinagar & Ghole Road", [18.5314, 73.8446], 1400, 92000, "Zone 1 · Administrative"),
@@ -37,7 +37,7 @@ export const PUNE: CityGeography = {
     area("swargate", "Swargate & Saras Baug", [18.4988, 73.858], 1300, 89000, "Zone 5 · South Transit"),
     area("katraj", "Katraj Aqueduct Basin", [18.4575, 73.8677], 1900, 115000, "Zone 5 · Southern Ridge"),
     area("sinhagad-road", "Sinhagad Road & Vadgaon", [18.4812, 73.829], 1700, 134000, "Zone 2 · Southwest"),
-    area("camp", "Pune Camp & Cantonment", [18.5158, 73.8789], 1500, 96000, "Zone 3 · Cantonment"),
+    area("camp", "Vadodara Camp & Cantonment", [18.5158, 73.8789], 1500, 96000, "Zone 3 · Cantonment"),
     area("warje", "Warje Malwadi", [18.4831, 73.7972], 1600, 108000, "Zone 2 · West"),
   ],
 };

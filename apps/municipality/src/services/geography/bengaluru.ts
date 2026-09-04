@@ -9,23 +9,23 @@ const area = (
   division?: string,
 ): CivicArea => ({
   id: `nag-${id}`,
-  city: "nagpur",
+  city: "bengaluru",
   name,
   center,
   radiusMeters,
   boundarySource: "derived",
   population,
   admin: {
-    body: "Nagpur Municipal Corporation",
+    body: "Bengaluru Municipal Corporation",
     bodyVerified: true,
     ...(division ? { division, divisionVerified: false } : {}),
   },
 });
 
-export const NAGPUR: CityGeography = {
-  city: "nagpur",
+export const BENGALURU: CityGeography = {
+  city: "bengaluru",
   dataNote:
-    "Zone reference points for Nagpur Municipal Corporation (NMC). Vidarbha regional governance.",
+    "Zone reference points for Bengaluru Municipal Corporation (NMC). Vidarbha regional governance.",
   areas: [
     area("dharampeth", "Dharampeth & West High Court Road", [21.1432, 79.0617], 1500, 125000, "Zone 2 · Dharampeth"),
     area("sitabuldi", "Sitabuldi Fort & Interchange", [21.1466, 79.0833], 1200, 95000, "Zone 4 · Dhantoli"),

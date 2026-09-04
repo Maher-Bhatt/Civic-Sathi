@@ -21,7 +21,7 @@ export function ContractorAuthProvider({ children }: { children: React.ReactNode
       .finally(() => setReady(true));
   }, []);
 
-  const signIn = useCallback(async (email: string, password: string, city: CityId = "pune"): Promise<ContractorUser> => {
+  const signIn = useCallback(async (email: string, password: string, city: CityId = "vadodara"): Promise<ContractorUser> => {
     const user = await contractorLogin({ email, password, city });
     setContractor(user as ContractorUser);
     return user as ContractorUser;

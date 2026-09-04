@@ -2,11 +2,11 @@ import type { IssueCategory, Severity } from "./types";
 
 /**
  * Geographic prototype data for the citizen and municipal maps.
- * Covers four premier Municipal Corporations of Maharashtra:
- * Pune (PMC), Mumbai (BMC), Nagpur (NMC), Chhatrapati Sambhajinagar (CSMC).
+ * Multi-city, multi-state coverage across India:
+ * Vadodara (VMC), Mumbai (BMC), Bengaluru (BBMP), Delhi (MCD).
  */
 
-export type CityId = "pune" | "mumbai" | "nagpur" | "chhatrapati_sambhajinagar";
+export type CityId = "vadodara" | "mumbai" | "bengaluru" | "delhi";
 
 export interface City {
   id: CityId;
@@ -17,18 +17,17 @@ export interface City {
 }
 
 export const CITIES: City[] = [
-  { id: "pune", name: "Pune", state: "Maharashtra", center: [18.5204, 73.8567], zoom: 13 },
+  { id: "vadodara", name: "Vadodara", state: "Gujarat", center: [22.3072, 73.1812], zoom: 13 },
   { id: "mumbai", name: "Mumbai", state: "Maharashtra", center: [18.9388, 72.8354], zoom: 12 },
-  { id: "nagpur", name: "Nagpur", state: "Maharashtra", center: [21.1458, 79.0882], zoom: 13 },
-  { id: "chhatrapati_sambhajinagar", name: "Chhatrapati Sambhajinagar", state: "Maharashtra", center: [19.8762, 75.3433], zoom: 13 },
+  { id: "bengaluru", name: "Bengaluru", state: "Karnataka", center: [12.9716, 77.5946], zoom: 12 },
+  { id: "delhi", name: "Delhi", state: "NCT Delhi", center: [28.6139, 77.2090], zoom: 12 },
 ];
 
 export const getCity = (id: CityId): City => CITIES.find((c) => c.id === id) ?? CITIES[0]!;
 
 /**
  * Watermark-free, high-performance raster basemaps.
- * Uses OpenStreetMap standard clean tile servers and Google Maps compatible layers.
- * Completely eliminates the deprecated CARTO "API KEY REQUIRED" watermark.
+ * Uses OpenStreetMap standard clean tile servers.
  */
 export const TILES = {
   dark: {
@@ -58,88 +57,84 @@ export interface MapCluster {
   city: CityId;
   category: IssueCategory;
   severity: Severity;
-  /** Number of aggregated, de-identified reports in this cluster. */
   count: number;
-  /** Related reports across the ward for hotspot clusters. */
   relatedCount?: number;
   ward: string;
   area: string;
   lat: number;
   lng: number;
-  /** Approximate aggregation radius in metres. */
   radiusMeters: number;
   hotspot?: boolean;
-  /** 0-100 concentration risk score, hotspots only. */
   risk?: number;
 }
 
 export const MAP_CLUSTERS: MapCluster[] = [
-  // ── Pune (PMC) ─────────────────────────────────────────────────────────────
+  // ── Vadodara (VMC) ────────────────────────────────────────────────────────
   {
-    id: "pun-water-katraj",
-    city: "pune",
+    id: "vad-water-fatehgunj",
+    city: "vadodara",
     category: "Water Supply",
     severity: "High",
-    count: 24,
-    relatedCount: 118,
-    ward: "Ward 18 · Katraj Basin",
-    area: "Katraj Aqueduct Basin",
-    lat: 18.4575,
-    lng: 73.8677,
-    radiusMeters: 520,
+    count: 22,
+    relatedCount: 96,
+    ward: "Ward 3 · Fatehgunj",
+    area: "Fatehgunj & Alkapuri",
+    lat: 22.3217,
+    lng: 73.1851,
+    radiusMeters: 480,
     hotspot: true,
-    risk: 92,
+    risk: 89,
   },
   {
-    id: "pun-road-kothrud",
-    city: "pune",
+    id: "vad-road-sayajigunj",
+    city: "vadodara",
     category: "Road Damage",
     severity: "Moderate",
-    count: 14,
-    ward: "Ward 12 · Kothrud",
-    area: "Kothrud & Karve Road",
-    lat: 18.5074,
-    lng: 73.8077,
-    radiusMeters: 380,
+    count: 15,
+    ward: "Ward 1 · Sayajigunj",
+    area: "Sayajigunj & Raopura",
+    lat: 22.3103,
+    lng: 73.1920,
+    radiusMeters: 360,
   },
   {
-    id: "pun-garbage-kasba",
-    city: "pune",
+    id: "vad-garbage-manjalpur",
+    city: "vadodara",
     category: "Garbage Collection",
     severity: "Low",
-    count: 6,
-    ward: "Ward 1 · Kasba",
-    area: "Kasba Peth & Shaniwar Wada",
-    lat: 18.5196,
-    lng: 73.8553,
-    radiusMeters: 260,
+    count: 8,
+    ward: "Ward 12 · Manjalpur",
+    area: "Manjalpur & Old Padra Road",
+    lat: 22.2776,
+    lng: 73.1731,
+    radiusMeters: 280,
   },
   {
-    id: "pun-drain-hadapsar",
-    city: "pune",
+    id: "vad-drain-karelibaug",
+    city: "vadodara",
     category: "Drainage",
     severity: "Moderate",
-    count: 11,
-    ward: "Ward 22 · Hadapsar",
-    area: "Hadapsar & Magarpatta",
-    lat: 18.5089,
-    lng: 73.9259,
-    radiusMeters: 340,
+    count: 12,
+    ward: "Ward 7 · Karelibaug",
+    area: "Karelibaug & Productivity Road",
+    lat: 22.3271,
+    lng: 73.2060,
+    radiusMeters: 350,
   },
   {
-    id: "pun-light-baner",
-    city: "pune",
+    id: "vad-light-gotri",
+    city: "vadodara",
     category: "Street Lighting",
     severity: "Low",
-    count: 4,
-    ward: "Ward 8 · Baner",
-    area: "Aundh & Baner Smart Strip",
-    lat: 18.559,
-    lng: 73.8031,
-    radiusMeters: 240,
+    count: 5,
+    ward: "Ward 15 · Gotri",
+    area: "Gotri & Waghodia Road",
+    lat: 22.3340,
+    lng: 73.1430,
+    radiusMeters: 260,
   },
 
-  // ── Mumbai (BMC) ───────────────────────────────────────────────────────────
+  // ── Mumbai (BMC) ────────────────────────────────────────────────────────────
   {
     id: "mum-water-dadar",
     city: "mumbai",
@@ -195,80 +190,122 @@ export const MAP_CLUSTERS: MapCluster[] = [
     radiusMeters: 290,
   },
 
-  // ── Nagpur (NMC) ───────────────────────────────────────────────────────────
+  // ── Bengaluru (BBMP) ──────────────────────────────────────────────────────
   {
-    id: "nag-water-dharampeth",
-    city: "nagpur",
+    id: "blr-water-koramangala",
+    city: "bengaluru",
     category: "Water Supply",
-    severity: "Moderate",
-    count: 12,
-    ward: "Zone 2 · Dharampeth",
-    area: "Dharampeth & West High Court Road",
-    lat: 21.1432,
-    lng: 79.0617,
-    radiusMeters: 360,
-  },
-  {
-    id: "nag-road-sitabuldi",
-    city: "nagpur",
-    category: "Road Damage",
     severity: "High",
-    count: 15,
-    relatedCount: 74,
-    ward: "Zone 4 · Dhantoli",
-    area: "Sitabuldi Fort & Interchange",
-    lat: 21.1466,
-    lng: 79.0833,
-    radiusMeters: 440,
+    count: 28,
+    relatedCount: 130,
+    ward: "Ward 150 · Koramangala",
+    area: "Koramangala & HSR Layout",
+    lat: 12.9352,
+    lng: 77.6245,
+    radiusMeters: 500,
     hotspot: true,
-    risk: 83,
+    risk: 91,
   },
   {
-    id: "nag-garbage-sadar",
-    city: "nagpur",
+    id: "blr-road-whitefield",
+    city: "bengaluru",
+    category: "Road Damage",
+    severity: "Moderate",
+    count: 20,
+    ward: "Ward 85 · Whitefield",
+    area: "Whitefield & ITPL Main Road",
+    lat: 12.9698,
+    lng: 77.7500,
+    radiusMeters: 420,
+  },
+  {
+    id: "blr-drain-rajajinagar",
+    city: "bengaluru",
+    category: "Drainage",
+    severity: "Critical",
+    count: 18,
+    relatedCount: 95,
+    ward: "Ward 72 · Rajajinagar",
+    area: "Rajajinagar & Mahalakshmi Layout",
+    lat: 12.9920,
+    lng: 77.5540,
+    radiusMeters: 460,
+    hotspot: true,
+    risk: 87,
+  },
+  {
+    id: "blr-garbage-majestic",
+    city: "bengaluru",
     category: "Garbage Collection",
     severity: "Low",
-    count: 5,
-    ward: "Zone 7 · Mangalwari",
-    area: "Sadar & Residency Road",
-    lat: 21.1639,
-    lng: 79.0805,
-    radiusMeters: 250,
+    count: 7,
+    ward: "Ward 109 · Chickpete",
+    area: "Majestic & KR Market",
+    lat: 12.9772,
+    lng: 77.5722,
+    radiusMeters: 300,
   },
 
-  // ── Chhatrapati Sambhajinagar (CSMC) ───────────────────────────────────────
+  // ── Delhi (MCD) ───────────────────────────────────────────────────────────
   {
-    id: "csn-water-begumpura",
-    city: "chhatrapati_sambhajinagar",
+    id: "del-water-dwarka",
+    city: "delhi",
     category: "Water Supply",
     severity: "High",
-    count: 19,
-    relatedCount: 88,
-    ward: "Zone 4 · Heritage Hydraulic",
-    area: "Begumpura & Panchakki Aqueduct",
-    lat: 19.897,
-    lng: 75.318,
-    radiusMeters: 480,
+    count: 35,
+    relatedCount: 155,
+    ward: "Zone 17 · Dwarka",
+    area: "Dwarka & Palam",
+    lat: 28.5921,
+    lng: 77.0460,
+    radiusMeters: 560,
     hotspot: true,
-    risk: 86,
+    risk: 93,
   },
   {
-    id: "csn-road-cidco",
-    city: "chhatrapati_sambhajinagar",
+    id: "del-road-rohini",
+    city: "delhi",
     category: "Road Damage",
     severity: "Moderate",
-    count: 13,
-    ward: "Zone 2 · New City",
-    area: "CIDCO Cannaught Place",
-    lat: 19.8778,
-    lng: 75.367,
-    radiusMeters: 360,
+    count: 22,
+    ward: "Zone 6 · Rohini",
+    area: "Rohini & Pitampura",
+    lat: 28.7320,
+    lng: 77.1198,
+    radiusMeters: 440,
+  },
+  {
+    id: "del-drain-yamuna",
+    city: "delhi",
+    category: "Drainage",
+    severity: "Critical",
+    count: 25,
+    relatedCount: 170,
+    ward: "Zone 10 · Shahdara",
+    area: "Shahdara & Yamuna Vihar",
+    lat: 28.6814,
+    lng: 77.2894,
+    radiusMeters: 600,
+    hotspot: true,
+    risk: 96,
+  },
+  {
+    id: "del-garbage-chandni",
+    city: "delhi",
+    category: "Garbage Collection",
+    severity: "Moderate",
+    count: 14,
+    ward: "Zone 1 · City Zone",
+    area: "Chandni Chowk & Old Delhi",
+    lat: 28.6506,
+    lng: 77.2334,
+    radiusMeters: 380,
   },
 ];
 
 export const clustersForCity = (city: CityId) => MAP_CLUSTERS.filter((c) => c.city === city);
 
-/** Nearest city for a detected coordinate, so geolocation stays in a supported Maharashtra city. */
+/** Nearest city for a detected coordinate. */
 export function nearestCity(lat: number, lng: number): City {
   let best = CITIES[0]!;
   let bestD = Number.POSITIVE_INFINITY;
@@ -280,4 +317,42 @@ export function nearestCity(lat: number, lng: number): City {
     }
   }
   return best;
+}
+
+/** Find the nearest mapped ward or area for a coordinate within a city */
+export function nearestWardOrArea(cityId: CityId, lat: number, lng: number): { ward: string; area: string } {
+  const cityClusters = clustersForCity(cityId);
+  if (!cityClusters.length) {
+    const c = getCity(cityId);
+    return { ward: "Central Zone", area: c.name };
+  }
+  let best = cityClusters[0]!;
+  let bestD = Number.POSITIVE_INFINITY;
+  for (const c of cityClusters) {
+    const d = (c.lat - lat) ** 2 + (c.lng - lng) ** 2;
+    if (d < bestD) {
+      bestD = d;
+      best = c;
+    }
+  }
+  const c = getCity(cityId);
+  return { ward: best.ward, area: `${c.name} · ${best.area}` };
+}
+
+/** Get the active default city based on user preference or fallback */
+export function getDefaultCity(): CityId {
+  if (typeof window === "undefined") return "vadodara";
+  try {
+    const saved = localStorage.getItem("civicsathi_preferred_city") as CityId;
+    if (saved === "vadodara" || saved === "mumbai" || saved === "bengaluru" || saved === "delhi") return saved;
+  } catch {}
+  return "vadodara";
+}
+
+/** Save preferred city selection across sessions */
+export function setPreferredCity(cityId: CityId): void {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.setItem("civicsathi_preferred_city", cityId);
+  } catch {}
 }

@@ -2,10 +2,10 @@ import { Delaunay } from "d3-delaunay";
 import intersect from "@turf/intersect";
 import { polygon as turfPolygon, featureCollection } from "@turf/helpers";
 import type { CityId } from "@/services/cities";
-import { PUNE } from "./pune";
+import { VADODARA } from "./vadodara";
 import { MUMBAI } from "./mumbai";
-import { NAGPUR } from "./nagpur";
-import { CHHATRAPATI_SAMBHAJINAGAR } from "./chhatrapati_sambhajinagar";
+import { BENGALURU } from "./bengaluru";
+import { DELHI } from "./delhi";
 import {
   AREA_HEALTH_HEX,
   AREA_HEALTH_LABEL,
@@ -20,20 +20,20 @@ import {
 } from "./types";
 
 export * from "./types";
-export { PUNE } from "./pune";
+export { VADODARA } from "./vadodara";
 export { MUMBAI } from "./mumbai";
-export { NAGPUR } from "./nagpur";
-export { CHHATRAPATI_SAMBHAJINAGAR } from "./chhatrapati_sambhajinagar";
+export { BENGALURU } from "./bengaluru";
+export { DELHI } from "./delhi";
 
 const GEOGRAPHY: Record<CityId, CityGeography> = {
-  pune: PUNE,
+  vadodara: VADODARA,
   mumbai: MUMBAI,
-  nagpur: NAGPUR,
-  chhatrapati_sambhajinagar: CHHATRAPATI_SAMBHAJINAGAR,
+  bengaluru: BENGALURU,
+  delhi: DELHI,
 };
 
-export const cityGeography = (city: CityId): CityGeography => GEOGRAPHY[city] ?? PUNE;
-export const cityAreas = (city: CityId): CivicArea[] => (GEOGRAPHY[city] ?? PUNE).areas;
+export const cityGeography = (city: CityId): CityGeography => GEOGRAPHY[city] ?? VADODARA;
+export const cityAreas = (city: CityId): CivicArea[] => (GEOGRAPHY[city] ?? VADODARA).areas;
 
 /* -------------------------------------------------------------- seeded RNG */
 
@@ -192,22 +192,22 @@ export interface AreaActivity {
 }
 
 export const CITY_COMPLAINTS_TOTAL: Record<CityId, number> = {
-  pune: 38450,
+  vadodara: 38450,
   mumbai: 94210,
-  nagpur: 21890,
-  chhatrapati_sambhajinagar: 16420,
+  bengaluru: 21890,
+  delhi: 16420,
 };
 
 /** Total researched urban population per city */
 export const CITY_POPULATION_TOTAL: Record<CityId, number> = {
-  pune: 3950000,
+  vadodara: 3950000,
   mumbai: 12500000,
-  nagpur: 2500000,
-  chhatrapati_sambhajinagar: 1400000,
+  bengaluru: 2500000,
+  delhi: 1400000,
 };
 
 /** Thresholds scale with the active time window and city scale so each city is evaluated appropriately. */
-export function healthFromCount(total: number, time: TimeWindow = "30d", city: CityId = "pune"): AreaHealth {
+export function healthFromCount(total: number, time: TimeWindow = "30d", city: CityId = "vadodara"): AreaHealth {
   const k = time === "7d" ? 0.35 : time === "all" ? 2.9 : 1.0;
   
   if (city === "mumbai") {
@@ -217,7 +217,7 @@ export function healthFromCount(total: number, time: TimeWindow = "30d", city: C
     if (total >= 150 * k) return "moderate";
     return "low";
   } else {
-    // Regional municipal scale (Pune, Nagpur, Sambhajinagar)
+    // Regional municipal scale (Vadodara, Bengaluru, Sambhajinagar)
     if (total >= 280 * k) return "critical";
     if (total >= 190 * k) return "high";
     if (total >= 95 * k) return "moderate";
@@ -574,9 +574,9 @@ export function cityHealthDistribution(
 
 /** Area-specific 7-day sparkline data. */
 export function areaDailyTrend(areaId: string, filters: MapFilters): DailyTrendPoint[] {
-  const city = (["pune", "mumbai", "nagpur", "chhatrapati_sambhajinagar"] as CityId[]).find((c) =>
+  const city = (["vadodara", "mumbai", "bengaluru", "delhi"] as CityId[]).find((c) =>
     cityAreas(c).some((a) => a.id === areaId)
-  ) ?? "pune";
+  ) ?? "vadodara";
   const acts = areaActivity(city, filters);
   const act = acts.find((a) => a.area.id === areaId);
   const last7 = act?.last7 ?? 100;
@@ -594,16 +594,16 @@ export function areaDailyTrend(areaId: string, filters: MapFilters): DailyTrendP
   });
 }
 
-/** Researched historical civic heritage notes for mapped Maharashtra localities */
+/** Researched historical civic heritage notes for mapped Indian city localities */
 export function getLocalityHeritage(areaId: string): string | null {
   const HERITAGE_NOTES: Record<string, string> = {
-    // Pune
+    // Vadodara
     "pun-kasba-peth": "Historic Kasba Ganpati consecrated by Rajmata Jijau in 1630 CE; home to Shaniwar Wada, administrative seat of the Maratha Empire.",
-    "pun-shivajinagar": "Site of the historic Bhamburda rock-cut Pataleshwar cave temple (8th century CE) and modern Pune administrative corridor.",
-    "pun-kothrud": "Historic territory of Mastani Bai's residence; blossomed into modern Pune's premier educational and residential heartland.",
+    "pun-shivajinagar": "Site of the historic Bhamburda rock-cut Pataleshwar cave temple (8th century CE) and modern Vadodara administrative corridor.",
+    "pun-kothrud": "Historic territory of Mastani Bai's residence; blossomed into modern Vadodara's premier educational and residential heartland.",
     "pun-deccan": "Cultural nerve center flanked by the Mutha river, Fergusson College (1885), and Sambhaji Park.",
     "pun-hadapsar": "Battleground of the 1802 Battle of Poona; transformed into an integrated industrial and smart township zone.",
-    "pun-katraj": "Engineered in 1750 by Peshwa Balaji Baji Rao with a massive underground gravity masonry aqueduct delivering drinking water across Pune.",
+    "pun-katraj": "Engineered in 1750 by Peshwa Balaji Baji Rao with a massive underground gravity masonry aqueduct delivering drinking water across Vadodara.",
 
     // Mumbai
     "mum-colaba-fort": "Historic British and Maratha naval crossroads; Gateway of India constructed here in 1924.",
@@ -612,13 +612,13 @@ export function getLocalityHeritage(areaId: string): string | null {
     "mum-bandra-west": "Historic Portuguese port settled around Mount Mary (1640 CE) and the Maratha victory at Castella de Aguada.",
     "mum-kurla-bkc": "Confluence of Mithi river wetlands, ancient trade routes, and Asia's modern premier financial center.",
 
-    // Nagpur
+    // Bengaluru
     "nag-sitabuldi": "Strategic twin-peaked hill and fort built by Bhonsle King Appasaheb; site of the historic 1817 Battle of Sitabuldi.",
     "nag-civil-lines": "Constructed as the administrative capital of the Central Provinces, home to the Zero Mile baseline marker of India.",
-    "nag-dharampeth": "Cultural and intellectual avenue of Nagpur, home to historic educational academies and literary societies.",
+    "nag-dharampeth": "Cultural and intellectual avenue of Bengaluru, home to historic educational academies and literary societies.",
     "nag-futala": "Centuries-old 64-acre reservoir engineered by the Bhonsle kings, renowned for its heritage embankment stone bunds.",
 
-    // Chhatrapati Sambhajinagar
+    // Delhi
     "csn-begumpura-panchakki": "Medieval 17th-century hydraulic wonder powered by the subterranean Nahar-e-Ambari aqueduct to grind grain for travelers.",
     "csn-gulmandi-gates": "Enclosed within the medieval fortifications of 52 historic stone gates, serving as the commercial crossroads of Marathwada.",
     "csn-kranti-chowk": "Central memorial square dedicated to the martyrs of the Marathwada Liberation Struggle (1948).",

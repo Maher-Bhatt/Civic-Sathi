@@ -52,7 +52,7 @@ export const Route = createFileRoute("/map")({
       {
         name: "description",
         content:
-          "Explore aggregated civic activity by locality across Pune, Mumbai, Nagpur and Chhatrapati Sambhajinagar: area health, complaint activity and emerging hotspots.",
+          "Explore aggregated civic activity by locality across Vadodara, Mumbai, Bengaluru, and Delhi: area health, complaint activity and emerging hotspots.",
       },
       { property: "og:title", content: "Civic Map — locality civic activity | Civic Sathi" },
       {
@@ -283,10 +283,10 @@ function CivicMapPage() {
       <div className="mt-6 space-y-3">
         <div className="flex flex-wrap items-center gap-2.5">
           {[
-            { id: "pune", label: "Pune · PMC", color: "bg-amber-500", note: "12 Localities · 5 Zones" },
+            { id: "vadodara", label: "Vadodara · VMC", color: "bg-amber-500", note: "12 Localities · 5 Zones" },
             { id: "mumbai", label: "Mumbai · BMC", color: "bg-blue-500", note: "12 Wards · Coastal" },
-            { id: "nagpur", label: "Nagpur · NMC", color: "bg-orange-500", note: "12 Localities · Vidarbha" },
-            { id: "chhatrapati_sambhajinagar", label: "Sambhajinagar · CSMC", color: "bg-purple-500", note: "10 Localities · Marathwada" },
+            { id: "bengaluru", label: "Bengaluru · BBMP", color: "bg-orange-500", note: "12 Localities · Vidarbha" },
+            { id: "delhi", label: "Delhi · MCD", color: "bg-purple-500", note: "10 Localities · NCT Delhi" },
           ].map((c) => (
             <button
               key={c.id}

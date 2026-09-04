@@ -772,7 +772,7 @@ body::after {
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; } }
 
 /* Civic Sathi city atmosphere layer — platform operations remain data first. */
-:root { --civic-architecture-line: rgba(16, 27, 61, 0.10); --civic-city-accent: #C86B18; --civic-city-accent-soft: #F1D2A8; --civic-city-atmosphere: url('/city-atmosphere/maharashtra-civic-atmosphere.jpg'); }
+:root { --civic-architecture-line: rgba(16, 27, 61, 0.10); --civic-city-accent: #C86B18; --civic-city-accent-soft: #F1D2A8; --civic-city-atmosphere: url('/city-atmosphere/india-civic-heritage.jpg'); }
 .dark { --civic-architecture-line: rgba(214, 226, 245, 0.12); --civic-city-accent: #E0A25B; --civic-city-accent-soft: #6E573F; }
 .civic-city-shell { position: relative; isolation: isolate; overflow-x: clip; background-image: linear-gradient(180deg, color-mix(in srgb, var(--civic-paper) 60%, transparent), color-mix(in srgb, var(--civic-sand-100) 80%, transparent)), var(--civic-city-atmosphere); background-position: center top; background-size: cover; background-attachment: fixed; }
 .civic-city-shell::before { content: ''; position: fixed; inset: 0; z-index: -1; pointer-events: none; opacity: .30; background: repeating-linear-gradient(0deg, transparent 0 5rem, var(--civic-architecture-line) 5.05rem 5.12rem, transparent 5.18rem 10rem); mask-image: linear-gradient(180deg, black, transparent 70%); }
@@ -1053,11 +1053,11 @@ body::after {
   border: 1px solid rgb(111 165 218 / 0.25);
   background:
     linear-gradient(120deg, rgb(6 18 40 / 0.96), rgb(10 34 63 / 0.80) 48%, rgb(12 31 52 / 0.92)),
-    url('/city-atmosphere/maharashtra-civic-atmosphere.jpg') center / cover;
+    url('/city-atmosphere/india-civic-heritage.jpg') center / cover;
   box-shadow: 0 30px 90px -42px rgb(0 0 0 / 0.95), inset 0 1px 0 rgb(255 255 255 / 0.11);
 }
 .civic-admin-telemetry-hero::before {
-  background-image: linear-gradient(90deg, transparent 49.6%, rgb(232 160 74 / 0.42) 50%, transparent 50.4%), linear-gradient(0deg, transparent 49.6%, rgb(14 118 110 / 0.36) 50%, transparent 50.4%), url('/city-atmosphere/maharashtra-civic-atmosphere.jpg');
+  background-image: linear-gradient(90deg, transparent 49.6%, rgb(232 160 74 / 0.42) 50%, transparent 50.4%), linear-gradient(0deg, transparent 49.6%, rgb(14 118 110 / 0.36) 50%, transparent 50.4%), url('/city-atmosphere/india-civic-heritage.jpg');
   background-size: 5rem 5rem, 5rem 5rem, cover;
   opacity: .34;
   mix-blend-mode: screen;

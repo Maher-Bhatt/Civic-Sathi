@@ -2,10 +2,10 @@ import { Delaunay } from "d3-delaunay";
 import intersect from "@turf/intersect";
 import { polygon as turfPolygon, featureCollection } from "@turf/helpers";
 import type { CityId } from "@/services/cities";
-import { PUNE } from "./pune";
+import { VADODARA } from "./vadodara";
 import { MUMBAI } from "./mumbai";
-import { NAGPUR } from "./nagpur";
-import { CHHATRAPATI_SAMBHAJINAGAR } from "./chhatrapati_sambhajinagar";
+import { BENGALURU } from "./bengaluru";
+import { DELHI } from "./delhi";
 import {
   AREA_HEALTH_HEX,
   AREA_HEALTH_LABEL,
@@ -20,20 +20,20 @@ import {
 } from "./types";
 
 export * from "./types";
-export { PUNE } from "./pune";
+export { VADODARA } from "./vadodara";
 export { MUMBAI } from "./mumbai";
-export { NAGPUR } from "./nagpur";
-export { CHHATRAPATI_SAMBHAJINAGAR } from "./chhatrapati_sambhajinagar";
+export { BENGALURU } from "./bengaluru";
+export { DELHI } from "./delhi";
 
 const GEOGRAPHY: Record<CityId, CityGeography> = {
-  pune: PUNE,
+  vadodara: VADODARA,
   mumbai: MUMBAI,
-  nagpur: NAGPUR,
-  chhatrapati_sambhajinagar: CHHATRAPATI_SAMBHAJINAGAR,
+  bengaluru: BENGALURU,
+  delhi: DELHI,
 };
 
-export const cityGeography = (city: CityId): CityGeography => GEOGRAPHY[city] ?? PUNE;
-export const cityAreas = (city: CityId): CivicArea[] => (GEOGRAPHY[city] ?? PUNE).areas;
+export const cityGeography = (city: CityId): CityGeography => GEOGRAPHY[city] ?? VADODARA;
+export const cityAreas = (city: CityId): CivicArea[] => (GEOGRAPHY[city] ?? VADODARA).areas;
 
 /* -------------------------------------------------------------- seeded RNG */
 
@@ -448,9 +448,9 @@ export function cityHealthDistribution(
 }
 
 export function areaDailyTrend(areaId: string, filters: MapFilters, rawPoints: ComplaintPoint[]): DailyTrendPoint[] {
-  const city = (["pune", "mumbai", "nagpur", "chhatrapati_sambhajinagar"] as CityId[]).find((c) =>
+  const city = (["vadodara", "mumbai", "bengaluru", "delhi"] as CityId[]).find((c) =>
     cityAreas(c).some((a) => a.id === areaId)
-  ) ?? "pune";
+  ) ?? "vadodara";
   const points = filterPoints(rawPoints, filters).filter((p) => p.areaId === areaId);
   const labels = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
   const buckets = [0, 0, 0, 0, 0, 0, 0];

@@ -9,23 +9,23 @@ const area = (
   division?: string,
 ): CivicArea => ({
   id: `csn-${id}`,
-  city: "chhatrapati_sambhajinagar",
+  city: "delhi",
   name,
   center,
   radiusMeters,
   boundarySource: "derived",
   population,
   admin: {
-    body: "Chhatrapati Sambhajinagar Municipal Corporation",
+    body: "Delhi Municipal Corporation",
     bodyVerified: true,
     ...(division ? { division, divisionVerified: false } : {}),
   },
 });
 
-export const CHHATRAPATI_SAMBHAJINAGAR: CityGeography = {
-  city: "chhatrapati_sambhajinagar",
+export const DELHI: CityGeography = {
+  city: "delhi",
   dataNote:
-    "Locality and historical gate catchments for Chhatrapati Sambhajinagar Municipal Corporation (CSMC).",
+    "Locality and historical gate catchments for Delhi Municipal Corporation (CSMC).",
   areas: [
     area("kranti-chowk", "Kranti Chowk Central", [19.8736, 75.3256], 1400, 115000, "Zone 1 · Central"),
     area("cidco", "CIDCO Cannaught Place", [19.8778, 75.367], 1900, 195000, "Zone 2 · New City"),

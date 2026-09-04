@@ -176,7 +176,7 @@ export async function submitBid(tenderId: string, quotedAmount: number, technica
 
 export async function getWorkOrders(cityIdOrName?: string) {
   const user = await getContractorUser();
-  const raw = cityIdOrName || user?.city || "pune";
+  const raw = cityIdOrName || user?.city || "vadodara";
   // If it's already a UUID, use directly; otherwise resolve to UUID
   const uuid = raw.includes("-") && raw.length === 36 ? raw : ((await resolveCityUuid(raw)) ?? raw);
   return await api.workOrders.list(uuid);
@@ -202,7 +202,7 @@ export async function updateWorkOrderStatus(id: string, status: string) {
 export async function getDashboardKPIs() {
   try {
     const user = await getContractorUser();
-    const rawCity = user?.city || "pune";
+    const rawCity = user?.city || "vadodara";
     const uuid =
       rawCity.includes("-") && rawCity.length === 36
         ? rawCity
