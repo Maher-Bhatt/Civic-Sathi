@@ -16,7 +16,7 @@ function ContractorLogin() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [city, setCity] = useState<CityId>("vadodara");
+  const [city, setCity] = useState<CityId>("pune");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -33,7 +33,7 @@ function ContractorLogin() {
       if (status === 401) {
         setError("Login rejected. Use the current official SIH handoff password for this account; the old shared demo password is no longer active.");
       } else if (status === 403 && detail.toLowerCase().includes("approved")) {
-        setError(`This contractor is not approved for ${city === "vadodara" ? "Vadodara" : "Bengaluru"}. Select the municipality shown on your registration.`);
+        setError(`This contractor is not approved for ${city.toUpperCase()}. Select the municipality shown on your registration.`);
       } else {
         setError(detail || "Unable to sign in right now. Please retry and confirm the municipality selection.");
       }
@@ -78,8 +78,11 @@ function ContractorLogin() {
           <div>
             <label className="label-xs block mb-2 text-[var(--foreground)]">Municipality</label>
             <select value={city} onChange={(e) => setCity(e.target.value as CityId)} className="filter-input w-full ambient-field px-4 py-2 rounded-md bg-[var(--surface)] text-[var(--foreground)] border border-[var(--glass-border)] focus:outline-none focus:ring-1 focus:ring-[var(--primary)]">
-              <option value="vadodara">Vadodara · VMC</option>
-              <option value="bengaluru">Bengaluru · BBMP</option>
+              <option value="pune">Pune · PMC</option>
+              <option value="mumbai">Mumbai · BMC</option>
+              <option value="nagpur">Nagpur · NMC</option>
+              <option value="chhatrapati_sambhajinagar">Chhatrapati Sambhajinagar · CSMC</option>
+              
             </select>
           </div>
 

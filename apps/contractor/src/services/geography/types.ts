@@ -29,6 +29,7 @@ export interface CivicArea {
   center: [number, number];
   radiusMeters: number;
   boundarySource: "official" | "derived";
+  population?: number;
   admin: {
     body: string;
     bodyVerified: boolean;

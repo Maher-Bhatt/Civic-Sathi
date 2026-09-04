@@ -34,7 +34,7 @@ function TendersIndex() {
 
   // contractor.city comes from the backend User.city field (set during login).
   // getEligibleTenders resolves city name slugs to real DB UUIDs internally.
-  const cityParam = contractor?.city ?? "vadodara";
+  const cityParam = contractor?.city ?? "pune";
 
   const { data: tenders = [], isLoading: loading, isError, refetch } = useQuery({
     queryKey: ["contractor-tenders", cityParam],

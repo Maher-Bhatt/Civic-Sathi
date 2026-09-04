@@ -20,7 +20,7 @@ export const Route = createFileRoute("/_auth/civic-issues/$id")({
 function CivicIssueDetailPage() {
     const { t } = useI18n();
     const { officer } = useMuniAuth();
-    const city = officer?.city ?? "vadodara";
+    const city = officer?.city ?? "pune";
   const { id } = Route.useParams() as any;
   const [issue, setIssue] = useState<any>(null);
   const [allIssues, setAllIssues] = useState<any[]>([]);

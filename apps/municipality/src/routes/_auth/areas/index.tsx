@@ -18,7 +18,7 @@ export const Route = createFileRoute("/_auth/areas/")({
 function AreasPage() {
     const { t } = useI18n();
   const { officer } = useMuniAuth();
-  const city = officer?.city ?? "vadodara";
+  const city = officer?.city ?? "pune";
   const [areas, setAreas] = useState<AreaOverview[]>([]);
   const [loading, setLoading] = useState(true);
   const [sortBy, setSortBy] = useState<"risk" | "reports" | "trend">("risk");

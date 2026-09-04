@@ -173,29 +173,26 @@ function Landing() {
           <GlassCard elevation="raised" className="civic-atmosphere-panel overflow-hidden rounded-[1.6rem] p-4 space-y-3 border-[var(--glass-border)] shadow-2xl">
             {/* Multi-City Equal Switcher */}
             <div className="flex items-center justify-between gap-2 px-1 pb-1">
-              <div className="flex items-center gap-1.5 p-1 rounded-2xl bg-white/70 dark:bg-black/30 border border-orange-500/25 shadow-sm">
-                <button
-                  type="button"
-                  onClick={() => handleCitySelect("vadodara")}
-                  className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all ${
-                    cityId === "vadodara"
-                      ? "bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-md border border-emerald-400/40"
-                      : "text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  {t("map.city.vadodara", "Vadodara · VMC")}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleCitySelect("bengaluru")}
-                  className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all ${
-                    cityId === "bengaluru"
-                      ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md border border-blue-400/40"
-                      : "text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  {t("map.city.bengaluru", "Bengaluru · BBMP")}
-                </button>
+              <div className="flex flex-wrap items-center gap-1.5 p-1 rounded-xl bg-white/70 dark:bg-black/30 border border-orange-500/25 shadow-sm">
+                {[
+                  { id: "pune", label: "Pune · PMC" },
+                  { id: "mumbai", label: "Mumbai · BMC" },
+                  { id: "nagpur", label: "Nagpur · NMC" },
+                  { id: "chhatrapati_sambhajinagar", label: "Sambhajinagar · CSMC" },
+                ].map((c) => (
+                  <button
+                    key={c.id}
+                    type="button"
+                    onClick={() => handleCitySelect(c.id as CityId)}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                      cityId === c.id
+                        ? "bg-[#1A2744] text-white shadow-md border border-white/20"
+                        : "text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    {c.label}
+                  </button>
+                ))}
               </div>
 
               <span className="text-[11px] font-semibold text-amber-900 dark:text-amber-300">
@@ -359,7 +356,7 @@ function Landing() {
             [cityAggregate ? Number(cityAggregate.total_reports ?? 0).toLocaleString("en-IN") : "—", t("stats.city_reports", "Reports in selected city · 30 days"), "📋"],
             [cityAggregate ? Number(cityAggregate.last7_days ?? 0).toLocaleString("en-IN") : "—", t("stats.last7_reports", "Reports in the last 7 days"), "📈"],
             [cityAggregate ? Number(cityAggregate.aggregate_points ?? 0).toLocaleString("en-IN") : "—", t("stats.aggregate_points", "Live map clusters"), "📍"],
-            [cityId === "vadodara" ? "VMC" : "BBMP", t("stats.city_scope", "Selected municipal authority"), "🏛️"],
+            [getCityVisuals(cityId).authority, t("stats.city_scope", "Selected municipal authority"), "🏛️"],
           ].map(([v, k, icon]) => (
             <GlassCard key={k} className="p-4 border-orange-500/20 bg-white/70 dark:bg-slate-900/60">
               <dd className="text-xl font-bold text-[var(--foreground)] flex items-center gap-2">

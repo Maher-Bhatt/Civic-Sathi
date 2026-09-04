@@ -81,7 +81,7 @@ function write<T>(key: string, value: T) {
 
 function normalizeOfficer(
   userData: any,
-  fallbackCity: CityId = "vadodara",
+  fallbackCity: CityId = "pune",
 ): Officer {
   const backendRole = String(userData?.role ?? "officer").toLowerCase();
   const role: Officer["role"] =
@@ -159,7 +159,7 @@ export async function getMuniOfficer(): Promise<Officer | null> {
       const me = await api.auth.me();
       const roleLower = String((me as any)?.role || "").toLowerCase();
       if (me && ["officer", "supervisor", "admin", "municipality", "collector"].includes(roleLower)) {
-        const officer = normalizeOfficer(me, cached?.city ?? "vadodara");
+        const officer = normalizeOfficer(me, cached?.city ?? "pune");
         write(LS.officer, officer);
         return officer;
       }
@@ -362,14 +362,16 @@ function categoryQueryValue(value: string): string {
 
 function cityIdFromValue(value: unknown, fallbackCity: CityId): CityId {
   const normalized = String(value ?? "").trim().toLowerCase();
-  if (normalized === "vadodara" || normalized === "baroda") return "vadodara";
-  if (normalized === "bengaluru" || normalized === "bangalore") return "bengaluru";
+  if (normalized === "pune" || normalized === "poona") return "pune";
+  if (normalized === "mumbai" || normalized === "bombay") return "mumbai";
+  if (normalized === "nagpur") return "nagpur";
+  if (normalized.includes("sambhajinagar") || normalized.includes("aurangabad")) return "chhatrapati_sambhajinagar";
   return fallbackCity;
 }
 
 function areaFromAddress(address: string | null, fallbackCity: CityId): string {
   if (!address) return "Unspecified area";
-  const withoutCity = address.replace(/^\s*(Vadodara|Bengaluru|Bangalore|Baroda)\s*[·,|-]\s*/i, "");
+  const withoutCity = address.replace(/^\s*(Pune|Mumbai|Bombay|Poona|Nagpur|Chhatrapati Sambhajinagar|Aurangabad)\s*[·,|-]\s*/i, "");
   const area = withoutCity.split(/\s*\(\s*Ward\b/i)[0]?.trim();
   return area || fallbackCity;
 }
@@ -471,7 +473,7 @@ function normalizeMuniComplaint(raw: any, fallbackCity: CityId): MuniComplaint {
 }
 
 function currentMuniCity(): CityId {
-  return read<Officer | null>(LS.officer, null)?.city ?? "vadodara";
+  return read<Officer | null>(LS.officer, null)?.city ?? "pune";
 }
 
 export async function getMuniComplaints(
@@ -650,7 +652,7 @@ function normalizeWorkOrder(raw: any): WorkOrder {
 
 export async function getWorkOrders(params?: any) {
   const officer = await getMuniOfficer();
-  const rawCity = String(params?.cityId || officer?.city || "vadodara");
+  const rawCity = String(params?.cityId || officer?.city || "pune");
   const rows = await api.workOrders.list(await resolveCityId(rawCity));
   return (Array.isArray(rows) ? rows : []).map(normalizeWorkOrder);
 }
@@ -752,7 +754,7 @@ export async function approveBill(
 /* ---------------------------------------------------------------- alerts */
 export async function getAlerts(city?: CityId): Promise<MuniAlert[]> {
   const officer = await getMuniOfficer();
-  const targetCity = city ?? officer?.city ?? "vadodara";
+  const targetCity = city ?? officer?.city ?? "pune";
   const complaints = await getMuniComplaints({ city: targetCity });
   const grouped = new Map<string, MuniComplaint[]>();
   for (const complaint of complaints.filter((row) => row.severity !== "Low")) {
@@ -944,7 +946,7 @@ export async function markNotificationRead(id: string): Promise<void> {
 const DEFAULT_SETTINGS: MuniSettings = {
   theme: "system",
   compactMode: false,
-  defaultCity: "vadodara",
+  defaultCity: "pune",
   defaultMapMode: "health",
   notifications: { critical: true, assignments: true, riskChanges: true, dailyDigest: false },
 };

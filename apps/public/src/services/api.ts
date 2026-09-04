@@ -77,7 +77,7 @@ function write<T>(key: string, value: T) {
 }
 
 export async function getPublicCityAggregate(
-  city: "vadodara" | "bengaluru",
+  city: import("./cities").CityId,
   filters: { time?: string; issue?: string; health?: string } = {},
 ) {
   const params = new URLSearchParams({

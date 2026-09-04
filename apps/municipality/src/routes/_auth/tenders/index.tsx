@@ -36,7 +36,7 @@ const STATUS_CHIP: Record<string, string> = {
 function TendersPage() {
     const { t } = useI18n();
   const { officer } = useMuniAuth();
-  const city = officer?.city ?? "vadodara";
+  const city = officer?.city ?? "pune";
 
   const { data: tenders = [], isLoading: loading } = useQuery({
     queryKey: ["muni-tenders", city],

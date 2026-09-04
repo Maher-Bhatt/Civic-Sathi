@@ -2,8 +2,10 @@ import { Delaunay } from "d3-delaunay";
 import intersect from "@turf/intersect";
 import { polygon as turfPolygon, featureCollection } from "@turf/helpers";
 import type { CityId } from "@/services/cities";
-import { VADODARA } from "./vadodara";
-import { BENGALURU } from "./bengaluru";
+import { PUNE } from "./pune";
+import { MUMBAI } from "./mumbai";
+import { NAGPUR } from "./nagpur";
+import { CHHATRAPATI_SAMBHAJINAGAR } from "./chhatrapati_sambhajinagar";
 import {
   AREA_HEALTH_HEX,
   AREA_HEALTH_LABEL,
@@ -18,16 +20,20 @@ import {
 } from "./types";
 
 export * from "./types";
-export { VADODARA } from "./vadodara";
-export { BENGALURU } from "./bengaluru";
+export { PUNE } from "./pune";
+export { MUMBAI } from "./mumbai";
+export { NAGPUR } from "./nagpur";
+export { CHHATRAPATI_SAMBHAJINAGAR } from "./chhatrapati_sambhajinagar";
 
 const GEOGRAPHY: Record<CityId, CityGeography> = {
-  vadodara: VADODARA,
-  bengaluru: BENGALURU,
+  pune: PUNE,
+  mumbai: MUMBAI,
+  nagpur: NAGPUR,
+  chhatrapati_sambhajinagar: CHHATRAPATI_SAMBHAJINAGAR,
 };
 
-export const cityGeography = (city: CityId): CityGeography => GEOGRAPHY[city];
-export const cityAreas = (city: CityId): CivicArea[] => GEOGRAPHY[city].areas;
+export const cityGeography = (city: CityId): CityGeography => GEOGRAPHY[city] ?? PUNE;
+export const cityAreas = (city: CityId): CivicArea[] => (GEOGRAPHY[city] ?? PUNE).areas;
 
 /* -------------------------------------------------------------- seeded RNG */
 
@@ -157,17 +163,24 @@ export interface ComplaintPoint {
   id: string;
   areaId: string;
   issue: IssueKey;
+  category?: string;
   health: AreaHealth;
   daysAgo: number;
+  risk?: number;
   /** Privacy-safe: coarse coordinate inside the locality catchment only. */
   lat: number;
   lng: number;
+  /** Number of persisted complaints represented by this aggregate point. */
+  count?: number;
+  /** Number of those persisted complaints resolved or closed. */
+  resolved?: number;
 }
 
 export interface AreaActivity {
   area: CivicArea;
   counts: IssueBreakdown;
   total: number;
+  critical: number;
   resolved: number;
   last7: number;
   trendPct: number;
@@ -178,54 +191,11 @@ export interface AreaActivity {
   recent: Array<{ issue: IssueKey; daysAgo: number; health: AreaHealth }>;
 }
 
-/** Thresholds scale with the active time window so colours stay meaningful. */
-export function healthFromCount(total: number, time: TimeWindow = "30d"): AreaHealth {
-  const k = time === "7d" ? 0.28 : time === "all" ? 3.4 : 1;
-  if (total >= 78 * k) return "critical";
-  if (total >= 46 * k) return "high";
-  if (total >= 20 * k) return "moderate";
-  return "low";
-}
-
-/** All prototype complaint points for a city — deterministic, de-identified. */
-function buildPoints(city: CityId): ComplaintPoint[] {
-  const points: ComplaintPoint[] = [];
-  for (const a of cityAreas(city)) {
-    const r = rng(`pts:${a.id}`);
-    const base = 6 + Math.floor(r() ** 2.1 * 210);
-    for (let i = 0; i < base; i++) {
-      const issue = ISSUE_KEYS[Math.floor(r() * ISSUE_KEYS.length)]!;
-      const daysAgo = Math.floor(r() ** 2 * 180);
-      const angle = r() * Math.PI * 2;
-      const dist = Math.sqrt(r()) * a.radiusMeters * 0.82;
-      const mPerDegLng = M_PER_DEG_LAT * Math.cos((a.center[0] * Math.PI) / 180);
-      points.push({
-        id: `${a.id}-${i}`,
-        areaId: a.id,
-        issue,
-        health: (["low", "low", "moderate", "moderate", "high", "critical"] as AreaHealth[])[
-          Math.floor(r() * 6)
-        ]!,
-        daysAgo,
-        // rounded to ~50m so no exact private location is ever published
-        lat: Math.round((a.center[0] + (dist * Math.sin(angle)) / M_PER_DEG_LAT) * 2200) / 2200,
-        lng: Math.round((a.center[1] + (dist * Math.cos(angle)) / mPerDegLng) * 2200) / 2200,
-      });
-    }
-  }
-  return points;
-}
-
-const pointCache = new Map<CityId, ComplaintPoint[]>();
-
-export function complaintPoints(city: CityId): ComplaintPoint[] {
-  let p = pointCache.get(city);
-  if (!p) {
-    p = buildPoints(city);
-    pointCache.set(city, p);
-  }
-  return p;
-}
+/*
+ * Complaint points are intentionally supplied only by the backend public-map
+ * aggregate. The former deterministic generator was removed so a network
+ * failure cannot make the municipality map look populated with invented data.
+ */
 
 export interface MapFilters {
   issue: IssueKey | "all";
@@ -257,9 +227,9 @@ const emptyBreakdown = (): IssueBreakdown => ({
 });
 
 /** Aggregated, privacy-safe activity per locality for the active filters. */
-export function areaActivity(city: CityId, filters: MapFilters): AreaActivity[] {
-  const points = filterPoints(complaintPoints(city), filters);
-  const all = complaintPoints(city);
+export function areaActivity(city: CityId, filters: MapFilters, rawPoints: ComplaintPoint[]): AreaActivity[] {
+  const points = filterPoints(rawPoints, filters);
+  const all = rawPoints;
   const byArea = new Map<string, ComplaintPoint[]>();
   for (const p of points) {
     const list = byArea.get(p.areaId);
@@ -269,31 +239,40 @@ export function areaActivity(city: CityId, filters: MapFilters): AreaActivity[] 
 
   return cityAreas(city).map((area) => {
     const list = byArea.get(area.id) ?? [];
+    const weight = (point: ComplaintPoint) => Math.max(1, Number(point.count ?? 1));
     const counts = emptyBreakdown();
-    for (const p of list) counts[p.issue] += 1;
-    const total = list.length;
-    const last7 = list.filter((p) => p.daysAgo <= 7).length;
-    const prev7 = all.filter(
-      (p) => p.areaId === area.id && p.daysAgo > 7 && p.daysAgo <= 14,
-    ).length;
+    for (const p of list) counts[p.issue] += weight(p);
+    const total = list.reduce((sum, point) => sum + weight(point), 0);
+    const last7 = list.filter((p) => p.daysAgo <= 7).reduce((sum, point) => sum + weight(point), 0);
+    const prev7 = all
+      .filter((p) => p.areaId === area.id && p.daysAgo > 7 && p.daysAgo <= 14)
+      .reduce((sum, point) => sum + weight(point), 0);
     const trendPct =
       prev7 === 0 ? (last7 > 0 ? 100 : 0) : Math.round(((last7 - prev7) / prev7) * 100);
     const topIssue =
       (ISSUE_KEYS.slice().sort((a, b) => counts[b] - counts[a])[0] as IssueKey) ?? "other";
-    const health = healthFromCount(total, filters.time);
-    const density = total / Math.max(1, Math.PI * (area.radiusMeters / 1000) ** 2);
-    const risk = Math.max(0, Math.min(100, Math.round(density * 5 + total * 0.5 + last7 * 2)));
-    const r = rng(`meta:${area.id}`);
+    const severityRisk = total === 0
+      ? 0
+      : Math.round(list.reduce((sum, point) => sum + ({ low: 15, moderate: 45, high: 72, critical: 92 }[point.health] ?? 15) * weight(point), 0) / total);
+    const volumeRisk = Math.min(100, Math.round(total / 12));
+    const risk = Math.min(100, Math.round(severityRisk * 0.72 + volumeRisk * 0.28));
+    const health: AreaHealth = risk >= 82 ? "critical" : risk >= 62 ? "high" : risk >= 38 ? "moderate" : "low";
+    const critical = list.reduce(
+      (sum, point) => sum + ((point.health === "critical") ? weight(point) : 0),
+      0,
+    );
+    const resolved = list.reduce((sum, point) => sum + Math.min(weight(point), Number(point.resolved ?? 0)), 0);
     return {
       area,
       counts,
       total,
-      resolved: Math.round(total * (0.28 + r() * 0.34)),
+      critical,
+      resolved,
       last7,
       trendPct,
       health,
       topIssue,
-      hotspot: risk >= 62 && total >= 20,
+      hotspot: risk >= 62 && total >= 12,
       risk,
       recent: list
         .slice()
@@ -311,8 +290,10 @@ export interface PointCluster {
   lat: number;
   lng: number;
   count: number;
+  resolved: number;
   health: AreaHealth;
   areaId: string;
+  issueCounts: Partial<Record<IssueKey, number>>;
 }
 
 const HEALTH_RANK: Record<AreaHealth, number> = { low: 0, moderate: 1, high: 2, critical: 3 };
@@ -325,32 +306,40 @@ export function clusterPoints(points: ComplaintPoint[], zoom: number): PointClus
       id: p.id,
       lat: p.lat,
       lng: p.lng,
-      count: 1,
+      count: Math.max(1, Number(p.count ?? 1)),
+      resolved: Math.max(0, Number(p.resolved ?? 0)),
       health: p.health,
       areaId: p.areaId,
+      issueCounts: { [p.issue]: Math.max(1, Number(p.count ?? 1)) },
     }));
   }
   const cell =
     zoom >= 15 ? 0.004 : zoom >= 14 ? 0.008 : zoom >= 13 ? 0.016 : zoom >= 12 ? 0.03 : 0.06;
   const buckets = new Map<
     string,
-    { lat: number; lng: number; n: number; rankSum: number; areaId: string }
+    { lat: number; lng: number; n: number; resolved: number; rankSum: number; areaId: string; issueCounts: Partial<Record<IssueKey, number>> }
   >();
   for (const p of points) {
     const key = `${Math.floor(p.lat / cell)}:${Math.floor(p.lng / cell)}`;
     const b = buckets.get(key);
     if (b) {
-      b.lat += p.lat;
-      b.lng += p.lng;
-      b.n += 1;
-      b.rankSum += HEALTH_RANK[p.health];
+      const weight = Math.max(1, Number(p.count ?? 1));
+      b.lat += p.lat * weight;
+      b.lng += p.lng * weight;
+      b.n += weight;
+      b.resolved += Math.max(0, Number(p.resolved ?? 0));
+      b.rankSum += HEALTH_RANK[p.health] * weight;
+      b.issueCounts[p.issue] = (b.issueCounts[p.issue] || 0) + weight;
+
     } else {
       buckets.set(key, {
-        lat: p.lat,
-        lng: p.lng,
-        n: 1,
-        rankSum: HEALTH_RANK[p.health],
+        lat: p.lat * Math.max(1, Number(p.count ?? 1)),
+        lng: p.lng * Math.max(1, Number(p.count ?? 1)),
+        n: Math.max(1, Number(p.count ?? 1)),
+        resolved: Math.max(0, Number(p.resolved ?? 0)),
+        rankSum: HEALTH_RANK[p.health] * Math.max(1, Number(p.count ?? 1)),
         areaId: p.areaId,
+        issueCounts: { [p.issue]: Math.max(1, Number(p.count ?? 1)) },
       });
     }
   }
@@ -359,9 +348,11 @@ export function clusterPoints(points: ComplaintPoint[], zoom: number): PointClus
     lat: b.lat / b.n,
     lng: b.lng / b.n,
     count: b.n,
+    resolved: b.resolved,
     // dominant (mean) severity keeps clusters readable instead of all-red
     health: RANK_HEALTH[Math.round(b.rankSum / b.n)]!,
     areaId: b.areaId,
+    issueCounts: b.issueCounts,
   }));
 }
 
@@ -412,23 +403,22 @@ const ISSUE_CHART_COLORS: Record<IssueKey, string> = {
   other: "var(--muted-foreground)",
 };
 
-export function cityDailyTrend(city: CityId, filters: MapFilters): DailyTrendPoint[] {
-  const points = filterPoints(complaintPoints(city), filters);
+export function cityDailyTrend(city: CityId, filters: MapFilters, rawPoints: ComplaintPoint[]): DailyTrendPoint[] {
+  const points = filterPoints(rawPoints, filters);
   const labels = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
   const buckets = [0, 0, 0, 0, 0, 0, 0];
   for (const p of points) {
     if (p.daysAgo > 6) continue;
-    buckets[6 - p.daysAgo]! += 1;
+    buckets[6 - p.daysAgo]! += Math.max(1, Number(p.count ?? 1));
   }
-  const r = rng(`trend:${city}:${filters.time}:${filters.issue}`);
   return labels.map((day, i) => ({
     day,
-    reports: buckets[i]! + Math.floor(r() * 4),
+    reports: buckets[i]!,
   }));
 }
 
-export function cityIssueBreakdown(city: CityId, filters: MapFilters): IssueChartPoint[] {
-  const acts = areaActivity(city, filters);
+export function cityIssueBreakdown(city: CityId, filters: MapFilters, rawPoints: ComplaintPoint[]): IssueChartPoint[] {
+  const acts = areaActivity(city, filters, rawPoints);
   const totals = emptyBreakdown();
   for (const a of acts) {
     for (const k of ISSUE_KEYS) totals[k] += a.counts[k];
@@ -444,8 +434,9 @@ export function cityIssueBreakdown(city: CityId, filters: MapFilters): IssueChar
 export function cityHealthDistribution(
   city: CityId,
   filters: MapFilters,
+  rawPoints: ComplaintPoint[]
 ): Array<{ health: AreaHealth; label: string; count: number; fill: string }> {
-  const acts = areaActivity(city, filters);
+  const acts = areaActivity(city, filters, rawPoints);
   const buckets: Record<AreaHealth, number> = { low: 0, moderate: 0, high: 0, critical: 0 };
   for (const a of acts) buckets[a.health] += a.total;
   return AREA_HEALTH_ORDER.map((health) => ({
@@ -456,16 +447,16 @@ export function cityHealthDistribution(
   })).filter((d) => d.count > 0);
 }
 
-export function areaDailyTrend(areaId: string, filters: MapFilters): DailyTrendPoint[] {
-  const city = cityAreas("vadodara").some((a) => a.id === areaId)
-    ? ("vadodara" as CityId)
-    : ("bengaluru" as CityId);
-  const points = filterPoints(complaintPoints(city), filters).filter((p) => p.areaId === areaId);
+export function areaDailyTrend(areaId: string, filters: MapFilters, rawPoints: ComplaintPoint[]): DailyTrendPoint[] {
+  const city = (["pune", "mumbai", "nagpur", "chhatrapati_sambhajinagar"] as CityId[]).find((c) =>
+    cityAreas(c).some((a) => a.id === areaId)
+  ) ?? "pune";
+  const points = filterPoints(rawPoints, filters).filter((p) => p.areaId === areaId);
   const labels = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
   const buckets = [0, 0, 0, 0, 0, 0, 0];
   for (const p of points) {
     if (p.daysAgo > 6) continue;
-    buckets[6 - p.daysAgo]! += 1;
+    buckets[6 - p.daysAgo]! += Math.max(1, Number(p.count ?? 1));
   }
   return labels.map((day, i) => ({ day, reports: buckets[i]! }));
 }

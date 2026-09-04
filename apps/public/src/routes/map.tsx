@@ -24,6 +24,7 @@ import {
   IssueBreakdownChart,
 } from "@/components/civic-charts";
 import { CITIES, getCity, nearestCity, getDefaultCity, setPreferredCity, type CityId } from "@/services/cities";
+import { getCityVisuals } from "@civicsathi/visual-system";
 import {
   AREA_HEALTH_HEX,
   AREA_HEALTH_LABEL,
@@ -281,40 +282,32 @@ function CivicMapPage() {
       {/* city switcher + modes */}
       <div className="mt-6 space-y-3">
         <div className="flex flex-wrap items-center gap-2.5">
-          <button
-            type="button"
-            onClick={() => handleCityChange("vadodara")}
-            aria-pressed={cityId === "vadodara"}
-            className={cn(
-              "press flex items-center gap-2 rounded-xl border px-4 py-2 text-xs font-semibold tracking-wide transition-all duration-200 shadow-sm",
-              cityId === "vadodara"
-                ? "border-emerald-500/50 bg-emerald-500/15 text-emerald-800 dark:text-emerald-300 shadow-[0_0_15px_rgba(16,185,129,0.15)]"
-                : "border-[var(--glass-border)] bg-[var(--glass)] text-muted-foreground hover:text-foreground",
-            )}
-          >
-            <span className="h-2 w-2 rounded-full bg-emerald-400" />
-            <span>{t("map.city.vadodara", "Vadodara · VMC")}</span>
-            <span className="text-[10px] font-normal opacity-75">· 24 {t("ui.localities", "Areas")} (5 {t("ui.zones", "Zones")})</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => handleCityChange("bengaluru")}
-            aria-pressed={cityId === "bengaluru"}
-            className={cn(
-              "press flex items-center gap-2 rounded-xl border px-4 py-2 text-xs font-semibold tracking-wide transition-all duration-200 shadow-sm",
-              cityId === "bengaluru"
-                ? "border-orange-500/50 bg-orange-500/15 text-orange-800 dark:text-orange-300 shadow-[0_0_15px_rgba(234,88,12,0.15)]"
-                : "border-[var(--glass-border)] bg-[var(--glass)] text-muted-foreground hover:text-foreground",
-            )}
-          >
-            <span className="h-2 w-2 rounded-full bg-orange-500" />
-            <span>{t("map.city.bengaluru", "Bengaluru · BBMP")}</span>
-            <span className="text-[10px] font-normal opacity-75">· 35 {t("ui.localities", "Areas")} (8 {t("ui.zones", "Zones")})</span>
-          </button>
+          {[
+            { id: "pune", label: "Pune · PMC", color: "bg-amber-500", note: "12 Localities · 5 Zones" },
+            { id: "mumbai", label: "Mumbai · BMC", color: "bg-blue-500", note: "12 Wards · Coastal" },
+            { id: "nagpur", label: "Nagpur · NMC", color: "bg-orange-500", note: "12 Localities · Vidarbha" },
+            { id: "chhatrapati_sambhajinagar", label: "Sambhajinagar · CSMC", color: "bg-purple-500", note: "10 Localities · Marathwada" },
+          ].map((c) => (
+            <button
+              key={c.id}
+              type="button"
+              onClick={() => handleCityChange(c.id as CityId)}
+              aria-pressed={cityId === c.id}
+              className={cn(
+                "press flex items-center gap-2 rounded-xl border px-3.5 py-2 text-xs font-semibold tracking-wide transition-all duration-200 shadow-sm",
+                cityId === c.id
+                  ? "border-[#1A2744] bg-[#1A2744] text-white shadow-md"
+                  : "border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900 text-muted-foreground hover:text-foreground",
+              )}
+            >
+              <span className={cn("h-2 w-2 rounded-full", c.color)} />
+              <span>{c.label}</span>
+              <span className="text-[10px] font-normal opacity-75 hidden md:inline">· {c.note}</span>
+            </button>
+          ))}
 
           <span className="ml-auto text-[0.7rem] text-muted-foreground hidden sm:inline-block">
-            {cityId === "vadodara" ? t("map.scale.vadodara", "Vadodara Municipal Scale (Normalized)") : t("map.scale.bengaluru", "Bengaluru Metropolitan Scale")}
+            {getCityVisuals(cityId).dataLine}
           </span>
         </div>
 

@@ -20,7 +20,7 @@ export const emptyDraft: ReportDraft = {
   description: "",
   location: null,
   marker: null,
-  city: "vadodara",
+  city: "pune",
   language: "en",
   photo: null,
   category: null,

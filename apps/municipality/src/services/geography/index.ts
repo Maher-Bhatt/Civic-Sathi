@@ -2,8 +2,10 @@ import { Delaunay } from "d3-delaunay";
 import intersect from "@turf/intersect";
 import { polygon as turfPolygon, featureCollection } from "@turf/helpers";
 import type { CityId } from "@/services/cities";
-import { VADODARA } from "./vadodara";
-import { BENGALURU } from "./bengaluru";
+import { PUNE } from "./pune";
+import { MUMBAI } from "./mumbai";
+import { NAGPUR } from "./nagpur";
+import { CHHATRAPATI_SAMBHAJINAGAR } from "./chhatrapati_sambhajinagar";
 import {
   AREA_HEALTH_HEX,
   AREA_HEALTH_LABEL,
@@ -18,16 +20,20 @@ import {
 } from "./types";
 
 export * from "./types";
-export { VADODARA } from "./vadodara";
-export { BENGALURU } from "./bengaluru";
+export { PUNE } from "./pune";
+export { MUMBAI } from "./mumbai";
+export { NAGPUR } from "./nagpur";
+export { CHHATRAPATI_SAMBHAJINAGAR } from "./chhatrapati_sambhajinagar";
 
 const GEOGRAPHY: Record<CityId, CityGeography> = {
-  vadodara: VADODARA,
-  bengaluru: BENGALURU,
+  pune: PUNE,
+  mumbai: MUMBAI,
+  nagpur: NAGPUR,
+  chhatrapati_sambhajinagar: CHHATRAPATI_SAMBHAJINAGAR,
 };
 
-export const cityGeography = (city: CityId): CityGeography => GEOGRAPHY[city];
-export const cityAreas = (city: CityId): CivicArea[] => GEOGRAPHY[city].areas;
+export const cityGeography = (city: CityId): CityGeography => GEOGRAPHY[city] ?? PUNE;
+export const cityAreas = (city: CityId): CivicArea[] => (GEOGRAPHY[city] ?? PUNE).areas;
 
 /* -------------------------------------------------------------- seeded RNG */
 
@@ -442,9 +448,9 @@ export function cityHealthDistribution(
 }
 
 export function areaDailyTrend(areaId: string, filters: MapFilters, rawPoints: ComplaintPoint[]): DailyTrendPoint[] {
-  const city = cityAreas("vadodara").some((a) => a.id === areaId)
-    ? ("vadodara" as CityId)
-    : ("bengaluru" as CityId);
+  const city = (["pune", "mumbai", "nagpur", "chhatrapati_sambhajinagar"] as CityId[]).find((c) =>
+    cityAreas(c).some((a) => a.id === areaId)
+  ) ?? "pune";
   const points = filterPoints(rawPoints, filters).filter((p) => p.areaId === areaId);
   const labels = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
   const buckets = [0, 0, 0, 0, 0, 0, 0];

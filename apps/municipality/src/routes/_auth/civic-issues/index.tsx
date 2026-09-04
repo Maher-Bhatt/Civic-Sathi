@@ -17,7 +17,7 @@ export const Route = createFileRoute("/_auth/civic-issues/")({
 function CivicIssuesPage() {
     const { t } = useI18n();
     const { officer } = useMuniAuth();
-    const city = officer?.city ?? "vadodara";
+    const city = officer?.city ?? "pune";
   const [issues, setIssues] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 

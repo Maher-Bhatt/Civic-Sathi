@@ -42,7 +42,7 @@ export const Route = createFileRoute("/_auth/work-orders/")({
 function WorkOrdersPage() {
     const { t } = useI18n();
   const { officer } = useMuniAuth();
-  const city = officer?.city ?? "vadodara";
+  const city = officer?.city ?? "pune";
   const [filter, setFilter] = useState("all");
 
   const { data: orders = [], isLoading: loading } = useQuery({

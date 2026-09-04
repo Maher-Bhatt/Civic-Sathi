@@ -70,7 +70,7 @@ const TOOLTIP_STYLE = {
 function AnalyticsPage() {
     const { t } = useI18n();
   const { officer } = useMuniAuth();
-  const city = officer?.city ?? "vadodara";
+  const city = officer?.city ?? "pune";
   const [data, setData] = useState<Awaited<ReturnType<typeof getAnalyticsData>> | null>(null);
   const [loading, setLoading] = useState(true);
 

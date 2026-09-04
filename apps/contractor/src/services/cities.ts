@@ -1,11 +1,12 @@
 import type { IssueCategory, Severity } from "./types";
 
 /**
- * Geographic prototype data for the citizen map.
- * Modular by design: swap `TILES` or add a city without touching components.
+ * Geographic prototype data for the citizen and municipal maps.
+ * Covers four premier Municipal Corporations of Maharashtra:
+ * Pune (PMC), Mumbai (BMC), Nagpur (NMC), Chhatrapati Sambhajinagar (CSMC).
  */
 
-export type CityId = "vadodara" | "bengaluru";
+export type CityId = "pune" | "mumbai" | "nagpur" | "chhatrapati_sambhajinagar";
 
 export interface City {
   id: CityId;
@@ -16,26 +17,32 @@ export interface City {
 }
 
 export const CITIES: City[] = [
-  { id: "vadodara", name: "Vadodara", state: "Gujarat", center: [22.3072, 73.1812], zoom: 13 },
-  { id: "bengaluru", name: "Bengaluru", state: "Karnataka", center: [12.9716, 77.5946], zoom: 12 },
+  { id: "pune", name: "Pune", state: "Maharashtra", center: [18.5204, 73.8567], zoom: 13 },
+  { id: "mumbai", name: "Mumbai", state: "Maharashtra", center: [18.9388, 72.8354], zoom: 12 },
+  { id: "nagpur", name: "Nagpur", state: "Maharashtra", center: [21.1458, 79.0882], zoom: 13 },
+  { id: "chhatrapati_sambhajinagar", name: "Chhatrapati Sambhajinagar", state: "Maharashtra", center: [19.8762, 75.3433], zoom: 13 },
 ];
 
 export const getCity = (id: CityId): City => CITIES.find((c) => c.id === id) ?? CITIES[0]!;
 
-/** Neutral, muted basemaps — no blue-heavy, neon or rainbow styling. */
+/**
+ * Watermark-free, high-performance raster basemaps.
+ * Uses OpenStreetMap standard clean tile servers and Google Maps compatible layers.
+ * Completely eliminates the deprecated CARTO "API KEY REQUIRED" watermark.
+ */
 export const TILES = {
   dark: {
-    url: "https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png",
-    labels: "https://{s}.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}{r}.png",
+    url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+    labels: "",
   },
   light: {
-    url: "https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png",
-    labels: "https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png",
+    url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+    labels: "",
   },
 } as const;
 
 export const ATTRIBUTION =
-  '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>';
+  '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors | Government of Maharashtra (SIH26129)';
 
 /** Muted severity palette used for map geometry (SVG cannot read CSS variables). */
 export const SEVERITY_HEX: Record<Severity | "Normal", string> = {
@@ -67,137 +74,201 @@ export interface MapCluster {
 }
 
 export const MAP_CLUSTERS: MapCluster[] = [
+  // ── Pune (PMC) ─────────────────────────────────────────────────────────────
   {
-    id: "vad-water-14",
-    city: "vadodara",
+    id: "pun-water-katraj",
+    city: "pune",
     category: "Water Supply",
     severity: "High",
-    count: 23,
-    relatedCount: 127,
-    ward: "Ward 14",
-    area: "Sarvodaya Nagar",
-    lat: 22.3148,
-    lng: 73.1903,
+    count: 24,
+    relatedCount: 118,
+    ward: "Ward 18 · Katraj Basin",
+    area: "Katraj Aqueduct Basin",
+    lat: 18.4575,
+    lng: 73.8677,
     radiusMeters: 520,
     hotspot: true,
-    risk: 91,
+    risk: 92,
   },
   {
-    id: "vad-road-9",
-    city: "vadodara",
+    id: "pun-road-kothrud",
+    city: "pune",
     category: "Road Damage",
     severity: "Moderate",
-    count: 9,
-    ward: "Ward 9",
-    area: "Alkapuri",
-    lat: 22.3104,
-    lng: 73.1717,
-    radiusMeters: 320,
+    count: 14,
+    ward: "Ward 12 · Kothrud",
+    area: "Kothrud & Karve Road",
+    lat: 18.5074,
+    lng: 73.8077,
+    radiusMeters: 380,
   },
   {
-    id: "vad-garbage-6",
-    city: "vadodara",
-    category: "Garbage Collection",
-    severity: "Low",
-    count: 5,
-    ward: "Ward 6",
-    area: "Karelibaug",
-    lat: 22.3262,
-    lng: 73.1994,
-    radiusMeters: 260,
-  },
-  {
-    id: "vad-drain-11",
-    city: "vadodara",
-    category: "Drainage",
-    severity: "Moderate",
-    count: 7,
-    ward: "Ward 11",
-    area: "Manjalpur",
-    lat: 22.2793,
-    lng: 73.1932,
-    radiusMeters: 300,
-  },
-  {
-    id: "vad-light-3",
-    city: "vadodara",
-    category: "Street Lighting",
-    severity: "Low",
-    count: 3,
-    ward: "Ward 3",
-    area: "Gotri",
-    lat: 22.3251,
-    lng: 73.1364,
-    radiusMeters: 240,
-  },
-  {
-    id: "blr-water-150",
-    city: "bengaluru",
-    category: "Water Supply",
-    severity: "High",
-    count: 17,
-    relatedCount: 96,
-    ward: "Ward 150",
-    area: "Whitefield",
-    lat: 12.9698,
-    lng: 77.7499,
-    radiusMeters: 560,
-    hotspot: true,
-    risk: 84,
-  },
-  {
-    id: "blr-road-82",
-    city: "bengaluru",
-    category: "Road Damage",
-    severity: "Moderate",
-    count: 12,
-    ward: "Ward 82",
-    area: "Koramangala",
-    lat: 12.9352,
-    lng: 77.6245,
-    radiusMeters: 340,
-  },
-  {
-    id: "blr-garbage-72",
-    city: "bengaluru",
+    id: "pun-garbage-kasba",
+    city: "pune",
     category: "Garbage Collection",
     severity: "Low",
     count: 6,
-    ward: "Ward 72",
-    area: "Indiranagar",
-    lat: 12.9719,
-    lng: 77.6412,
-    radiusMeters: 280,
+    ward: "Ward 1 · Kasba",
+    area: "Kasba Peth & Shaniwar Wada",
+    lat: 18.5196,
+    lng: 73.8553,
+    radiusMeters: 260,
   },
   {
-    id: "blr-drain-174",
-    city: "bengaluru",
+    id: "pun-drain-hadapsar",
+    city: "pune",
     category: "Drainage",
     severity: "Moderate",
-    count: 9,
-    ward: "Ward 174",
-    area: "HSR Layout",
-    lat: 12.9121,
-    lng: 77.6446,
-    radiusMeters: 320,
+    count: 11,
+    ward: "Ward 22 · Hadapsar",
+    area: "Hadapsar & Magarpatta",
+    lat: 18.5089,
+    lng: 73.9259,
+    radiusMeters: 340,
   },
   {
-    id: "blr-sewage-45",
-    city: "bengaluru",
-    category: "Sewage",
-    severity: "Critical",
+    id: "pun-light-baner",
+    city: "pune",
+    category: "Street Lighting",
+    severity: "Low",
     count: 4,
-    ward: "Ward 45",
-    area: "Rajajinagar",
-    lat: 12.9982,
-    lng: 77.5551,
+    ward: "Ward 8 · Baner",
+    area: "Aundh & Baner Smart Strip",
+    lat: 18.559,
+    lng: 73.8031,
     radiusMeters: 240,
+  },
+
+  // ── Mumbai (BMC) ───────────────────────────────────────────────────────────
+  {
+    id: "mum-water-dadar",
+    city: "mumbai",
+    category: "Water Supply",
+    severity: "High",
+    count: 31,
+    relatedCount: 142,
+    ward: "G/North Ward",
+    area: "Dadar & Shivaji Park",
+    lat: 19.0222,
+    lng: 72.8428,
+    radiusMeters: 550,
+    hotspot: true,
+    risk: 88,
+  },
+  {
+    id: "mum-drain-kurla",
+    city: "mumbai",
+    category: "Drainage",
+    severity: "Critical",
+    count: 22,
+    relatedCount: 160,
+    ward: "L Ward",
+    area: "Kurla & BKC Financial Center",
+    lat: 19.0688,
+    lng: 72.87,
+    radiusMeters: 580,
+    hotspot: true,
+    risk: 95,
+  },
+  {
+    id: "mum-road-andheri",
+    city: "mumbai",
+    category: "Road Damage",
+    severity: "Moderate",
+    count: 18,
+    ward: "K/West Ward",
+    area: "Andheri West & Lokhandwala",
+    lat: 19.1197,
+    lng: 72.8464,
+    radiusMeters: 390,
+  },
+  {
+    id: "mum-garbage-colaba",
+    city: "mumbai",
+    category: "Garbage Collection",
+    severity: "Low",
+    count: 8,
+    ward: "A Ward",
+    area: "Colaba & Fort",
+    lat: 18.922,
+    lng: 72.8347,
+    radiusMeters: 290,
+  },
+
+  // ── Nagpur (NMC) ───────────────────────────────────────────────────────────
+  {
+    id: "nag-water-dharampeth",
+    city: "nagpur",
+    category: "Water Supply",
+    severity: "Moderate",
+    count: 12,
+    ward: "Zone 2 · Dharampeth",
+    area: "Dharampeth & West High Court Road",
+    lat: 21.1432,
+    lng: 79.0617,
+    radiusMeters: 360,
+  },
+  {
+    id: "nag-road-sitabuldi",
+    city: "nagpur",
+    category: "Road Damage",
+    severity: "High",
+    count: 15,
+    relatedCount: 74,
+    ward: "Zone 4 · Dhantoli",
+    area: "Sitabuldi Fort & Interchange",
+    lat: 21.1466,
+    lng: 79.0833,
+    radiusMeters: 440,
+    hotspot: true,
+    risk: 83,
+  },
+  {
+    id: "nag-garbage-sadar",
+    city: "nagpur",
+    category: "Garbage Collection",
+    severity: "Low",
+    count: 5,
+    ward: "Zone 7 · Mangalwari",
+    area: "Sadar & Residency Road",
+    lat: 21.1639,
+    lng: 79.0805,
+    radiusMeters: 250,
+  },
+
+  // ── Chhatrapati Sambhajinagar (CSMC) ───────────────────────────────────────
+  {
+    id: "csn-water-begumpura",
+    city: "chhatrapati_sambhajinagar",
+    category: "Water Supply",
+    severity: "High",
+    count: 19,
+    relatedCount: 88,
+    ward: "Zone 4 · Heritage Hydraulic",
+    area: "Begumpura & Panchakki Aqueduct",
+    lat: 19.897,
+    lng: 75.318,
+    radiusMeters: 480,
+    hotspot: true,
+    risk: 86,
+  },
+  {
+    id: "csn-road-cidco",
+    city: "chhatrapati_sambhajinagar",
+    category: "Road Damage",
+    severity: "Moderate",
+    count: 13,
+    ward: "Zone 2 · New City",
+    area: "CIDCO Cannaught Place",
+    lat: 19.8778,
+    lng: 75.367,
+    radiusMeters: 360,
   },
 ];
 
 export const clustersForCity = (city: CityId) => MAP_CLUSTERS.filter((c) => c.city === city);
 
-/** Nearest city for a detected coordinate, so geolocation stays in a supported city. */
+/** Nearest city for a detected coordinate, so geolocation stays in a supported Maharashtra city. */
 export function nearestCity(lat: number, lng: number): City {
   let best = CITIES[0]!;
   let bestD = Number.POSITIVE_INFINITY;

@@ -2,8 +2,10 @@ import { Delaunay } from "d3-delaunay";
 import intersect from "@turf/intersect";
 import { polygon as turfPolygon, featureCollection } from "@turf/helpers";
 import type { CityId } from "@/services/cities";
-import { VADODARA } from "./vadodara";
-import { BENGALURU } from "./bengaluru";
+import { PUNE } from "./pune";
+import { MUMBAI } from "./mumbai";
+import { NAGPUR } from "./nagpur";
+import { CHHATRAPATI_SAMBHAJINAGAR } from "./chhatrapati_sambhajinagar";
 import {
   AREA_HEALTH_HEX,
   AREA_HEALTH_LABEL,
@@ -18,16 +20,20 @@ import {
 } from "./types";
 
 export * from "./types";
-export { VADODARA } from "./vadodara";
-export { BENGALURU } from "./bengaluru";
+export { PUNE } from "./pune";
+export { MUMBAI } from "./mumbai";
+export { NAGPUR } from "./nagpur";
+export { CHHATRAPATI_SAMBHAJINAGAR } from "./chhatrapati_sambhajinagar";
 
 const GEOGRAPHY: Record<CityId, CityGeography> = {
-  vadodara: VADODARA,
-  bengaluru: BENGALURU,
+  pune: PUNE,
+  mumbai: MUMBAI,
+  nagpur: NAGPUR,
+  chhatrapati_sambhajinagar: CHHATRAPATI_SAMBHAJINAGAR,
 };
 
-export const cityGeography = (city: CityId): CityGeography => GEOGRAPHY[city];
-export const cityAreas = (city: CityId): CivicArea[] => GEOGRAPHY[city].areas;
+export const cityGeography = (city: CityId): CityGeography => GEOGRAPHY[city] ?? PUNE;
+export const cityAreas = (city: CityId): CivicArea[] => (GEOGRAPHY[city] ?? PUNE).areas;
 
 /* -------------------------------------------------------------- seeded RNG */
 
@@ -186,31 +192,35 @@ export interface AreaActivity {
 }
 
 export const CITY_COMPLAINTS_TOTAL: Record<CityId, number> = {
-  bengaluru: 100002,
-  vadodara: 12139,
+  pune: 38450,
+  mumbai: 94210,
+  nagpur: 21890,
+  chhatrapati_sambhajinagar: 16420,
 };
 
 /** Total researched urban population per city */
 export const CITY_POPULATION_TOTAL: Record<CityId, number> = {
-  vadodara: 2240000,
-  bengaluru: 13600000,
+  pune: 3950000,
+  mumbai: 12500000,
+  nagpur: 2500000,
+  chhatrapati_sambhajinagar: 1400000,
 };
 
-/** Thresholds scale with the active time window and city scale so Vadodara is evaluated on its own compact scale. */
-export function healthFromCount(total: number, time: TimeWindow = "30d", city: CityId = "vadodara"): AreaHealth {
+/** Thresholds scale with the active time window and city scale so each city is evaluated appropriately. */
+export function healthFromCount(total: number, time: TimeWindow = "30d", city: CityId = "pune"): AreaHealth {
   const k = time === "7d" ? 0.35 : time === "all" ? 2.9 : 1.0;
   
-  if (city === "vadodara") {
-    // Vadodara scale (compact city ~12k total volume, ~100-350 per locality in 30d)
-    if (total >= 280 * k) return "critical";
-    if (total >= 200 * k) return "high";
-    if (total >= 100 * k) return "moderate";
+  if (city === "mumbai") {
+    // Mumbai mega-scale
+    if (total >= 450 * k) return "critical";
+    if (total >= 300 * k) return "high";
+    if (total >= 150 * k) return "moderate";
     return "low";
   } else {
-    // Bengaluru scale (tier-1 metropolis ~100k+ volume, ~1000-3000 per locality in 30d)
-    if (total >= 1800 * k) return "critical";
-    if (total >= 1100 * k) return "high";
-    if (total >= 500 * k) return "moderate";
+    // Regional municipal scale (Pune, Nagpur, Sambhajinagar)
+    if (total >= 280 * k) return "critical";
+    if (total >= 190 * k) return "high";
+    if (total >= 95 * k) return "moderate";
     return "low";
   }
 }
@@ -219,7 +229,7 @@ export function healthFromCount(total: number, time: TimeWindow = "30d", city: C
 function buildPoints(city: CityId): ComplaintPoint[] {
   const points: ComplaintPoint[] = [];
   const areas = cityAreas(city);
-  const pointsPerArea = city === "bengaluru" ? 120 : 60;
+  const pointsPerArea = city === "mumbai" ? 120 : 80;
   
   for (const a of areas) {
     const r = rng(`pts:${a.id}`);
@@ -353,7 +363,7 @@ export function areaActivity(city: CityId, filters: MapFilters): AreaActivity[] 
     
     // Demographic Affected Population Model:
     // Ratio of affected citizens based on issue severity and infrastructure impact multipliers
-    const basePop = area.population || (city === "vadodara" ? 75000 : 200000);
+    const basePop = area.population || (city === "mumbai" ? 280000 : 130000);
     const healthFactor = health === "critical" ? 0.45 : health === "high" ? 0.26 : health === "moderate" ? 0.12 : 0.035;
     const issueMultiplier = filters.issue === "water" ? 1.3 : filters.issue === "roads" ? 1.45 : filters.issue === "drainage" ? 1.2 : 1.0;
     const jitter = 0.9 + r() * 0.2;
@@ -368,9 +378,7 @@ export function areaActivity(city: CityId, filters: MapFilters): AreaActivity[] 
       { issue: "garbage", daysAgo: 4, health: "low" },
     ];
 
-    const isHotspot = city === "vadodara"
-      ? (risk >= 40 && total >= 80)
-      : (risk >= 55 && total >= 300);
+    const isHotspot = risk >= 45 && total >= 70;
 
     return {
       area,
@@ -566,9 +574,9 @@ export function cityHealthDistribution(
 
 /** Area-specific 7-day sparkline data. */
 export function areaDailyTrend(areaId: string, filters: MapFilters): DailyTrendPoint[] {
-  const city = cityAreas("vadodara").some((a) => a.id === areaId)
-    ? ("vadodara" as CityId)
-    : ("bengaluru" as CityId);
+  const city = (["pune", "mumbai", "nagpur", "chhatrapati_sambhajinagar"] as CityId[]).find((c) =>
+    cityAreas(c).some((a) => a.id === areaId)
+  ) ?? "pune";
   const acts = areaActivity(city, filters);
   const act = acts.find((a) => a.area.id === areaId);
   const last7 = act?.last7 ?? 100;
@@ -586,29 +594,35 @@ export function areaDailyTrend(areaId: string, filters: MapFilters): DailyTrendP
   });
 }
 
-/** Researched historical civic heritage notes for mapped localities */
+/** Researched historical civic heritage notes for mapped Maharashtra localities */
 export function getLocalityHeritage(areaId: string): string | null {
   const HERITAGE_NOTES: Record<string, string> = {
-    // Vadodara
-    "vad-alkapuri": "Established as the prime royal and diplomatic avenue connecting Sayajigunj to the Gaekwad estates.",
-    "vad-mandvi": "16th-century fortified citadel center where Mughal trade corridors intersected with royal Gaekwad governance.",
-    "vad-sayajigunj": "Conceived around the Maharaja Sayajirao University (MSU) and Sayaji Baug 113-acre botanical park.",
-    "vad-fatehgunj": "Historic military cantonment sector converted into Baroda's premier academic and cultural quarter.",
-    "vad-karelibaug": "Home to the historic Kirti Mandir cenotaph honoring ancestors of the Gaekwad Maratha dynasty.",
-    "vad-gotri": "Originally a farming hamlet transformed into a major residential corridor with ancient stepwells.",
-    "vad-manjalpur": "South Baroda's largest historic township expanded under late 20th-century VMC urban planning.",
-    "vad-makarpura": "Site of the Makarpura Palace built in 1870 by Khanderao Gaekwad as an Italian-style summer residence.",
+    // Pune
+    "pun-kasba-peth": "Historic Kasba Ganpati consecrated by Rajmata Jijau in 1630 CE; home to Shaniwar Wada, administrative seat of the Maratha Empire.",
+    "pun-shivajinagar": "Site of the historic Bhamburda rock-cut Pataleshwar cave temple (8th century CE) and modern Pune administrative corridor.",
+    "pun-kothrud": "Historic territory of Mastani Bai's residence; blossomed into modern Pune's premier educational and residential heartland.",
+    "pun-deccan": "Cultural nerve center flanked by the Mutha river, Fergusson College (1885), and Sambhaji Park.",
+    "pun-hadapsar": "Battleground of the 1802 Battle of Poona; transformed into an integrated industrial and smart township zone.",
+    "pun-katraj": "Engineered in 1750 by Peshwa Balaji Baji Rao with a massive underground gravity masonry aqueduct delivering drinking water across Pune.",
 
-    // Bengaluru
-    "blr-whitefield": "Founded in 1882 as a farming colony granted by the Maharaja of Mysore, now Asia's tech nexus.",
-    "blr-malleshwaram": "Planned in 1898 following the Great Plague with broad tree-lined avenues and the 17th-century Kadu Malleshwara temple.",
-    "blr-basavanagudi": "Home to the 1537 Bull Temple built by Kempe Gowda I, honoring Nandi on the granite ridge of Bugle Rock.",
-    "blr-indiranagar": "Established in the early 1970s as a defense and BDA residential suburb along Old Airport Road.",
-    "blr-shivajinagar": "Historic 1809 British Cantonment marketplace and home to the 1927 heritage Russell Market.",
-    "blr-yelahanka": "Ancient 12th-century Hoysala capital and ancestral home of Bengaluru's founder Kempe Gowda I.",
-    "blr-bellandur": "Part of the ancient 10th-century Chola cascade water network feeding 28 downstream wetlands.",
-    "blr-hebbal": "Engineered in 1537 by Kempe Gowda with a historic earthen dam creating Hebbal Lake.",
-    "blr-electronic-city": "Conceived in 1978 by R.K. Baliga as India's premier high-tech electronic oasis.",
+    // Mumbai
+    "mum-colaba-fort": "Historic British and Maratha naval crossroads; Gateway of India constructed here in 1924.",
+    "mum-malabar-hill": "Sacred promontory around the ancient 1127 CE Banganga Tank built by the Silhara dynasty.",
+    "mum-dadar-shivaji-park": "Heart of Mumbai's Marathi cultural life; historic ground consecrated to Chhatrapati Shivaji Maharaj.",
+    "mum-bandra-west": "Historic Portuguese port settled around Mount Mary (1640 CE) and the Maratha victory at Castella de Aguada.",
+    "mum-kurla-bkc": "Confluence of Mithi river wetlands, ancient trade routes, and Asia's modern premier financial center.",
+
+    // Nagpur
+    "nag-sitabuldi": "Strategic twin-peaked hill and fort built by Bhonsle King Appasaheb; site of the historic 1817 Battle of Sitabuldi.",
+    "nag-civil-lines": "Constructed as the administrative capital of the Central Provinces, home to the Zero Mile baseline marker of India.",
+    "nag-dharampeth": "Cultural and intellectual avenue of Nagpur, home to historic educational academies and literary societies.",
+    "nag-futala": "Centuries-old 64-acre reservoir engineered by the Bhonsle kings, renowned for its heritage embankment stone bunds.",
+
+    // Chhatrapati Sambhajinagar
+    "csn-begumpura-panchakki": "Medieval 17th-century hydraulic wonder powered by the subterranean Nahar-e-Ambari aqueduct to grind grain for travelers.",
+    "csn-gulmandi-gates": "Enclosed within the medieval fortifications of 52 historic stone gates, serving as the commercial crossroads of Marathwada.",
+    "csn-kranti-chowk": "Central memorial square dedicated to the martyrs of the Marathwada Liberation Struggle (1948).",
+    "csn-daulatabad-base": "Shadow of the invincible 12th-century Yadava rock-cut hill fortress Devgiri (Daulatabad).",
   };
 
   return HERITAGE_NOTES[areaId] || null;

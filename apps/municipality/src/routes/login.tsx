@@ -21,7 +21,7 @@ function MuniLoginPage() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [city, setCity] = useState<CityId>("vadodara");
+  const [city, setCity] = useState<CityId>("pune");
   const [remember, setRemember] = useState(true);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);

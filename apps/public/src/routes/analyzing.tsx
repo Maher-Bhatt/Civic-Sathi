@@ -89,12 +89,12 @@ function AnalyzingPage() {
     setStage(STAGES.length - 1);
     const safeLocation = analysis.location ??
       draft.location ?? {
-        lat: 22.3072,
-        lng: 73.1812,
-        ward: "Ward 14",
-        area: "Vadodara",
+        lat: 18.5204,
+        lng: 73.8567,
+        ward: "Zone 1",
+        area: "Pune",
       };
-    const city = getCity(draft.city || "vadodara");
+    const city = getCity(draft.city || "pune");
     const wardNumberMatch = String(safeLocation.ward || "").match(/\d+/);
     const created = await createComplaint({
       title: `${analysis.category} at ${safeLocation.ward || city.name}`,
@@ -127,12 +127,12 @@ function AnalyzingPage() {
     setDuplicates([]);
     const safeLocation = result.location ??
       draftData.location ?? {
-        lat: 22.3072,
-        lng: 73.1812,
-        ward: "Ward 14",
-        area: "Vadodara",
+        lat: 18.5204,
+        lng: 73.8567,
+        ward: "Zone 1",
+        area: "Pune",
       };
-    const city = getCity(draftData.city || "vadodara");
+    const city = getCity(draftData.city || "pune");
     const wardNumberMatch = String(safeLocation.ward || "").match(/\d+/);
     const created = await createComplaint({
       title: `${result.category} at ${safeLocation.ward || city.name}`,

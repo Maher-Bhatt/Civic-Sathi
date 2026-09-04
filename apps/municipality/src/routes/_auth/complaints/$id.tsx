@@ -25,7 +25,7 @@ function ComplaintDetailPage() {
     const { t } = useI18n();
   const { id } = Route.useParams() as any;
   const { officer } = useMuniAuth();
-  const city = officer?.city ?? "vadodara";
+  const city = officer?.city ?? "pune";
   const [complaint, setComplaint] = useState<MuniComplaint | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);

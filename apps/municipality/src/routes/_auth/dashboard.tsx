@@ -47,7 +47,7 @@ export const Route = createFileRoute("/_auth/dashboard")({
 function MuniDashboardPage() {
     const { t } = useI18n();
   const { officer } = useMuniAuth();
-  const city = officer?.city ?? "vadodara";
+  const city = officer?.city ?? "pune";
   const [liveOverride] = useState<LiveActivity[] | null>(null);
   const [mapMode] = useState<MapMode>("health");
 

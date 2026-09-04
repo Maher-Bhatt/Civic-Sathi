@@ -72,7 +72,7 @@ function Chip({
 function MuniMapPage() {
     const { t } = useI18n();
   const { officer } = useMuniAuth();
-  const city = officer?.city ?? "vadodara";
+  const city = officer?.city ?? "pune";
   const [mode, setMode] = useState<MapMode>("health");
   const [filters, setFilters] = useState<MapFilters>(DEFAULT_FILTERS);
   const [selectedAreaId, setSelectedAreaId] = useState<string | null>(null);

@@ -166,7 +166,9 @@ export function CivicMap({
     baseRef.current?.remove();
     labelRef.current?.remove();
     baseRef.current = L.tileLayer(tiles.url, { attribution: ATTRIBUTION, maxZoom: 19 }).addTo(map);
-    labelRef.current = L.tileLayer(tiles.labels, { maxZoom: 19, opacity: 0.85 }).addTo(map);
+    if (tiles.labels) {
+      labelRef.current = L.tileLayer(tiles.labels, { maxZoom: 19, opacity: 0.85 }).addTo(map);
+    }
     areaLayer.current?.bringToFront();
   }, [resolved, ready]);
 
