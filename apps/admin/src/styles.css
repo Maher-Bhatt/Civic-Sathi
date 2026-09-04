@@ -395,8 +395,7 @@
   color: var(--foreground) !important;
   box-shadow: var(--shadow-lift) !important;
   
-  -webkit-
-  font-size: 0.75rem !important;
+    font-size: 0.75rem !important;
   line-height: 1.5 !important;
   padding: 10px 14px !important;
   font-family: var(--font-sans) !important;
@@ -1295,8 +1294,7 @@ body:has(.civic-admin-shell) {
   border-color: rgb(132 182 235 / .20) !important;
   box-shadow: 18px 0 56px -38px rgb(0 0 0 / .95), inset -1px 0 0 rgb(255 255 255 / .04);
   
-  -webkit-
-}
+  }
 .civic-admin-sidebar > div:first-child {
   background: linear-gradient(90deg, rgb(241 174 85 / .07), transparent 72%);
   border-color: rgb(132 182 235 / .15) !important;
@@ -1329,8 +1327,7 @@ body:has(.civic-admin-shell) {
   border-color: rgb(132 182 235 / .18) !important;
   box-shadow: 0 16px 42px -32px rgb(0 0 0 / .95), inset 0 1px 0 rgb(255 255 255 / .05);
   
-  -webkit-
-}
+  }
 .civic-admin-content {
   position: relative;
   z-index: 1;
@@ -1343,16 +1340,14 @@ body:has(.civic-admin-shell) {
   color: var(--foreground);
   box-shadow: 0 22px 58px -38px rgb(0 0 0 / .94), inset 0 1px 0 rgb(255 255 255 / .055);
   
-  -webkit-
-}
+  }
 .civic-admin-shell .glass-strong {
   background: white !important;
   border-color: rgb(132 182 235 / .22) !important;
   color: var(--foreground);
   box-shadow: 0 26px 72px -42px rgb(0 0 0 / .98), inset 0 1px 0 rgb(255 255 255 / .07);
   
-  -webkit-
-}
+  }
 .civic-admin-shell .civic-admin-command-center {
   margin: -1rem;
   min-height: calc(100vh - 4rem);

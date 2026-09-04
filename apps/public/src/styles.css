@@ -239,16 +239,14 @@
   background: var(--glass);
   border: 1px solid var(--glass-border);
   
-  -webkit-
-  box-shadow: var(--shadow-soft);
+    box-shadow: var(--shadow-soft);
 }
 
 @utility glass-strong {
   background: var(--glass-strong);
   border: 1px solid rgba(255, 255, 255, 0.85);
   
-  -webkit-
-  box-shadow: var(--shadow-lift);
+    box-shadow: var(--shadow-lift);
 }
 
 @utility glass-aurora {
@@ -925,8 +923,7 @@ body.civic-heritage-shell .jm-heritage-card {
   border-color: color-mix(in srgb, var(--civic-city-accent) 38%, var(--glass-border)) !important;
   box-shadow: var(--shadow-lift);
   
-  -webkit-
-}
+  }
 body.civic-heritage-shell .civic-atmosphere-panel > .animate-rise:first-child {
   background: white !important;
   border-color: rgb(16 27 61 / .16) !important;

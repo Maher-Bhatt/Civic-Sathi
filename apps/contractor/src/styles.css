@@ -395,8 +395,7 @@
   color: var(--foreground) !important;
   box-shadow: var(--shadow-lift) !important;
   
-  -webkit-
-  font-size: 0.75rem !important;
+    font-size: 0.75rem !important;
   line-height: 1.5 !important;
   padding: 10px 14px !important;
   font-family: var(--font-sans) !important;
