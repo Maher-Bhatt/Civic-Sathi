@@ -10,6 +10,7 @@ import datetime
 
 from app.core.database import get_db
 from app.core.config import settings
+from app.core.logging import get_logger
 
 from app.core.security import (
     create_access_token, hash_password, verify_password, verify_officer_key,
@@ -35,6 +36,7 @@ from uuid import uuid4, UUID
 from pydantic import BaseModel, EmailStr, Field
 
 router = APIRouter()
+logger = get_logger(__name__)
 
 
 # ── /me — works for ALL authenticated users (citizen, officer, admin, contractor) ──
@@ -473,7 +475,7 @@ async def request_password_reset(
             user.reset_otp_channel = None
             user.reset_otp_requested_at = None
             db.commit()
-        print(f"[PasswordReset] delivery failed: {exc}")
+        logger.exception("Password reset delivery failed", extra={"user_id": str(user.id) if user else None})
         raise HTTPException(
             status_code=status.HTTP_502_BAD_GATEWAY,
             detail="The reset provider could not deliver the code. Please retry or contact the platform administrator.",

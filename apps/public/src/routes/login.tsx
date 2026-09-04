@@ -97,7 +97,7 @@ function LoginPage() {
         <div className="mt-4 text-center text-sm">
           <Link
             to="/forgot-password"
-            search={{ redirect }}
+            search={redirect ? { redirect } : {}}
             className="text-primary underline-offset-4 transition-opacity hover:underline hover:opacity-80"
           >
             {t("login.forgot", "Forgot password?")}

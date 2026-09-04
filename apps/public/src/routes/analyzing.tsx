@@ -320,7 +320,7 @@ function AnalyzingPage() {
         <h1 className="mt-4 text-xl font-semibold">{t("ui.analyzing_your_report")}</h1>
         <ul className="mt-7 space-y-3.5" aria-live="polite">
           {STAGES.map((s, i) => (
-            <li key={s} className="flex items-center gap-3">
+            <li key={s.key} className="flex items-center gap-3">
               <span
                 className={cn(
                   "flex h-6 w-6 items-center justify-center rounded-full border transition-all duration-300",

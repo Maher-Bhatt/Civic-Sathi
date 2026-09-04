@@ -14,33 +14,8 @@ from app.core.errors import (
 )
 from app.api.v1.router import router as api_v1_router
 
-from contextlib import asynccontextmanager
-
 # Setup logging
 setup_logging()
-
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    # Auto-create tables on startup in PostgreSQL
-    try:
-        from app.core.database import engine, SessionLocal
-        from app.models import Base
-        from app.services.data_integrity import (
-            ensure_historical_city_separation,
-            ensure_working_contractor_access,
-        )
-        Base.metadata.create_all(bind=engine)
-        with SessionLocal() as db:
-            repaired = ensure_historical_city_separation(db)
-            contractor_repaired = ensure_working_contractor_access(db)
-        print(
-            "Database schema initialized successfully; "
-            f"city integrity repaired: {repaired} rows, "
-            f"contractor access repaired: {contractor_repaired} changes."
-        )
-    except Exception as e:
-        print(f"Warning: Auto-migration on startup failed: {e}")
-    yield
 
 # Create FastAPI app
 app = FastAPI(
@@ -48,7 +23,6 @@ app = FastAPI(
     version=settings.app_version,
     docs_url="/docs" if settings.docs_enabled else None,
     redoc_url="/redoc" if settings.docs_enabled else None,
-    lifespan=lifespan,
 )
 
 # CORS middleware. A wildcard origin cannot be combined with credentials in

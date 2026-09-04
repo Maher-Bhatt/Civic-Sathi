@@ -6,6 +6,10 @@ from sqlalchemy.orm import sessionmaker, Session
 from sqlalchemy.pool import NullPool
 
 from app.core.config import settings
+from app.core.logging import get_logger
+
+
+logger = get_logger(__name__)
 
 
 # Create engine with appropriate pool settings for Neon
@@ -50,6 +54,6 @@ def check_db_connection() -> bool:
         with engine.connect() as conn:
             conn.execute(text("SELECT 1"))
         return True
-    except Exception as e:
-        print(f"Database connection check failed: {e}")
+    except Exception:
+        logger.exception("Database connection health check failed")
         return False

@@ -118,6 +118,7 @@ class ComplaintResponse(BaseModel):
     city_id: UUID
     city_name: str
     priority: str
+
     severity_score: int
     risk_score: int
     ward_number: int | None = None

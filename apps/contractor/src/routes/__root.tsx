@@ -12,9 +12,7 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import leafletCss from "leaflet/dist/leaflet.css?url";
 import { ThemeProvider, themeInitScript } from "@/lib/theme";
-import { MuniAuthProvider } from "@/lib/muni-auth";
 import { ContractorAuthProvider } from "@/lib/contractor-auth";
-import { AdminAuthProvider } from "@/lib/admin-auth";
 import { Toaster } from "@/components/ui/sonner";
 import { I18nProvider } from "@/lib/i18n";
 
@@ -143,14 +141,10 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <I18nProvider>
         <ThemeProvider>
-          <MuniAuthProvider>
-            <ContractorAuthProvider>
-              <AdminAuthProvider>
-                <Outlet />
-                <Toaster position="top-center" />
-              </AdminAuthProvider>
-            </ContractorAuthProvider>
-          </MuniAuthProvider>
+          <ContractorAuthProvider>
+            <Outlet />
+            <Toaster position="top-center" />
+          </ContractorAuthProvider>
         </ThemeProvider>
       </I18nProvider>
     </QueryClientProvider>

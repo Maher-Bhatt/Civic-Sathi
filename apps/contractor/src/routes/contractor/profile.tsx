@@ -186,10 +186,10 @@ function ContractorProfile() {
         {!performance && !performanceError ? <p className="text-sm text-[var(--muted-foreground)]">Loading verified contractor metrics…</p> : null}
         {performance ? (
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-            <PerformanceMetric label="Work orders" value={performance.metrics.work_orders ?? 0} />
-            <PerformanceMetric label="Completed" value={performance.metrics.completed ?? 0} />
-            <PerformanceMetric label="Rework" value={performance.metrics.rework ?? 0} />
-            <PerformanceMetric label="Data status" value={performance.metrics.data_status ? "Live" : "—"} />
+            <PerformanceMetric label="Work orders" value={performance.metrics["work_orders"] ?? 0} />
+            <PerformanceMetric label="Completed" value={performance.metrics["completed"] ?? 0} />
+            <PerformanceMetric label="Rework" value={performance.metrics["rework"] ?? 0} />
+            <PerformanceMetric label="Data status" value={performance.metrics["data_status"] ? "Live" : "—"} />
           </div>
         ) : null}
         <p className="text-xs text-[var(--muted-foreground)]">Reputation is quality-adjusted: raw work-order quantity does not determine recognition. Inspection pass rate, evidence quality, on-time completion, and citizen-confirmed quality are added as verified workflow events become available.</p>

@@ -234,8 +234,6 @@ export async function updateProfile(patch: Partial<User>): Promise<User> {
   return next;
 }
 
-export async function changePassword(): Promise<void> {}
-
 function normalizeComplaint(raw: any, fallbackInput?: any): Complaint {
   const source = raw?.data || raw;
   if (!source) return null as any;
@@ -480,28 +478,6 @@ export async function markNotificationsRead(): Promise<AppNotification[]> {
   write(LS.notifications, list);
   return list;
 }
-
-export async function detectDuplicateIssues(input: any): Promise<any[]> {
-  return [];
-}
-
-export async function createCivicIssue(input: any): Promise<any> {
-  return {
-    id: `ISS-${Date.now()}`,
-    ...input,
-  };
-}
-
-export async function linkToCivicIssue(
-  issueId: string,
-  complaintId: string,
-  relationshipType: string,
-  matchConfidence: number,
-  linkedBy: string,
-): Promise<any> {
-  return { success: true };
-}
-
 
 export async function getMyCivicReputation(): Promise<ReputationMe> {
   return client.get<ReputationMe>("/api/v1/reputation/me");

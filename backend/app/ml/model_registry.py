@@ -1,13 +1,15 @@
 """Model registry for loading ML models with lazy loading and low-memory fallbacks"""
 
-from functools import lru_cache
-import sys
+import os
+
 import numpy as np
 
 from app.core.config import settings
+from app.core.logging import get_logger
 
 _spacy_model = None
 _sentence_model = None
+logger = get_logger(__name__)
 
 
 class LightweightEmbeddingModel:
@@ -53,8 +55,8 @@ def get_spacy_model():
         except Exception:
             _spacy_model = spacy.blank("en")
             return _spacy_model
-    except Exception as e:
-        print(f"spaCy not available (running in low-memory mode): {e}")
+    except Exception:
+        logger.warning("spaCy is unavailable; using low-memory keyword fallback", exc_info=True)
         return None
 
 
@@ -63,13 +65,20 @@ def get_sentence_transformer():
     global _sentence_model
     if _sentence_model is not None:
         return _sentence_model
-    
+
+    offline = os.getenv("HF_HUB_OFFLINE", "").lower() in {"1", "true", "yes"}
     try:
         from sentence_transformers import SentenceTransformer
-        _sentence_model = SentenceTransformer(settings.sentence_model_name)
+        _sentence_model = SentenceTransformer(
+            settings.sentence_model_name,
+            local_files_only=offline,
+        )
         return _sentence_model
-    except Exception as e:
-        print(f"SentenceTransformer not loaded (running in low-memory mode): {e}")
+    except Exception:
+        logger.warning(
+            "SentenceTransformer is unavailable; using lightweight embeddings",
+            exc_info=not offline,
+        )
         _sentence_model = LightweightEmbeddingModel(dim=384)
         return _sentence_model
 

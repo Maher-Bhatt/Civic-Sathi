@@ -125,7 +125,7 @@ function AdminShell() {
           <div className="admin-nav-group admin-nav-group--last">
             <p className="admin-nav-label">Configuration</p>
             <Link
-              to="/admin/settings" as any
+              to="/admin/settings"
               onClick={closeMobileMenu}
               className="admin-nav-item"
               activeProps={{ className: "admin-nav-item is-active" }}

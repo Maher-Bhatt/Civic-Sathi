@@ -6,6 +6,12 @@ from app.ml.model_registry import get_spacy_model
 from app.schemas.common import EntityResult
 
 
+def _extract_lexical_keywords(text: str, max_keywords: int) -> list[str]:
+    """Provide stable keywords when the lightweight spaCy model has no POS tagger."""
+    words = re.findall(r'\b\w{3,}\b', text.lower())
+    return list(dict.fromkeys(words))[:max_keywords]
+
+
 def detect_language(text: str) -> str:
     """
     Detect text language (simplified for MVP).
@@ -101,11 +107,12 @@ def extract_keywords(text: str, max_keywords: int = 10) -> list[str]:
                 seen.add(kw)
                 unique_keywords.append(kw)
         
-        return unique_keywords[:max_keywords]
+        # ``spacy.blank("en")`` is a supported low-memory fallback but has no
+        # POS tagger. In that case, use the same deterministic lexical fallback
+        # as an unavailable spaCy installation instead of returning no signal.
+        return unique_keywords[:max_keywords] or _extract_lexical_keywords(text, max_keywords)
     except Exception:
-        # Fallback: simple word extraction
-        words = re.findall(r'\b\w{3,}\b', text.lower())
-        return list(dict.fromkeys(words))[:max_keywords]
+        return _extract_lexical_keywords(text, max_keywords)
 
 
 def preprocess_text(text: str) -> dict[str, Any]:

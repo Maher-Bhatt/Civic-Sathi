@@ -1,6 +1,7 @@
 import { APIClient, Endpoints } from "@civicsathi/api-client";
 import type { CityId } from "@/services/cities";
 import type { User } from "@civicsathi/api-client";
+import type { Contractor, ContractorSpecialization } from "./types";
 
 export function getApiBaseUrl(): string {
   const envUrl = ((import.meta.env as any)?.VITE_API_BASE_URL as string | undefined)?.trim();
@@ -94,14 +95,6 @@ export async function contractorLogout(): Promise<void> {
     window.localStorage.removeItem(LS.token);
     window.localStorage.removeItem(LS.contractor);
   }
-}
-
-export async function adminLogin(email: string, pass: string): Promise<any> {
-  return {} as any;
-}
-export async function adminLogout(): Promise<void> {}
-export async function getAdminUser(): Promise<any | null> {
-  return null;
 }
 
 export type ContractorUser = User & { city?: string; contractorId?: string };
@@ -230,96 +223,34 @@ export async function getDashboardKPIs() {
   }
 }
 
-/* -------------------------------------------------------------- stubs for unused municipality-facing functions */
-export async function getLiveActivity() {
-  return [];
-}
-export async function getSystemicIssues() {
-  return [];
-}
-export async function getSystemicIssue() {
-  return null;
-}
-export async function updateSystemicIssue() {
-  return null;
-}
-export async function startInvestigation() {
-  return null;
-}
-export async function assignIssueDepartment() {
-  return null;
-}
-export async function getMuniComplaints() {
-  return [];
-}
-export async function getMuniComplaint() {
-  return null;
-}
-export async function updateMuniComplaint() {
-  return null;
-}
-export async function assignComplaint() {
-  return null;
-}
-export async function bulkUpdateComplaints() {
-  return null;
-}
-export async function getAlerts() {
-  return [];
-}
-export async function acknowledgeAlert() {
-  return null;
-}
-export async function getDepartments() {
-  return [];
-}
-export async function getDepartment() {
-  return null;
-}
-export async function getAreaOverviews() {
-  return [];
-}
-export async function getTrendAnalysis() {
-  return [];
-}
-export async function getHotspotRankings() {
-  return [];
-}
-export async function getAnalyticsData() {
-  return null;
-}
-export async function getOfficerNotifications() {
-  return [];
-}
-export async function markNotificationRead(id?: string) {
-  return null;
-}
-export async function getMuniSettings() {
-  return { theme: "system" };
-}
-export async function saveMuniSettings(patch?: any) {
-  return null;
-}
-export async function getSavedViews() {
-  return [];
-}
-export async function officerSearch(query?: string) {
-  return {
-    complaints: [] as { id: string; category: string }[],
-    issues: [] as { id: string; category: string; areaName: string }[],
-    areas: [] as any[],
-  };
-}
-export function startLiveSimulation() {}
-export function stopLiveSimulation() {}
+const CONTRACTOR_CATEGORY_LABELS: Record<string, ContractorSpecialization> = {
+  road: "Road Damage",
+  roads: "Road Damage",
+  road_damage: "Road Damage",
+  water: "Water Supply",
+  water_supply: "Water Supply",
+  drainage: "Drainage",
+  sewage: "Sewage",
+  street_lighting: "Street Lighting",
+  electricity: "Electricity",
+  garbage: "Garbage Collection",
+  garbage_collection: "Garbage Collection",
+  sanitation: "Sanitation",
+  public_transport: "Public Transport",
+  general: "General Civil",
+};
 
-export async function getWorkOrderEvents(id: string) {
-  return [];
+function normalizeContractorSpecializations(categories: unknown[]): ContractorSpecialization[] {
+  /** Map backend category slugs into the contractor portal's presentation labels. */
+  return Array.from(new Set(
+    categories
+      .map((category) => String(category).trim().toLowerCase().replace(/[-\s]+/g, "_"))
+      .map((category) => CONTRACTOR_CATEGORY_LABELS[category])
+      .filter((category): category is ContractorSpecialization => Boolean(category)),
+  ));
 }
-export async function submitMeasurement(data: any, contractorId: string, contractorName: string) {
-  return null;
-}
-export async function getContractor(id: string) {
+
+export async function getContractor(id: string): Promise<Contractor | null> {
   const list = await api.contractors.list();
   const user = await getContractorUser();
   const current = (list || []).find((item: any) => String(item?.id) === id)
@@ -327,7 +258,8 @@ export async function getContractor(id: string) {
   if (!current) return null;
   const registrations = Array.isArray(current.registrations) ? current.registrations : [];
   const approved = registrations.find((registration: any) => registration?.status === "APPROVED") ?? registrations[0] ?? {};
-  const categories = registrations.flatMap((registration: any) => Array.isArray(registration?.approved_categories) ? registration.approved_categories : []);
+  const categories = registrations.flatMap((registration: any): unknown[] => Array.isArray(registration?.approved_categories) ? registration.approved_categories : []);
+  const isVerified = registrations.some((registration: any) => registration?.status === "APPROVED");
   return {
     id: String(current.id),
     companyName: current.company_name ?? current.companyName ?? user?.name ?? "Unknown contractor",
@@ -338,12 +270,12 @@ export async function getContractor(id: string) {
     address: "—",
     gstin: "—",
     pan: "—",
-    status: registrations.some((registration: any) => registration?.status === "APPROVED") ? "VERIFIED" : "PENDING_VERIFICATION",
-    verificationStatus: registrations.some((registration: any) => registration?.status === "APPROVED") ? "VERIFIED" : "PENDING",
+    status: isVerified ? "VERIFIED" : "PENDING_VERIFICATION",
+    verificationStatus: isVerified ? "VERIFIED" : "PENDING",
     registrationDate: "",
     expiryDate: "",
-    specializationCategories: Array.from(new Set(categories)),
-    serviceAreas: Array.from(new Set(registrations.map((registration: any) => registration?.city_name).filter(Boolean))),
+    specializationCategories: normalizeContractorSpecializations(categories),
+    serviceAreas: Array.from(new Set(registrations.map((registration: any) => registration?.city_name).filter((city: unknown): city is string => typeof city === "string" && city.length > 0))),
     performanceScore: Number(current.performance_score ?? 0),
     slaScore: Number(current.sla_score ?? 0),
     inspectionPassRate: Number(current.inspection_pass_rate ?? 0),

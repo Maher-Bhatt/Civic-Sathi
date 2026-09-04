@@ -56,7 +56,9 @@ class Complaint(Base, UUIDMixin, TimestampMixin):
     
     # Relationships
     department: Mapped["Department"] = relationship("Department", lazy="joined")
+    city: Mapped["City"] = relationship("City", lazy="joined")
     ward: Mapped["Ward"] = relationship("Ward", lazy="joined")
+
     analysis: Mapped["ComplaintAnalysis"] = relationship(
         "ComplaintAnalysis",
         back_populates="complaint",

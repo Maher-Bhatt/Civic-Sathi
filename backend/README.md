@@ -48,17 +48,27 @@ Civic complaint intelligence platform backend built with FastAPI, PostgreSQL, an
    alembic upgrade head
    ```
 
-6. **Seed demo data**
+6. **Run optional data repairs**
    ```bash
-   python -m app.services.seed_service
+   python scripts/repair_data.py --city-separation
+   # Or, only when the documented contractor account needs repair:
+   python scripts/repair_data.py --contractor-access
+   ```
+   Repairs are never run automatically when the API starts. See
+   [`../docs/operations/backend-operations.md`](../docs/operations/backend-operations.md)
+   for the production sequence.
+
+7. **Seed demo data**
+   ```bash
+   python seed_master.py
    ```
 
-7. **Start development server**
+8. **Start development server**
    ```bash
    uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
    ```
 
-8. **Access Swagger docs**
+9. **Access Swagger docs**
    Open http://localhost:8000/docs
 
 ## Testing
@@ -72,6 +82,9 @@ pytest tests/test_ml_pipeline.py -v
 ## Deployment
 
 See `render.yaml` for Render deployment configuration.
+
+Run `alembic upgrade head` as an explicit deploy step before starting an API
+process. Do not rely on application startup to create or modify the schema.
 
 ### Environment Variables for Production
 

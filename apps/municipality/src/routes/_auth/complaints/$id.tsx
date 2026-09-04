@@ -145,12 +145,32 @@ function ComplaintDetailPage() {
     );
   }
 
-  const point: any = {
+  const categoryKey = String(complaint.categoryKey ?? complaint.category).toLowerCase();
+  const pointIssue: IssueKey = categoryKey.includes("water")
+    ? "water"
+    : categoryKey.includes("road")
+      ? "roads"
+      : categoryKey.includes("garbage") || categoryKey.includes("waste")
+        ? "garbage"
+        : categoryKey.includes("drainage") || categoryKey.includes("sewage")
+          ? "drainage"
+          : categoryKey.includes("light") || categoryKey.includes("electric")
+            ? "lighting"
+            : "other";
+  const pointScore = Math.max(complaint.riskScore, complaint.severityScore);
+  const pointHealth: AreaHealth = pointScore >= 80
+    ? "critical"
+    : pointScore >= 60
+      ? "high"
+      : pointScore >= 35
+        ? "moderate"
+        : "low";
+  const point: ComplaintPoint = {
     id: complaint.id,
     lat: complaint.lat,
     lng: complaint.lng,
-    issue: "other",
-    health: "moderate",
+    issue: pointIssue,
+    health: pointHealth,
     daysAgo: 0,
     areaId: complaint.area,
   };

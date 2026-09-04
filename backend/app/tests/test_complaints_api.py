@@ -39,7 +39,7 @@ def test_create_complaint_validation_error(client):
     assert response.status_code == 422
 
 
-def test_list_complaints_requires_auth(client):
+def test_list_complaints_requires_auth(unauthenticated_client):
     """Test that listing complaints requires officer key"""
-    response = client.get("/api/v1/complaints")
+    response = unauthenticated_client.get("/api/v1/complaints")
     assert response.status_code == 401

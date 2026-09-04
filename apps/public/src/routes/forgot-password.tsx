@@ -9,13 +9,20 @@ import { api } from "@/services/api";
 import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/forgot-password")({
+  validateSearch: (search: Record<string, unknown>) => {
+    const parsed: { identifier?: string; redirect?: string } = {};
+    if (typeof search["identifier"] === "string") parsed.identifier = search["identifier"];
+    if (typeof search["redirect"] === "string") parsed.redirect = search["redirect"];
+    return parsed;
+  },
   component: ForgotPasswordPage,
 });
 
 function ForgotPasswordPage() {
   const { t } = useI18n();
   const navigate = useNavigate();
-  const [identifier, setIdentifier] = useState("");
+  const { identifier: initialIdentifier } = Route.useSearch();
+  const [identifier, setIdentifier] = useState(initialIdentifier ?? "");
   const [channel, setChannel] = useState<"auto" | "email" | "sms">("auto");
   const [otp, setOtp] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -51,7 +58,7 @@ function ForgotPasswordPage() {
         new_password: newPassword,
       });
       toast.success(response.message);
-      void navigate({ to: "/login" });
+      void navigate({ to: "/login", search: { redirect: undefined } });
     } catch (err: any) {
       setError(err?.message ?? "The code is invalid or expired.");
     } finally {
@@ -108,7 +115,7 @@ function ForgotPasswordPage() {
         )}
 
         <p className="mt-6 text-center text-sm text-muted-foreground">
-          <Link to="/login" className="text-primary underline-offset-4 hover:underline">Back to sign in</Link>
+          <Link to="/login" search={{ redirect: undefined }} className="text-primary underline-offset-4 hover:underline">Back to sign in</Link>
         </p>
       </GlassCard>
     </PageShell>

@@ -20,7 +20,6 @@ import {
   getWorkOrder,
   getWorkOrderEvents,
   updateWorkOrderStatus,
-  recordInspection,
   submitMeasurement,
   getMeasurement,
   getBill,

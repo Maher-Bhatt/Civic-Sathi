@@ -4,7 +4,6 @@ import type {
   ComplaintFilters,
   DashboardKPIs,
   DepartmentStats,
-  LiveActivity,
   MuniAlert,
   MuniComplaint,
   AreaOverview,
@@ -144,14 +143,6 @@ export async function muniLogout(): Promise<void> {
     window.localStorage.removeItem(LS.token);
     window.localStorage.removeItem(LS.officer);
   }
-}
-
-export async function adminLogin(email: string, pass: string): Promise<any> {
-  return {} as any;
-}
-export async function adminLogout(): Promise<void> {}
-export async function getAdminUser(): Promise<any | null> {
-  return null;
 }
 
 export async function getMuniOfficer(): Promise<Officer | null> {
@@ -738,26 +729,23 @@ export async function getEvidence(id: string) {
     description: item.description,
   }));
 }
-export async function submitMeasurement(data: any, byId: string, byName: string) {
+export async function submitMeasurement(_data: unknown, _byId: string, _byName: string): Promise<never> {
+  throw new Error("Measurement submission is unavailable until the backend measurement contract is implemented");
+}
+export async function getMeasurement(_id: string) {
   return null;
 }
-export async function getMeasurement(id: string) {
-  return null;
-}
-export async function getBill(id: string) {
+export async function getBill(_id: string) {
   return null;
 }
 export async function approveBill(
-  billId: string,
-  woId: string,
-  byId: string,
-  byName: string,
-  amount: number,
-) {
-  return null;
-}
-export async function recordInspection(data: any, byId: string, byName: string) {
-  return null;
+  _billId: string,
+  _woId: string,
+  _byId: string,
+  _byName: string,
+  _amount: number,
+): Promise<never> {
+  throw new Error("Bill approval is unavailable until the backend billing contract is implemented");
 }
 
 /* ---------------------------------------------------------------- alerts */
@@ -864,9 +852,6 @@ export async function getAreaOverviews(city: CityId): Promise<AreaOverview[]> {
 }
 
 /* -------------------------------------------------------------- analytics */
-export async function getTrendAnalysis() {
-  return [];
-}
 export async function getHotspotRankings() {
   const officer = await getMuniOfficer();
   if (!officer?.city) return [];
@@ -976,10 +961,31 @@ export async function getSavedViews(): Promise<SavedView[]> {
   return [];
 }
 export async function officerSearch(query: string) {
-  return { complaints: [], issues: [], areas: [] };
+  const term = query.trim();
+  if (!term) return { complaints: [], issues: [], areas: [] };
+
+  const officer = await getMuniOfficer();
+  if (!officer?.city) return { complaints: [], issues: [], areas: [] };
+
+  const normalizedTerm = term.toLowerCase();
+  const [complaints, issues, areas] = await Promise.all([
+    getMuniComplaints({ city: officer.city, search: term }),
+    getSystemicIssues(officer.city),
+    getAreaOverviews(officer.city),
+  ]);
+
+  return {
+    complaints: complaints.map(({ id, category }) => ({ id, category })),
+    issues: issues
+      .filter((issue) =>
+        `${issue.id} ${issue.category} ${issue.areaName}`.toLowerCase().includes(normalizedTerm),
+      )
+      .map(({ id, category, areaName }) => ({ id, category, areaName })),
+    areas: areas.filter((area) =>
+      `${area.name} ${area.ward}`.toLowerCase().includes(normalizedTerm),
+    ),
+  };
 }
-export function startLiveSimulation(onUpdate: (activity: LiveActivity[]) => void) {}
-export function stopLiveSimulation() {}
 
 
 export async function getMyCivicRolePerformance() {

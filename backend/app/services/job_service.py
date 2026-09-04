@@ -13,6 +13,10 @@ from app.ml.deduplication import get_candidate_issues, calculate_similarity_scor
 from app.schemas.complaint import ComplaintCreate
 from app.ml.similarity import find_similar_complaints
 from app.services.canonical_grouping import assign_canonical_group
+from app.core.logging import get_logger
+
+
+logger = get_logger(__name__)
 
 
 class JobService:
@@ -57,7 +61,7 @@ class JobService:
             job.status = "FAILED"
             job.last_error = str(e)
             self.db.commit()
-            print(f"Job {job.id} failed: {e}")
+            logger.exception("Analysis job failed", extra={"job_id": str(job.id)})
             
         return True
 

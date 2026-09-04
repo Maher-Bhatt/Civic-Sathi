@@ -9,7 +9,7 @@ import { GlassInput } from "@/components/ui/glass-input";
 import { EmptyState } from "@/components/ui/states";
 import { useAuth } from "@/lib/auth";
 import { useI18n } from "@/lib/i18n";
-import { changePassword, getMyCivicReputation, updateCivicReputationPreferences } from "@/services/api";
+import { getMyCivicReputation, updateCivicReputationPreferences } from "@/services/api";
 import type { ReputationMe } from "@/services/types";
 import { cn } from "@/lib/utils";
 
@@ -371,7 +371,13 @@ function ProfilePage() {
           <GlassInput label={t("ui.preferred_ward")} value={form.ward} hint={t("profile.wardHint", "Used to surface civic activity near you.")} onChange={(e) => setForm((f) => ({ ...f, ward: e.target.value }))} />
           <div className="flex flex-wrap gap-2 sm:col-span-2">
             <GlassButton type="submit" disabled={busy}>{busy ? t("profile.saving", "Saving…") : t("profile.save", "Save changes")}</GlassButton>
-            <GlassButton variant="glass" type="button" onClick={async () => { await changePassword(); toast.success(t("profile.resetSent", "Password reset link sent")); }}>{t("ui.change_password")}</GlassButton>
+            <GlassButton
+              variant="glass"
+              type="button"
+              onClick={() => navigate({ to: "/forgot-password", search: form.email ? { identifier: form.email } : {} })}
+            >
+              {t("ui.change_password")}
+            </GlassButton>
             <GlassButton variant="outline" type="button" onClick={async () => { await signOut(); navigate({ to: "/" }); }}>{t("ui.log_out")}</GlassButton>
           </div>
         </form>

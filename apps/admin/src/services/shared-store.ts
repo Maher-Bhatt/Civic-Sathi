@@ -310,8 +310,6 @@ function normalizeRealWorkOrder(raw: any): WorkOrder {
     workPackageId: String(raw?.tender_id ?? ""),
     contractorId: String(raw?.contractor_id ?? ""),
     contractorName: raw?.contractor_name ?? "Unassigned",
-    assignedEngineerId: undefined,
-    assignedEngineerName: undefined,
     departmentId: String(raw?.department_id ?? ""),
     department: (raw?.department ?? "General") as WorkOrder["department"],
     title: raw?.title ?? "Untitled work order",

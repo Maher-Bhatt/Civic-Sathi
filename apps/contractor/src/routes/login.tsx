@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useContractorAuth } from "@/lib/contractor-auth";
 import { GlassCard } from "@/components/ui/glass-card";
 import { useI18n } from "@/lib/i18n";
+import type { CityId } from "@/services/cities";
 
 export const Route = createFileRoute("/login")({
   head: () => ({ meta: [{ title: "Contractor Login - Civic Sathi" }] }),
@@ -15,7 +16,7 @@ function ContractorLogin() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [city, setCity] = useState("vadodara");
+  const [city, setCity] = useState<CityId>("vadodara");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -76,7 +77,7 @@ function ContractorLogin() {
 
           <div>
             <label className="label-xs block mb-2 text-[var(--foreground)]">Municipality</label>
-            <select value={city} onChange={(e) => setCity(e.target.value)} className="filter-input w-full ambient-field px-4 py-2 rounded-md bg-[var(--surface)] text-[var(--foreground)] border border-[var(--glass-border)] focus:outline-none focus:ring-1 focus:ring-[var(--primary)]">
+            <select value={city} onChange={(e) => setCity(e.target.value as CityId)} className="filter-input w-full ambient-field px-4 py-2 rounded-md bg-[var(--surface)] text-[var(--foreground)] border border-[var(--glass-border)] focus:outline-none focus:ring-1 focus:ring-[var(--primary)]">
               <option value="vadodara">Vadodara · VMC</option>
               <option value="bengaluru">Bengaluru · BBMP</option>
             </select>
