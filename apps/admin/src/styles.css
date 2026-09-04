@@ -60,7 +60,7 @@
 
 /* -- LIGHT MODE ? Ivory + India Green primary -- */
 :root {
-  --radius: 0.75rem;
+  --radius: 0.25rem;
 
   /* India flag inspired palette */
   --saffron:       #FF9933;   /* Indian saffron */
@@ -183,7 +183,7 @@
   }
 
   ::selection {
-    background: color-mix(in oklab, var(--primary) 28%, transparent);
+    background: white;
   }
 
   :focus-visible {
@@ -201,14 +201,14 @@
 @utility glass {
   background: var(--glass);
   border: 1px solid var(--glass-border);
-  backdrop-filter: blur(18px) saturate(140%);
+  
   box-shadow: var(--shadow-soft);
 }
 
 @utility glass-strong {
   background: var(--glass-strong);
   border: 1px solid var(--glass-border);
-  backdrop-filter: blur(24px) saturate(150%);
+  
   box-shadow: var(--shadow-soft);
 }
 
@@ -371,7 +371,7 @@
   color: var(--subtle-foreground);
   border: 1px solid var(--glass-border);
   border-radius: 0.5rem;
-  backdrop-filter: blur(12px);
+  
   font-size: 0.6rem;
   padding: 2px 6px;
   margin: 6px;
@@ -394,8 +394,8 @@
   border-radius: 0.75rem !important;
   color: var(--foreground) !important;
   box-shadow: var(--shadow-lift) !important;
-  backdrop-filter: blur(24px) saturate(150%) !important;
-  -webkit-backdrop-filter: blur(24px) saturate(150%) !important;
+  
+  -webkit-
   font-size: 0.75rem !important;
   line-height: 1.5 !important;
   padding: 10px 14px !important;
@@ -415,11 +415,11 @@
   display: grid;
   place-items: center;
   border-radius: 999px;
-  background: color-mix(in oklab, var(--jm-c) 28%, transparent);
+  background: white;
   border: 1px solid color-mix(in oklab, var(--jm-c) 62%, transparent);
   box-shadow: 0 6px 18px -8px rgb(0 0 0 / 0.5);
   color: var(--foreground);
-  backdrop-filter: blur(6px);
+  
   transition:
     transform 200ms cubic-bezier(0.22, 1, 0.36, 1),
     background-color 200ms ease-out;
@@ -428,7 +428,7 @@
 
 .jm-cluster:hover {
   transform: scale(1.08);
-  background: color-mix(in oklab, var(--jm-c) 40%, transparent);
+  background: white;
 }
 
 .jm-dot {
@@ -436,7 +436,7 @@
   height: 12px;
   width: 12px;
   border-radius: 999px;
-  background: color-mix(in oklab, var(--jm-c) 72%, transparent);
+  background: white;
   border: 1px solid color-mix(in oklab, var(--jm-c) 90%, transparent);
   box-shadow: 0 4px 12px -6px rgb(0 0 0 / 0.6);
   transition: transform 180ms cubic-bezier(0.22, 1, 0.36, 1);
@@ -465,7 +465,7 @@
   height: 28px;
   width: 28px;
   border-radius: 999px;
-  background: color-mix(in oklab, var(--primary) 88%, transparent);
+  background: white;
   border: 2px solid color-mix(in oklab, var(--background) 70%, transparent);
   box-shadow: var(--shadow-lift);
   transition: transform 200ms cubic-bezier(0.22, 1, 0.36, 1);
@@ -778,18 +778,15 @@ body::after {
 .civic-city-shell { position: relative; isolation: isolate; overflow-x: clip; background-image: linear-gradient(180deg, color-mix(in srgb, var(--civic-paper) 90%, transparent), color-mix(in srgb, var(--civic-sand-100) 98%, transparent)), var(--civic-city-atmosphere); background-position: center top; background-size: cover; background-attachment: fixed; }
 .civic-city-shell::before { content: ''; position: fixed; inset: 0; z-index: -1; pointer-events: none; opacity: .30; background: repeating-linear-gradient(0deg, transparent 0 5rem, var(--civic-architecture-line) 5.05rem 5.12rem, transparent 5.18rem 10rem); mask-image: linear-gradient(180deg, black, transparent 70%); }
 .civic-city-shell[data-city='bengaluru'] { --civic-city-accent: #0E766E; --civic-city-accent-soft: #B7DDD5; --civic-city-atmosphere: url('/city-atmosphere/bengaluru-civic-atmosphere.webp'); }
-.civic-atmosphere-panel { position: relative; overflow: hidden; border: 1px solid color-mix(in srgb, var(--civic-city-accent) 26%, var(--glass-border)); background: color-mix(in srgb, var(--civic-paper) 84%, transparent); box-shadow: 0 20px 48px -20px color-mix(in srgb, var(--civic-city-accent) 25%, transparent); backdrop-filter: blur(22px) saturate(130%); }
+.civic-atmosphere-panel { position: relative; overflow: hidden; border: 1px solid color-mix(in srgb, var(--civic-city-accent) 26%, var(--glass-border)); background: white; box-shadow: 0 20px 48px -20px color-mix(in srgb, var(--civic-city-accent) 25%, transparent);  }
 .civic-architecture-rule { height: 1px; background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--civic-city-accent) 55%, transparent) 18%, color-mix(in srgb, var(--civic-teal-600) 46%, transparent) 82%, transparent); }
-.civic-city-chip { display: inline-flex; align-items: center; gap: .45rem; border: 1px solid color-mix(in srgb, var(--civic-city-accent) 28%, var(--glass-border)); border-radius: 9999px; padding: .35rem .7rem; background: color-mix(in srgb, var(--civic-city-accent-soft) 26%, transparent); color: var(--civic-ink); font-size: .7rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+.civic-city-chip { display: inline-flex; align-items: center; gap: .45rem; border: 1px solid color-mix(in srgb, var(--civic-city-accent) 28%, var(--glass-border)); border-radius: 9999px; padding: .35rem .7rem; background: white; color: var(--civic-ink); font-size: .7rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
 @media (max-width: 640px), (prefers-reduced-motion: reduce) { .civic-city-shell { background-attachment: scroll; } }
 
 
 /* Responsive heritage refresh: visible city atmosphere with readable internal surfaces. */
 .civic-city-shell {
-  background-image:
-    linear-gradient(180deg, color-mix(in srgb, var(--civic-paper) 58%, transparent), color-mix(in srgb, var(--civic-sand-100) 76%, transparent) 42%, color-mix(in srgb, var(--civic-sand-100) 94%, transparent) 100%),
-    var(--civic-city-atmosphere),
-    linear-gradient(135deg, var(--civic-sand-100), var(--civic-paper));
+  background-color: #f8f9fa;
   background-position: center top;
   background-size: cover;
 }
@@ -809,19 +806,19 @@ body::after {
   overflow: hidden;
   border: 1px solid color-mix(in srgb, var(--civic-city-accent) 34%, var(--glass-border));
   border-radius: 0.9rem;
-  background: color-mix(in srgb, var(--civic-paper) 82%, transparent);
+  background: white;
   box-shadow: 0 8px 18px -10px color-mix(in srgb, var(--civic-city-accent) 46%, transparent);
 }
 .civic-brand-logo-mark img { width: 100%; height: 100%; object-fit: contain; }
 .civic-brand-logo-mark--internal { width: 2.8rem; height: 2.8rem; border-radius: 1rem; }
 @media (min-width: 1024px) {
   .civic-city-shell { background-size: 120% auto, cover, cover; background-position: center top, center top, center top; }
-  .civic-atmosphere-panel { backdrop-filter: blur(22px) saturate(138%); }
+  .civic-atmosphere-panel {  }
 }
 @media (max-width: 767px) {
   .civic-city-shell { background-size: auto 58rem, auto 58rem, cover; background-position: center top, 50% 4.5rem, center top; }
   .civic-city-shell::before { opacity: 0.18; }
-  .civic-atmosphere-panel { background: linear-gradient(150deg, color-mix(in srgb, var(--civic-city-accent) 16%, transparent), transparent 54%), color-mix(in srgb, var(--civic-paper) 78%, transparent); backdrop-filter: blur(16px) saturate(130%); }
+  .civic-atmosphere-panel { background: linear-gradient(150deg, color-mix(in srgb, var(--civic-city-accent) 16%, transparent), transparent 54%), color-mix(in srgb, var(--civic-paper) 78%, transparent);  }
   .civic-brand-logo-mark { width: 2.25rem; height: 2.25rem; border-radius: 0.75rem; }
 }
 
@@ -855,16 +852,16 @@ body::after {
   padding: 0.9rem;
   border: 1px solid color-mix(in srgb, var(--civic-city-accent) 22%, var(--glass-border));
   border-radius: 1.35rem;
-  background: color-mix(in srgb, var(--civic-paper) 68%, transparent);
+  background: white;
   box-shadow: 0 16px 34px -22px color-mix(in srgb, var(--civic-indigo-950) 46%, transparent);
-  backdrop-filter: blur(14px) saturate(125%);
+  
 }
 @media (max-width: 767px) {
   .civic-atmosphere-panel > .animate-rise:first-child {
     margin: -0.15rem;
     padding: 0.65rem;
-    background: color-mix(in srgb, var(--civic-paper) 76%, transparent);
-    backdrop-filter: blur(18px) saturate(128%);
+    background: white;
+    
   }
 }
 
@@ -872,13 +869,13 @@ body::after {
 
 /* Hero readability lock: architectural background remains visible around, not through, primary copy. */
 .civic-atmosphere-panel > .animate-rise:first-child {
-  background: color-mix(in srgb, var(--surface-elevated) 86%, transparent);
+  background: white;
   border-color: color-mix(in srgb, var(--civic-city-accent) 30%, var(--glass-border));
   box-shadow: 0 18px 38px -22px color-mix(in srgb, var(--foreground) 35%, transparent);
 }
 @media (max-width: 767px) {
   .civic-atmosphere-panel > .animate-rise:first-child {
-    background: color-mix(in srgb, var(--surface-elevated) 92%, transparent);
+    background: white;
   }
 }
 
@@ -930,7 +927,7 @@ body::after {
   border: 1px solid color-mix(in srgb, var(--civic-city-accent) 48%, var(--glass-border));
   border-radius: .9rem;
   color: var(--civic-city-accent);
-  background: color-mix(in srgb, var(--civic-city-accent-soft) 34%, transparent);
+  background: white;
   box-shadow: 0 0 26px color-mix(in srgb, var(--civic-city-accent) 22%, transparent);
 }
 .civic-admin-access-badge,
@@ -943,7 +940,7 @@ body::after {
   border-radius: 9999px;
   padding: .35rem .6rem;
   color: var(--civic-teal-600);
-  background: color-mix(in srgb, var(--civic-teal-600) 11%, transparent);
+  background: white;
   font-size: .62rem;
   font-weight: 800;
   letter-spacing: .14em;
@@ -954,10 +951,10 @@ body::after {
   border: 1px solid color-mix(in srgb, var(--civic-city-accent) 16%, var(--glass-border));
   border-radius: .85rem;
   padding: .68rem .75rem;
-  background: color-mix(in srgb, var(--surface) 52%, transparent);
+  background: white;
   transition: transform .2s ease, border-color .2s ease, background .2s ease;
 }
-.civic-admin-flow-node:hover { transform: translateX(.2rem); border-color: color-mix(in srgb, var(--civic-city-accent) 46%, var(--glass-border)); background: color-mix(in srgb, var(--civic-city-accent-soft) 18%, transparent); }
+.civic-admin-flow-node:hover { transform: translateX(.2rem); border-color: color-mix(in srgb, var(--civic-city-accent) 46%, var(--glass-border)); background: white; }
 .civic-admin-flow-dot { display: grid; width: 1.7rem; height: 1.7rem; flex: 0 0 auto; place-items: center; border-radius: .6rem; color: white; font-size: .64rem; font-weight: 800; box-shadow: 0 8px 18px -10px currentColor; }
 .civic-admin-flow-dot span { line-height: 1; }
 .civic-admin-flow-teal { background: linear-gradient(135deg, #0E766E, #35A89C); }
@@ -1294,11 +1291,11 @@ body:has(.civic-admin-shell) {
   mask-image: linear-gradient(180deg, #000 0%, rgb(0 0 0 / .9) 55%, transparent 100%);
 }
 .civic-admin-sidebar {
-  background: linear-gradient(180deg, rgb(10 28 56 / .90), rgb(5 15 31 / .82)) !important;
+  background: white !important;
   border-color: rgb(132 182 235 / .20) !important;
   box-shadow: 18px 0 56px -38px rgb(0 0 0 / .95), inset -1px 0 0 rgb(255 255 255 / .04);
-  backdrop-filter: blur(26px) saturate(145%);
-  -webkit-backdrop-filter: blur(26px) saturate(145%);
+  
+  -webkit-
 }
 .civic-admin-sidebar > div:first-child {
   background: linear-gradient(90deg, rgb(241 174 85 / .07), transparent 72%);
@@ -1314,7 +1311,7 @@ body:has(.civic-admin-shell) {
 .civic-admin-sidebar nav a[data-status="active"],
 .civic-admin-sidebar nav a[aria-current="page"] {
   color: #f2f7ff;
-  background: linear-gradient(100deg, rgb(77 183 167 / .16), rgb(241 174 85 / .08)) !important;
+  background: white !important;
   border-color: rgb(132 182 235 / .24) !important;
   box-shadow: inset 3px 0 0 #4db7a7, 0 10px 26px -20px rgb(77 183 167 / .72);
   transform: translateX(2px);
@@ -1328,11 +1325,11 @@ body:has(.civic-admin-shell) {
   box-shadow: inset 0 1px 0 rgb(255 255 255 / .05);
 }
 .civic-admin-topbar {
-  background: linear-gradient(180deg, rgb(8 22 45 / .78), rgb(6 16 34 / .62)) !important;
+  background: white !important;
   border-color: rgb(132 182 235 / .18) !important;
   box-shadow: 0 16px 42px -32px rgb(0 0 0 / .95), inset 0 1px 0 rgb(255 255 255 / .05);
-  backdrop-filter: blur(24px) saturate(145%);
-  -webkit-backdrop-filter: blur(24px) saturate(145%);
+  
+  -webkit-
 }
 .civic-admin-content {
   position: relative;
@@ -1341,20 +1338,20 @@ body:has(.civic-admin-shell) {
 .civic-admin-shell .glass,
 .civic-admin-shell .glass-card,
 .civic-admin-shell .solid-surface {
-  background: linear-gradient(145deg, rgb(12 33 64 / .70), rgb(5 17 37 / .60)) !important;
+  background: white !important;
   border-color: rgb(132 182 235 / .18) !important;
   color: var(--foreground);
   box-shadow: 0 22px 58px -38px rgb(0 0 0 / .94), inset 0 1px 0 rgb(255 255 255 / .055);
-  backdrop-filter: blur(22px) saturate(140%);
-  -webkit-backdrop-filter: blur(22px) saturate(140%);
+  
+  -webkit-
 }
 .civic-admin-shell .glass-strong {
-  background: linear-gradient(145deg, rgb(15 40 76 / .82), rgb(7 21 43 / .70)) !important;
+  background: white !important;
   border-color: rgb(132 182 235 / .22) !important;
   color: var(--foreground);
   box-shadow: 0 26px 72px -42px rgb(0 0 0 / .98), inset 0 1px 0 rgb(255 255 255 / .07);
-  backdrop-filter: blur(26px) saturate(150%);
-  -webkit-backdrop-filter: blur(26px) saturate(150%);
+  
+  -webkit-
 }
 .civic-admin-shell .civic-admin-command-center {
   margin: -1rem;
@@ -1688,7 +1685,7 @@ body {
   background: rgba(255, 255, 255, 0.86);
   border-bottom: 1px solid var(--admin-line);
   box-shadow: 0 9px 26px -24px rgba(22, 34, 56, 0.5);
-  backdrop-filter: blur(14px);
+  
 }
 
 .admin-icon-button {
@@ -1797,7 +1794,7 @@ body {
   background: var(--admin-paper);
   border-color: var(--admin-line);
   box-shadow: 0 16px 35px -30px rgba(30, 53, 86, 0.72), 0 1px 0 rgba(255, 255, 255, 0.8) inset;
-  backdrop-filter: none;
+  
 }
 
 .civic-admin-command-center .glass:hover,
@@ -2034,7 +2031,7 @@ body {
   z-index: 40;
   border: 0;
   background: rgba(11, 23, 51, 0.42);
-  backdrop-filter: blur(3px);
+  
 }
 
 @media (max-width: 1023px) {
@@ -2221,7 +2218,7 @@ body:has(.admin-app-shell) {
 
 .admin-nav-item.is-active {
   color: #fffaf2 !important;
-  background: linear-gradient(90deg, rgba(185, 82, 50, 0.34), rgba(214, 146, 46, 0.1)) !important;
+  background: white !important;
   border-color: rgba(232, 214, 191, 0.22) !important;
   box-shadow: inset 3px 0 0 var(--heritage-turmeric), 0 9px 24px -18px rgba(185, 82, 50, 0.9) !important;
 }
@@ -2240,7 +2237,7 @@ body:has(.admin-app-shell) {
 
 .admin-avatar {
   color: #fff8ee !important;
-  background: linear-gradient(145deg, var(--heritage-terracotta), var(--heritage-maroon)) !important;
+  background: white !important;
 }
 
 .admin-signout-button {
@@ -2401,7 +2398,7 @@ body:has(.admin-app-shell) {
 
 .civic-admin-city-lane__header {
   border-bottom-color: #efe3d4 !important;
-  background: linear-gradient(115deg, rgba(var(--lane-accent-rgb), 0.1), transparent 68%) !important;
+  background: white !important;
 }
 
 .civic-admin-city-lane h3 {
@@ -2463,7 +2460,7 @@ body:has(.admin-app-shell) {
 }
 
 .civic-admin-compare-track span {
-  background: linear-gradient(90deg, var(--heritage-terracotta), var(--heritage-turmeric)) !important;
+  background: white !important;
   box-shadow: none !important;
 }
 
@@ -2603,7 +2600,7 @@ body:has(.admin-app-shell) {
 
 .civic-admin-telemetry-hero__scan::before {
   opacity: .24 !important;
-  background: linear-gradient(90deg, transparent, var(--heritage-turmeric), transparent) !important;
+  background: white !important;
 }
 
 .civic-admin-telemetry-hero .relative.z-10 {
@@ -2707,7 +2704,7 @@ body:has(.admin-app-shell) {
   min-height: 5.8rem;
   padding: 1.05rem 1.15rem !important;
   border-bottom-color: #eadbca !important;
-  background: linear-gradient(115deg, rgba(var(--lane-accent-rgb), .10), transparent 72%) !important;
+  background: white !important;
 }
 
 .civic-admin-city-emblem {
@@ -2891,7 +2888,7 @@ body:has(.admin-app-shell) {
 }
 
 .civic-admin-compare-track span {
-  background: linear-gradient(90deg, var(--heritage-terracotta), var(--heritage-turmeric)) !important;
+  background: white !important;
 }
 
 .civic-admin-signal-icon {
@@ -2999,13 +2996,13 @@ body:has(.admin-app-shell) {
 .admin-command-action--primary {
   color: #fffaf2 !important;
   border-color: var(--heritage-terracotta-dark) !important;
-  background: linear-gradient(135deg, var(--heritage-terracotta), var(--heritage-terracotta-dark)) !important;
+  background: white !important;
 }
 
 .admin-command-action--secondary {
   color: var(--heritage-maroon) !important;
   border-color: rgba(214, 146, 46, .58) !important;
-  background: linear-gradient(135deg, #f7dfb4, #efd096) !important;
+  background: white !important;
 }
 
 .admin-command-action--tertiary {

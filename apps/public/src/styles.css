@@ -238,44 +238,44 @@
 @utility glass {
   background: var(--glass);
   border: 1px solid var(--glass-border);
-  backdrop-filter: blur(24px) saturate(180%);
-  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  
+  -webkit-
   box-shadow: var(--shadow-soft);
 }
 
 @utility glass-strong {
   background: var(--glass-strong);
   border: 1px solid rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(32px) saturate(200%);
-  -webkit-backdrop-filter: blur(32px) saturate(200%);
+  
+  -webkit-
   box-shadow: var(--shadow-lift);
 }
 
 @utility glass-aurora {
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.85) 0%, rgba(255, 244, 230, 0.70) 50%, rgba(235, 252, 240, 0.75) 100%);
   border: 1px solid rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(28px) saturate(190%);
+  
   box-shadow: 0 16px 40px -8px rgba(255, 111, 0, 0.09), 0 6px 18px 0 rgba(14, 138, 75, 0.06), inset 0 1px 1px 0 rgba(255, 255, 255, 1);
 }
 
 @utility glass-saffron {
   background: linear-gradient(135deg, rgba(255, 111, 0, 0.08) 0%, rgba(255, 248, 238, 0.85) 100%);
   border: 1px solid rgba(255, 111, 0, 0.32);
-  backdrop-filter: blur(20px);
+  
   box-shadow: 0 8px 30px -4px rgba(255, 111, 0, 0.12), inset 0 1px 0 0 rgba(255, 255, 255, 0.9);
 }
 
 @utility glass-emerald {
   background: linear-gradient(135deg, rgba(14, 138, 75, 0.08) 0%, rgba(240, 253, 244, 0.85) 100%);
   border: 1px solid rgba(14, 138, 75, 0.30);
-  backdrop-filter: blur(20px);
+  
   box-shadow: 0 8px 30px -4px rgba(14, 138, 75, 0.12), inset 0 1px 0 0 rgba(255, 255, 255, 0.9);
 }
 
 @utility glass-peacock {
   background: linear-gradient(135deg, rgba(10, 54, 157, 0.07) 0%, rgba(240, 247, 255, 0.85) 100%);
   border: 1px solid rgba(10, 54, 157, 0.28);
-  backdrop-filter: blur(20px);
+  
   box-shadow: 0 8px 30px -4px rgba(10, 54, 157, 0.10), inset 0 1px 0 0 rgba(255, 255, 255, 0.9);
 }
 
@@ -383,7 +383,7 @@
   border-radius: 1.25rem;
   background: rgba(255, 255, 255, 0.82);
   border: 1px solid rgba(255, 111, 0, 0.22);
-  backdrop-filter: blur(28px) saturate(180%);
+  
   box-shadow: 0 12px 36px -6px rgba(255, 111, 0, 0.08), 0 4px 12px 0 rgba(0, 0, 0, 0.03);
   transition: all 300ms cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -434,7 +434,7 @@
   border-radius: 0.75rem !important;
   padding: 0.55rem 0.8rem !important;
   box-shadow: 0 12px 32px rgba(255, 111, 0, 0.15) !important;
-  backdrop-filter: blur(20px) !important;
+  
 }
 .dark .jm-ward-tooltip {
   background: rgba(18, 27, 44, 0.95) !important;
@@ -605,7 +605,7 @@ body::after {
     linear-gradient(135deg, color-mix(in srgb, var(--civic-city-accent) 12%, transparent), transparent 42%),
     color-mix(in srgb, var(--civic-paper) 86%, transparent);
   box-shadow: 0 24px 56px -20px color-mix(in srgb, var(--civic-city-accent) 28%, transparent);
-  backdrop-filter: blur(24px) saturate(135%);
+  
 }
 
 .civic-atmosphere-panel::after {
@@ -631,8 +631,8 @@ body::after {
   padding: 0.65rem;
   border: 1px solid color-mix(in srgb, var(--civic-city-accent) 20%, var(--glass-border));
   border-radius: 1rem;
-  background: color-mix(in srgb, var(--civic-paper) 76%, transparent);
-  backdrop-filter: blur(18px);
+  background: white;
+  
 }
 
 .civic-city-chip {
@@ -643,7 +643,7 @@ body::after {
   border-radius: 9999px;
   padding: 0.35rem 0.7rem;
   color: var(--civic-ink);
-  background: color-mix(in srgb, var(--civic-city-accent-soft) 30%, transparent);
+  background: white;
   font-size: 0.7rem;
   font-weight: 700;
   letter-spacing: 0.06em;
@@ -670,7 +670,7 @@ body::after {
     linear-gradient(135deg, color-mix(in srgb, var(--heritage-accent) 15%, transparent), transparent 58%),
     color-mix(in srgb, var(--civic-paper) 88%, transparent);
   box-shadow: 0 18px 40px -24px color-mix(in srgb, var(--heritage-accent) 46%, transparent);
-  backdrop-filter: blur(18px) saturate(125%);
+  
 }
 
 .civic-heritage-signal::before {
@@ -718,10 +718,7 @@ body::after {
    contrast and live-data clarity.
    ------------------------------------------------------------------------- */
 .civic-city-shell {
-  background-image:
-    linear-gradient(180deg, color-mix(in srgb, var(--civic-paper) 58%, transparent), color-mix(in srgb, var(--civic-sand-100) 76%, transparent) 42%, color-mix(in srgb, var(--civic-sand-100) 94%, transparent) 100%),
-    var(--civic-city-atmosphere),
-    linear-gradient(135deg, var(--civic-sand-100), var(--civic-paper));
+  background-color: #f8f9fa;
   background-position: center top;
   background-size: cover;
 }
@@ -750,7 +747,7 @@ body::after {
   overflow: hidden;
   border: 1px solid color-mix(in srgb, var(--civic-city-accent) 34%, var(--glass-border));
   border-radius: 0.9rem;
-  background: color-mix(in srgb, var(--civic-paper) 82%, transparent);
+  background: white;
   box-shadow: 0 8px 18px -10px color-mix(in srgb, var(--civic-city-accent) 46%, transparent);
 }
 
@@ -773,7 +770,7 @@ body::after {
   }
 
   .civic-atmosphere-panel {
-    backdrop-filter: blur(22px) saturate(138%);
+    
   }
 }
 
@@ -793,7 +790,7 @@ body::after {
       var(--civic-city-atmosphere);
     background-position: center, 50% 26%;
     background-size: cover, auto 38rem;
-    backdrop-filter: blur(16px) saturate(130%);
+    
   }
 
   .civic-brand-logo-mark {
@@ -832,16 +829,16 @@ body::after {
   padding: 0.9rem;
   border: 1px solid color-mix(in srgb, var(--civic-city-accent) 22%, var(--glass-border));
   border-radius: 1.35rem;
-  background: color-mix(in srgb, var(--civic-paper) 68%, transparent);
+  background: white;
   box-shadow: 0 16px 34px -22px color-mix(in srgb, var(--civic-indigo-950) 46%, transparent);
-  backdrop-filter: blur(14px) saturate(125%);
+  
 }
 @media (max-width: 767px) {
   .civic-atmosphere-panel > .animate-rise:first-child {
     margin: -0.15rem;
     padding: 0.65rem;
-    background: color-mix(in srgb, var(--civic-paper) 76%, transparent);
-    backdrop-filter: blur(18px) saturate(128%);
+    background: white;
+    
   }
 }
 
@@ -849,13 +846,13 @@ body::after {
 
 /* Hero readability lock: architectural background remains visible around, not through, primary copy. */
 .civic-atmosphere-panel > .animate-rise:first-child {
-  background: color-mix(in srgb, var(--surface-elevated) 86%, transparent);
+  background: white;
   border-color: color-mix(in srgb, var(--civic-city-accent) 30%, var(--glass-border));
   box-shadow: 0 18px 38px -22px color-mix(in srgb, var(--foreground) 35%, transparent);
 }
 @media (max-width: 767px) {
   .civic-atmosphere-panel > .animate-rise:first-child {
-    background: color-mix(in srgb, var(--surface-elevated) 92%, transparent);
+    background: white;
   }
 }
 
@@ -911,10 +908,7 @@ body.civic-heritage-shell {
   --shadow-lift: 0 24px 58px -28px rgb(74 48 28 / .28), 0 0 28px -10px color-mix(in srgb, var(--civic-city-accent) 18%, transparent), inset 0 1px 0 rgb(255 255 255 / .82);
 }
 body.civic-heritage-shell .civic-city-shell {
-  background-image:
-    linear-gradient(180deg, rgb(255 250 243 / .30), rgb(245 240 231 / .56) 48%, #f5f0e7 100%),
-    var(--civic-city-atmosphere),
-    linear-gradient(135deg, #f5f0e7, #fffaf3);
+  background-color: #f8f9fa;
   background-position: center top, center top, center top;
   background-size: cover, cover, cover;
   background-attachment: fixed;
@@ -927,21 +921,21 @@ body.civic-heritage-shell .civic-city-shell::before {
 }
 body.civic-heritage-shell .civic-atmosphere-panel,
 body.civic-heritage-shell .jm-heritage-card {
-  background: linear-gradient(145deg, rgb(255 252 247 / .66), rgb(245 240 231 / .52)) !important;
+  background: white !important;
   border-color: color-mix(in srgb, var(--civic-city-accent) 38%, var(--glass-border)) !important;
   box-shadow: var(--shadow-lift);
-  backdrop-filter: blur(24px) saturate(145%);
-  -webkit-backdrop-filter: blur(24px) saturate(145%);
+  
+  -webkit-
 }
 body.civic-heritage-shell .civic-atmosphere-panel > .animate-rise:first-child {
-  background: rgb(255 252 247 / .62) !important;
+  background: white !important;
   border-color: rgb(16 27 61 / .16) !important;
   box-shadow: 0 18px 40px -26px rgb(74 48 28 / .22), inset 0 1px 0 rgb(255 255 255 / .72);
-  backdrop-filter: blur(18px) saturate(135%);
+  
 }
 body.civic-heritage-shell .civic-data-rail,
 body.civic-heritage-shell .civic-city-chip {
-  background: rgb(255 252 247 / .54) !important;
+  background: white !important;
   color: #172033 !important;
   border-color: rgb(16 27 61 / .16) !important;
 }
@@ -972,6 +966,6 @@ body.civic-heritage-shell [class*="to-emerald-50/"] {
     background-position: center top, 50% 4.5rem, center top;
   }
   body.civic-heritage-shell .civic-atmosphere-panel > .animate-rise:first-child {
-    background: rgb(255 252 247 / .72) !important;
+    background: white !important;
   }
 }

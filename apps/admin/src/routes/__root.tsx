@@ -1,4 +1,4 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+﻿import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   Outlet,
   Link,
@@ -87,7 +87,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "apple-mobile-web-app-capable", content: "yes" },
       { name: "apple-mobile-web-app-status-bar-style", content: "black-translucent" },
       { name: "apple-mobile-web-app-title", content: "Civic Sathi Admin" },
-      { title: "Civic Sathi — Super Admin Platform" },
+      { title: "Civic Sathi — Government of Maharashtra" },
       { name: "description", content: "City-wide civic governance, contractor vetting, and SLA analytics administration." },
       { name: "author", content: "Civic Sathi" },
       { property: "og:title", content: "Civic Sathi — Super Admin Platform" },
@@ -121,7 +121,36 @@ function RootShell({ children }: { children: ReactNode }) {
         
       </head>
             <body className="civic-heritage-shell">
+          {/* Government of Maharashtra Official Strip */}
+          <div className="w-full bg-[#1a2744] text-white py-1.5 px-4 flex justify-between items-center text-[13px] font-semibold tracking-wide border-b border-white/20 z-50 relative">
+            <div className="flex items-center gap-2">
+              <span className="text-[#f4801a]">||</span>
+              <span>महाराष्ट्र शासन | Government of Maharashtra</span>
+            </div>
+            <div className="hidden md:flex items-center gap-4 opacity-90 text-[11px] uppercase tracking-wider">
+              <span>Smart India Hackathon 2026 Grand Finale</span>
+              <span>�</span>
+              <span>SIH26129 Prototype</span>
+            </div>
+          </div>
         {children}
+
+        {/* Government Footer */}
+        <footer className="w-full bg-[#1a2744] text-white py-6 px-4 mt-auto border-t-[4px] border-[#f4801a] z-50 relative flex-shrink-0">
+          <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4 text-xs opacity-90">
+            <div className="flex flex-col items-center md:items-start">
+              <strong className="text-sm mb-1">Civic Sathi : Integrated Grievance Redressal System</strong>
+              <span>Designed & Developed for Smart India Hackathon (SIH26129)</span>
+              <span className="mt-1 text-white/60">© 2026 Government of Maharashtra Prototype</span>
+            </div>
+            <div className="flex gap-4 md:gap-6">
+              <a href="#" className="hover:underline hover:text-[#f4801a] transition-colors">Help & Support</a>
+              <a href="#" className="hover:underline hover:text-[#f4801a] transition-colors">Web Information Manager</a>
+              <a href="#" className="hover:underline hover:text-[#f4801a] transition-colors">Terms of Use</a>
+            </div>
+          </div>
+        </footer>
+
 
         <Scripts />
       </body>

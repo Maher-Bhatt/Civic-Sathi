@@ -60,7 +60,7 @@
 
 /* -- LIGHT MODE ? Ivory + India Green primary -- */
 :root {
-  --radius: 0.75rem;
+  --radius: 0.25rem;
 
   /* India flag inspired palette */
   --saffron:       #FF9933;   /* Indian saffron */
@@ -177,7 +177,7 @@
   }
 
   ::selection {
-    background: color-mix(in oklab, var(--primary) 28%, transparent);
+    background: white;
   }
 
   :focus-visible {
@@ -195,14 +195,14 @@
 @utility glass {
   background: var(--glass);
   border: 1px solid var(--glass-border);
-  backdrop-filter: blur(18px) saturate(140%);
+  
   box-shadow: var(--shadow-soft);
 }
 
 @utility glass-strong {
   background: var(--glass-strong);
   border: 1px solid var(--glass-border);
-  backdrop-filter: blur(24px) saturate(150%);
+  
   box-shadow: var(--shadow-soft);
 }
 
@@ -365,7 +365,7 @@
   color: var(--subtle-foreground);
   border: 1px solid var(--glass-border);
   border-radius: 0.5rem;
-  backdrop-filter: blur(12px);
+  
   font-size: 0.6rem;
   padding: 2px 6px;
   margin: 6px;
@@ -388,8 +388,8 @@
   border-radius: 0.75rem !important;
   color: var(--foreground) !important;
   box-shadow: var(--shadow-lift) !important;
-  backdrop-filter: blur(24px) saturate(150%) !important;
-  -webkit-backdrop-filter: blur(24px) saturate(150%) !important;
+  
+  -webkit-
   font-size: 0.75rem !important;
   line-height: 1.5 !important;
   padding: 10px 14px !important;
@@ -409,11 +409,11 @@
   display: grid;
   place-items: center;
   border-radius: 999px;
-  background: color-mix(in oklab, var(--jm-c) 28%, transparent);
+  background: white;
   border: 1px solid color-mix(in oklab, var(--jm-c) 62%, transparent);
   box-shadow: 0 6px 18px -8px rgb(0 0 0 / 0.5);
   color: var(--foreground);
-  backdrop-filter: blur(6px);
+  
   transition:
     transform 200ms cubic-bezier(0.22, 1, 0.36, 1),
     background-color 200ms ease-out;
@@ -422,7 +422,7 @@
 
 .jm-cluster:hover {
   transform: scale(1.08);
-  background: color-mix(in oklab, var(--jm-c) 40%, transparent);
+  background: white;
 }
 
 .jm-dot {
@@ -430,7 +430,7 @@
   height: 12px;
   width: 12px;
   border-radius: 999px;
-  background: color-mix(in oklab, var(--jm-c) 72%, transparent);
+  background: white;
   border: 1px solid color-mix(in oklab, var(--jm-c) 90%, transparent);
   box-shadow: 0 4px 12px -6px rgb(0 0 0 / 0.6);
   transition: transform 180ms cubic-bezier(0.22, 1, 0.36, 1);
@@ -459,7 +459,7 @@
   height: 28px;
   width: 28px;
   border-radius: 999px;
-  background: color-mix(in oklab, var(--primary) 88%, transparent);
+  background: white;
   border: 2px solid color-mix(in oklab, var(--background) 70%, transparent);
   box-shadow: var(--shadow-lift);
   transition: transform 200ms cubic-bezier(0.22, 1, 0.36, 1);
@@ -813,18 +813,15 @@ body::after {
 .civic-city-shell { position: relative; isolation: isolate; overflow-x: clip; background-image: linear-gradient(180deg, color-mix(in srgb, var(--civic-paper) 90%, transparent), color-mix(in srgb, var(--civic-sand-100) 98%, transparent)), var(--civic-city-atmosphere); background-position: center top; background-size: cover; background-attachment: fixed; }
 .civic-city-shell::before { content: ''; position: fixed; inset: 0; z-index: -1; pointer-events: none; opacity: .30; background: repeating-linear-gradient(0deg, transparent 0 5rem, var(--civic-architecture-line) 5.05rem 5.12rem, transparent 5.18rem 10rem); mask-image: linear-gradient(180deg, black, transparent 70%); }
 .civic-city-shell[data-city='bengaluru'] { --civic-city-accent: #0E766E; --civic-city-accent-soft: #B7DDD5; --civic-city-atmosphere: url('/city-atmosphere/bengaluru-civic-atmosphere.webp'); }
-.civic-atmosphere-panel { position: relative; overflow: hidden; border: 1px solid color-mix(in srgb, var(--civic-city-accent) 26%, var(--glass-border)); background: color-mix(in srgb, var(--civic-paper) 84%, transparent); box-shadow: 0 20px 48px -20px color-mix(in srgb, var(--civic-city-accent) 25%, transparent); backdrop-filter: blur(22px) saturate(130%); }
+.civic-atmosphere-panel { position: relative; overflow: hidden; border: 1px solid color-mix(in srgb, var(--civic-city-accent) 26%, var(--glass-border)); background: white; box-shadow: 0 20px 48px -20px color-mix(in srgb, var(--civic-city-accent) 25%, transparent);  }
 .civic-architecture-rule { height: 1px; background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--civic-city-accent) 55%, transparent) 18%, color-mix(in srgb, var(--civic-teal-600) 46%, transparent) 82%, transparent); }
-.civic-city-chip { display: inline-flex; align-items: center; gap: .45rem; border: 1px solid color-mix(in srgb, var(--civic-city-accent) 28%, var(--glass-border)); border-radius: 9999px; padding: .35rem .7rem; background: color-mix(in srgb, var(--civic-city-accent-soft) 26%, transparent); color: var(--civic-ink); font-size: .7rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+.civic-city-chip { display: inline-flex; align-items: center; gap: .45rem; border: 1px solid color-mix(in srgb, var(--civic-city-accent) 28%, var(--glass-border)); border-radius: 9999px; padding: .35rem .7rem; background: white; color: var(--civic-ink); font-size: .7rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
 @media (max-width: 640px), (prefers-reduced-motion: reduce) { .civic-city-shell { background-attachment: scroll; } }
 
 
 /* Responsive heritage refresh: visible city atmosphere with readable internal surfaces. */
 .civic-city-shell {
-  background-image:
-    linear-gradient(180deg, color-mix(in srgb, var(--civic-paper) 58%, transparent), color-mix(in srgb, var(--civic-sand-100) 76%, transparent) 42%, color-mix(in srgb, var(--civic-sand-100) 94%, transparent) 100%),
-    var(--civic-city-atmosphere),
-    linear-gradient(135deg, var(--civic-sand-100), var(--civic-paper));
+  background-color: #f8f9fa;
   background-position: center top;
   background-size: cover;
 }
@@ -844,19 +841,19 @@ body::after {
   overflow: hidden;
   border: 1px solid color-mix(in srgb, var(--civic-city-accent) 34%, var(--glass-border));
   border-radius: 0.9rem;
-  background: color-mix(in srgb, var(--civic-paper) 82%, transparent);
+  background: white;
   box-shadow: 0 8px 18px -10px color-mix(in srgb, var(--civic-city-accent) 46%, transparent);
 }
 .civic-brand-logo-mark img { width: 100%; height: 100%; object-fit: contain; }
 .civic-brand-logo-mark--internal { width: 2.8rem; height: 2.8rem; border-radius: 1rem; }
 @media (min-width: 1024px) {
   .civic-city-shell { background-size: 120% auto, cover, cover; background-position: center top, center top, center top; }
-  .civic-atmosphere-panel { backdrop-filter: blur(22px) saturate(138%); }
+  .civic-atmosphere-panel {  }
 }
 @media (max-width: 767px) {
   .civic-city-shell { background-size: auto 58rem, auto 58rem, cover; background-position: center top, 50% 4.5rem, center top; }
   .civic-city-shell::before { opacity: 0.18; }
-  .civic-atmosphere-panel { background: linear-gradient(150deg, color-mix(in srgb, var(--civic-city-accent) 16%, transparent), transparent 54%), color-mix(in srgb, var(--civic-paper) 78%, transparent); backdrop-filter: blur(16px) saturate(130%); }
+  .civic-atmosphere-panel { background: linear-gradient(150deg, color-mix(in srgb, var(--civic-city-accent) 16%, transparent), transparent 54%), color-mix(in srgb, var(--civic-paper) 78%, transparent);  }
   .civic-brand-logo-mark { width: 2.25rem; height: 2.25rem; border-radius: 0.75rem; }
 }
 
@@ -890,16 +887,16 @@ body::after {
   padding: 0.9rem;
   border: 1px solid color-mix(in srgb, var(--civic-city-accent) 22%, var(--glass-border));
   border-radius: 1.35rem;
-  background: color-mix(in srgb, var(--civic-paper) 68%, transparent);
+  background: white;
   box-shadow: 0 16px 34px -22px color-mix(in srgb, var(--civic-indigo-950) 46%, transparent);
-  backdrop-filter: blur(14px) saturate(125%);
+  
 }
 @media (max-width: 767px) {
   .civic-atmosphere-panel > .animate-rise:first-child {
     margin: -0.15rem;
     padding: 0.65rem;
-    background: color-mix(in srgb, var(--civic-paper) 76%, transparent);
-    backdrop-filter: blur(18px) saturate(128%);
+    background: white;
+    
   }
 }
 
@@ -907,13 +904,13 @@ body::after {
 
 /* Hero readability lock: architectural background remains visible around, not through, primary copy. */
 .civic-atmosphere-panel > .animate-rise:first-child {
-  background: color-mix(in srgb, var(--surface-elevated) 86%, transparent);
+  background: white;
   border-color: color-mix(in srgb, var(--civic-city-accent) 30%, var(--glass-border));
   box-shadow: 0 18px 38px -22px color-mix(in srgb, var(--foreground) 35%, transparent);
 }
 @media (max-width: 767px) {
   .civic-atmosphere-panel > .animate-rise:first-child {
-    background: color-mix(in srgb, var(--surface-elevated) 92%, transparent);
+    background: white;
   }
 }
 
@@ -943,18 +940,15 @@ body::after {
 @media (max-width: 767px) {
   .civic-city-shell {
     min-height: 100dvh;
-    background-image:
-      linear-gradient(180deg, color-mix(in srgb, var(--civic-paper) 70%, transparent), color-mix(in srgb, var(--civic-sand-100) 86%, transparent) 62%, color-mix(in srgb, var(--civic-sand-100) 94%, transparent)),
-      var(--civic-city-atmosphere),
-      linear-gradient(135deg, var(--civic-sand-100), var(--civic-paper));
+    background-color: #f8f9fa;
     background-position: center top, center top, center top;
     background-size: cover, auto 48rem, cover;
     background-attachment: scroll;
   }
   .civic-city-shell::before { opacity: 0.12; }
   .civic-atmosphere-panel {
-    background: color-mix(in srgb, var(--surface-elevated) 90%, transparent);
-    backdrop-filter: blur(18px) saturate(120%);
+    background: white;
+    
   }
 }
 
@@ -978,10 +972,7 @@ body::after {
 }
 
 .civic-city-shell {
-  background-image:
-    linear-gradient(180deg, rgb(255 244 229 / 0.62), rgb(237 226 210 / 0.78) 52%, rgb(228 213 193 / 0.9)),
-    var(--civic-city-atmosphere),
-    linear-gradient(135deg, #EDE2D2, #F8F0E5);
+  background-color: #f8f9fa;
   background-blend-mode: normal, multiply, normal;
 }
 
@@ -989,11 +980,11 @@ body::after {
 
 /* The navigation is the dark institutional anchor; content remains warm and light. */
 .civic-city-shell > aside {
-  background: linear-gradient(180deg, rgb(24 33 58 / 0.94), rgb(17 27 49 / 0.90)) !important;
+  background: white !important;
   border-color: rgb(255 255 255 / 0.13) !important;
   box-shadow: 18px 0 46px -30px rgb(16 27 61 / 0.58);
   color: #F8F0E5;
-  backdrop-filter: blur(24px) saturate(135%);
+  
 }
 .civic-city-shell > aside .text-muted-foreground,
 .civic-city-shell > aside .text-foreground { color: rgb(248 240 229 / 0.78) !important; }
@@ -1006,20 +997,20 @@ body::after {
   background: rgb(255 249 240 / 0.70) !important;
   border-color: rgb(119 78 44 / 0.18) !important;
   box-shadow: 0 10px 28px -24px rgb(56 37 22 / 0.42);
-  backdrop-filter: blur(22px) saturate(132%);
+  
 }
 .civic-city-shell > div > header .bg-\[var\(--glass\)\] { background: rgb(255 249 240 / 0.58) !important; }
 
 .civic-city-shell main { padding-top: 1.25rem !important; }
 .civic-city-shell .civic-atmosphere-panel {
-  background-image: linear-gradient(135deg, rgb(200 107 24 / 0.10), rgb(255 249 240 / 0.58) 64%), var(--civic-city-atmosphere) !important;
+  background-color: #f8f9fa;
   border-color: color-mix(in srgb, var(--civic-city-accent) 30%, var(--glass-border));
   box-shadow: 0 24px 56px -28px color-mix(in srgb, var(--civic-city-accent) 34%, transparent), inset 0 1px 0 rgb(255 255 255 / 0.55);
 }
 .civic-city-shell .glass-strong { background: rgb(255 249 240 / 0.68); }
 
 @media (max-width: 767px) {
-  .civic-city-shell > aside { background: linear-gradient(180deg, rgb(24 33 58 / 0.97), rgb(17 27 49 / 0.95)) !important; }
+  .civic-city-shell > aside { background: white !important; }
   .civic-city-shell > div > header { background: rgb(255 249 240 / 0.82) !important; }
   .civic-city-shell main { padding-top: 0.85rem !important; }
 }
@@ -1151,7 +1142,7 @@ body::after {
 }
 .civic-heritage-sidebar nav a[aria-current="page"] {
   color: #FFFAF2 !important;
-  background: linear-gradient(90deg, rgb(185 82 50 / 0.38), rgb(214 146 46 / 0.12)) !important;
+  background: white !important;
   box-shadow: inset 3px 0 0 #D6922E, 0 10px 24px -18px rgb(185 82 50 / 0.90) !important;
 }
 .civic-heritage-sidebar .text-muted-foreground { color: #B69480 !important; }
@@ -1182,7 +1173,7 @@ body::after {
 .civic-city-shell > aside.civic-heritage-sidebar nav a:hover,
 .civic-city-shell > aside.civic-heritage-sidebar nav a[aria-current="page"] {
   color: #FFFAF2 !important;
-  background: linear-gradient(90deg, rgb(185 82 50 / 0.38), rgb(214 146 46 / 0.12)) !important;
+  background: white !important;
 }
 .civic-city-shell > aside.civic-heritage-sidebar::before,
 .civic-city-shell > aside.civic-heritage-sidebar::after { pointer-events: none !important; }
