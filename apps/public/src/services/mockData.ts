@@ -82,6 +82,8 @@ export const SEED_COMPLAINTS: Complaint[] = [
     status: "Assigned",
     relatedCount: 127,
     nearbyCount: 23,
+    relatedComplaints: [],
+    matchingState: "complete",
     timeline: timeline(3),
   },
   {
@@ -95,6 +97,8 @@ export const SEED_COMPLAINTS: Complaint[] = [
     status: "In Progress",
     relatedCount: 18,
     nearbyCount: 6,
+    relatedComplaints: [],
+    matchingState: "complete",
     timeline: timeline(4),
   },
   {
@@ -108,6 +112,8 @@ export const SEED_COMPLAINTS: Complaint[] = [
     status: "Resolved",
     relatedCount: 41,
     nearbyCount: 9,
+    relatedComplaints: [],
+    matchingState: "complete",
     timeline: timeline(5),
   },
 ];

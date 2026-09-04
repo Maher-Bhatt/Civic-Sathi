@@ -183,7 +183,9 @@ export function CivicMap({
       },
     }).addTo(map);
     areaLayer.current = layer;
-    return () => layer.remove();
+    return () => {
+      layer.remove();
+    };
   }, [cityId, ready, styleFor]);
 
   useEffect(() => {

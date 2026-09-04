@@ -4,6 +4,7 @@ import type {
   ComplaintFilters,
   DashboardKPIs,
   DepartmentStats,
+  LiveActivity,
   MuniAlert,
   MuniComplaint,
   AreaOverview,

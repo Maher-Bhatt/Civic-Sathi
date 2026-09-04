@@ -37,6 +37,7 @@ import {
   nearestArea,
   searchAreas,
   type AreaActivity,
+  type MapFilters,
 } from "@/services/geography";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/lib/i18n";
