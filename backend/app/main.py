@@ -13,9 +13,13 @@ from app.core.errors import (
     generic_exception_handler,
 )
 from app.api.v1.router import router as api_v1_router
+from app.core.audit_listeners import setup_auditing
 
 # Setup logging
 setup_logging()
+
+# Setup automated SQLAlchemy audit logging
+setup_auditing()
 
 # Create FastAPI app
 app = FastAPI(
@@ -47,6 +51,25 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+from fastapi import Request
+import jwt
+from app.core.audit_context import set_audit_actor
+
+@app.middleware("http")
+async def audit_actor_middleware(request: Request, call_next):
+    auth_header = request.headers.get("Authorization")
+    if auth_header and auth_header.startswith("Bearer "):
+        token = auth_header.split(" ")[1]
+        try:
+            payload = jwt.decode(token, settings.jwt_secret, algorithms=["HS256"])
+            actor_id = payload.get("sub", "unknown")
+            actor_name = payload.get("name", "Unknown User")
+            actor_role = payload.get("role", "unknown")
+            set_audit_actor(actor_id, actor_name, actor_role)
+        except Exception:
+            pass
+    return await call_next(request)
 
 # Exception handlers
 app.add_exception_handler(AppException, app_exception_handler)
