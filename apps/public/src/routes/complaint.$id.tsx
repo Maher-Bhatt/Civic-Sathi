@@ -53,9 +53,9 @@ function ComplaintDetail() {
   
 
   const isNotFound = (error as any)?.status === 404;
-  const location = data?.location ?? { lat: 18.5204, lng: 73.8567, ward: "Zone 1", area: "Pune" };
+  const location = data?.location ?? { lat: 18.5204, lng: 73.8567, ward: "Zone 1", area: "mumbai" };
   const city = data ? nearestCity(location.lat, location.lng) : null;
-  const mapCityId = city?.id ?? "pune";
+  const mapCityId = city?.id ?? "mumbai";
 
   return (
     <PageShell className="max-w-3xl">

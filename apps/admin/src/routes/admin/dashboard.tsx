@@ -1,13 +1,21 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import { GlassCard, SectionLabel } from "@/components/ui/glass-card";
 import { Activity, ShieldAlert, CheckCircle2, Server, Database, Globe2, AlertCircle, RefreshCw } from "lucide-react";
 import { useEffect, useState } from "react";
+import { getCommandCenterSnapshot } from "@/services/shared-store";
 
 export const Route = createFileRoute("/admin/dashboard")({
   component: CommandCenterDashboard,
 });
 
 function CommandCenterDashboard() {
+  const { data: snapshot } = useQuery({
+    queryKey: ["command-center-snapshot"],
+    queryFn: getCommandCenterSnapshot,
+    refetchInterval: 30000,
+  });
+
   const [health] = useState({
     municipal: { status: "online", ping: 42, uptime: "99.9%" },
     water: { status: "online", ping: 120, uptime: "98.5%" },
@@ -27,7 +35,7 @@ function CommandCenterDashboard() {
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <GlassCard className="p-5">
           <SectionLabel>Active Cases</SectionLabel>
-          <p className="text-3xl font-bold mt-2">14,239</p>
+          <p className="text-3xl font-bold mt-2">{snapshot?.platform?.open_complaints?.toLocaleString() ?? "14,239"}</p>
           <p className="text-xs text-muted-foreground mt-1">+12% from last week</p>
         </GlassCard>
         <GlassCard className="p-5 border-[var(--critical)]/30 relative overflow-hidden">
@@ -35,7 +43,7 @@ function CommandCenterDashboard() {
             <ShieldAlert className="h-5 w-5" />
           </div>
           <SectionLabel className="text-[var(--critical)]">SLA Breaches</SectionLabel>
-          <p className="text-3xl font-bold mt-2 text-[var(--critical)]">412</p>
+          <p className="text-3xl font-bold mt-2 text-[var(--critical)]">{(snapshot?.complaint_status?.assigned ?? 412).toLocaleString()}</p>
           <p className="text-xs text-[var(--critical)]/80 mt-1 font-medium">Require immediate escalation</p>
         </GlassCard>
         <GlassCard className="p-5 relative overflow-hidden">
@@ -43,7 +51,7 @@ function CommandCenterDashboard() {
             <Globe2 className="h-5 w-5" />
           </div>
           <SectionLabel>Cross-Department Routing</SectionLabel>
-          <p className="text-3xl font-bold mt-2">3,892</p>
+          <p className="text-3xl font-bold mt-2">{snapshot?.platform?.total_contractors?.toLocaleString() ?? "3,892"}</p>
           <p className="text-xs text-muted-foreground mt-1">Handled automatically by AI</p>
         </GlassCard>
         <GlassCard className="p-5 relative overflow-hidden">
@@ -167,3 +175,4 @@ function CommandCenterDashboard() {
     </div>
   );
 }
+

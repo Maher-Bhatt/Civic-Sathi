@@ -1,7 +1,7 @@
 """User, Ward, and Department models"""
 
 import datetime
-from sqlalchemy import String, Text, Integer, DateTime
+from sqlalchemy import String, Text, Integer, DateTime, ForeignKey
 
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.dialects.postgresql import JSONB
@@ -29,6 +29,14 @@ class User(Base, UUIDMixin, TimestampMixin):
     reset_otp_channel: Mapped[str | None] = mapped_column(String(16))
     reset_otp_requested_at: Mapped[datetime.datetime | None] = mapped_column(DateTime(timezone=True))
 
+class Zone(Base, UUIDMixin, TimestampMixin):
+    """Zone model grouping multiple wards"""
+    
+    __tablename__ = "zones"
+    
+    name: Mapped[str] = mapped_column(String(100), nullable=False)
+    city_id: Mapped[str] = mapped_column(ForeignKey("cities.id"), nullable=False, index=True)
+
 
 class Ward(Base, UUIDMixin, TimestampMixin):
     """Ward model for geographic and administrative boundaries"""
@@ -37,6 +45,8 @@ class Ward(Base, UUIDMixin, TimestampMixin):
     
     ward_number: Mapped[int] = mapped_column(Integer, unique=True, nullable=False, index=True)
     name: Mapped[str] = mapped_column(String(100), nullable=False)
+    city_id: Mapped[str] = mapped_column(ForeignKey("cities.id"), nullable=False, index=True)
+    zone_id: Mapped[str | None] = mapped_column(ForeignKey("zones.id"), nullable=True, index=True)
     centroid_lat: Mapped[float | None] = mapped_column()
     centroid_lng: Mapped[float | None] = mapped_column()
     boundary_geojson: Mapped[dict | None] = mapped_column(JSONB)

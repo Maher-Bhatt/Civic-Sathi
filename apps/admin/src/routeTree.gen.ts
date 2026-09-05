@@ -13,10 +13,16 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminRouteRouteImport } from './routes/admin/route'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as AdminAiOversightRouteImport } from './routes/admin/ai-oversight'
 import { Route as AdminAuditLogsRouteImport } from './routes/admin/audit-logs'
 import { Route as AdminDashboardRouteImport } from './routes/admin/dashboard'
+import { Route as AdminGamificationRouteImport } from './routes/admin/gamification'
+import { Route as AdminGlobalComplaintsRouteImport } from './routes/admin/global-complaints'
+import { Route as AdminInteroperabilityRouteImport } from './routes/admin/interoperability'
+import { Route as AdminMdmRouteImport } from './routes/admin/mdm'
 import { Route as AdminSettingsRouteImport } from './routes/admin/settings'
 import { Route as AdminSlaRouteImport } from './routes/admin/sla'
+import { Route as AdminTrustSafetyRouteImport } from './routes/admin/trust-safety'
 import { Route as AdminUsersRouteImport } from './routes/admin/users'
 import { Route as AdminWorkOrdersOverviewRouteImport } from './routes/admin/work-orders-overview'
 import { Route as AdminContractorsIndexRouteImport } from './routes/admin/contractors/index'
@@ -42,6 +48,11 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminAiOversightRoute = AdminAiOversightRouteImport.update({
+  id: '/ai-oversight',
+  path: '/ai-oversight',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
 const AdminAuditLogsRoute = AdminAuditLogsRouteImport.update({
   id: '/audit-logs',
   path: '/audit-logs',
@@ -52,6 +63,26 @@ const AdminDashboardRoute = AdminDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AdminRouteRoute,
 } as any)
+const AdminGamificationRoute = AdminGamificationRouteImport.update({
+  id: '/gamification',
+  path: '/gamification',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminGlobalComplaintsRoute = AdminGlobalComplaintsRouteImport.update({
+  id: '/global-complaints',
+  path: '/global-complaints',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminInteroperabilityRoute = AdminInteroperabilityRouteImport.update({
+  id: '/interoperability',
+  path: '/interoperability',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminMdmRoute = AdminMdmRouteImport.update({
+  id: '/mdm',
+  path: '/mdm',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
 const AdminSettingsRoute = AdminSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
@@ -60,6 +91,11 @@ const AdminSettingsRoute = AdminSettingsRouteImport.update({
 const AdminSlaRoute = AdminSlaRouteImport.update({
   id: '/sla',
   path: '/sla',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminTrustSafetyRoute = AdminTrustSafetyRouteImport.update({
+  id: '/trust-safety',
+  path: '/trust-safety',
   getParentRoute: () => AdminRouteRoute,
 } as any)
 const AdminUsersRoute = AdminUsersRouteImport.update({
@@ -88,10 +124,16 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRouteRouteWithChildren
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
+  '/admin/ai-oversight': typeof AdminAiOversightRoute
   '/admin/audit-logs': typeof AdminAuditLogsRoute
   '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin/gamification': typeof AdminGamificationRoute
+  '/admin/global-complaints': typeof AdminGlobalComplaintsRoute
+  '/admin/interoperability': typeof AdminInteroperabilityRoute
+  '/admin/mdm': typeof AdminMdmRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/sla': typeof AdminSlaRoute
+  '/admin/trust-safety': typeof AdminTrustSafetyRoute
   '/admin/users': typeof AdminUsersRoute
   '/admin/work-orders-overview': typeof AdminWorkOrdersOverviewRoute
   '/admin/contractors/$id': typeof AdminContractorsIdRoute
@@ -102,10 +144,16 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminRouteRouteWithChildren
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
+  '/admin/ai-oversight': typeof AdminAiOversightRoute
   '/admin/audit-logs': typeof AdminAuditLogsRoute
   '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin/gamification': typeof AdminGamificationRoute
+  '/admin/global-complaints': typeof AdminGlobalComplaintsRoute
+  '/admin/interoperability': typeof AdminInteroperabilityRoute
+  '/admin/mdm': typeof AdminMdmRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/sla': typeof AdminSlaRoute
+  '/admin/trust-safety': typeof AdminTrustSafetyRoute
   '/admin/users': typeof AdminUsersRoute
   '/admin/work-orders-overview': typeof AdminWorkOrdersOverviewRoute
   '/admin/contractors/$id': typeof AdminContractorsIdRoute
@@ -117,10 +165,16 @@ export interface FileRoutesById {
   '/admin': typeof AdminRouteRouteWithChildren
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
+  '/admin/ai-oversight': typeof AdminAiOversightRoute
   '/admin/audit-logs': typeof AdminAuditLogsRoute
   '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin/gamification': typeof AdminGamificationRoute
+  '/admin/global-complaints': typeof AdminGlobalComplaintsRoute
+  '/admin/interoperability': typeof AdminInteroperabilityRoute
+  '/admin/mdm': typeof AdminMdmRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/sla': typeof AdminSlaRoute
+  '/admin/trust-safety': typeof AdminTrustSafetyRoute
   '/admin/users': typeof AdminUsersRoute
   '/admin/work-orders-overview': typeof AdminWorkOrdersOverviewRoute
   '/admin/contractors/$id': typeof AdminContractorsIdRoute
@@ -133,10 +187,16 @@ export interface FileRouteTypes {
     | '/admin'
     | '/forgot-password'
     | '/login'
+    | '/admin/ai-oversight'
     | '/admin/audit-logs'
     | '/admin/dashboard'
+    | '/admin/gamification'
+    | '/admin/global-complaints'
+    | '/admin/interoperability'
+    | '/admin/mdm'
     | '/admin/settings'
     | '/admin/sla'
+    | '/admin/trust-safety'
     | '/admin/users'
     | '/admin/work-orders-overview'
     | '/admin/contractors/$id'
@@ -147,10 +207,16 @@ export interface FileRouteTypes {
     | '/admin'
     | '/forgot-password'
     | '/login'
+    | '/admin/ai-oversight'
     | '/admin/audit-logs'
     | '/admin/dashboard'
+    | '/admin/gamification'
+    | '/admin/global-complaints'
+    | '/admin/interoperability'
+    | '/admin/mdm'
     | '/admin/settings'
     | '/admin/sla'
+    | '/admin/trust-safety'
     | '/admin/users'
     | '/admin/work-orders-overview'
     | '/admin/contractors/$id'
@@ -161,10 +227,16 @@ export interface FileRouteTypes {
     | '/admin'
     | '/forgot-password'
     | '/login'
+    | '/admin/ai-oversight'
     | '/admin/audit-logs'
     | '/admin/dashboard'
+    | '/admin/gamification'
+    | '/admin/global-complaints'
+    | '/admin/interoperability'
+    | '/admin/mdm'
     | '/admin/settings'
     | '/admin/sla'
+    | '/admin/trust-safety'
     | '/admin/users'
     | '/admin/work-orders-overview'
     | '/admin/contractors/$id'
@@ -208,6 +280,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/ai-oversight': {
+      id: '/admin/ai-oversight'
+      path: '/ai-oversight'
+      fullPath: '/admin/ai-oversight'
+      preLoaderRoute: typeof AdminAiOversightRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
     '/admin/audit-logs': {
       id: '/admin/audit-logs'
       path: '/audit-logs'
@@ -222,6 +301,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminDashboardRouteImport
       parentRoute: typeof AdminRouteRoute
     }
+    '/admin/gamification': {
+      id: '/admin/gamification'
+      path: '/gamification'
+      fullPath: '/admin/gamification'
+      preLoaderRoute: typeof AdminGamificationRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/global-complaints': {
+      id: '/admin/global-complaints'
+      path: '/global-complaints'
+      fullPath: '/admin/global-complaints'
+      preLoaderRoute: typeof AdminGlobalComplaintsRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/interoperability': {
+      id: '/admin/interoperability'
+      path: '/interoperability'
+      fullPath: '/admin/interoperability'
+      preLoaderRoute: typeof AdminInteroperabilityRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/mdm': {
+      id: '/admin/mdm'
+      path: '/mdm'
+      fullPath: '/admin/mdm'
+      preLoaderRoute: typeof AdminMdmRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
     '/admin/settings': {
       id: '/admin/settings'
       path: '/settings'
@@ -234,6 +341,13 @@ declare module '@tanstack/react-router' {
       path: '/sla'
       fullPath: '/admin/sla'
       preLoaderRoute: typeof AdminSlaRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/trust-safety': {
+      id: '/admin/trust-safety'
+      path: '/trust-safety'
+      fullPath: '/admin/trust-safety'
+      preLoaderRoute: typeof AdminTrustSafetyRouteImport
       parentRoute: typeof AdminRouteRoute
     }
     '/admin/users': {
@@ -268,10 +382,16 @@ declare module '@tanstack/react-router' {
 }
 
 interface AdminRouteRouteChildren {
+  AdminAiOversightRoute: typeof AdminAiOversightRoute
   AdminAuditLogsRoute: typeof AdminAuditLogsRoute
   AdminDashboardRoute: typeof AdminDashboardRoute
+  AdminGamificationRoute: typeof AdminGamificationRoute
+  AdminGlobalComplaintsRoute: typeof AdminGlobalComplaintsRoute
+  AdminInteroperabilityRoute: typeof AdminInteroperabilityRoute
+  AdminMdmRoute: typeof AdminMdmRoute
   AdminSettingsRoute: typeof AdminSettingsRoute
   AdminSlaRoute: typeof AdminSlaRoute
+  AdminTrustSafetyRoute: typeof AdminTrustSafetyRoute
   AdminUsersRoute: typeof AdminUsersRoute
   AdminWorkOrdersOverviewRoute: typeof AdminWorkOrdersOverviewRoute
   AdminContractorsIdRoute: typeof AdminContractorsIdRoute
@@ -279,10 +399,16 @@ interface AdminRouteRouteChildren {
 }
 
 const AdminRouteRouteChildren: AdminRouteRouteChildren = {
+  AdminAiOversightRoute: AdminAiOversightRoute,
   AdminAuditLogsRoute: AdminAuditLogsRoute,
   AdminDashboardRoute: AdminDashboardRoute,
+  AdminGamificationRoute: AdminGamificationRoute,
+  AdminGlobalComplaintsRoute: AdminGlobalComplaintsRoute,
+  AdminInteroperabilityRoute: AdminInteroperabilityRoute,
+  AdminMdmRoute: AdminMdmRoute,
   AdminSettingsRoute: AdminSettingsRoute,
   AdminSlaRoute: AdminSlaRoute,
+  AdminTrustSafetyRoute: AdminTrustSafetyRoute,
   AdminUsersRoute: AdminUsersRoute,
   AdminWorkOrdersOverviewRoute: AdminWorkOrdersOverviewRoute,
   AdminContractorsIdRoute: AdminContractorsIdRoute,
@@ -302,13 +428,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

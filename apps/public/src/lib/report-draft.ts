@@ -1,3 +1,4 @@
+import type { Language } from "./translations";
 import type { AnalysisResult, IssueCategory, LocationInfo, Severity } from "@/services/types";
 import type { CityId } from "@/services/cities";
 
@@ -6,7 +7,7 @@ export interface ReportDraft {
   location: LocationInfo | null;
   marker: { lat: number; lng: number } | null;
   city: CityId;
-  language: "en" | "hi" | "gu" | "kn";
+  language: Language;
   photo: string | null;
   category: IssueCategory | null;
   severity: Severity | null;
@@ -20,7 +21,7 @@ export const emptyDraft: ReportDraft = {
   description: "",
   location: null,
   marker: null,
-  city: "pune",
+  city: "mumbai",
   language: "en",
   photo: null,
   category: null,
@@ -50,3 +51,4 @@ export function saveDraft(draft: ReportDraft) {
 export function clearDraft() {
   if (typeof window !== "undefined") window.sessionStorage.removeItem(KEY);
 }
+

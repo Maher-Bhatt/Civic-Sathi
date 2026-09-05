@@ -12,7 +12,7 @@ import type { MuniSettings, Officer } from "@/services/types";
 const DEFAULT_SETTINGS: MuniSettings = {
   theme: "system",
   compactMode: false,
-  defaultCity: "pune",
+  defaultCity: "mumbai",
   defaultMapMode: "health",
   notifications: { critical: true, assignments: true, riskChanges: true, dailyDigest: false },
 };

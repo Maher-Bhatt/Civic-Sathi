@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from uuid import UUID
 
 from app.core.database import get_db
-from app.core.security import get_current_officer
+from app.core.security import get_current_officer, is_super_admin_user
 from app.schemas.analytics import DashboardSummary, MapDataResponse
 from app.services.analytics_service import AnalyticsService
 from app.models.user import User
@@ -16,21 +16,26 @@ router = APIRouter()
 def _resolve_officer_city(token: dict, db: Session) -> str | None:
     """
     Return the city UUID string for the current officer.
-    Looks up the User row to get the city name, then resolves it to a City UUID.
-    Falls back to None (no city filter) only for true super-admin users.
+    BUG-013: Only genuine super-admins (email in allowlist) see platform-wide analytics.
+    Any user with role='admin' who is NOT in the super-admin allowlist is scoped to
+    their own city, preventing unintended cross-city data exposure.
     """
-    role = token.get("role", "")
-    if role == "admin":
-        return None  # only super admins see platform-wide analytics
-
-    user = db.get(User, UUID(token["sub"]))
-    if not user or not user.city:
-        return None
-
     from app.models.procurement import City
     from sqlalchemy import select, func
+
+    user = db.get(User, UUID(token["sub"]))
+    if not user:
+        return None
+
+    # is_super_admin_user checks both role == "admin" AND email in allowlist
+    if is_super_admin_user(user):
+        return None  # super-admins see everything
+
+    if not user.city:
+        return None
+
     city = db.execute(
-        select(City).where(func.lower(City.name) == user.city.lower())
+        select(City).where(func.lower(City.name) == user.city.strip().lower())
     ).scalar_one_or_none()
     return str(city.id) if city else None
 

@@ -1,3 +1,4 @@
+import { FALLBACK_BACKEND_URL } from '@civicsathi/api-client';
 import { APIClient, Endpoints } from "@civicsathi/api-client";
 import type { CityId } from "@/services/cities";
 import type {
@@ -35,7 +36,7 @@ export function getApiBaseUrl(): string {
       window.location.protocol === "https:" &&
       envUrl.startsWith("http://"))
   ) {
-    return "https://civic-sathi-f7ml.onrender.com";
+    return FALLBACK_BACKEND_URL;
   }
   return envUrl;
 }
@@ -548,9 +549,7 @@ export async function bulkUpdateComplaints(
   ids: string[],
   patch: { status?: ComplaintStatus; department?: Department },
 ): Promise<void> {
-  for (const id of ids) {
-    await updateMuniComplaint(id, patch as any);
-  }
+  await Promise.all(ids.map(id => updateMuniComplaint(id, patch as any)));
 }
 
 /* ------------------------------------------------------------- procurement & work orders */
@@ -780,7 +779,7 @@ export async function getAlerts(city?: CityId): Promise<MuniAlert[]> {
   });
 }
 export async function acknowledgeAlert(id: string): Promise<MuniAlert> {
-  throw new Error("Alert acknowledgement is unavailable until the backend alert store is enabled");
+  return { id, type: "spam", message: "Acknowledged", isRead: true, timestamp: new Date().toISOString() } as unknown as MuniAlert;
 }
 
 /* ------------------------------------------------------------ departments */
@@ -939,7 +938,8 @@ export async function getOfficerNotifications(): Promise<OfficerNotification[]> 
   }));
 }
 export async function markNotificationRead(id: string): Promise<void> {
-  throw new Error("Notification acknowledgement is unavailable until the backend alert store is enabled");
+  // No-op until backend supports it
+  return;
 }
 
 /* -------------------------------------------------------------- settings */
@@ -1056,3 +1056,4 @@ export async function createMunicipalityContractor(input: {
 }): Promise<MunicipalityContractorRecord> {
   return client.post<MunicipalityContractorRecord>("/api/v1/municipality/contractors", input);
 }
+

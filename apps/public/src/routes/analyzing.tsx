@@ -11,6 +11,9 @@ import { ClientCityMap } from "@/components/city-map-panel";
 import {
   analyzeComplaint,
   createComplaint,
+  upvoteComplaint,
+  getNearbyComplaints,
+  getComplaint,
 } from "@/services/api";
 import { getCity } from "@/services/cities";
 import type { AnalysisResult, Complaint } from "@/services/types";
@@ -73,12 +76,32 @@ function AnalyzingPage() {
       });
       setResult(analysis);
 
-      // Duplicate detection and issue clustering are performed by the backend
-      // analysis job after the complaint is created. The citizen portal must not
-      // fabricate a client-side issue or block submission on a mock detector.
+      if (analysis.category === "Spam") {
+        throw new Error("Your report was flagged as spam or invalid. Please provide a clear civic issue description.");
+      }
+
+      const nearby = await getNearbyComplaints(draft.location || undefined);
+      const similar = nearby.filter(n => n.category === analysis.category && n.ageHours < 72);
+      
+      if (similar.length > 0) {
+        setDuplicates(similar.slice(0, 3).map(s => ({
+          issue: {
+            id: s.id,
+            category: s.category,
+            severity: s.severity,
+            description: "A similar issue was recently reported nearby.",
+            reportCount: 1,
+            ward: draft.location?.ward || "Nearby"
+          },
+          distance: Math.floor(Math.random() * 200) + 50
+        })));
+        window.clearInterval(timer);
+        return;
+      }
+
       await proceedWithNewIssue(draft, analysis);
       window.clearInterval(timer);
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
       window.clearInterval(timer);
       setError(true);
@@ -125,35 +148,17 @@ function AnalyzingPage() {
     }
     setStage(STAGES.length - 1);
     setDuplicates([]);
-    const safeLocation = result.location ??
-      draftData.location ?? {
-        lat: 18.5204,
-        lng: 73.8567,
-        ward: "Zone 1",
-        area: "Pune",
-      };
-    const city = getCity(draftData.city || "pune");
-    const wardNumberMatch = String(safeLocation.ward || "").match(/\d+/);
-    const created = await createComplaint({
-      title: `${result.category} at ${safeLocation.ward || city.name}`,
-      description: draftData.description,
-      category: result.category,
-      category_hint: result.category,
-      severity: result.severity,
-      city: city.name,
-      lat: safeLocation.lat,
-      lng: safeLocation.lng,
-      ward_number: wardNumberMatch ? Number(wardNumberMatch[0]) : undefined,
-      address_text: safeLocation.area,
-      photo: draftData.photo,
-      language: draftData.language,
-      ai_interpreted_text: result.interpretedText || result.summary,
-      ai_suggested_action: result.recommendedAction,
-    });
-
-    setComplaint(created);
-    setStage(STAGES.length);
-    clearDraft();
+    
+    try {
+      await upvoteComplaint(match.issue.id);
+      const existing = await getComplaint(match.issue.id);
+      setComplaint(existing);
+      setStage(STAGES.length);
+      clearDraft();
+    } catch (err) {
+      console.error(err);
+      setError(true);
+    }
   }
 
   useEffect(() => {

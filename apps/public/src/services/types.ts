@@ -3,7 +3,7 @@ export const ISSUE_TYPES = [
   "Road Damage",
   "Garbage Collection",
   "Drainage",
-  "Sewage",
+  "Sewage", "Spam",
   "Street Lighting",
   "Electricity",
   "Public Transport",

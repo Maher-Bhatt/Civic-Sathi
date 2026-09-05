@@ -181,7 +181,7 @@ function ReportPage() {
             />
             <div className="flex items-center gap-3 pt-2">
               <VoiceInput
-                lang={({ en: "en-IN", hi: "hi-IN", gu: "gu-IN", kn: "kn-IN" } as const)[language]}
+                lang={({ en: "en-IN", hi: "hi-IN", mr: "mr-IN", gu: "gu-IN", kn: "kn-IN" } as const)[language]}
                 onResult={(text) => {
                   const newDesc = draft.description ? `${draft.description} ${text}` : text;
                   update({ description: newDesc });

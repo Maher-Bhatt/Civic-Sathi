@@ -3559,3 +3559,4 @@ export const TRANSLATIONS: Record<Language, Record<string, string>> = {
     "ui.select_language": "Select language",
   },
 };
+

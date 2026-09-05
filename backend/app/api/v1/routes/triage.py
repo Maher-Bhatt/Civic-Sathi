@@ -27,7 +27,11 @@ def get_pending_triage(
     
     triage_items = []
     for analysis in results:
+        # BUG-016: Guard against orphaned ComplaintAnalysis rows where complaint was deleted
         complaint = analysis.complaint
+        if complaint is None:
+            continue
+
         candidate_issue = None
         if analysis.candidate_issue_id:
             candidate_issue = db.get(IssueCluster, analysis.candidate_issue_id)

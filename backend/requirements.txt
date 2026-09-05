@@ -4,8 +4,9 @@ sqlalchemy>=2.0,<3
 alembic>=1.13,<2
 pydantic[email]>=2.8,<3
 pydantic-settings>=2.4,<3
+# BUG-014: Use only psycopg3 (psycopg[binary]) — psycopg2-binary removed to avoid
+# conflicting driver resolution on Render and asyncio incompatibility.
 psycopg[binary]>=3.2,<4
-psycopg2-binary>=2.9.9
 email-validator>=2.1.0
 python-dotenv>=1.0,<2
 pandas>=2.2,<3
@@ -16,4 +17,6 @@ bcrypt>=4.0,<5
 pytest>=8,<9
 testcontainers[postgres]>=4.9,<5
 httpx>=0.27,<1
-spacy>=3.0
+# BUG-015: spacy is optional — only include if NLP features are explicitly needed.
+# The application catches ImportError for spacy so it won't crash without it.
+# To use spacy features, install manually: pip install spacy && python -m spacy download en_core_web_sm

@@ -86,7 +86,7 @@ export function CityMapPanel({
   className,
   mapClassName,
   extraClusters = [],
-  initialCity = "pune",
+  initialCity = "mumbai",
   caption,
   onCityChange,
   ...mapProps

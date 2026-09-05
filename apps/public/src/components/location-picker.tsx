@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Crosshair, Loader2, MapPin, ShieldCheck } from "lucide-react";
 import { GlassCard, SectionLabel } from "@/components/ui/glass-card";
 import { GlassButton } from "@/components/ui/glass-button";
@@ -30,6 +30,13 @@ export function LocationPicker({
     const { t } = useI18n();
   const [phase, setPhase] = useState<Phase>(marker ? "ready" : "idle");
   const [mapMode, setMapMode] = useState(!!marker);
+
+  useEffect(() => {
+    if (phase === "idle" && !marker) {
+      detect();
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const commit = (pos: { lat: number; lng: number }, cityId: CityId) => {
     const { ward, area } = nearestWardOrArea(cityId, pos.lat, pos.lng);

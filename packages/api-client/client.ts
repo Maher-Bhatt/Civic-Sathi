@@ -1,4 +1,5 @@
 import { APIError } from './types';
+import { FALLBACK_BACKEND_URL } from './index';
 
 export class APIClientError extends Error {
   public status: number;
@@ -26,7 +27,7 @@ export class APIClient {
   }
 
   private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
-    const rawBase = (this.config.baseUrl || "https://civic-sathi-f7ml.onrender.com").trim();
+    const rawBase = (this.config.baseUrl || FALLBACK_BACKEND_URL).trim();
     const cleanBase = rawBase.replace(/\/+$/, '');
     const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
     const url = `${cleanBase}${cleanEndpoint}`;
@@ -122,3 +123,4 @@ export class APIClient {
     return this.request<T>(endpoint, { ...options, method: 'DELETE' });
   }
 }
+

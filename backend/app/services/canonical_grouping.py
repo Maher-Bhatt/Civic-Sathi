@@ -153,6 +153,10 @@ def _matched_candidates(db: Session, complaint: Complaint, embedding: list[float
         if not same_area(complaint, candidate):
             continue
         score = _text_score(complaint, candidate, embedding)
+        if distance is not None:
+            # Boost score based on proximity (geo-proximity signal)
+            proximity_boost = max(0.0, 0.15 * (1.0 - distance / float(settings.canonical_group_radius_meters)))
+            score = min(1.0, score + proximity_boost)
         if score >= float(settings.canonical_group_similarity_threshold):
             matched.append((candidate, score, distance))
     logger.info(

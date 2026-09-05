@@ -89,7 +89,7 @@ class AIService:
             "You are Civic Sathi Civic AI. Analyze municipal citizen complaints in India.\n"
             "Respond ONLY with a JSON object strictly matching this schema:\n"
             "{\n"
-            '  "category": "road_damage" | "water_supply" | "garbage_collection" | "drainage" | "street_lighting" | "electricity" | "sanitation",\n'
+            '  "category": "road_damage" | "water_supply" | "garbage_collection" | "drainage" | "street_lighting" | "electricity" | "sanitation" | "spam" | "invalid",\n'
             '  "severity_score": <int 1-10>,\n'
             '  "risk_score": <int 1-100>,\n'
             '  "priority": "low" | "medium" | "high" | "urgent",\n'

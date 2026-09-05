@@ -1,3 +1,4 @@
+import { FALLBACK_BACKEND_URL } from '@civicsathi/api-client';
 import { APIClient, Endpoints } from "@civicsathi/api-client";
 import type { CityId } from "@/services/cities";
 import type { User } from "@civicsathi/api-client";
@@ -14,7 +15,7 @@ export function getApiBaseUrl(): string {
       window.location.protocol === "https:" &&
       envUrl.startsWith("http://"))
   ) {
-    return "https://civic-sathi-f7ml.onrender.com";
+    return FALLBACK_BACKEND_URL;
   }
   return envUrl;
 }
@@ -323,3 +324,4 @@ export async function getContractorPerformance() {
 export async function getMyCivicRolePerformance() {
   return client.get<import("./types").CivicRolePerformance>("/api/v1/reputation/performance/me");
 }
+

@@ -3713,3 +3713,4 @@ export const TRANSLATIONS: Record<Language, Record<string, string>> = {
     "btn.save": "ಬದಲಾವಣೆಗಳನ್ನು ಉಳಿಸಿ",
   },
 };
+

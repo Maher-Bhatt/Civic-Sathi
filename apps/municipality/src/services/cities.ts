@@ -6,7 +6,7 @@ import type { IssueCategory, Severity } from "./types";
  * Vadodara (VMC), Mumbai (BMC), Bengaluru (BBMP), Delhi (MCD).
  */
 
-export type CityId = "vadodara" | "mumbai" | "bengaluru" | "delhi";
+export type CityId = "vadodara" | "mumbai" | "bengaluru" | "delhi" | "pune";
 
 export interface City {
   id: CityId;
@@ -19,6 +19,7 @@ export interface City {
 export const CITIES: City[] = [
   { id: "vadodara", name: "Vadodara", state: "Gujarat", center: [22.3072, 73.1812], zoom: 13 },
   { id: "mumbai", name: "Mumbai", state: "Maharashtra", center: [18.9388, 72.8354], zoom: 12 },
+  { id: "pune", name: "Pune", state: "Maharashtra", center: [18.5204, 73.8567], zoom: 12 },
   { id: "bengaluru", name: "Bengaluru", state: "Karnataka", center: [12.9716, 77.5946], zoom: 12 },
   { id: "delhi", name: "Delhi", state: "NCT Delhi", center: [28.6139, 77.2090], zoom: 12 },
 ];

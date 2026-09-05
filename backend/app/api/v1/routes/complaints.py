@@ -165,3 +165,31 @@ def get_similar_complaints(
     """Get similar complaints for an authorized municipal operator."""
     service = ComplaintService(db)
     return service.get_similar_complaints(complaint_id, limit)
+
+@router.post("/{complaint_id}/upvote")
+def upvote_complaint(
+    complaint_id: UUID,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Upvote an existing canonical complaint instead of submitting a duplicate."""
+    from app.models.complaint import Complaint
+    from sqlalchemy.orm import Session
+    from fastapi import HTTPException
+    
+    complaint = db.get(Complaint, complaint_id)
+    if not complaint:
+        raise HTTPException(status_code=404, detail="Complaint not found")
+        
+    complaint.severity_score = (complaint.severity_score or 0) + 1
+    
+    # Check if there is an issue cluster linked and increment its complaint count
+    if complaint.analysis and complaint.analysis.candidate_issue_id:
+        from app.models.issue import IssueCluster
+        cluster = db.get(IssueCluster, complaint.analysis.candidate_issue_id)
+        if cluster:
+            cluster.complaint_count = (cluster.complaint_count or 0) + 1
+            
+    db.commit()
+    return {"status": "success", "message": "Complaint upvoted successfully", "new_score": complaint.severity_score}
+

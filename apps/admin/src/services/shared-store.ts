@@ -1,3 +1,4 @@
+import { FALLBACK_BACKEND_URL } from '@civicsathi/api-client';
 import type {
   AdminUser,
   AuditLog,
@@ -27,7 +28,7 @@ export function getApiBaseUrl(): string {
       window.location.protocol === "https:" &&
       envUrl.startsWith("http://"))
   ) {
-    return "https://civic-sathi-f7ml.onrender.com";
+    return FALLBACK_BACKEND_URL;
   }
   return envUrl;
 }
@@ -1053,3 +1054,4 @@ export async function getReputationSummary(): Promise<{
 }> {
   return adminApiFetch<any>("/api/v1/admin/reputation/summary");
 }
+

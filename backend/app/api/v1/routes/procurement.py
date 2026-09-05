@@ -278,12 +278,13 @@ def list_tenders(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    city_id = enforce_city_scope(db, current_user, city_id)
     """
     List tenders.
     Contractors only see PUBLISHED/CLOSED tenders in cities where they are APPROVED.
     Officers see all tenders for their city.
+    BUG-006: docstring moved before first executable line.
     """
+    city_id = enforce_city_scope(db, current_user, city_id)
     if current_user.role == "contractor":
         contractor = resolve_contractor_for_user(db, current_user)
         if not contractor:
@@ -624,6 +625,18 @@ def submit_evidence(
         photo_url=evidence_in.photo_url,
         description=evidence_in.description,
     )
+    # BUG-007: Only allow evidence submission when work order is in an executable state.
+    # Previously this unconditionally rolled back COMPLETED/CLOSED work orders to INSPECTION_PENDING.
+    allowed_evidence_statuses = {
+        WorkOrderStatus.ACCEPTED,
+        WorkOrderStatus.IN_PROGRESS,
+        WorkOrderStatus.REWORK,
+    }
+    if work_order.status not in allowed_evidence_statuses:
+        raise HTTPException(
+            status_code=409,
+            detail=f"Cannot submit evidence for a work order with status {work_order.status.value}. Work must be IN_PROGRESS or REWORK.",
+        )
     work_order.status = WorkOrderStatus.INSPECTION_PENDING
     db.add(evidence)
     db.commit()
@@ -683,8 +696,9 @@ def submit_inspection(
                     c.status = "resolved"
 
     elif normalised == "FAIL":
-        # FAIL is terminal — close the work order permanently
-        work_order.status = WorkOrderStatus.CLOSED
+        # BUG-008: FAIL sets INSPECTION_FAILED (not CLOSED) so contractor can rework.
+        # CLOSED is a terminal state reserved for the officer after COMPLETED review.
+        work_order.status = WorkOrderStatus.INSPECTION_FAILED
 
     else:
         # REWORK — send back for contractor remediation

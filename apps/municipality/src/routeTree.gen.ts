@@ -22,6 +22,9 @@ import { Route as AuthMapRouteImport } from './routes/_auth/map'
 import { Route as AuthProfileRouteImport } from './routes/_auth/profile'
 import { Route as AuthSettingsRouteImport } from './routes/_auth/settings'
 import { Route as AuthWorkPackagesRouteImport } from './routes/_auth/work-packages'
+import { Route as MunicipalityCitizenFeedbackRouteImport } from './routes/municipality/citizen-feedback'
+import { Route as MunicipalityContractorInvoicesRouteImport } from './routes/municipality/contractor-invoices'
+import { Route as MunicipalitySlaBreachRouteImport } from './routes/municipality/sla-breach'
 import { Route as AuthAreasIndexRouteImport } from './routes/_auth/areas/index'
 import { Route as AuthCivicIssuesIndexRouteImport } from './routes/_auth/civic-issues/index'
 import { Route as AuthCivicIssuesIdRouteImport } from './routes/_auth/civic-issues/$id'
@@ -100,6 +103,23 @@ const AuthWorkPackagesRoute = AuthWorkPackagesRouteImport.update({
   id: '/work-packages',
   path: '/work-packages',
   getParentRoute: () => AuthRouteRoute,
+} as any)
+const MunicipalityCitizenFeedbackRoute =
+  MunicipalityCitizenFeedbackRouteImport.update({
+    id: '/municipality/citizen-feedback',
+    path: '/municipality/citizen-feedback',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const MunicipalityContractorInvoicesRoute =
+  MunicipalityContractorInvoicesRouteImport.update({
+    id: '/municipality/contractor-invoices',
+    path: '/municipality/contractor-invoices',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const MunicipalitySlaBreachRoute = MunicipalitySlaBreachRouteImport.update({
+  id: '/municipality/sla-breach',
+  path: '/municipality/sla-breach',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AuthAreasIndexRoute = AuthAreasIndexRouteImport.update({
   id: '/areas/',
@@ -185,6 +205,9 @@ export interface FileRoutesByFullPath {
   '/profile': typeof AuthProfileRoute
   '/settings': typeof AuthSettingsRoute
   '/work-packages': typeof AuthWorkPackagesRoute
+  '/municipality/citizen-feedback': typeof MunicipalityCitizenFeedbackRoute
+  '/municipality/contractor-invoices': typeof MunicipalityContractorInvoicesRoute
+  '/municipality/sla-breach': typeof MunicipalitySlaBreachRoute
   '/civic-issues/$id': typeof AuthCivicIssuesIdRoute
   '/complaints/$id': typeof AuthComplaintsIdRoute
   '/departments/$id': typeof AuthDepartmentsIdRoute
@@ -213,6 +236,9 @@ export interface FileRoutesByTo {
   '/profile': typeof AuthProfileRoute
   '/settings': typeof AuthSettingsRoute
   '/work-packages': typeof AuthWorkPackagesRoute
+  '/municipality/citizen-feedback': typeof MunicipalityCitizenFeedbackRoute
+  '/municipality/contractor-invoices': typeof MunicipalityContractorInvoicesRoute
+  '/municipality/sla-breach': typeof MunicipalitySlaBreachRoute
   '/civic-issues/$id': typeof AuthCivicIssuesIdRoute
   '/complaints/$id': typeof AuthComplaintsIdRoute
   '/departments/$id': typeof AuthDepartmentsIdRoute
@@ -243,6 +269,9 @@ export interface FileRoutesById {
   '/_auth/profile': typeof AuthProfileRoute
   '/_auth/settings': typeof AuthSettingsRoute
   '/_auth/work-packages': typeof AuthWorkPackagesRoute
+  '/municipality/citizen-feedback': typeof MunicipalityCitizenFeedbackRoute
+  '/municipality/contractor-invoices': typeof MunicipalityContractorInvoicesRoute
+  '/municipality/sla-breach': typeof MunicipalitySlaBreachRoute
   '/_auth/civic-issues/$id': typeof AuthCivicIssuesIdRoute
   '/_auth/complaints/$id': typeof AuthComplaintsIdRoute
   '/_auth/departments/$id': typeof AuthDepartmentsIdRoute
@@ -273,6 +302,9 @@ export interface FileRouteTypes {
     | '/profile'
     | '/settings'
     | '/work-packages'
+    | '/municipality/citizen-feedback'
+    | '/municipality/contractor-invoices'
+    | '/municipality/sla-breach'
     | '/civic-issues/$id'
     | '/complaints/$id'
     | '/departments/$id'
@@ -301,6 +333,9 @@ export interface FileRouteTypes {
     | '/profile'
     | '/settings'
     | '/work-packages'
+    | '/municipality/citizen-feedback'
+    | '/municipality/contractor-invoices'
+    | '/municipality/sla-breach'
     | '/civic-issues/$id'
     | '/complaints/$id'
     | '/departments/$id'
@@ -330,6 +365,9 @@ export interface FileRouteTypes {
     | '/_auth/profile'
     | '/_auth/settings'
     | '/_auth/work-packages'
+    | '/municipality/citizen-feedback'
+    | '/municipality/contractor-invoices'
+    | '/municipality/sla-breach'
     | '/_auth/civic-issues/$id'
     | '/_auth/complaints/$id'
     | '/_auth/departments/$id'
@@ -351,6 +389,9 @@ export interface RootRouteChildren {
   AuthRouteRoute: typeof AuthRouteRouteWithChildren
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   LoginRoute: typeof LoginRoute
+  MunicipalityCitizenFeedbackRoute: typeof MunicipalityCitizenFeedbackRoute
+  MunicipalityContractorInvoicesRoute: typeof MunicipalityContractorInvoicesRoute
+  MunicipalitySlaBreachRoute: typeof MunicipalitySlaBreachRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -445,6 +486,27 @@ declare module '@tanstack/react-router' {
       fullPath: '/work-packages'
       preLoaderRoute: typeof AuthWorkPackagesRouteImport
       parentRoute: typeof AuthRouteRoute
+    }
+    '/municipality/citizen-feedback': {
+      id: '/municipality/citizen-feedback'
+      path: '/municipality/citizen-feedback'
+      fullPath: '/municipality/citizen-feedback'
+      preLoaderRoute: typeof MunicipalityCitizenFeedbackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/municipality/contractor-invoices': {
+      id: '/municipality/contractor-invoices'
+      path: '/municipality/contractor-invoices'
+      fullPath: '/municipality/contractor-invoices'
+      preLoaderRoute: typeof MunicipalityContractorInvoicesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/municipality/sla-breach': {
+      id: '/municipality/sla-breach'
+      path: '/municipality/sla-breach'
+      fullPath: '/municipality/sla-breach'
+      preLoaderRoute: typeof MunicipalitySlaBreachRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_auth/areas/': {
       id: '/_auth/areas/'
@@ -608,6 +670,9 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRouteRoute: AuthRouteRouteWithChildren,
   ForgotPasswordRoute: ForgotPasswordRoute,
   LoginRoute: LoginRoute,
+  MunicipalityCitizenFeedbackRoute: MunicipalityCitizenFeedbackRoute,
+  MunicipalityContractorInvoicesRoute: MunicipalityContractorInvoicesRoute,
+  MunicipalitySlaBreachRoute: MunicipalitySlaBreachRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -16,6 +16,7 @@ import { MuniAuthProvider } from "@/lib/muni-auth";
 import { ContractorAuthProvider } from "@/lib/contractor-auth";
 import { Toaster } from "@/components/ui/sonner";
 import { I18nProvider } from "@/lib/i18n";
+import { useLiveEvents } from "@/hooks/use-live-events";
 
 // These render OUTSIDE I18nProvider so must NOT call useI18n()
 function NotFoundComponent() {
@@ -133,6 +134,11 @@ function RootShell({ children }: { children: ReactNode }) {
   );
 }
 
+function LiveEventsListener() {
+  useLiveEvents();
+  return null;
+}
+
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
@@ -148,6 +154,7 @@ function RootComponent() {
         <ThemeProvider>
           <MuniAuthProvider>
             <ContractorAuthProvider>
+              <LiveEventsListener />
               <Outlet />
               <Toaster position="top-center" />
             </ContractorAuthProvider>

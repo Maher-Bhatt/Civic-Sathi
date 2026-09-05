@@ -115,15 +115,20 @@ def _missions(db: Session, user: User) -> list[MissionOut]:
 
 
 def _city_impacts(db: Session, user: User) -> list[CityImpactOut]:
-    city_names = [name for (name,) in db.query(func.distinct(Complaint.city_id)).filter(
+    # BUG-012: Complaint.city_id is a UUID FK, not a city name.
+    # Fetch distinct city UUIDs, then resolve names, filtering out NULL city_ids.
+    city_uuid_rows = db.query(func.distinct(Complaint.city_id)).filter(
         Complaint.submitted_by_id == user.id,
         Complaint.city_id.is_not(None),
-    ).all()]
-    if not city_names:
+    ).all()
+    if not city_uuid_rows:
+        return []
+    city_uuids = [row[0] for row in city_uuid_rows if row[0] is not None]
+    if not city_uuids:
         return []
     from app.models.procurement import City
-    resolved_names = db.query(City.name).filter(City.id.in_(city_names)).order_by(City.name).all()
-    return [CityImpactOut(**city_impact(db, name)) for (name,) in resolved_names]
+    city_names = [name for (name,) in db.query(City.name).filter(City.id.in_(city_uuids)).order_by(City.name).all()]
+    return [CityImpactOut(**city_impact(db, name)) for name in city_names]
 
 
 @router.get("/me", response_model=ReputationMeOut)
@@ -180,6 +185,12 @@ def confirm_my_resolution(
         xp_awarded, impact_awarded, profile = confirm_resolution(db, current_user, complaint_id)
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
+    except Exception as exc:
+        # BUG-011: Catch ORM errors (DetachedInstanceError etc.) and surface as 400/500
+        db.rollback()
+        import logging
+        logging.getLogger("civicsathi.reputation").warning("confirm_resolution failed: %s", exc)
+        raise HTTPException(status_code=500, detail="Could not record resolution confirmation at this time. Please try again.") from exc
     db.commit()
     return ResolutionConfirmationOut(
         success=True,

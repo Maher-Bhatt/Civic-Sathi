@@ -23,7 +23,8 @@ class OfficerProvisionRequest(BaseModel):
     name: str = Field(..., min_length=2, max_length=100)
     email: EmailStr
     password: str = Field(..., min_length=8, max_length=100)
-    phone: Optional[str] = Field(None, min_length=7, max_length=20)
+    # BUG-017: phone is required (min 7 digits) to prevent null phone constraint issues
+    phone: str = Field(..., min_length=7, max_length=20)
     role: str = Field("officer", pattern="^(officer|supervisor|municipality)$")
     department: str = Field(..., min_length=2, max_length=100)
     designation: str = Field("Ward Officer", min_length=2, max_length=100)

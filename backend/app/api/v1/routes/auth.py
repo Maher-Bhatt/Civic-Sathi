@@ -152,9 +152,9 @@ def officer_login(
     ))
     db.commit()
 
-    # Create access token
+    # BUG-038: Include `name` claim so audit middleware can attribute actions correctly
     access_token = create_access_token(
-        data={"sub": str(user.id), "email": user.email, "role": user.role}
+        data={"sub": str(user.id), "email": user.email, "role": user.role, "name": user.name}
     )
 
     authoritative_designation = user.designation or ("Commissioner" if user.role == "collector" else None)
@@ -265,8 +265,9 @@ def citizen_register(
             detail="An account with this email already exists. Please sign in instead.",
         )
 
+    # BUG-038 / BUG-010: Include `name` so audit middleware attributes actions correctly
     access_token = create_access_token(
-        data={"sub": str(user.id), "email": user.email, "role": user.role}
+        data={"sub": str(user.id), "email": user.email, "role": user.role, "name": user.name}
     )
 
     return CitizenAuthResponse(
@@ -311,7 +312,7 @@ def citizen_login(
         )
 
     access_token = create_access_token(
-        data={"sub": str(user.id), "email": user.email, "role": user.role}
+        data={"sub": str(user.id), "email": user.email, "role": user.role, "name": user.name}  # BUG-038
     )
 
     return CitizenAuthResponse(
@@ -386,8 +387,9 @@ def contractor_login(
             detail="This contractor is not approved for the selected municipality"
         )
 
+    # BUG-038: Include `name` claim for contractor login tokens too
     access_token = create_access_token(
-        data={"sub": str(user.id), "email": user.email, "role": user.role, "city": requested_city}
+        data={"sub": str(user.id), "email": user.email, "role": user.role, "city": requested_city, "name": user.name}
     )
 
     return CitizenAuthResponse(

@@ -3,8 +3,7 @@ export type Language = "en" | "hi" | "mr" | "gu" | "kn";
 export const LANGUAGES: Record<Language, string> = {
   en: "English",
   hi: "हिंदी",
-  mr: "मराठी",
-  mr: "मराठी",
+  mr: "?????",
   gu: "ગુજરાતી",
   kn: "ಕನ್ನಡ",
 };
@@ -3560,3 +3559,4 @@ export const TRANSLATIONS: Record<Language, Record<string, string>> = {
     "ui.select_language": "Select language",
   },
 };
+

@@ -503,3 +503,7 @@ export async function getCityCivicImpact(city: string) {
     top_contributors: Array<{ display_name: string; impact_score: number; reputation_score: number }>;
   }>(`/api/v1/reputation/city/${encodeURIComponent(city)}`);
 }
+
+export async function upvoteComplaint(complaintId: string) {
+  return client.post(`/api/v1/complaints/${encodeURIComponent(complaintId)}/upvote`, {});
+}
