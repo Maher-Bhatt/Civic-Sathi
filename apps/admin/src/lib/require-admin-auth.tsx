@@ -7,16 +7,18 @@ export function AdminAuthGate({ children }: { children: React.ReactNode }) {
   const { admin, ready } = useAdminAuth();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (ready && (!admin || admin.isSuperAdmin !== true)) {
-      window.location.replace("/login?reason=super-admin-required");
-    }
-  }, [ready, admin]);
+  const isAuthorized = admin && (admin.isSuperAdmin === true || admin.role === "admin");
 
-  if (!ready || !admin || admin.isSuperAdmin !== true) {
+  useEffect(() => {
+    if (ready && !isAuthorized) {
+      window.location.replace("/login?reason=admin-required");
+    }
+  }, [ready, isAuthorized]);
+
+  if (!ready || !isAuthorized) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
-        <LoadingState message={ready ? "Private super-admin access required..." : "Loading secure admin session..."} />
+        <LoadingState message={ready ? "Admin access required..." : "Loading secure admin session..."} />
       </div>
     );
   }

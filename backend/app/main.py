@@ -35,6 +35,10 @@ if not configured_origins:
         "https://janmind-municipality.vercel.app",
         "https://janmind-contractor.vercel.app",
         "https://janmind-admin.vercel.app",
+        "https://civicsathi-admin.vercel.app",
+        "https://civicsathi-municipality.vercel.app",
+        "https://civicsathi-contractor.vercel.app",
+        "https://civicsathi-public.vercel.app",
     ]
 app.add_middleware(
     CORSMiddleware,

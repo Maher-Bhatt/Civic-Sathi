@@ -833,7 +833,7 @@ export async function adminLogin(email: string, password: string): Promise<Admin
   const userData = res.officer || res.user;
   if (!userData) throw new Error("Login failed: no user data returned");
 
-  const allowedRoles = ["admin"];
+  const allowedRoles = ["admin", "officer", "supervisor", "municipality", "collector"];
   const role = (userData.role ?? "").toLowerCase();
     if (!allowedRoles.includes(role)) {
       throw new Error("Access denied — admin or officer role required");

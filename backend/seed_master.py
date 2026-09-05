@@ -82,6 +82,8 @@ def get_or_create_city(name: str, state_code: str) -> City:
 
 bengaluru = get_or_create_city("Bengaluru", "KA")
 vadodara  = get_or_create_city("Vadodara", "GJ")
+mumbai    = get_or_create_city("Mumbai", "MH")
+delhi     = get_or_create_city("Delhi", "DL")
 db.commit()
 
 # ─────────────────────────────────────────────────────────────────
@@ -170,6 +172,16 @@ OFFICERS = [
     ("Dhruv Patel",       "dhruv.patel@vmc.gov.in",     "officer",      "vadodara",  "Roads"),
     ("Sneha Desai",       "sneha.desai@vmc.gov.in",     "supervisor",   "vadodara",  "Sanitation"),
     ("Mihir Shah",        "mihir.shah@vmc.gov.in",      "municipality", "vadodara",  "Electricity"),
+    # Mumbai officers
+    ("Raj Thackeray",     "raj.thackeray@bmc.gov.in",   "officer",      "mumbai",    "Roads"),
+    ("Sunita Pawar",      "sunita.pawar@bmc.gov.in",    "officer",      "mumbai",    "Sanitation"),
+    ("Vikram Deshmukh",   "vikram.deshmukh@bmc.gov.in", "municipality", "mumbai",    "Water Supply"),
+    ("Anita Joshi",       "anita.joshi@bmc.gov.in",     "supervisor",   "mumbai",    "Health"),
+    # Delhi officers
+    ("Amit Sharma",       "amit.sharma@mcd.gov.in",     "officer",      "delhi",     "Roads"),
+    ("Neha Gupta",        "neha.gupta@mcd.gov.in",      "officer",      "delhi",     "Sanitation"),
+    ("Rajesh Kumar",      "rajesh.kumar@mcd.gov.in",    "municipality", "delhi",     "Electricity"),
+    ("Priyanka Singh",    "priyanka.singh@mcd.gov.in",  "supervisor",   "delhi",     "Health"),
 ]
 
 
@@ -253,7 +265,7 @@ db.commit()
 
 # Register each contractor in both cities as APPROVED
 for c in contractor_objs:
-    for city_obj in [bengaluru, vadodara]:
+    for city_obj in [bengaluru, vadodara, mumbai, delhi]:
         existing_reg = db.execute(
             sel(ContractorCityRegistration).where(
                 ContractorCityRegistration.contractor_id == c.id,
@@ -290,28 +302,29 @@ existing_count = db.query(Complaint).filter(
 ).count()
 print(f"  · Existing Bengaluru complaints: {existing_count:,}")
 
+# Get a default department and ward for fallback
+general_dept = dept_map.get("general") or list(dept_map.values())[0]
+
+CATEGORY_TO_DEPT = {
+    "electricity": dept_map.get("electricity", general_dept),
+    "sanitation":  dept_map.get("sanitation", general_dept),
+    "roads":       dept_map.get("roads", general_dept),
+    "health":      dept_map.get("health", general_dept),
+    "parks":       dept_map.get("parks", general_dept),
+    "forest":      dept_map.get("forest", general_dept),
+    "veterinary":  dept_map.get("veterinary", general_dept),
+    "revenue":     dept_map.get("revenue", general_dept),
+    "planning":    dept_map.get("planning", general_dept),
+    "water":       dept_map.get("water-supply", general_dept),
+    "other":       general_dept,
+}
+
 if existing_count >= MAX_COMPLAINTS:
     print(f"  · Skipping: already have {existing_count:,} complaints")
 else:
     target = MAX_COMPLAINTS - existing_count
     print(f"  · Will load up to {target:,} more complaints...")
 
-    # Get a default department and ward for fallback
-    general_dept = dept_map.get("general") or list(dept_map.values())[0]
-
-    CATEGORY_TO_DEPT = {
-        "electricity": dept_map.get("electricity", general_dept),
-        "sanitation":  dept_map.get("sanitation", general_dept),
-        "roads":       dept_map.get("roads", general_dept),
-        "health":      dept_map.get("health", general_dept),
-        "parks":       dept_map.get("parks", general_dept),
-        "forest":      dept_map.get("forest", general_dept),
-        "veterinary":  dept_map.get("veterinary", general_dept),
-        "revenue":     dept_map.get("revenue", general_dept),
-        "planning":    dept_map.get("planning", general_dept),
-        "water":       dept_map.get("water-supply", general_dept),
-        "other":       general_dept,
-    }
 
     STATUS_MAP = {
         "resolved":      "resolved",
@@ -430,55 +443,55 @@ print(f"  · Existing Vadodara complaints: {existing_vadodara:,}")
 
 VADODARA_TARGET = 5000
 
+VADODARA_TEMPLATES = {
+    "electricity": [
+        "Street light not working on main road",
+        "Power outage in residential area",
+        "Transformer damaged near market",
+        "Frequent load shedding in colony",
+        "Electric pole broken and dangerous",
+    ],
+    "roads": [
+        "Large pothole causing accidents near school",
+        "Road damaged after heavy rain",
+        "Footpath broken and dangerous for pedestrians",
+        "Divider damaged on highway",
+        "Encroachment on main road reducing lanes",
+    ],
+    "sanitation": [
+        "Garbage not collected for 5 days",
+        "Stray dogs near garbage dump creating nuisance",
+        "Blocked drain causing flooding in area",
+        "Open defecation near public park",
+        "Garbage bin overflowing for days",
+    ],
+    "water": [
+        "No water supply for 3 days",
+        "Dirty water from tap causing health concerns",
+        "Water pipeline leakage near school",
+        "Low pressure in water supply",
+        "Contaminated water supply in colony",
+    ],
+    "health": [
+        "Mosquito breeding in stagnant water",
+        "Stray animals near school posing health risk",
+        "Hospital toilet not clean",
+        "Medical waste disposal issue near colony",
+        "Unhygienic food stalls near market",
+    ],
+    "parks": [
+        "Park equipment broken and dangerous for children",
+        "Park lights not working",
+        "Garbage dumped in public garden",
+        "Garden maintenance neglected",
+        "Illegal construction in park boundary",
+    ],
+}
+
 if existing_vadodara >= VADODARA_TARGET:
     print(f"  · Skipping: already have {existing_vadodara:,} Vadodara complaints")
 else:
     to_add = VADODARA_TARGET - existing_vadodara
-
-    VADODARA_TEMPLATES = {
-        "electricity": [
-            "Street light not working on main road",
-            "Power outage in residential area",
-            "Transformer damaged near market",
-            "Frequent load shedding in colony",
-            "Electric pole broken and dangerous",
-        ],
-        "roads": [
-            "Large pothole causing accidents near school",
-            "Road damaged after heavy rain",
-            "Footpath broken and dangerous for pedestrians",
-            "Divider damaged on highway",
-            "Encroachment on main road reducing lanes",
-        ],
-        "sanitation": [
-            "Garbage not collected for 5 days",
-            "Stray dogs near garbage dump creating nuisance",
-            "Blocked drain causing flooding in area",
-            "Open defecation near public park",
-            "Garbage bin overflowing for days",
-        ],
-        "water": [
-            "No water supply for 3 days",
-            "Dirty water from tap causing health concerns",
-            "Water pipeline leakage near school",
-            "Low pressure in water supply",
-            "Contaminated water supply in colony",
-        ],
-        "health": [
-            "Mosquito breeding in stagnant water",
-            "Stray animals near school posing health risk",
-            "Hospital toilet not clean",
-            "Medical waste disposal issue near colony",
-            "Unhygienic food stalls near market",
-        ],
-        "parks": [
-            "Park equipment broken and dangerous for children",
-            "Park lights not working",
-            "Garbage dumped in public garden",
-            "Garden maintenance neglected",
-            "Illegal construction in park boundary",
-        ],
-    }
 
     VADODARA_WARDS = [
         "Sayajigunj", "Alkapuri", "Fatehgunj", "Vadiwadi", "Manjalpur",
@@ -537,6 +550,114 @@ else:
     print(f"  ✓ Generated {to_add:,} mock Vadodara complaints")
 
 # ─────────────────────────────────────────────────────────────────
+# 8. Mock Mumbai Complaints
+# ─────────────────────────────────────────────────────────────────
+print("\n[8/7] Generating mock Mumbai complaints...")
+existing_mumbai = db.query(Complaint).filter(Complaint.city_id == mumbai.id).count()
+MUMBAI_TARGET = 3000
+if existing_mumbai >= MUMBAI_TARGET:
+    print(f"  · Skipping: already have {existing_mumbai:,} Mumbai complaints")
+else:
+    to_add_mumbai = MUMBAI_TARGET - existing_mumbai
+    MUMBAI_WARDS = ["Colaba", "Dadar", "Bandra", "Andheri", "Kurla", "Borivali", "Chembur", "Ghatkopar", "Worli", "Juhu"]
+    seq_counter_m = (db.execute(text("SELECT last_value FROM complaint_public_seq")).scalar() or 0)
+    batch = []
+    for i in range(to_add_mumbai):
+        category = random.choice(list(VADODARA_TEMPLATES.keys()))
+        dept = CATEGORY_TO_DEPT.get(category, general_dept)
+        title = random.choice(VADODARA_TEMPLATES[category])
+        days_ago = random.randint(1, 730)
+        created_at = datetime.now(timezone.utc) - timedelta(days=days_ago)
+        status = random.choices(["received", "in_progress", "resolved", "rejected"], weights=[25, 20, 50, 5])[0]
+        seq_counter_m += 1
+        public_id = f"JN-{created_at.year}-{seq_counter_m:05d}"
+        complaint = Complaint(
+            id=uuid4(),
+            public_id_seq=seq_counter_m,
+            public_id=public_id,
+            title=title,
+            description=f"Citizen complaint in {random.choice(MUMBAI_WARDS)} ward: {title}. Requires immediate attention from {dept.name} department.",
+            category=category,
+            department_id=dept.id,
+            city_id=mumbai.id,
+            status=status,
+            priority=random.choice(["low", "medium", "high"]),
+            severity_score=random.randint(1, 10),
+            risk_score=random.randint(1, 100),
+            submitted_by_name=f"Citizen {i+1}",
+            source="import",
+            created_at=created_at,
+            updated_at=created_at,
+        )
+        batch.append(complaint)
+        if len(batch) >= BATCH_SIZE:
+            db.bulk_save_objects(batch)
+            db.commit()
+            batch = []
+    if batch:
+        db.bulk_save_objects(batch)
+        db.commit()
+    db.execute(text(f"SELECT setval('complaint_public_seq', {seq_counter_m + 1}, false)"))
+    db.commit()
+    print(f"  ✓ Generated {to_add_mumbai:,} mock Mumbai complaints")
+
+# ─────────────────────────────────────────────────────────────────
+# 9. Mock Delhi Complaints
+# ─────────────────────────────────────────────────────────────────
+print("\n[9/7] Generating mock Delhi complaints...")
+existing_delhi = db.query(Complaint).filter(Complaint.city_id == delhi.id).count()
+DELHI_TARGET = 3000
+if existing_delhi >= DELHI_TARGET:
+    print(f"  · Skipping: already have {existing_delhi:,} Delhi complaints")
+else:
+    to_add_delhi = DELHI_TARGET - existing_delhi
+    DELHI_WARDS = [
+        "Connaught Place (Zone 1 Central)", "Chandni Chowk (Zone 1 Walled City)", "Dwarka (Zone 17 Dwarka)", 
+        "Rohini (Zone 6 Rohini)", "Shahdara (Zone 10 Shahdara)", "Saket (Zone 14 South)", "Lajpat Nagar (Zone 13 South East)", 
+        "Karol Bagh (Zone 3 West)", "Pitampura (Zone 6 North West)", "Janakpuri (Zone 17 West)"
+    ]
+    seq_counter_d = (db.execute(text("SELECT last_value FROM complaint_public_seq")).scalar() or 0)
+    batch = []
+    for i in range(to_add_delhi):
+        category = random.choice(list(VADODARA_TEMPLATES.keys()))
+        dept = CATEGORY_TO_DEPT.get(category, general_dept)
+        title = random.choice(VADODARA_TEMPLATES[category])
+        days_ago = random.randint(1, 730)
+        created_at = datetime.now(timezone.utc) - timedelta(days=days_ago)
+        status = random.choices(["received", "in_progress", "resolved", "rejected"], weights=[25, 20, 50, 5])[0]
+        seq_counter_d += 1
+        public_id = f"JN-{created_at.year}-{seq_counter_d:05d}"
+        complaint = Complaint(
+            id=uuid4(),
+            public_id_seq=seq_counter_d,
+            public_id=public_id,
+            title=title,
+            description=f"Citizen complaint in {random.choice(DELHI_WARDS)} ward: {title}. Requires immediate attention from {dept.name} department.",
+            category=category,
+            department_id=dept.id,
+            city_id=delhi.id,
+            status=status,
+            priority=random.choice(["low", "medium", "high"]),
+            severity_score=random.randint(1, 10),
+            risk_score=random.randint(1, 100),
+            submitted_by_name=f"Citizen {i+1}",
+            source="import",
+            created_at=created_at,
+            updated_at=created_at,
+        )
+        batch.append(complaint)
+        if len(batch) >= BATCH_SIZE:
+            db.bulk_save_objects(batch)
+            db.commit()
+            batch = []
+    if batch:
+        db.bulk_save_objects(batch)
+        db.commit()
+    db.execute(text(f"SELECT setval('complaint_public_seq', {seq_counter_d + 1}, false)"))
+    db.commit()
+    print(f"  ✓ Generated {to_add_delhi:,} mock Delhi complaints")
+
+# ─────────────────────────────────────────────────────────────────
 # Summary
 # ─────────────────────────────────────────────────────────────────
 print("\n" + "=" * 60)
@@ -548,15 +669,19 @@ total_users      = db.query(User).count()
 total_contractors = db.execute(sel(Contractor)).scalars().all()
 bengaluru_complaints = db.query(Complaint).filter(Complaint.city_id == bengaluru.id).count()
 vadodara_complaints  = db.query(Complaint).filter(Complaint.city_id == vadodara.id).count()
+mumbai_complaints    = db.query(Complaint).filter(Complaint.city_id == mumbai.id).count()
+delhi_complaints     = db.query(Complaint).filter(Complaint.city_id == delhi.id).count()
 
 print(f"""
-  Cities        : Bengaluru (KA), Vadodara (GJ)
+  Cities        : Bengaluru (KA), Vadodara (GJ), Mumbai (MH), Delhi (DL)
   Departments   : {len(dept_map)}
   Total Users   : {total_users}
   Contractors   : {len(total_contractors)}
   Complaints    : {total_complaints:,} total
     Bengaluru   : {bengaluru_complaints:,}
     Vadodara    : {vadodara_complaints:,}
+    Mumbai      : {mumbai_complaints:,}
+    Delhi       : {delhi_complaints:,}
 
   ┌─────────────────────────────────────────────────────┐
   │  SUPER ADMIN LOGIN                                  │

@@ -370,21 +370,6 @@ function Landing() {
         </dl>
       </section>
 
-      {/* Footer with Indian Civic Watermark */}
-      <footer className="mt-20 border-t border-orange-500/20 pt-8 pb-6 text-xs text-subtle">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="flex items-center gap-2">
-            <span className="font-bold tracking-[0.14em] uppercase text-amber-900 dark:text-amber-200">
-              Civic Sathi · जन मन
-            </span>
-            <span className="text-[10px] text-muted-foreground">· {t("home.footer.built", "Built for Indian Cities")}</span>
-          </div>
-          <span className="text-muted-foreground font-medium">
-            सत्यमेव जयते · Satyameva Jayate
-          </span>
-        </div>
-      </footer>
     </PageShell>
   );
 }
-

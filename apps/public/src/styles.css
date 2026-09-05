@@ -238,15 +238,15 @@
 @utility glass {
   background: var(--glass);
   border: 1px solid var(--glass-border);
-  
-    box-shadow: var(--shadow-soft);
+  backdrop-filter: blur(16px) saturate(1.4);
+  box-shadow: var(--shadow-soft);
 }
 
 @utility glass-strong {
   background: var(--glass-strong);
   border: 1px solid rgba(255, 255, 255, 0.85);
-  
-    box-shadow: var(--shadow-lift);
+  backdrop-filter: blur(20px) saturate(1.6);
+  box-shadow: var(--shadow-lift);
 }
 
 @utility glass-aurora {
@@ -583,11 +583,10 @@ body::after {
   mask-image: linear-gradient(180deg, black, transparent 74%);
 }
 
-.civic-city-shell[data-city="bengaluru"] {
-  --civic-city-accent: #0E766E;
-  --civic-city-accent-soft: #B7DDD5;
-  --civic-city-atmosphere: url('/city-atmosphere/bengaluru-civic-atmosphere.webp');
-}
+.civic-city-shell[data-city='bengaluru'] { --civic-city-accent: #0E766E; --civic-city-accent-soft: #B7DDD5; --civic-city-atmosphere: url('/city-atmosphere/bengaluru-civic-heritage.jpg'); }
+.civic-city-shell[data-city='mumbai'] { --civic-city-accent: #0A369D; --civic-city-accent-soft: #B7C9E8; --civic-city-atmosphere: url('/city-atmosphere/mumbai-civic-heritage.jpg'); }
+.civic-city-shell[data-city='delhi'] { --civic-city-accent: #9C27B0; --civic-city-accent-soft: #E1BEE7; --civic-city-atmosphere: url('/city-atmosphere/delhi-civic-heritage.jpg'); }
+.civic-city-shell[data-city='vadodara'] { --civic-city-accent: #C86B18; --civic-city-accent-soft: #F1D2A8; --civic-city-atmosphere: url('/city-atmosphere/vadodara-civic-heritage.jpg'); }
 
 .dark .civic-city-shell {
   background-image:
@@ -641,7 +640,7 @@ body::after {
   border-radius: 9999px;
   padding: 0.35rem 0.7rem;
   color: var(--civic-ink);
-  background: white;
+  background: color-mix(in srgb, var(--civic-paper) 75%, transparent); backdrop-filter: blur(12px);
   font-size: 0.7rem;
   font-weight: 700;
   letter-spacing: 0.06em;
@@ -745,7 +744,7 @@ body::after {
   overflow: hidden;
   border: 1px solid color-mix(in srgb, var(--civic-city-accent) 34%, var(--glass-border));
   border-radius: 0.9rem;
-  background: white;
+  background: color-mix(in srgb, var(--civic-paper) 85%, transparent); backdrop-filter: blur(8px);
   box-shadow: 0 8px 18px -10px color-mix(in srgb, var(--civic-city-accent) 46%, transparent);
 }
 
@@ -827,7 +826,7 @@ body::after {
   padding: 0.9rem;
   border: 1px solid color-mix(in srgb, var(--civic-city-accent) 22%, var(--glass-border));
   border-radius: 1.35rem;
-  background: white;
+  background: color-mix(in srgb, var(--civic-paper) 65%, transparent); backdrop-filter: blur(16px) saturate(1.4);
   box-shadow: 0 16px 34px -22px color-mix(in srgb, var(--civic-indigo-950) 46%, transparent);
   
 }
@@ -835,7 +834,7 @@ body::after {
   .civic-atmosphere-panel > .animate-rise:first-child {
     margin: -0.15rem;
     padding: 0.65rem;
-    background: white;
+    background: color-mix(in srgb, var(--civic-paper) 70%, transparent); backdrop-filter: blur(14px) saturate(1.3);
     
   }
 }
@@ -844,13 +843,13 @@ body::after {
 
 /* Hero readability lock: architectural background remains visible around, not through, primary copy. */
 .civic-atmosphere-panel > .animate-rise:first-child {
-  background: white;
+  background: color-mix(in srgb, var(--civic-paper) 60%, transparent); backdrop-filter: blur(20px) saturate(1.5);
   border-color: color-mix(in srgb, var(--civic-city-accent) 30%, var(--glass-border));
   box-shadow: 0 18px 38px -22px color-mix(in srgb, var(--foreground) 35%, transparent);
 }
 @media (max-width: 767px) {
   .civic-atmosphere-panel > .animate-rise:first-child {
-    background: white;
+    background: color-mix(in srgb, var(--civic-paper) 70%, transparent); backdrop-filter: blur(14px) saturate(1.3);
   }
 }
 
@@ -987,3 +986,4 @@ body.civic-heritage-shell [class*="to-emerald-50/"] {
   mix-blend-mode: screen;
   opacity: 0.25;
 }
+

@@ -123,21 +123,7 @@ function RootShell({ children }: { children: ReactNode }) {
             <body className="civic-heritage-shell">
         {children}
 
-        {/* Government Footer */}
-        <footer className="w-full bg-[#1a2744] text-white py-6 px-4 mt-auto border-t-[4px] border-[#f4801a] z-50 relative flex-shrink-0">
-          <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4 text-xs opacity-90">
-            <div className="flex flex-col items-center md:items-start">
-              <strong className="text-sm mb-1">Civic Sathi : Integrated Grievance Redressal System</strong>
-              <span>Designed &amp; Developed for Smart India Hackathon (SIH26129)</span>
-              <span className="mt-1 text-white/60">© 2026 Civic Sathi Prototype</span>
-            </div>
-            <div className="flex gap-4 md:gap-6">
-              <a href="#" className="hover:underline hover:text-[#f4801a] transition-colors">Help &amp; Support</a>
-              <a href="#" className="hover:underline hover:text-[#f4801a] transition-colors">Web Information Manager</a>
-              <a href="#" className="hover:underline hover:text-[#f4801a] transition-colors">Terms of Use</a>
-            </div>
-          </div>
-        </footer>
+
 
 
         <Scripts />

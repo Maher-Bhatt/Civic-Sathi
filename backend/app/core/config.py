@@ -44,7 +44,7 @@ class Settings(BaseSettings):
         description="Comma-separated email allowlist for private super-admin operations",
     )
     command_center_city_names: str = Field(
-        default="Vadodara,Bengaluru",
+        default="Vadodara,Bengaluru,Mumbai,Delhi",
         description="Comma-separated city names included in the private command center",
     )
 

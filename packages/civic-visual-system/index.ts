@@ -36,7 +36,7 @@ export const CITY_VISUALS: Record<CivicCityId, CityVisualConfig> = {
     mapTone: "warm",
     accent: "#C86B18",
     accentSoft: "#F1D2A8",
-    atmosphereImage: "/city-atmosphere/india-civic-heritage.jpg",
+    atmosphereImage: "/city-atmosphere/vadodara-civic-heritage.jpg",
     dataLine: "Vadodara VMC live civic coverage",
   },
   mumbai: {
@@ -51,8 +51,8 @@ export const CITY_VISUALS: Record<CivicCityId, CityVisualConfig> = {
     landmarkCue: "Gateway of India · CSMT Terminus · Marine Drive · Bandra Sea Link",
     mapTone: "cool",
     accent: "#0A369D",
-    accentSoft: "#B7DDD5",
-    atmosphereImage: "/city-atmosphere/india-civic-heritage.jpg",
+    accentSoft: "#B7C9E8",
+    atmosphereImage: "/city-atmosphere/mumbai-civic-heritage.jpg",
     dataLine: "Brihanmumbai BMC live civic coverage",
   },
   bengaluru: {
@@ -68,7 +68,7 @@ export const CITY_VISUALS: Record<CivicCityId, CityVisualConfig> = {
     mapTone: "cool",
     accent: "#0E766E",
     accentSoft: "#B7DDD5",
-    atmosphereImage: "/city-atmosphere/india-civic-heritage.jpg",
+    atmosphereImage: "/city-atmosphere/bengaluru-civic-heritage.jpg",
     dataLine: "Bruhat Bengaluru Mahanagara Palike live coverage",
   },
   delhi: {
@@ -84,7 +84,7 @@ export const CITY_VISUALS: Record<CivicCityId, CityVisualConfig> = {
     mapTone: "warm",
     accent: "#9C27B0",
     accentSoft: "#E1BEE7",
-    atmosphereImage: "/city-atmosphere/india-civic-heritage.jpg",
+    atmosphereImage: "/city-atmosphere/delhi-civic-heritage.jpg",
     dataLine: "Municipal Corporation of Delhi live coverage",
   },
   // Backward compatibility aliases
