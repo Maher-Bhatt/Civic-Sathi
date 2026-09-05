@@ -21,47 +21,47 @@ const MOCK_COMPLAINTS = [
 
 function getPriorityColor(priority: string) {
   switch (priority) {
-    case 'Critical': return 'bg-red-500/10 text-red-400 border-red-500/20'
-    case 'High': return 'bg-orange-500/10 text-orange-400 border-orange-500/20'
-    case 'Medium': return 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20'
-    case 'Low': return 'bg-green-500/10 text-green-400 border-green-500/20'
-    default: return 'bg-gray-500/10 text-gray-400 border-gray-500/20'
+    case 'Critical': return 'bg-red-500/15 text-red-700 dark:text-red-300 border-red-500/30'
+    case 'High': return 'bg-orange-500/15 text-orange-700 dark:text-orange-300 border-orange-500/30'
+    case 'Medium': return 'bg-amber-500/15 text-amber-700 dark:text-amber-300 border-amber-500/30'
+    case 'Low': return 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border-emerald-500/30'
+    default: return 'bg-slate-500/15 text-slate-700 dark:text-slate-300 border-slate-500/30'
   }
 }
 
 function GlobalComplaintsPage() {
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-6">
+    <div className="p-6 max-w-7xl mx-auto space-y-6 muni-page-enter">
       <div>
-        <h1 className="text-3xl font-bold text-white tracking-tight">Global Complaints Search</h1>
-        <p className="text-gray-400 mt-1">Cross-city view of all reported civic issues</p>
+        <h1 className="text-3xl font-bold text-foreground tracking-tight">Global Complaints Search</h1>
+        <p className="text-muted-foreground mt-1 text-sm">Cross-city master directory of all reported civic issues</p>
       </div>
 
       <GlassCard className="p-4 flex flex-col md:flex-row gap-4 items-center">
         <div className="relative flex-1 w-full">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <input 
             type="text" 
             placeholder="Search by ID, keyword, or user..." 
-            className="w-full pl-10 pr-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+            className="w-full pl-10 pr-4 py-2 bg-[var(--surface-elevated)] border border-[var(--glass-border)] rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-[var(--primary)] text-sm"
           />
         </div>
-        <div className="flex gap-4 w-full md:w-auto">
-          <select className="bg-white/5 border border-white/10 text-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500/50 appearance-none">
+        <div className="flex gap-3 w-full md:w-auto">
+          <select className="bg-[var(--surface-elevated)] border border-[var(--glass-border)] text-foreground rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--primary)] text-sm font-medium">
             <option value="">All Cities</option>
             <option value="Mumbai">Mumbai</option>
             <option value="Delhi">Delhi</option>
             <option value="Bengaluru">Bengaluru</option>
             <option value="Vadodara">Vadodara</option>
           </select>
-          <select className="bg-white/5 border border-white/10 text-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500/50 appearance-none">
+          <select className="bg-[var(--surface-elevated)] border border-[var(--glass-border)] text-foreground rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--primary)] text-sm font-medium">
             <option value="">All Statuses</option>
             <option value="Open">Open</option>
             <option value="In Progress">In Progress</option>
             <option value="Resolved">Resolved</option>
             <option value="Closed">Closed</option>
           </select>
-          <button className="flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-lg transition-colors font-medium">
+          <button className="flex items-center gap-2 bg-[var(--primary)] text-primary-foreground px-4 py-2 rounded-xl transition-colors font-semibold text-sm shadow-sm">
             <Filter className="w-4 h-4" /> Filter
           </button>
         </div>
@@ -70,45 +70,49 @@ function GlobalComplaintsPage() {
       <GlassCard className="overflow-hidden p-0">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm">
-            <thead className="bg-white/5 uppercase text-gray-300">
+            <thead className="bg-[var(--surface-elevated)]/70 uppercase text-[11px] font-semibold text-muted-foreground tracking-wider border-b border-[var(--glass-border)]">
               <tr>
-                <th className="px-6 py-4 font-medium">Case ID</th>
-                <th className="px-6 py-4 font-medium">City</th>
-                <th className="px-6 py-4 font-medium">Ward</th>
-                <th className="px-6 py-4 font-medium">Category</th>
-                <th className="px-6 py-4 font-medium">Priority</th>
-                <th className="px-6 py-4 font-medium">Status</th>
-                <th className="px-6 py-4 font-medium">Filed Date</th>
+                <th className="px-6 py-3.5">Case ID</th>
+                <th className="px-6 py-3.5">City</th>
+                <th className="px-6 py-3.5">Ward</th>
+                <th className="px-6 py-3.5">Category</th>
+                <th className="px-6 py-3.5">Priority</th>
+                <th className="px-6 py-3.5">Status</th>
+                <th className="px-6 py-3.5">Filed Date</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/10">
+            <tbody className="divide-y divide-[var(--glass-border)]">
               {MOCK_COMPLAINTS.map((complaint) => (
-                <tr key={complaint.id} className="hover:bg-white/5 transition-colors cursor-pointer">
-                  <td className="px-6 py-4 font-medium text-blue-400">{complaint.id}</td>
-                  <td className="px-6 py-4 text-white">{complaint.city}</td>
-                  <td className="px-6 py-4 text-gray-400">{complaint.ward}</td>
-                  <td className="px-6 py-4 text-gray-300">{complaint.category}</td>
+                <tr key={complaint.id} className="hover:bg-[var(--surface-elevated)]/50 transition-colors cursor-pointer">
+                  <td className="px-6 py-4 font-mono font-semibold text-xs text-blue-600 dark:text-blue-400">{complaint.id}</td>
+                  <td className="px-6 py-4 font-semibold text-foreground">{complaint.city}</td>
+                  <td className="px-6 py-4 text-muted-foreground text-xs">{complaint.ward}</td>
+                  <td className="px-6 py-4 text-foreground/80">{complaint.category}</td>
                   <td className="px-6 py-4">
-                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${getPriorityColor(complaint.priority)}`}>
+                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border ${getPriorityColor(complaint.priority)}`}>
                       {complaint.priority}
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-gray-300">{complaint.status}</td>
-                  <td className="px-6 py-4 text-gray-400">{complaint.date}</td>
+                  <td className="px-6 py-4">
+                    <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-[var(--surface-elevated)] border border-[var(--glass-border)] text-foreground">
+                      {complaint.status}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 text-xs font-mono text-muted-foreground">{complaint.date}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
         
-        <div className="p-4 border-t border-white/10 flex items-center justify-between text-sm text-gray-400">
+        <div className="p-4 border-t border-[var(--glass-border)] flex items-center justify-between text-xs text-muted-foreground font-medium">
           <div>Showing 1 to 10 of 2,453 entries</div>
           <div className="flex gap-2">
-            <button className="p-2 hover:bg-white/10 rounded-md transition-colors disabled:opacity-50">
-              <ChevronLeft className="w-5 h-5" />
+            <button className="p-2 hover:bg-[var(--surface-elevated)] border border-[var(--glass-border)] rounded-lg transition-colors disabled:opacity-50 text-foreground">
+              <ChevronLeft className="w-4 h-4" />
             </button>
-            <button className="p-2 hover:bg-white/10 rounded-md transition-colors">
-              <ChevronRight className="w-5 h-5" />
+            <button className="p-2 hover:bg-[var(--surface-elevated)] border border-[var(--glass-border)] rounded-lg transition-colors text-foreground">
+              <ChevronRight className="w-4 h-4" />
             </button>
           </div>
         </div>

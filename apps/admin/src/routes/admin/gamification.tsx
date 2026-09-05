@@ -25,23 +25,24 @@ const MOCK_MISSIONS = [
 
 function GamificationPage() {
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-8">
+    <div className="p-6 max-w-7xl mx-auto space-y-8 muni-page-enter">
       <div>
-        <h1 className="text-3xl font-bold text-white tracking-tight">Gamification Engine</h1>
-        <p className="text-gray-400 mt-1">Manage civic engagement rewards, badges, and missions</p>
+        <SectionLabel>Engagement & Rewards</SectionLabel>
+        <h1 className="text-3xl font-bold text-foreground tracking-tight mt-1">Gamification Engine</h1>
+        <p className="text-muted-foreground mt-1 text-sm">Manage civic engagement rewards, badges, and missions</p>
       </div>
 
       <section>
         <SectionLabel>Achievement Badges</SectionLabel>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
           {MOCK_BADGES.map((badge) => (
-            <GlassCard key={badge.id} className="flex items-center gap-4 p-4 hover:bg-white/5 transition-colors cursor-pointer">
-              <div className={`p-3 rounded-xl bg-white/5 ${badge.color}`}>
+            <GlassCard key={badge.id} className="flex items-center gap-4 p-4 hover:bg-[var(--surface-elevated)]/50 transition-colors cursor-pointer border border-[var(--glass-border)]">
+              <div className={`p-3 rounded-xl bg-[var(--surface-elevated)] border border-[var(--glass-border)] ${badge.color}`}>
                 <badge.icon className="w-8 h-8" />
               </div>
               <div>
-                <h3 className="text-lg font-medium text-white">{badge.name}</h3>
-                <p className="text-sm text-gray-400">+{badge.xp} XP Value</p>
+                <h3 className="text-base font-bold text-foreground">{badge.name}</h3>
+                <p className="text-xs font-semibold text-emerald-700 dark:text-emerald-400 mt-0.5">+{badge.xp} XP Value</p>
               </div>
             </GlassCard>
           ))}
@@ -53,24 +54,24 @@ function GamificationPage() {
         <GlassCard className="mt-4 overflow-hidden p-0">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
-              <thead className="bg-white/5 uppercase text-gray-300">
+              <thead className="bg-[var(--surface-elevated)]/70 uppercase text-[11px] font-semibold text-muted-foreground tracking-wider border-b border-[var(--glass-border)]">
                 <tr>
-                  <th className="px-6 py-4 font-medium">Mission Name</th>
-                  <th className="px-6 py-4 font-medium">XP Reward</th>
-                  <th className="px-6 py-4 font-medium">Deadline</th>
-                  <th className="px-6 py-4 font-medium">Participants</th>
-                  <th className="px-6 py-4 font-medium">Status</th>
+                  <th className="px-6 py-3.5">Mission Name</th>
+                  <th className="px-6 py-3.5">XP Reward</th>
+                  <th className="px-6 py-3.5">Deadline</th>
+                  <th className="px-6 py-3.5">Participants</th>
+                  <th className="px-6 py-3.5">Status</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-white/10">
+              <tbody className="divide-y divide-[var(--glass-border)]">
                 {MOCK_MISSIONS.map((mission) => (
-                  <tr key={mission.id} className="hover:bg-white/5 transition-colors">
-                    <td className="px-6 py-4 font-medium text-white">{mission.name}</td>
-                    <td className="px-6 py-4 text-emerald-400 font-medium">+{mission.reward} XP</td>
-                    <td className="px-6 py-4 text-gray-400">{mission.deadline}</td>
-                    <td className="px-6 py-4 text-gray-300">{mission.participants.toLocaleString()}</td>
+                  <tr key={mission.id} className="hover:bg-[var(--surface-elevated)]/50 transition-colors">
+                    <td className="px-6 py-4 font-semibold text-foreground">{mission.name}</td>
+                    <td className="px-6 py-4 text-emerald-700 dark:text-emerald-400 font-bold">+{mission.reward} XP</td>
+                    <td className="px-6 py-4 text-xs font-mono text-muted-foreground">{mission.deadline}</td>
+                    <td className="px-6 py-4 font-medium text-foreground">{mission.participants.toLocaleString()}</td>
                     <td className="px-6 py-4">
-                      <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${mission.status === 'Active' ? 'bg-blue-500/10 text-blue-400' : 'bg-gray-500/10 text-gray-400'}`}>
+                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border ${mission.status === 'Active' ? 'bg-blue-500/15 text-blue-700 dark:text-blue-300 border-blue-500/30' : 'bg-slate-500/15 text-slate-700 dark:text-slate-300 border-slate-500/30'}`}>
                         {mission.status}
                       </span>
                     </td>
@@ -87,41 +88,41 @@ function GamificationPage() {
         <GlassCard className="mt-4 p-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="space-y-4">
-              <h3 className="text-lg font-medium text-white mb-4">Action Multipliers</h3>
-              <div className="flex justify-between items-center border-b border-white/10 pb-2">
-                <span className="text-gray-300">Report Filed</span>
-                <span className="text-emerald-400 font-medium">10 XP</span>
+              <h3 className="text-base font-bold text-foreground mb-4">Action Multipliers</h3>
+              <div className="flex justify-between items-center border-b border-[var(--glass-border)] pb-2.5">
+                <span className="text-foreground/90 font-medium text-sm">Report Filed</span>
+                <span className="text-emerald-700 dark:text-emerald-400 font-bold text-sm">10 XP</span>
               </div>
-              <div className="flex justify-between items-center border-b border-white/10 pb-2">
-                <span className="text-gray-300">Upvote/Downvote</span>
-                <span className="text-emerald-400 font-medium">2 XP</span>
+              <div className="flex justify-between items-center border-b border-[var(--glass-border)] pb-2.5">
+                <span className="text-foreground/90 font-medium text-sm">Upvote/Downvote</span>
+                <span className="text-emerald-700 dark:text-emerald-400 font-bold text-sm">2 XP</span>
               </div>
-              <div className="flex justify-between items-center border-b border-white/10 pb-2">
-                <span className="text-gray-300">Verified Report (by Official)</span>
-                <span className="text-emerald-400 font-medium">25 XP</span>
+              <div className="flex justify-between items-center border-b border-[var(--glass-border)] pb-2.5">
+                <span className="text-foreground/90 font-medium text-sm">Verified Report (by Official)</span>
+                <span className="text-emerald-700 dark:text-emerald-400 font-bold text-sm">25 XP</span>
               </div>
-              <div className="flex justify-between items-center border-b border-white/10 pb-2">
-                <span className="text-gray-300">Community Verification</span>
-                <span className="text-emerald-400 font-medium">15 XP</span>
+              <div className="flex justify-between items-center border-b border-[var(--glass-border)] pb-2.5">
+                <span className="text-foreground/90 font-medium text-sm">Community Verification</span>
+                <span className="text-emerald-700 dark:text-emerald-400 font-bold text-sm">15 XP</span>
               </div>
             </div>
             
             <div className="space-y-4">
-              <h3 className="text-lg font-medium text-white mb-4">Level Thresholds</h3>
-              <div className="flex justify-between items-center border-b border-white/10 pb-2">
-                <span className="text-gray-300">Level 2 (Active Citizen)</span>
-                <span className="text-blue-400 font-medium">100 XP</span>
+              <h3 className="text-base font-bold text-foreground mb-4">Level Thresholds</h3>
+              <div className="flex justify-between items-center border-b border-[var(--glass-border)] pb-2.5">
+                <span className="text-foreground/90 font-medium text-sm">Level 2 (Active Citizen)</span>
+                <span className="text-blue-700 dark:text-blue-400 font-bold text-sm">100 XP</span>
               </div>
-              <div className="flex justify-between items-center border-b border-white/10 pb-2">
-                <span className="text-gray-300">Level 5 (Community Lead)</span>
-                <span className="text-blue-400 font-medium">1,000 XP</span>
+              <div className="flex justify-between items-center border-b border-[var(--glass-border)] pb-2.5">
+                <span className="text-foreground/90 font-medium text-sm">Level 5 (Community Lead)</span>
+                <span className="text-blue-700 dark:text-blue-400 font-bold text-sm">1,000 XP</span>
               </div>
-              <div className="flex justify-between items-center border-b border-white/10 pb-2">
-                <span className="text-gray-300">Level 10 (Civic Champion)</span>
-                <span className="text-blue-400 font-medium">5,000 XP</span>
+              <div className="flex justify-between items-center border-b border-[var(--glass-border)] pb-2.5">
+                <span className="text-foreground/90 font-medium text-sm">Level 10 (Civic Champion)</span>
+                <span className="text-blue-700 dark:text-blue-400 font-bold text-sm">5,000 XP</span>
               </div>
-              <div className="mt-4">
-                <button className="w-full bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-lg transition-colors font-medium">
+              <div className="mt-5">
+                <button className="w-full bg-[var(--primary)] hover:bg-[var(--primary)]/90 text-primary-foreground px-4 py-2.5 rounded-xl transition-colors font-semibold text-sm shadow-sm">
                   Edit Configurations
                 </button>
               </div>

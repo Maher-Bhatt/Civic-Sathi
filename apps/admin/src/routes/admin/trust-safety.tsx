@@ -30,46 +30,47 @@ function getSeverityColor(severity: string) {
     case 'High': return 'bg-orange-500/10 text-orange-400 border-orange-500/20'
     case 'Medium': return 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20'
     case 'Low': return 'bg-blue-500/10 text-blue-400 border-blue-500/20'
-    default: return 'bg-gray-500/10 text-gray-400 border-gray-500/20'
+    default: return 'bg-slate-500/15 text-slate-700 dark:text-slate-300 border-slate-500/30'
   }
 }
 
 function TrustSafetyPage() {
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-8">
+    <div className="p-6 max-w-7xl mx-auto space-y-8 muni-page-enter">
       <div>
-        <h1 className="text-3xl font-bold text-white tracking-tight">Trust & Safety</h1>
-        <p className="text-gray-400 mt-1">Platform moderation, flagged content, and user bans</p>
+        <SectionLabel>Safety & Moderation</SectionLabel>
+        <h1 className="text-3xl font-bold text-foreground tracking-tight mt-1">Trust & Safety</h1>
+        <p className="text-muted-foreground mt-1 text-sm">Platform moderation, flagged content, and user suspension management.</p>
       </div>
 
       <section>
         <SectionLabel>Moderation Queue</SectionLabel>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
           <GlassCard className="p-6 flex items-center gap-4">
-            <div className="p-4 bg-orange-500/10 rounded-full text-orange-400">
-              <ShieldAlert className="w-8 h-8" />
+            <div className="p-4 bg-orange-500/15 rounded-2xl text-orange-600 dark:text-orange-400">
+              <ShieldAlert className="w-7 h-7" />
             </div>
             <div>
-              <div className="text-3xl font-bold text-white">142</div>
-              <div className="text-sm text-gray-400">Pending Review</div>
+              <div className="text-3xl font-bold text-foreground">142</div>
+              <div className="text-xs font-medium text-muted-foreground mt-0.5">Pending Review</div>
             </div>
           </GlassCard>
           <GlassCard className="p-6 flex items-center gap-4">
-            <div className="p-4 bg-yellow-500/10 rounded-full text-yellow-400">
-              <Users className="w-8 h-8" />
+            <div className="p-4 bg-amber-500/15 rounded-2xl text-amber-600 dark:text-amber-400">
+              <Users className="w-7 h-7" />
             </div>
             <div>
-              <div className="text-3xl font-bold text-white">56</div>
-              <div className="text-sm text-gray-400">Flagged Users</div>
+              <div className="text-3xl font-bold text-foreground">56</div>
+              <div className="text-xs font-medium text-muted-foreground mt-0.5">Flagged Users</div>
             </div>
           </GlassCard>
           <GlassCard className="p-6 flex items-center gap-4">
-            <div className="p-4 bg-red-500/10 rounded-full text-red-400">
-              <UserX className="w-8 h-8" />
+            <div className="p-4 bg-red-500/15 rounded-2xl text-red-600 dark:text-red-400">
+              <UserX className="w-7 h-7" />
             </div>
             <div>
-              <div className="text-3xl font-bold text-white">1,204</div>
-              <div className="text-sm text-gray-400">Total Banned</div>
+              <div className="text-3xl font-bold text-foreground">1,204</div>
+              <div className="text-xs font-medium text-muted-foreground mt-0.5">Total Banned</div>
             </div>
           </GlassCard>
         </div>
@@ -80,35 +81,37 @@ function TrustSafetyPage() {
         <GlassCard className="mt-4 overflow-hidden p-0">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
-              <thead className="bg-white/5 uppercase text-gray-300">
+              <thead className="bg-[var(--surface-elevated)]/70 uppercase text-[11px] font-semibold text-muted-foreground tracking-wider border-b border-[var(--glass-border)]">
                 <tr>
-                  <th className="px-6 py-4 font-medium">User</th>
-                  <th className="px-6 py-4 font-medium">Content Type</th>
-                  <th className="px-6 py-4 font-medium">Reason</th>
-                  <th className="px-6 py-4 font-medium">Severity</th>
-                  <th className="px-6 py-4 font-medium">Date</th>
-                  <th className="px-6 py-4 font-medium text-right">Actions</th>
+                  <th className="px-6 py-3.5">User</th>
+                  <th className="px-6 py-3.5">Content Type</th>
+                  <th className="px-6 py-3.5">Reason</th>
+                  <th className="px-6 py-3.5">Severity</th>
+                  <th className="px-6 py-3.5">Date</th>
+                  <th className="px-6 py-3.5 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-white/10">
+              <tbody className="divide-y divide-[var(--glass-border)]">
                 {MOCK_FLAGGED.map((item) => (
-                  <tr key={item.id} className="hover:bg-white/5 transition-colors">
-                    <td className="px-6 py-4 font-medium text-blue-400">{item.user}</td>
-                    <td className="px-6 py-4 text-gray-300">{item.type}</td>
-                    <td className="px-6 py-4 text-white">{item.reason}</td>
+                  <tr key={item.id} className="hover:bg-[var(--surface-elevated)]/50 transition-colors">
+                    <td className="px-6 py-4 font-semibold text-blue-600 dark:text-blue-400">{item.user}</td>
+                    <td className="px-6 py-4 text-foreground/80">{item.type}</td>
+                    <td className="px-6 py-4 font-medium text-foreground">{item.reason}</td>
                     <td className="px-6 py-4">
-                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${getSeverityColor(item.severity)}`}>
+                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border ${getSeverityColor(item.severity)}`}>
                         {item.severity}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-gray-400">{item.date}</td>
-                    <td className="px-6 py-4 flex justify-end gap-2">
-                      <button className="p-2 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 rounded-md transition-colors" title="Approve/Safe">
-                        <CheckCircle className="w-4 h-4" />
-                      </button>
-                      <button className="p-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 rounded-md transition-colors" title="Ban/Remove">
-                        <Ban className="w-4 h-4" />
-                      </button>
+                    <td className="px-6 py-4 text-xs font-mono text-muted-foreground">{item.date}</td>
+                    <td className="px-6 py-4">
+                      <div className="flex justify-end gap-2">
+                        <button className="p-2 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 rounded-lg transition-colors border border-emerald-500/20" title="Approve/Safe">
+                          <CheckCircle className="w-4 h-4" />
+                        </button>
+                        <button className="p-2 bg-red-500/10 hover:bg-red-500/20 text-red-700 dark:text-red-300 rounded-lg transition-colors border border-red-500/20" title="Ban/Remove">
+                          <Ban className="w-4 h-4" />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -123,21 +126,25 @@ function TrustSafetyPage() {
         <GlassCard className="mt-4 overflow-hidden p-0">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
-              <thead className="bg-white/5 uppercase text-gray-300">
+              <thead className="bg-[var(--surface-elevated)]/70 uppercase text-[11px] font-semibold text-muted-foreground tracking-wider border-b border-[var(--glass-border)]">
                 <tr>
-                  <th className="px-6 py-4 font-medium">User</th>
-                  <th className="px-6 py-4 font-medium">Reason</th>
-                  <th className="px-6 py-4 font-medium">Ban Date</th>
-                  <th className="px-6 py-4 font-medium">Duration</th>
+                  <th className="px-6 py-3.5">User</th>
+                  <th className="px-6 py-3.5">Reason</th>
+                  <th className="px-6 py-3.5">Ban Date</th>
+                  <th className="px-6 py-3.5">Duration</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-white/10">
+              <tbody className="divide-y divide-[var(--glass-border)]">
                 {MOCK_BANNED.map((item) => (
-                  <tr key={item.id} className="hover:bg-white/5 transition-colors">
-                    <td className="px-6 py-4 font-medium text-rose-400">{item.user}</td>
-                    <td className="px-6 py-4 text-white">{item.reason}</td>
-                    <td className="px-6 py-4 text-gray-400">{item.banDate}</td>
-                    <td className="px-6 py-4 text-gray-400">{item.duration}</td>
+                  <tr key={item.id} className="hover:bg-[var(--surface-elevated)]/50 transition-colors">
+                    <td className="px-6 py-4 font-semibold text-rose-600 dark:text-rose-400">{item.user}</td>
+                    <td className="px-6 py-4 font-medium text-foreground">{item.reason}</td>
+                    <td className="px-6 py-4 text-xs font-mono text-muted-foreground">{item.banDate}</td>
+                    <td className="px-6 py-4">
+                      <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-red-500/10 text-red-700 dark:text-red-300 border border-red-500/20">
+                        {item.duration}
+                      </span>
+                    </td>
                   </tr>
                 ))}
               </tbody>
