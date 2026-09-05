@@ -340,7 +340,7 @@ export function CityHeritagePanel({
 
         {/* City Toggle if callback provided */}
         {onSelectCity && (
-          <div className="flex flex-wrap items-center gap-1.5 p-1 rounded-xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 shadow-sm">
+          <div className="flex flex-wrap items-center gap-1.5 p-1 rounded-xl bg-white/60 dark:bg-stone-900/60 backdrop-blur-md border border-stone-200/50 dark:border-stone-800/50 shadow-sm">
             {cities.map((c) => (
               <button
                 key={c.id}
@@ -378,10 +378,10 @@ export function CityHeritagePanel({
               type="button"
               onClick={() => setActiveStoryId(s.id)}
               className={cn(
-                "text-left p-4 rounded-xl border transition-all duration-200 flex flex-col justify-between space-y-3",
+                "p-5 text-left transition-all border rounded-2xl group backdrop-blur-md",
                 isActive
-                  ? "border-[#F4801A] bg-orange-50/50 dark:bg-orange-950/20 shadow-sm"
-                  : "border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900 hover:border-stone-300"
+                  ? "border-[#F4801A] bg-white/80 dark:bg-stone-900/80 shadow-md ring-1 ring-[#F4801A]"
+                  : "border-stone-200/50 dark:border-stone-800/50 bg-white/60 dark:bg-stone-900/60 hover:border-stone-300/60 hover:bg-white/70"
               )}
             >
               <div className="space-y-2">
@@ -410,7 +410,7 @@ export function CityHeritagePanel({
       </div>
 
       {/* Active Story Spotlight */}
-      <div className="p-6 rounded-xl border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900 shadow-sm">
+      <div className="p-6 rounded-xl border border-stone-200/50 dark:border-stone-800/50 bg-white/60 dark:bg-stone-900/60 backdrop-blur-md shadow-sm">
         <div className="flex items-start gap-4">
           <span
             className="p-3 rounded-xl hidden sm:inline-flex"
