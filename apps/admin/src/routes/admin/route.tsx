@@ -13,8 +13,14 @@ import {
   X,
   Users,
   Activity,
-  
   ChevronRight,
+  Globe2,
+  Search,
+  Gamepad2,
+  ShieldAlert,
+  Brain,
+  Network,
+  Map,
 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -37,6 +43,7 @@ const navGroups = [
     label: "Command center",
     items: [
       { label: "Dashboard", icon: LayoutDashboard, to: "/admin/dashboard" },
+      { label: "Global Complaints", icon: Search, to: "/admin/global-complaints" },
       { label: "Users", icon: Users, to: "/admin/users" },
       { label: "Contractors", icon: Building2, to: "/admin/contractors/" },
     ],
@@ -47,6 +54,16 @@ const navGroups = [
       { label: "Work Orders", icon: ClipboardList, to: "/admin/work-orders-overview" },
       { label: "SLA Config", icon: Timer, to: "/admin/sla" },
       { label: "Audit Logs", icon: Shield, to: "/admin/audit-logs" },
+    ],
+  },
+  {
+    label: "Platform",
+    items: [
+      { label: "Master Data (MDM)", icon: Map, to: "/admin/mdm" },
+      { label: "AI Oversight", icon: Brain, to: "/admin/ai-oversight" },
+      { label: "Trust & Safety", icon: ShieldAlert, to: "/admin/trust-safety" },
+      { label: "Gamification", icon: Gamepad2, to: "/admin/gamification" },
+      { label: "Interoperability", icon: Network, to: "/admin/interoperability" },
     ],
   },
 ];
@@ -98,7 +115,7 @@ function AdminShell() {
         <div className="admin-scope-strip">
           <span className="admin-status-dot" />
           <span>Live civic network</span>
-          <strong>2 cities</strong>
+          <strong>4 cities</strong>
         </div>
 
         <nav className="admin-navigation" aria-label="Admin navigation">
@@ -176,7 +193,7 @@ function AdminShell() {
           </div>
           <div className="admin-topbar-actions">
             <span className="admin-topbar-scope"><Activity className="h-3.5 w-3.5" /> Backend connected</span>
-            <span className="admin-topbar-date">Bengaluru · Vadodara</span>
+            <span className="admin-topbar-date">Mumbai · Delhi · Bengaluru · Vadodara</span>
           </div>
         </header>
         <div className="admin-content">
