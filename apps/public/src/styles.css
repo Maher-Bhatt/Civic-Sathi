@@ -918,21 +918,21 @@ body.civic-heritage-shell .civic-city-shell::before {
 }
 body.civic-heritage-shell .civic-atmosphere-panel,
 body.civic-heritage-shell .jm-heritage-card {
-  background: color-mix(in srgb, var(--civic-paper) 45%, transparent) !important;
-  backdrop-filter: blur(12px) saturate(1.2) !important;
+  background: color-mix(in srgb, var(--civic-paper) 75%, transparent) !important;
+  backdrop-filter: blur(16px) saturate(1.4) !important;
   border-color: color-mix(in srgb, var(--civic-city-accent) 38%, var(--glass-border)) !important;
   box-shadow: var(--shadow-lift);
 }
 body.civic-heritage-shell .civic-atmosphere-panel > .animate-rise:first-child {
-  background: color-mix(in srgb, var(--civic-paper) 45%, transparent) !important;
+  background: color-mix(in srgb, var(--civic-paper) 70%, transparent) !important;
   backdrop-filter: blur(16px) saturate(1.4) !important;
   border-color: rgb(16 27 61 / .16) !important;
   box-shadow: 0 18px 40px -26px rgb(74 48 28 / .22), inset 0 1px 0 rgb(255 255 255 / .72);
 }
 body.civic-heritage-shell .civic-data-rail,
 body.civic-heritage-shell .civic-city-chip {
-  background: color-mix(in srgb, var(--civic-paper) 45%, transparent) !important;
-  backdrop-filter: blur(8px) saturate(1.1) !important;
+  background: color-mix(in srgb, var(--civic-paper) 70%, transparent) !important;
+  backdrop-filter: blur(10px) saturate(1.1) !important;
   color: #172033 !important;
   border-color: rgb(16 27 61 / .16) !important;
 }

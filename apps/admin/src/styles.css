@@ -5,9 +5,12 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
- * CivicSathi Indian Civic Design System
- * Palette: Saffron (#FF9933) + India Green (#138808) + Ashoka Navy
- * Fonts: Inter (Latin) + Noto Sans Devanagari (Hindi/Gujarati)
+ * =========================================================================
+ * CivicSathi: Indian Civic & Cultural Design System (Neo-Glassmorphism Edition)
+ * Palette: Saffron/Bhagwa (#FF6F00) + India Green (#0E8A4B) + Ashoka Chakra Navy (#0A369D)
+ * Accents: Marigold Haldi Gold (#F59E0B) + Jaipur Rose (#E11D48) + Royal Peacock (#0F766E)
+ * Canvas: Pearl Sandalwood / Ivory Silk with Multi-Layer Specular Glass
+ * =========================================================================
  */
 
 @theme inline {
@@ -19,7 +22,7 @@
   --radius-3xl: calc(var(--radius) + 12px);
   --radius-4xl: calc(var(--radius) + 16px);
 
-  --font-sans: "Inter", "Noto Sans Devanagari", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Inter", "Noto Sans Devanagari", "Noto Sans Gujarati", "Noto Sans Kannada", ui-sans-serif, system-ui, sans-serif;
 
   --color-background: var(--background);
   --color-background-secondary: var(--background-secondary);
@@ -48,6 +51,15 @@
   --color-glass-border: var(--glass-border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+
+  /* Indian Accent Colors */
+  --color-saffron: var(--saffron);
+  --color-india-green: var(--india-green);
+  --color-ashoka-blue: var(--ashoka-blue);
+  --color-marigold: var(--marigold);
+  --color-jaipur-rose: var(--jaipur-rose);
+  --color-peacock: var(--peacock);
+
   --color-chart-1: var(--primary);
   --color-chart-2: var(--saffron);
   --color-chart-3: var(--warning);
@@ -58,113 +70,129 @@
   --shadow-glass-lg: var(--shadow-lift);
 }
 
-/* -- LIGHT MODE ? Ivory + India Green primary -- */
+/* -------------------------------------------------------------------------
+   LIGHT THEME (Default): Luminous Indian Silk Ivory + Rich Jewel Tones
+   ------------------------------------------------------------------------- */
 :root {
-  --radius: 0.25rem;
+  --radius: 0.85rem;
 
-  /* India flag inspired palette */
-  --saffron:       #FF9933;   /* Indian saffron */
-  --india-green:   #138808;   /* Indian flag green */
-  --ashoka-blue:   #0047AB;   /* Ashoka Chakra blue */
-  --ivory:         #FFF8F0;   /* warm ivory ? feels like parchment */
+  /* Authentic Indian Jewel Palette */
+  --saffron:       #FF6F00;   /* Royal Bhagwa / Indian Saffron */
+  --saffron-light: #FFF2E5;   /* Saffron mist */
+  --saffron-glow:  rgba(255, 111, 0, 0.22);
+  --india-green:   #0E8A4B;   /* Ashoka Emerald / India Green */
+  --green-light:   #E8F7EE;   /* Mint/Emerald mist */
+  --green-glow:    rgba(14, 138, 75, 0.20);
+  --ashoka-blue:   #0A369D;   /* 24-Spoke Chakra Navy */
+  --blue-light:    #EDF3FF;   /* Celestial blue mist */
+  --marigold:      #F59E0B;   /* Haldi / Marigold Gold */
+  --jaipur-rose:   #E11D48;   /* Jaipur Palace Terracotta / Gulabi */
+  --peacock:       #0F766E;   /* Royal Peacock Teal */
 
-  --background:           #FFF8F0;   /* warm ivory */
-  --background-secondary: #FFF1E0;
-  --surface:              rgb(255 248 240 / 0.85);
-  --surface-elevated:     rgb(255 255 255 / 0.95);
-  --glass:                rgb(255 248 240 / 0.65);
-  --glass-strong:         rgb(255 255 255 / 0.82);
-  --glass-border:         rgb(255 153 51 / 0.22);  /* saffron tinted border */
+  /* Canvas: Sandalwood Silk + Warm Ivory */
+  --background:           #FAF6F0;   /* Sandalwood Pearl Ivory */
+  --background-secondary: #F4ECE1;   /* Warm Terracotta Mist */
+  
+  /* Crazy Liquid Glass Surfaces */
+  --surface:              rgba(255, 255, 255, 0.78);
+  --surface-elevated:     rgba(255, 255, 255, 0.94);
+  --glass:                rgba(255, 255, 255, 0.72);
+  --glass-strong:         rgba(255, 255, 255, 0.88);
+  --glass-border:         rgba(255, 111, 0, 0.20);  /* subtle saffron-tinted refraction */
+  --glass-border-green:   rgba(14, 138, 75, 0.20);
 
-  --foreground:           #1A0A00;  /* deep warm black */
-  --card:                 rgb(255 255 255 / 0.82);
-  --card-foreground:      #1A0A00;
-  --popover:              #FFF8F0;
-  --popover-foreground:   #1A0A00;
+  --foreground:           #1C130D;   /* Deep Sandalwood Charcoal */
+  --card:                 rgba(255, 255, 255, 0.82);
+  --card-foreground:      #1C130D;
+  --popover:              rgba(255, 255, 255, 0.96);
+  --popover-foreground:   #1C130D;
 
-  /* India Green as primary */
-  --primary:              #138808;
+  /* Primary: Bold India Green for Action & Progress */
+  --primary:              #0E8A4B;
   --primary-foreground:   #FFFFFF;
-  /* Saffron as accent */
-  --secondary-accent:     #FF9933;
-  --secondary:            #FFF1E0;
-  --secondary-foreground: #1A0A00;
+  
+  /* Saffron Accent */
+  --secondary-accent:     #FF6F00;
+  --secondary:            #FFF2E5;
+  --secondary-foreground: #7C2D12;
 
-  --muted:                #FFF1E0;
-  --muted-foreground:     #6B4A2A;
-  --subtle-foreground:    #9B7050;
+  --muted:                #F5EBE1;
+  --muted-foreground:     #785840;
+  --subtle-foreground:    #A37A58;
 
-  --accent:               #FFF1E0;
-  --accent-foreground:    #1A0A00;
+  --accent:               #FFF4E6;
+  --accent-foreground:    #9A3412;
 
-  --critical:  #D32F2F;   /* red alert */
-  --warning:   #F57C00;   /* orange warning */
-  --success:   #2E7D32;   /* deep green success */
-  --destructive:             #D32F2F;
-  --destructive-foreground:  #FFFFFF;
+  --critical:             #DC2626;   /* Alert Red */
+  --warning:              #EA580C;   /* Warm Orange Warning */
+  --success:              #16A34A;   /* Green Success */
+  --destructive:          #DC2626;
+  --destructive-foreground: #FFFFFF;
 
-  --border:       rgb(26 10 0 / 0.14);
-  --input:        rgb(26 10 0 / 0.16);
-  --ring:         #138808;
+  --border:               rgba(120, 88, 64, 0.16);
+  --input:                rgba(120, 88, 64, 0.18);
+  --ring:                 #FF6F00;
 
-  --shadow-soft: 0 1px 3px rgb(26 10 0 / 0.08), 0 8px 24px -12px rgb(26 10 0 / 0.18);
-  --shadow-lift: 0 2px 6px rgb(26 10 0 / 0.10), 0 18px 40px -16px rgb(26 10 0 / 0.26);
-  --ambient-1: rgb(19 136 8 / 0.12);   /* green glow */
-  --ambient-2: rgb(255 153 51 / 0.14); /* saffron glow */
+  /* Specular Light Soft Shadows */
+  --shadow-soft: 0 4px 20px -2px rgba(120, 88, 64, 0.08), 0 2px 6px -1px rgba(0, 0, 0, 0.04), inset 0 1px 1px 0 rgba(255, 255, 255, 0.9);
+  --shadow-lift: 0 16px 36px -6px rgba(255, 111, 0, 0.10), 0 6px 16px -2px rgba(14, 138, 75, 0.08), inset 0 1.5px 1.5px 0 rgba(255, 255, 255, 1);
+  
+  --ambient-1: rgba(255, 111, 0, 0.14);  /* Warm Saffron Sun Glow */
+  --ambient-2: rgba(14, 138, 75, 0.12);  /* Emerald Prosperity Glow */
+  --ambient-3: rgba(10, 54, 157, 0.08);  /* Royal Ashoka Blue Aura */
 }
 
-/* -- DARK MODE ? Deep Navy + Saffron/Green accents -- */
+/* -------------------------------------------------------------------------
+   DARK THEME: Midnight Peacock Navy + Electric Saffron & Emerald Fire
+   ------------------------------------------------------------------------- */
 .dark {
-  --background:           #0D1117;  /* deep navy-charcoal */
-  --background-secondary: #111827;
-  --surface:              #161D2B;
-  --surface-elevated:     #1E2738;
-  --glass:                rgb(255 255 255 / 0.04);
-  --glass-strong:         rgb(255 255 255 / 0.07);
-  --glass-border:         rgb(255 153 51 / 0.18);  /* saffron border in dark */
+  --background:           #0A0F18;   /* Deep Midnight Indigo */
+  --background-secondary: #0F1726;
+  --surface:              rgba(18, 27, 44, 0.78);
+  --surface-elevated:     rgba(24, 36, 58, 0.92);
+  --glass:                rgba(255, 255, 255, 0.05);
+  --glass-strong:         rgba(255, 255, 255, 0.09);
+  --glass-border:         rgba(255, 140, 0, 0.22);
+  --glass-border-green:   rgba(34, 197, 94, 0.22);
 
-  --foreground:           #F5E6D0;  /* warm cream text */
-  --card:                 #161D2B;
-  --card-foreground:      #F5E6D0;
-  --popover:              #161D2B;
-  --popover-foreground:   #F5E6D0;
+  --foreground:           #FBF5ED;   /* Warm Ivory Moonlight */
+  --card:                 rgba(18, 27, 44, 0.78);
+  --card-foreground:      #FBF5ED;
+  --popover:              rgba(18, 27, 44, 0.96);
+  --popover-foreground:   #FBF5ED;
 
-  /* Brighter India Green for dark mode */
-  --primary:              #22C55E;  /* vivid green ? visible on dark */
-  --primary-foreground:   #0D1117;
-  --secondary-accent:     #FFAA44;  /* warm saffron for dark */
-  --secondary:            #1E2738;
-  --secondary-foreground: #F5E6D0;
+  --primary:              #22C55E;   /* Vivid Emerald */
+  --primary-foreground:   #061E10;
+  --secondary-accent:     #FF9933;   /* Bright Saffron */
+  --secondary:            #1E293B;
+  --secondary-foreground: #FBF5ED;
 
-  --muted:                #1E2738;
-  --muted-foreground:     #A08060;
-  --subtle-foreground:    #705840;
+  --muted:                #1E293B;
+  --muted-foreground:     #B59A7A;
+  --subtle-foreground:    #826B50;
 
-  --accent:               #1E2738;
-  --accent-foreground:    #F5E6D0;
+  --accent:               #1E293B;
+  --accent-foreground:    #FBF5ED;
 
-  --critical:  #FF5252;  /* bright red on dark */
-  --warning:   #FFB300;  /* amber warning */
-  --success:   #4CAF50;  /* medium green */
-  --destructive:             #FF5252;
-  --destructive-foreground:  #0D1117;
+  --critical:             #EF4444;
+  --warning:              #F59E0B;
+  --success:              #22C55E;
+  --destructive:          #EF4444;
+  --destructive-foreground: #FFFFFF;
 
-  --border:  rgb(255 153 51 / 0.12);
-  --input:   rgb(255 153 51 / 0.14);
-  --ring:    #22C55E;
+  --border:               rgba(255, 153, 51, 0.16);
+  --input:                rgba(255, 153, 51, 0.18);
+  --ring:                 #22C55E;
 
-  --shadow-soft: 0 1px 2px rgb(0 0 0 / 0.5), 0 10px 28px -14px rgb(0 0 0 / 0.7);
-  --shadow-lift: 0 2px 6px rgb(0 0 0 / 0.5), 0 22px 48px -18px rgb(0 0 0 / 0.8);
-  --ambient-1: rgb(34 197 94 / 0.10);   /* green glow */
-  --ambient-2: rgb(255 170 68 / 0.10);  /* saffron glow */
+  --shadow-soft: 0 4px 20px -2px rgba(0, 0, 0, 0.5), inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
+  --shadow-lift: 0 20px 48px -8px rgba(0, 0, 0, 0.75), 0 0 24px -4px rgba(255, 140, 0, 0.18);
+  
+  --ambient-1: rgba(34, 197, 94, 0.12);
+  --ambient-2: rgba(255, 140, 0, 0.14);
+  --ambient-3: rgba(59, 130, 246, 0.10);
 }
-/* Abstracted stepwell geometry and Ashoka-inspired radial rhythm. */
-.civic-heritage-shell { background-image: radial-gradient(circle at 8% 10%, color-mix(in oklab, var(--saffron) 10%, transparent), transparent 28%), radial-gradient(circle at 92% 86%, color-mix(in oklab, var(--india-green) 8%, transparent), transparent 30%); }
-.civic-heritage-shell::before { content: ""; position: fixed; inset: 0 0 0 auto; width: min(34vw, 26rem); pointer-events: none; opacity: .055; background: repeating-conic-gradient(from 0deg at 70% 18%, var(--saffron) 0deg 2deg, transparent 2deg 15deg); mask-image: radial-gradient(circle at 70% 18%, #000 0 16%, transparent 62%); z-index: 0; }
-.civic-heritage-mark { width: 1.85rem; height: 1.85rem; flex: 0 0 auto; border: 1px solid color-mix(in oklab, var(--saffron) 62%, var(--glass-border)); border-radius: 999px; background: repeating-conic-gradient(from 0deg, var(--saffron) 0deg 4deg, transparent 4deg 18deg); box-shadow: inset 0 0 0 5px var(--glass-strong), 0 0 0 1px color-mix(in oklab, var(--india-green) 30%, transparent); }
 
 @layer base {
-
   * {
     border-color: var(--color-border);
   }
@@ -180,14 +208,20 @@
     font-feature-settings: "cv11", "ss01";
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
+    background-image: 
+      radial-gradient(ellipse 80% 50% at 50% -10%, rgba(255, 111, 0, 0.07), transparent),
+      radial-gradient(ellipse 60% 40% at 90% 40%, rgba(14, 138, 75, 0.06), transparent),
+      radial-gradient(ellipse 50% 40% at 10% 80%, rgba(10, 54, 157, 0.05), transparent);
+    background-attachment: fixed;
   }
 
   ::selection {
-    background: white;
+    background: rgba(255, 111, 0, 0.25);
+    color: #1C130D;
   }
 
   :focus-visible {
-    outline: 2px solid color-mix(in oklab, var(--primary) 75%, transparent);
+    outline: 2px solid var(--primary);
     outline-offset: 2px;
   }
 
@@ -198,6 +232,9 @@
   }
 }
 
+/* -------------------------------------------------------------------------
+   CRAZY NEO-GLASS UTILITY CLASSES
+   ------------------------------------------------------------------------- */
 @utility glass {
   background: var(--glass);
   border: 1px solid var(--glass-border);
@@ -207,9 +244,37 @@
 
 @utility glass-strong {
   background: var(--glass-strong);
-  border: 1px solid var(--glass-border);
+  border: 1px solid rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(20px) saturate(1.6);
-  box-shadow: var(--shadow-soft);
+  box-shadow: var(--shadow-lift);
+}
+
+@utility glass-aurora {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.85) 0%, rgba(255, 244, 230, 0.70) 50%, rgba(235, 252, 240, 0.75) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  
+  box-shadow: 0 16px 40px -8px rgba(255, 111, 0, 0.09), 0 6px 18px 0 rgba(14, 138, 75, 0.06), inset 0 1px 1px 0 rgba(255, 255, 255, 1);
+}
+
+@utility glass-saffron {
+  background: linear-gradient(135deg, rgba(255, 111, 0, 0.08) 0%, rgba(255, 248, 238, 0.85) 100%);
+  border: 1px solid rgba(255, 111, 0, 0.32);
+  
+  box-shadow: 0 8px 30px -4px rgba(255, 111, 0, 0.12), inset 0 1px 0 0 rgba(255, 255, 255, 0.9);
+}
+
+@utility glass-emerald {
+  background: linear-gradient(135deg, rgba(14, 138, 75, 0.08) 0%, rgba(240, 253, 244, 0.85) 100%);
+  border: 1px solid rgba(14, 138, 75, 0.30);
+  
+  box-shadow: 0 8px 30px -4px rgba(14, 138, 75, 0.12), inset 0 1px 0 0 rgba(255, 255, 255, 0.9);
+}
+
+@utility glass-peacock {
+  background: linear-gradient(135deg, rgba(10, 54, 157, 0.07) 0%, rgba(240, 247, 255, 0.85) 100%);
+  border: 1px solid rgba(10, 54, 157, 0.28);
+  
+  box-shadow: 0 8px 30px -4px rgba(10, 54, 157, 0.10), inset 0 1px 0 0 rgba(255, 255, 255, 0.9);
 }
 
 @utility solid-surface {
@@ -223,7 +288,7 @@
   line-height: 1rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  font-weight: 500;
+  font-weight: 600;
   color: var(--subtle-foreground);
 }
 
@@ -240,8 +305,9 @@
     pointer-events: none;
     background:
       radial-gradient(60% 55% at 18% 12%, var(--ambient-1), transparent 70%),
-      radial-gradient(50% 45% at 82% 0%, var(--ambient-2), transparent 72%);
-    filter: blur(20px);
+      radial-gradient(50% 45% at 82% 0%, var(--ambient-2), transparent 72%),
+      radial-gradient(45% 40% at 50% 30%, var(--ambient-3), transparent 75%);
+    filter: blur(35px);
   }
 }
 
@@ -266,14 +332,74 @@
   &:hover {
     transform: translateY(-2px);
     box-shadow: var(--shadow-lift);
-    border-color: color-mix(in oklab, var(--glass-border) 100%, var(--foreground) 8%);
+    border-color: rgba(255, 111, 0, 0.38);
   }
 }
 
+/* -------------------------------------------------------------------------
+   INDIAN CIVIC & CULTURAL MOTIFS
+   ------------------------------------------------------------------------- */
+.jm-tricolor-bar {
+  height: 3px;
+  background: linear-gradient(90deg, #FF6F00 0%, #FF9933 33%, #FFFFFF 50%, #16A34A 66%, #0E8A4B 100%);
+  border-radius: 9999px;
+}
+
+.jm-chakra-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.25rem 0.65rem;
+  border-radius: 9999px;
+  background: linear-gradient(135deg, rgba(255, 111, 0, 0.12) 0%, rgba(14, 138, 75, 0.12) 100%);
+  border: 1px solid rgba(255, 111, 0, 0.3);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #7C2D12;
+}
+.dark .jm-chakra-badge {
+  color: #FDBA74;
+  border-color: rgba(255, 153, 51, 0.35);
+}
+
+.jm-indian-gradient-text {
+  background: linear-gradient(135deg, #EA580C 0%, #D97706 35%, #0E8A4B 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.dark .jm-indian-gradient-text {
+  background: linear-gradient(135deg, #FB923C 0%, #FBBF24 40%, #4ADE80 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.jm-heritage-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1.25rem;
+  background: rgba(255, 255, 255, 0.82);
+  border: 1px solid rgba(255, 111, 0, 0.22);
+  
+  box-shadow: 0 12px 36px -6px rgba(255, 111, 0, 0.08), 0 4px 12px 0 rgba(0, 0, 0, 0.03);
+  transition: all 300ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.jm-heritage-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(255, 111, 0, 0.45);
+  box-shadow: 0 20px 48px -8px rgba(255, 111, 0, 0.16), 0 6px 18px 0 rgba(14, 138, 75, 0.08);
+}
+.dark .jm-heritage-card {
+  background: rgba(18, 27, 44, 0.82);
+  border-color: rgba(255, 153, 51, 0.25);
+}
+
+/* Animations */
 @keyframes jm-rise {
   from {
     opacity: 0;
-    transform: translateY(14px);
+    transform: translateY(16px);
   }
   to {
     opacity: 1;
@@ -281,457 +407,40 @@
   }
 }
 
-@keyframes jm-fade {
+@keyframes jm-spin-slow {
   from {
-    opacity: 0;
+    transform: rotate(0deg);
   }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes jm-pulse-ring {
-  0% {
-    transform: scale(0.7);
-    opacity: 0.55;
-  }
-  70% {
-    transform: scale(2.1);
-    opacity: 0;
-  }
-  100% {
-    transform: scale(2.1);
-    opacity: 0;
-  }
-}
-
-@keyframes jm-drift {
-  0%,
-  100% {
-    transform: translate3d(0, 0, 0);
-  }
-  50% {
-    transform: translate3d(0, -4px, 0);
-  }
-}
-
-@keyframes jm-sweep {
-  0% {
-    transform: translateX(-100%);
-  }
-  100% {
-    transform: translateX(220%);
-  }
-}
-
-@utility animate-rise {
-  animation: jm-rise 600ms cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-@utility animate-fade {
-  animation: jm-fade 500ms ease-out both;
-}
-
-@utility animate-drift {
-  animation: jm-drift 6s ease-in-out infinite;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
-}
-
-/* --------------------------------------------------- Leaflet integration */
-
-.jm-map {
-  position: relative;
-  z-index: 0;
-}
-
-.jm-map .leaflet-container {
-  height: 100%;
-  width: 100%;
-  background: var(--background-secondary);
-  font-family: var(--font-sans);
-  outline: none;
-}
-
-.jm-map .leaflet-tile-pane {
-  filter: saturate(0.72) contrast(1.02);
-}
-
-.jm-map .leaflet-control-attribution {
-  background: var(--glass-strong);
-  color: var(--subtle-foreground);
-  border: 1px solid var(--glass-border);
-  border-radius: 0.5rem;
-  
-  font-size: 0.6rem;
-  padding: 2px 6px;
-  margin: 6px;
-}
-
-.jm-map .leaflet-control-attribution a {
-  color: var(--muted-foreground);
-}
-
-.jm-map .leaflet-marker-icon:focus-visible {
-  outline: 2px solid color-mix(in oklab, var(--primary) 75%, transparent);
-  outline-offset: 2px;
-  border-radius: 999px;
-}
-
-/* Ward polygon tooltip - glass, premium styling */
-.jm-map .leaflet-tooltip.jm-ward-tooltip {
-  background: var(--glass-strong) !important;
-  border: 1px solid var(--glass-border) !important;
-  border-radius: 0.75rem !important;
-  color: var(--foreground) !important;
-  box-shadow: var(--shadow-lift) !important;
-  
-    font-size: 0.75rem !important;
-  line-height: 1.5 !important;
-  padding: 10px 14px !important;
-  font-family: var(--font-sans) !important;
-}
-
-.jm-map .leaflet-tooltip.jm-ward-tooltip::before {
-  display: none !important;
-}
-
-.jm-map .leaflet-interactive {
-  cursor: pointer;
-  transition: fill-opacity 180ms ease-out;
-}
-
-.jm-cluster {
-  display: grid;
-  place-items: center;
-  border-radius: 999px;
-  background: white;
-  border: 1px solid color-mix(in oklab, var(--jm-c) 62%, transparent);
-  box-shadow: 0 6px 18px -8px rgb(0 0 0 / 0.5);
-  color: var(--foreground);
-  
-  transition:
-    transform 200ms cubic-bezier(0.22, 1, 0.36, 1),
-    background-color 200ms ease-out;
-  cursor: pointer;
-}
-
-.jm-cluster:hover {
-  transform: scale(1.08);
-  background: white;
-}
-
-.jm-dot {
-  display: block;
-  height: 12px;
-  width: 12px;
-  border-radius: 999px;
-  background: white;
-  border: 1px solid color-mix(in oklab, var(--jm-c) 90%, transparent);
-  box-shadow: 0 4px 12px -6px rgb(0 0 0 / 0.6);
-  transition: transform 180ms cubic-bezier(0.22, 1, 0.36, 1);
-  cursor: pointer;
-}
-
-.jm-dot:hover {
-  transform: scale(1.35);
-}
-
-.jm-tip-sub {
-  color: var(--muted-foreground);
-  font-size: 0.66rem;
-}
-
-.jm-cluster-count {
-  font-size: 0.72rem;
-  font-weight: 600;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: 0.01em;
-}
-
-.jm-pin {
-  display: grid;
-  place-items: center;
-  height: 28px;
-  width: 28px;
-  border-radius: 999px;
-  background: white;
-  border: 2px solid color-mix(in oklab, var(--background) 70%, transparent);
-  box-shadow: var(--shadow-lift);
-  transition: transform 200ms cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.jm-pin:hover {
-  transform: scale(1.1);
-}
-
-.jm-pin-dot {
-  height: 7px;
-  width: 7px;
-  border-radius: 999px;
-  background: var(--primary-foreground);
-}
-
-/* ------------------------------------------------ municipality portal */
-
-.filter-input {
-  width: 100%;
-  border-radius: 0.75rem;
-  border: 1px solid var(--glass-border);
-  background: var(--glass);
-  padding: 0.625rem 0.875rem;
-  font-size: 0.875rem;
-  outline: none;
-  transition: border-color 180ms ease-out;
-}
-
-.filter-input:focus-visible {
-  border-color: color-mix(in oklab, var(--primary) 50%, var(--glass-border));
-}
-
-.action-btn {
-  border-radius: 0.75rem;
-  border: 1px solid var(--glass-border);
-  background: var(--glass);
-  padding: 0.5rem 1rem;
-  font-size: 0.6875rem;
-  font-weight: 500;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  transition: transform 180ms ease-out, background-color 180ms ease-out;
-}
-
-.action-btn:hover {
-  background: var(--glass-strong);
-}
-
-.action-btn.primary {
-  background: var(--primary);
-  border-color: transparent;
-  color: var(--primary-foreground);
-}
-
-.action-btn.primary:hover {
-  filter: brightness(1.08);
-}
-
-.muni-page-enter {
-  animation: jm-rise 500ms cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-@keyframes jm-drawer-in {
-  from {
-    opacity: 0;
-    transform: translateX(100%);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-
-/* ------------------------------------------------ civic map motion system */
-
-@keyframes jm-scan {
-  0% {
-    transform: translateY(-100%);
-    opacity: 0;
-  }
-  15% {
-    opacity: 0.6;
-  }
-  85% {
-    opacity: 0.6;
-  }
-  100% {
-    transform: translateY(200%);
-    opacity: 0;
-  }
-}
-
-@keyframes jm-glow-pulse {
-  0%,
-  100% {
-    box-shadow:
-      0 0 0 0 color-mix(in oklab, var(--primary) 0%, transparent),
-      var(--shadow-soft);
-  }
-  50% {
-    box-shadow:
-      0 0 28px 2px color-mix(in oklab, var(--primary) 22%, transparent),
-      var(--shadow-lift);
-  }
-}
-
-@keyframes jm-border-spin {
   to {
     transform: rotate(360deg);
   }
 }
 
-@keyframes jm-stat-pop {
-  0% {
-    transform: scale(0.6);
-    opacity: 0;
-  }
-  60% {
-    transform: scale(1.08);
-  }
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
+.animate-spin-slow {
+  animation: jm-spin-slow 24s linear infinite;
 }
 
-@keyframes jm-hotspot-beat {
-  0%,
-  100% {
-    transform: scale(1);
-    box-shadow: 0 0 0 0 color-mix(in oklab, var(--jm-c) 40%, transparent);
-  }
-  50% {
-    transform: scale(1.12);
-    box-shadow: 0 0 18px 4px color-mix(in oklab, var(--jm-c) 35%, transparent);
-  }
+.animate-rise {
+  animation: jm-rise 450ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-@keyframes jm-panel-slide {
-  from {
-    opacity: 0;
-    transform: translateY(24px) scale(0.97);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
+/* Tooltip styles */
+.jm-ward-tooltip {
+  background: rgba(255, 255, 255, 0.95) !important;
+  color: #1C130D !important;
+  border: 1px solid rgba(255, 111, 0, 0.35) !important;
+  border-radius: 0.75rem !important;
+  padding: 0.55rem 0.8rem !important;
+  box-shadow: 0 12px 32px rgba(255, 111, 0, 0.15) !important;
+  
+}
+.dark .jm-ward-tooltip {
+  background: rgba(18, 27, 44, 0.95) !important;
+  color: #FBF5ED !important;
+  border-color: rgba(255, 153, 51, 0.35) !important;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6) !important;
 }
 
-@keyframes jm-mode-flash {
-  0% {
-    filter: brightness(1.4);
-  }
-  100% {
-    filter: brightness(1);
-  }
-}
-
-.jm-map-scan {
-  background: linear-gradient(
-    180deg,
-    transparent 0%,
-    color-mix(in oklab, var(--primary) 30%, transparent) 50%,
-    transparent 100%
-  );
-  animation: jm-scan 2.4s ease-in-out infinite;
-}
-
-.jm-map-frame {
-  position: relative;
-}
-
-.jm-map-frame::before {
-  content: "";
-  position: absolute;
-  inset: -1px;
-  z-index: 10;
-  border-radius: inherit;
-  padding: 1px;
-  background: conic-gradient(
-    from 0deg,
-    color-mix(in oklab, var(--primary) 60%, transparent),
-    transparent 30%,
-    color-mix(in oklab, var(--warning) 50%, transparent) 55%,
-    transparent 75%,
-    color-mix(in oklab, var(--primary) 60%, transparent)
-  );
-  -webkit-mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  pointer-events: none;
-  opacity: 0.55;
-  animation: jm-border-spin 8s linear infinite;
-}
-
-.jm-map-shell.jm-map-loading {
-  min-height: 12rem;
-}
-
-.jm-glitch-text {
-  text-shadow:
-    0 0 20px color-mix(in oklab, var(--primary) 25%, transparent),
-    0 0 40px color-mix(in oklab, var(--primary) 10%, transparent);
-}
-
-.jm-mode-active {
-  animation: jm-mode-flash 400ms ease-out;
-}
-
-.jm-stat-card {
-  transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.jm-stat-card:hover {
-  transform: translateY(-3px) scale(1.02);
-  animation: jm-glow-pulse 1.8s ease-in-out infinite;
-}
-
-.jm-stat-pop {
-  display: inline-block;
-  animation: jm-stat-pop 600ms cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-.jm-chart-card {
-  overflow: hidden;
-  position: relative;
-}
-
-.jm-chart-card::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    105deg,
-    transparent 40%,
-    color-mix(in oklab, var(--primary) 8%, transparent) 50%,
-    transparent 60%
-  );
-  transform: translateX(-100%);
-  animation: jm-sweep 4s ease-in-out infinite;
-  pointer-events: none;
-}
-
-.jm-hotspot-pulse {
-  animation: jm-hotspot-beat 1.6s ease-in-out infinite;
-}
-
-.jm-panel-enter {
-  animation: jm-panel-slide 500ms cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-.jm-panel-glow {
-  box-shadow:
-    0 0 0 1px color-mix(in oklab, var(--primary) 20%, transparent),
-    0 20px 50px -20px color-mix(in oklab, var(--primary) 30%, transparent);
-}
-
-.jm-bar-cell {
-  transition: opacity 200ms ease-out;
-}
-
-.jm-bar-cell:hover {
-  opacity: 0.75;
-}
 
 /* Subtle rangoli-inspired geometry: a quiet civic identity cue, not a decorative distraction. */
 body::after {
@@ -743,10 +452,10 @@ body::after {
   aspect-ratio: 1;
   pointer-events: none;
   z-index: -1;
-  opacity: 0.13;
+  opacity: 0.16;
   background: repeating-conic-gradient(
     from 8deg,
-    color-mix(in oklab, var(--primary) 30%, transparent) 0deg 2deg,
+    color-mix(in oklab, var(--primary) 34%, transparent) 0deg 2deg,
     transparent 2deg 18deg
   );
   -webkit-mask: radial-gradient(circle, transparent 0 27%, #000 28% 29%, transparent 30% 43%, #000 44% 45%, transparent 46% 100%);
@@ -754,50 +463,277 @@ body::after {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  body::after { opacity: 0.09; }
+  body::after { opacity: 0.11; }
 }
 
-
-/* Shared Civic Sathi civic palette: institutional indigo, sandstone paper, and restrained Indian accents. */
+/* -------------------------------------------------------------------------
+   Civic Sathi 2026 public-service visual refresh
+   Indigo institution + sandstone paper + restrained Indian civic accents.
+   ------------------------------------------------------------------------- */
 :root {
-  --civic-indigo-950: #101B3D; --civic-indigo-700: #234A84; --civic-teal-600: #0E766E; --civic-sand-100: #F5F0E7; --civic-paper: #FFFCF7; --civic-saffron-600: #C86B18; --civic-green-700: #2F6B4F; --civic-red-700: #A43D3D; --civic-ink: #172033; --civic-muted: #526078;
-  --background: #F5F0E7; --background-secondary: #ECE4D8; --primary: #234A84; --primary-foreground: #FFFFFF; --foreground: #172033; --muted-foreground: #526078; --subtle-foreground: #68748A; --ring: #234A84; --success: #2F6B4F; --warning: #C86B18; --critical: #A43D3D;
+  --civic-indigo-950: #101B3D;
+  --civic-indigo-700: #234A84;
+  --civic-teal-600: #0E766E;
+  --civic-sand-100: #F5F0E7;
+  --civic-paper: #FFFCF7;
+  --civic-saffron-600: #C86B18;
+  --civic-green-700: #2F6B4F;
+  --civic-red-700: #A43D3D;
+  --civic-ink: #172033;
+  --civic-muted: #526078;
+  --background: #F5F0E7;
+  --background-secondary: #ECE4D8;
+  --primary: #234A84;
+  --primary-foreground: #FFFFFF;
+  --foreground: #172033;
+  --card-foreground: #172033;
+  --popover-foreground: #172033;
+  --muted-foreground: #526078;
+  --subtle-foreground: #68748A;
+  --glass-border: rgba(16, 27, 61, 0.14);
+  --border: rgba(16, 27, 61, 0.14);
+  --input: rgba(16, 27, 61, 0.18);
+  --ring: #234A84;
+  --success: #2F6B4F;
+  --warning: #C86B18;
+  --critical: #A43D3D;
 }
 .dark {
-  --civic-indigo-950: #0B1230; --civic-indigo-700: #6D9DDF; --civic-teal-600: #4CB5A2; --civic-sand-100: #0F172A; --civic-paper: #111C35; --civic-saffron-600: #E0A25B; --civic-green-700: #77BE91; --civic-red-700: #F08B86; --civic-ink: #F5F0E7; --civic-muted: #BAC5D8;
-  --background: #0F172A; --background-secondary: #121E35; --primary: #6D9DDF; --primary-foreground: #0B1230; --foreground: #F5F0E7; --muted-foreground: #BAC5D8; --subtle-foreground: #8D9BB3; --ring: #6D9DDF; --success: #77BE91; --warning: #E0A25B; --critical: #F08B86;
+  --civic-indigo-950: #0B1230;
+  --civic-indigo-700: #6D9DDF;
+  --civic-teal-600: #4CB5A2;
+  --civic-sand-100: #0F172A;
+  --civic-paper: #111C35;
+  --civic-saffron-600: #E0A25B;
+  --civic-green-700: #77BE91;
+  --civic-red-700: #F08B86;
+  --civic-ink: #F5F0E7;
+  --civic-muted: #BAC5D8;
+  --background: #0F172A;
+  --background-secondary: #121E35;
+  --primary: #6D9DDF;
+  --primary-foreground: #0B1230;
+  --foreground: #F5F0E7;
+  --card-foreground: #F5F0E7;
+  --popover-foreground: #F5F0E7;
+  --muted-foreground: #BAC5D8;
+  --subtle-foreground: #8D9BB3;
+  --glass-border: rgba(180, 199, 231, 0.18);
+  --border: rgba(180, 199, 231, 0.18);
+  --input: rgba(180, 199, 231, 0.22);
+  --ring: #6D9DDF;
+  --success: #77BE91;
+  --warning: #E0A25B;
+  --critical: #F08B86;
 }
-:where(button, a, input, select, textarea):focus-visible { outline: 3px solid color-mix(in srgb, var(--ring) 70%, white); outline-offset: 3px; }
-.civic-heritage-shell { background-image: radial-gradient(circle at 8% 8%, color-mix(in srgb, var(--civic-saffron-600) 9%, transparent), transparent 26rem), radial-gradient(circle at 92% 18%, color-mix(in srgb, var(--civic-teal-600) 8%, transparent), transparent 28rem), linear-gradient(135deg, color-mix(in srgb, var(--civic-paper) 76%, transparent), transparent 48%); }
-@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; } }
 
-/* Civic Sathi city atmosphere layer — platform operations remain data first. */
-:root { --civic-architecture-line: rgba(16, 27, 61, 0.10); --civic-city-accent: #C86B18; --civic-city-accent-soft: #F1D2A8; --civic-city-atmosphere: url('/city-atmosphere/india-civic-heritage.jpg'); }
-.dark { --civic-architecture-line: rgba(214, 226, 245, 0.12); --civic-city-accent: #E0A25B; --civic-city-accent-soft: #6E573F; }
-.civic-city-shell { position: relative; isolation: isolate; overflow-x: clip; background-image: linear-gradient(180deg, color-mix(in srgb, var(--civic-paper) 60%, transparent), color-mix(in srgb, var(--civic-sand-100) 80%, transparent)), var(--civic-city-atmosphere); background-position: center top; background-size: cover; background-attachment: fixed; }
-.civic-city-shell::before { content: ''; position: fixed; inset: 0; z-index: -1; pointer-events: none; opacity: .30; background: repeating-linear-gradient(0deg, transparent 0 5rem, var(--civic-architecture-line) 5.05rem 5.12rem, transparent 5.18rem 10rem); mask-image: linear-gradient(180deg, black, transparent 70%); }
+:where(button, a, input, select, textarea):focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--ring) 70%, white);
+  outline-offset: 3px;
+}
+
+.civic-heritage-shell {
+  background-image: radial-gradient(circle at 8% 8%, color-mix(in srgb, var(--civic-saffron-600) 9%, transparent), transparent 26rem), radial-gradient(circle at 92% 18%, color-mix(in srgb, var(--civic-teal-600) 8%, transparent), transparent 28rem), linear-gradient(135deg, color-mix(in srgb, var(--civic-paper) 76%, transparent), transparent 48%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+}
+
+
+/* -------------------------------------------------------------------------
+   Civic Sathi city atmosphere layer — shared across all portals.
+   Architecture and civic-data cues stay subordinate to content.
+   ------------------------------------------------------------------------- */
+:root {
+  --civic-architecture-line: rgba(16, 27, 61, 0.10);
+  --civic-city-accent: #C86B18;
+  --civic-city-accent-soft: #F1D2A8;
+  --civic-city-atmosphere: url('/city-atmosphere/india-civic-heritage.jpg');
+}
+
+.dark {
+  --civic-architecture-line: rgba(214, 226, 245, 0.12);
+  --civic-city-accent: #E0A25B;
+  --civic-city-accent-soft: #6E573F;
+}
+
+.civic-city-shell {
+  position: relative;
+  isolation: isolate;
+  overflow-x: clip;
+  background-image:
+    linear-gradient(180deg, color-mix(in srgb, var(--civic-paper) 15%, transparent), color-mix(in srgb, var(--civic-sand-100) 35%, transparent) 85%, var(--civic-sand-100)),
+    var(--civic-city-atmosphere);
+  background-position: center top;
+  background-size: cover;
+  background-attachment: fixed;
+}
+
+.civic-city-shell::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.42;
+  background:
+    linear-gradient(90deg, transparent 0 6%, var(--civic-architecture-line) 6.1% 6.2%, transparent 6.3% 93.7%, var(--civic-architecture-line) 93.8% 93.9%, transparent 94%),
+    repeating-linear-gradient(0deg, transparent 0 5.2rem, var(--civic-architecture-line) 5.25rem 5.32rem, transparent 5.38rem 10.5rem);
+  mask-image: linear-gradient(180deg, black, transparent 74%);
+}
+
 .civic-city-shell[data-city='bengaluru'] { --civic-city-accent: #0E766E; --civic-city-accent-soft: #B7DDD5; --civic-city-atmosphere: url('/city-atmosphere/bengaluru-civic-heritage.jpg'); }
 .civic-city-shell[data-city='mumbai'] { --civic-city-accent: #0A369D; --civic-city-accent-soft: #B7C9E8; --civic-city-atmosphere: url('/city-atmosphere/mumbai-civic-heritage.jpg'); }
 .civic-city-shell[data-city='delhi'] { --civic-city-accent: #9C27B0; --civic-city-accent-soft: #E1BEE7; --civic-city-atmosphere: url('/city-atmosphere/delhi-civic-heritage.jpg'); }
 .civic-city-shell[data-city='vadodara'] { --civic-city-accent: #C86B18; --civic-city-accent-soft: #F1D2A8; --civic-city-atmosphere: url('/city-atmosphere/vadodara-civic-heritage.jpg'); }
-.civic-atmosphere-panel { position: relative; overflow: hidden; border: 1px solid color-mix(in srgb, var(--civic-city-accent) 26%, var(--glass-border)); background: color-mix(in srgb, var(--civic-paper) 55%, transparent); backdrop-filter: blur(18px) saturate(1.4); box-shadow: 0 20px 48px -20px color-mix(in srgb, var(--civic-city-accent) 25%, transparent);  }
-.civic-architecture-rule { height: 1px; background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--civic-city-accent) 55%, transparent) 18%, color-mix(in srgb, var(--civic-teal-600) 46%, transparent) 82%, transparent); }
-.civic-city-chip { display: inline-flex; align-items: center; gap: .45rem; border: 1px solid color-mix(in srgb, var(--civic-city-accent) 28%, var(--glass-border)); border-radius: 9999px; padding: .35rem .7rem; background: color-mix(in srgb, var(--civic-paper) 75%, transparent); backdrop-filter: blur(12px); color: var(--civic-ink); font-size: .7rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
-@media (max-width: 640px), (prefers-reduced-motion: reduce) { .civic-city-shell { background-attachment: scroll; } }
+
+.dark .civic-city-shell {
+  background-image:
+    linear-gradient(180deg, color-mix(in srgb, var(--civic-indigo-950) 45%, transparent), color-mix(in srgb, var(--civic-indigo-950) 65%, transparent) 85%, var(--civic-indigo-950)),
+    var(--civic-city-atmosphere);
+}
+
+.civic-atmosphere-panel {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--civic-city-accent) 28%, var(--glass-border));
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--civic-city-accent) 12%, transparent), transparent 42%),
+    color-mix(in srgb, var(--civic-paper) 86%, transparent);
+  box-shadow: 0 24px 56px -20px color-mix(in srgb, var(--civic-city-accent) 28%, transparent);
+  
+}
+
+.civic-atmosphere-panel::after {
+  content: "";
+  position: absolute;
+  inset: auto -12% -46% 38%;
+  height: 18rem;
+  pointer-events: none;
+  opacity: 0.38;
+  background: radial-gradient(ellipse, color-mix(in srgb, var(--civic-city-accent) 28%, transparent), transparent 68%);
+  filter: blur(22px);
+}
+
+.civic-architecture-rule {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--civic-city-accent) 55%, transparent) 18%, color-mix(in srgb, var(--civic-teal-600) 46%, transparent) 82%, transparent);
+}
+
+.civic-data-rail {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.65rem;
+  padding: 0.65rem;
+  border: 1px solid color-mix(in srgb, var(--civic-city-accent) 20%, var(--glass-border));
+  border-radius: 1rem;
+  background: white;
+  
+}
+
+.civic-city-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  border: 1px solid color-mix(in srgb, var(--civic-city-accent) 30%, var(--glass-border));
+  border-radius: 9999px;
+  padding: 0.35rem 0.7rem;
+  color: var(--civic-ink);
+  background: color-mix(in srgb, var(--civic-paper) 75%, transparent); backdrop-filter: blur(12px);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 640px) {
+  .civic-city-shell { background-attachment: scroll; }
+  .civic-data-rail { grid-template-columns: 1fr; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .civic-city-shell, .civic-atmosphere-panel { background-attachment: scroll; }
+}
 
 
-/* Responsive heritage refresh: visible city atmosphere with readable internal surfaces. */
+.civic-heritage-signal {
+  position: relative;
+  margin-top: 1rem;
+  padding: 1rem 1.1rem;
+  border: 1px solid color-mix(in srgb, var(--heritage-accent) 32%, var(--glass-border));
+  border-radius: 1.35rem;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--heritage-accent) 15%, transparent), transparent 58%),
+    color-mix(in srgb, var(--civic-paper) 88%, transparent);
+  box-shadow: 0 18px 40px -24px color-mix(in srgb, var(--heritage-accent) 46%, transparent);
+  
+}
+
+.civic-heritage-signal::before {
+  content: "";
+  position: absolute;
+  inset: 0.45rem;
+  pointer-events: none;
+  border: 1px solid color-mix(in srgb, var(--heritage-accent) 16%, transparent);
+  border-radius: 1rem;
+  mask-image: linear-gradient(90deg, black, transparent 72%);
+}
+
+@media (min-width: 640px) {
+  .civic-heritage-signal {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+  }
+  .civic-heritage-signal > a { margin-top: 0; white-space: nowrap; }
+}
+
+
+.civic-heritage-signal,
+.civic-heritage-signal > *,
+.jm-heritage-card {
+  min-width: 0;
+}
+
+@media (max-width: 639px) {
+  .civic-heritage-signal {
+    margin-top: 0.75rem;
+    padding: 0.9rem;
+  }
+
+  .jm-heritage-card {
+    padding: 1rem;
+  }
+}
+
+
+/* -------------------------------------------------------------------------
+   Responsive heritage refresh — visible architectural depth on both devices.
+   The city image is an identity layer, while content surfaces retain readable
+   contrast and live-data clarity.
+   ------------------------------------------------------------------------- */
 .civic-city-shell {
   background-color: #f8f9fa;
   background-position: center top;
   background-size: cover;
 }
-.civic-city-shell::before { opacity: 0.28; }
+
+.civic-city-shell::before {
+  opacity: 0.28;
+}
+
 .civic-atmosphere-panel {
   border-color: color-mix(in srgb, var(--civic-city-accent) 38%, var(--glass-border));
-  background: linear-gradient(135deg, color-mix(in srgb, var(--civic-city-accent) 18%, transparent), transparent 48%), color-mix(in srgb, var(--civic-paper) 72%, transparent);
+  background-image:
+    linear-gradient(135deg, color-mix(in srgb, var(--civic-city-accent) 18%, transparent), color-mix(in srgb, var(--civic-paper) 58%, transparent) 62%),
+    var(--civic-city-atmosphere);
+  background-position: center, center;
+  background-size: cover, cover;
   box-shadow: 0 28px 64px -24px color-mix(in srgb, var(--civic-city-accent) 42%, transparent), inset 0 1px 0 color-mix(in srgb, white 70%, transparent);
 }
+
 .civic-brand-logo-mark {
   display: inline-flex;
   width: 2.6rem;
@@ -811,19 +747,55 @@ body::after {
   background: color-mix(in srgb, var(--civic-paper) 85%, transparent); backdrop-filter: blur(8px);
   box-shadow: 0 8px 18px -10px color-mix(in srgb, var(--civic-city-accent) 46%, transparent);
 }
-.civic-brand-logo-mark img { width: 100%; height: 100%; object-fit: contain; }
-.civic-brand-logo-mark--internal { width: 2.8rem; height: 2.8rem; border-radius: 1rem; }
-@media (min-width: 1024px) {
-  .civic-city-shell { background-size: 120% auto, cover, cover; background-position: center top, center top, center top; }
-  .civic-atmosphere-panel {  }
-}
-@media (max-width: 767px) {
-  .civic-city-shell { background-size: auto 58rem, auto 58rem, cover; background-position: center top, 50% 4.5rem, center top; }
-  .civic-city-shell::before { opacity: 0.18; }
-  .civic-atmosphere-panel { background: linear-gradient(150deg, color-mix(in srgb, var(--civic-city-accent) 16%, transparent), transparent 54%), color-mix(in srgb, var(--civic-paper) 78%, transparent);  }
-  .civic-brand-logo-mark { width: 2.25rem; height: 2.25rem; border-radius: 0.75rem; }
+
+.civic-brand-logo-mark img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
+.civic-brand-logo-mark--internal {
+  width: 2.8rem;
+  height: 2.8rem;
+  border-radius: 1rem;
+}
+
+@media (min-width: 1024px) {
+  .civic-city-shell {
+    background-size: 120% auto, cover, cover;
+    background-position: center top, center top, center top;
+  }
+
+  .civic-atmosphere-panel {
+    
+  }
+}
+
+@media (max-width: 767px) {
+  .civic-city-shell {
+    background-size: auto 58rem, auto 58rem, cover;
+    background-position: center top, 50% 4.5rem, center top;
+  }
+
+  .civic-city-shell::before {
+    opacity: 0.18;
+  }
+
+  .civic-atmosphere-panel {
+    background-image:
+      linear-gradient(150deg, color-mix(in srgb, var(--civic-city-accent) 16%, transparent), color-mix(in srgb, var(--civic-paper) 68%, transparent) 64%),
+      var(--civic-city-atmosphere);
+    background-position: center, 50% 26%;
+    background-size: cover, auto 38rem;
+    
+  }
+
+  .civic-brand-logo-mark {
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 0.75rem;
+  }
+}
 
 
 /* Final atmosphere visibility pass: architecture remains legible inside glass surfaces. */
@@ -883,100 +855,6 @@ body::after {
 
 
 
-/* Private super-admin command center: futuristic civic telemetry over Indian architectural atmosphere. */
-.civic-admin-command-card {
-  position: relative;
-  isolation: isolate;
-  overflow: hidden;
-  background:
-    linear-gradient(135deg, color-mix(in srgb, var(--civic-indigo-950) 8%, transparent), transparent 55%),
-    color-mix(in srgb, var(--surface-elevated) 82%, transparent);
-  box-shadow: 0 24px 70px -36px color-mix(in srgb, var(--civic-city-accent) 52%, transparent), inset 0 1px 0 color-mix(in srgb, white 72%, transparent);
-}
-.civic-admin-command-card::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: -2;
-  pointer-events: none;
-  opacity: .28;
-  background-image: linear-gradient(90deg, transparent 49.5%, color-mix(in srgb, var(--civic-city-accent) 34%, transparent) 50%, transparent 50.5%), linear-gradient(0deg, transparent 49.5%, color-mix(in srgb, var(--civic-teal-600) 26%, transparent) 50%, transparent 50.5%), var(--civic-city-atmosphere);
-  background-size: 7rem 7rem, 7rem 7rem, cover;
-  background-position: center, center, center;
-  mix-blend-mode: multiply;
-  animation: civic-admin-drift 24s ease-in-out infinite alternate;
-}
-.civic-admin-command-card::after {
-  content: '';
-  position: absolute;
-  right: -5rem;
-  top: -7rem;
-  z-index: -1;
-  width: 16rem;
-  height: 16rem;
-  border-radius: 9999px;
-  border: 1px solid color-mix(in srgb, var(--civic-city-accent) 38%, transparent);
-  box-shadow: 0 0 0 1.5rem color-mix(in srgb, var(--civic-teal-600) 8%, transparent), 0 0 0 3rem color-mix(in srgb, var(--civic-city-accent) 5%, transparent);
-  opacity: .5;
-  animation: civic-admin-pulse 8s ease-in-out infinite;
-}
-.civic-admin-signal-icon {
-  display: grid;
-  width: 2.5rem;
-  height: 2.5rem;
-  flex: 0 0 auto;
-  place-items: center;
-  border: 1px solid color-mix(in srgb, var(--civic-city-accent) 48%, var(--glass-border));
-  border-radius: .9rem;
-  color: var(--civic-city-accent);
-  background: white;
-  box-shadow: 0 0 26px color-mix(in srgb, var(--civic-city-accent) 22%, transparent);
-}
-.civic-admin-access-badge,
-.civic-admin-live-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: .35rem;
-  width: fit-content;
-  border: 1px solid color-mix(in srgb, var(--civic-teal-600) 36%, var(--glass-border));
-  border-radius: 9999px;
-  padding: .35rem .6rem;
-  color: var(--civic-teal-600);
-  background: white;
-  font-size: .62rem;
-  font-weight: 800;
-  letter-spacing: .14em;
-}
-.civic-admin-live-badge { animation: civic-admin-live 2.4s ease-in-out infinite; }
-.civic-admin-flow-node {
-  position: relative;
-  border: 1px solid color-mix(in srgb, var(--civic-city-accent) 16%, var(--glass-border));
-  border-radius: .85rem;
-  padding: .68rem .75rem;
-  background: white;
-  transition: transform .2s ease, border-color .2s ease, background .2s ease;
-}
-.civic-admin-flow-node:hover { transform: translateX(.2rem); border-color: color-mix(in srgb, var(--civic-city-accent) 46%, var(--glass-border)); background: white; }
-.civic-admin-flow-dot { display: grid; width: 1.7rem; height: 1.7rem; flex: 0 0 auto; place-items: center; border-radius: .6rem; color: white; font-size: .64rem; font-weight: 800; box-shadow: 0 8px 18px -10px currentColor; }
-.civic-admin-flow-dot span { line-height: 1; }
-.civic-admin-flow-teal { background: linear-gradient(135deg, #0E766E, #35A89C); }
-.civic-admin-flow-saffron { background: linear-gradient(135deg, #C86B18, #E5A34D); }
-.civic-admin-flow-indigo { background: linear-gradient(135deg, #234A84, #6D9DDF); }
-.civic-admin-flow-blue { background: linear-gradient(135deg, #2B6CB0, #54A4D4); }
-@keyframes civic-admin-drift { from { background-position: center, center, 50% 50%; } to { background-position: 1.5rem -1rem, -1rem 1.25rem, 52% 48%; } }
-@keyframes civic-admin-pulse { 0%, 100% { transform: scale(.92); opacity: .28; } 50% { transform: scale(1.06); opacity: .56; } }
-@keyframes civic-admin-live { 0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--civic-teal-600) 20%, transparent); } 50% { box-shadow: 0 0 0 .28rem color-mix(in srgb, var(--civic-teal-600) 0%, transparent); } }
-@media (max-width: 767px) {
-  .civic-admin-command-card::before { opacity: .18; background-size: 5rem 5rem, 5rem 5rem, auto 38rem; }
-  .civic-admin-command-card::after { right: -8rem; top: -8rem; opacity: .28; }
-  .civic-admin-flow-node:hover { transform: none; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .civic-admin-command-card::before, .civic-admin-command-card::after, .civic-admin-live-badge { animation: none; }
-  .civic-admin-flow-node { transition: none; }
-}
-
-
 /* Professional Civic Sathi brand lockup: transparent symbol, deliberate wordmark, no app-icon tile. */
 .civic-brand-lockup { display: inline-grid; width: 2.35rem; height: 2.35rem; flex: 0 0 auto; place-items: center; padding: .12rem; }
 .civic-brand-lockup img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 5px 8px color-mix(in srgb, var(--civic-indigo-950) 18%, transparent)); }
@@ -989,2070 +867,105 @@ body::after {
 @media (max-width: 767px) { .civic-brand-lockup { width: 2.2rem; height: 2.2rem; } .civic-brand-wordmark { font-size: .78rem; letter-spacing: .08em; } }
 
 
-/* Command-center v2: dark civic telemetry canvas, live pipeline rail, and scope-first observability. */
-.civic-admin-command-center {
-  --background: #071126;
-  --background-secondary: #0a1731;
-  --surface: #0c1a34;
-  --surface-elevated: #102443;
-  --glass-strong: rgb(16 36 67 / 0.92);
-  --glass-border: rgb(112 166 219 / 0.20);
-  --card: rgb(12 26 52 / 0.86);
-  --card-foreground: #e8f2ff;
-  --foreground: #e8f2ff;
-  --muted-foreground: #9db4d0;
-  --civic-city-accent: #e8a04a;
-  --civic-city-accent-soft: #5f789d;
-  position: relative;
-  isolation: isolate;
-  margin: -1rem;
-  padding: 1rem;
-  min-height: calc(100vh - 2rem);
-  overflow: hidden;
-  color: var(--foreground);
-  background:
-    radial-gradient(circle at 14% 8%, rgb(200 107 24 / 0.22), transparent 28rem),
-    radial-gradient(circle at 88% 12%, rgb(14 118 110 / 0.18), transparent 26rem),
-    linear-gradient(135deg, #071126 0%, #0a1731 52%, #071126 100%);
-}
-.civic-admin-command-center::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -2;
-  pointer-events: none;
-  opacity: .34;
-  background-image:
-    linear-gradient(rgb(91 150 213 / 0.11) 1px, transparent 1px),
-    linear-gradient(90deg, rgb(91 150 213 / 0.11) 1px, transparent 1px),
-    radial-gradient(circle at 50% 22%, transparent 0 8rem, rgb(232 160 74 / 0.12) 8.1rem 8.16rem, transparent 8.2rem 14rem, rgb(14 118 110 / 0.10) 14.1rem 14.16rem, transparent 14.2rem);
-  background-size: 42px 42px, 42px 42px, auto;
-  mask-image: linear-gradient(to bottom, #000 0%, rgb(0 0 0 / 0.8) 65%, transparent 100%);
-  animation: civic-admin-grid-drift 28s linear infinite;
-}
-.civic-admin-command-center::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  background: linear-gradient(115deg, transparent 0 34%, rgb(232 160 74 / 0.05) 34.1% 34.25%, transparent 34.35% 61%, rgb(14 118 110 / 0.05) 61.1% 61.25%, transparent 61.35%);
-  mix-blend-mode: screen;
-}
-.civic-admin-command-center > * { position: relative; z-index: 1; }
-.civic-admin-command-center .glass-card:not(.civic-admin-command-card) {
-  background: linear-gradient(145deg, rgb(15 38 72 / 0.90), rgb(8 24 48 / 0.82));
-  border-color: rgb(112 166 219 / 0.18);
-  box-shadow: 0 20px 55px -34px rgb(0 0 0 / 0.90), inset 0 1px 0 rgb(255 255 255 / 0.07);
-}
-.civic-admin-command-center .civic-admin-command-card {
-  background: linear-gradient(145deg, rgb(14 35 68 / 0.92), rgb(7 19 40 / 0.88));
-  border-color: rgb(112 166 219 / 0.22);
-  box-shadow: 0 26px 80px -38px rgb(0 0 0 / 0.95), inset 0 1px 0 rgb(255 255 255 / 0.08);
-}
-.civic-admin-telemetry-hero {
-  min-height: 28rem;
-  border-radius: 1.5rem;
-  border: 1px solid rgb(111 165 218 / 0.25);
-  background:
-    linear-gradient(120deg, rgb(6 18 40 / 0.96), rgb(10 34 63 / 0.80) 48%, rgb(12 31 52 / 0.92)),
-    url('/city-atmosphere/india-civic-heritage.jpg') center / cover;
-  box-shadow: 0 30px 90px -42px rgb(0 0 0 / 0.95), inset 0 1px 0 rgb(255 255 255 / 0.11);
-}
-.civic-admin-telemetry-hero::before {
-  background-image: linear-gradient(90deg, transparent 49.6%, rgb(232 160 74 / 0.42) 50%, transparent 50.4%), linear-gradient(0deg, transparent 49.6%, rgb(14 118 110 / 0.36) 50%, transparent 50.4%), url('/city-atmosphere/india-civic-heritage.jpg');
-  background-size: 5rem 5rem, 5rem 5rem, cover;
-  opacity: .34;
-  mix-blend-mode: screen;
-  animation: civic-admin-drift 22s ease-in-out infinite alternate;
-}
-.civic-admin-telemetry-hero__scan {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  overflow: hidden;
-}
-.civic-admin-telemetry-hero__scan::before {
-  content: "";
-  position: absolute;
-  left: -10%;
-  right: -10%;
-  top: 46%;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgb(232 160 74 / 0.75), rgb(14 118 110 / 0.72), transparent);
-  box-shadow: 0 0 24px rgb(232 160 74 / 0.58);
-  animation: civic-admin-scanline 5.5s ease-in-out infinite;
-}
-.civic-admin-kicker {
-  display: inline-flex;
-  align-items: center;
-  gap: .45rem;
-  color: #f4b865;
-  font-size: .62rem;
-  font-weight: 850;
-  letter-spacing: .20em;
-}
-.civic-admin-telemetry-meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: .6rem;
-}
-.civic-admin-telemetry-meta > div {
-  min-width: 9.5rem;
-  padding: .75rem .85rem;
-  border: 1px solid rgb(112 166 219 / 0.22);
-  border-radius: .85rem;
-  background: rgb(3 14 32 / 0.48);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.06);
-}
-.civic-admin-telemetry-meta span,
-.civic-admin-pipeline-stage span {
-  display: block;
-  color: #7894b7;
-  font-size: .56rem;
-  font-weight: 800;
-  letter-spacing: .16em;
-}
-.civic-admin-telemetry-meta strong { display: block; margin-top: .25rem; font-size: .78rem; letter-spacing: .04em; }
-.civic-admin-pipeline-rail {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: .75rem;
-  position: relative;
-}
-.civic-admin-pipeline-rail::before {
-  content: "";
-  position: absolute;
-  top: 1.55rem;
-  left: 1.25rem;
-  right: 1.25rem;
-  height: 1px;
-  background: linear-gradient(90deg, rgb(14 118 110 / 0.65), rgb(232 160 74 / 0.82), rgb(42 108 176 / 0.72), rgb(14 118 110 / 0.68));
-  box-shadow: 0 0 16px rgb(49 155 174 / 0.36);
-}
-.civic-admin-pipeline-stage { position: relative; min-width: 0; }
-.civic-admin-pipeline-node {
-  position: relative;
-  z-index: 1;
-  display: grid;
-  width: 3.1rem;
-  height: 3.1rem;
-  place-items: center;
-  border: 1px solid rgb(231 244 255 / 0.45);
-  border-radius: 1rem;
-  color: white;
-  font-size: .66rem;
-  font-weight: 850;
-  box-shadow: 0 0 0 .35rem rgb(7 17 38 / 0.86), 0 0 26px currentColor;
-}
-.civic-admin-pipeline-stage p { margin: 0; overflow: hidden; color: #e8f2ff; font-size: .75rem; font-weight: 750; text-overflow: ellipsis; white-space: nowrap; }
-.civic-admin-pipeline-stage strong { display: block; margin-top: .35rem; color: #ffffff; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 1.25rem; }
-.civic-admin-pipeline-connector { position: absolute; top: 1.05rem; right: -.25rem; z-index: 2; width: 1rem; height: 1rem; color: #dfaa5b; filter: drop-shadow(0 0 8px rgb(232 160 74 / 0.75)); animation: civic-admin-connector-pulse 2.5s ease-in-out infinite; }
-.civic-admin-pipeline-stage.is-loading .civic-admin-pipeline-node { animation: civic-admin-node-pulse 1.4s ease-in-out infinite; }
-.civic-admin-command-center .civic-admin-flow-node { background: rgb(5 18 38 / 0.52); border-color: rgb(112 166 219 / 0.20); }
-.civic-admin-command-center .civic-admin-flow-node:hover { background: rgb(21 61 91 / 0.50); }
-@keyframes civic-admin-grid-drift { from { background-position: 0 0, 0 0, center; } to { background-position: 42px 42px, -42px 42px, 1.5rem -1rem; } }
-@keyframes civic-admin-scanline { 0%, 100% { transform: translateY(-10rem); opacity: 0; } 20%, 75% { opacity: .9; } 50% { transform: translateY(12rem); } }
-@keyframes civic-admin-connector-pulse { 0%, 100% { opacity: .45; transform: translateX(0); } 50% { opacity: 1; transform: translateX(.2rem); } }
-@keyframes civic-admin-node-pulse { 0%, 100% { box-shadow: 0 0 0 .35rem rgb(7 17 38 / 0.86), 0 0 20px currentColor; } 50% { box-shadow: 0 0 0 .5rem rgb(7 17 38 / 0.86), 0 0 36px currentColor; } }
-@media (max-width: 900px) {
-  .civic-admin-pipeline-rail { grid-template-columns: 1fr; gap: 1rem; }
-  .civic-admin-pipeline-rail::before { top: 1.4rem; bottom: 1.4rem; left: 1.5rem; right: auto; width: 1px; height: auto; background: linear-gradient(180deg, rgb(14 118 110 / 0.65), rgb(232 160 74 / 0.82), rgb(42 108 176 / 0.72)); }
-  .civic-admin-pipeline-stage { display: grid; grid-template-columns: 3.1rem 1fr; column-gap: .8rem; align-items: start; }
-  .civic-admin-pipeline-stage > div:nth-child(2) { margin-top: .2rem; }
-  .civic-admin-pipeline-connector { top: auto; bottom: -.75rem; left: 1.05rem; right: auto; transform: rotate(90deg); }
-  .civic-admin-pipeline-stage:last-child .civic-admin-pipeline-connector { display: none; }
-}
-@media (max-width: 767px) {
-  .civic-admin-command-center { margin: -.75rem; padding: .75rem; }
-  .civic-admin-telemetry-hero { min-height: 0; }
-  .civic-admin-telemetry-meta { width: 100%; }
-  .civic-admin-telemetry-meta > div { flex: 1 1 8rem; min-width: 0; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .civic-admin-command-center::before,
-  .civic-admin-telemetry-hero::before,
-  .civic-admin-telemetry-hero__scan::before,
-  .civic-admin-pipeline-connector,
-  .civic-admin-pipeline-stage.is-loading .civic-admin-pipeline-node { animation: none; }
-}
-
-/* Command-center v3: connected city lanes and observable stage activity. */
-.civic-admin-pipeline-toolbar { display: flex; align-items: center; justify-content: space-between; gap: .8rem; flex-wrap: wrap; }
-.civic-admin-city-filter { display: inline-flex; flex-wrap: wrap; gap: .35rem; padding: .3rem; border: 1px solid rgb(112 166 219 / .22); border-radius: .8rem; background: rgb(3 14 32 / .52); }
-.civic-admin-city-filter button { border: 1px solid transparent; border-radius: .55rem; padding: .48rem .72rem; color: #9db4d0; font-size: .65rem; font-weight: 800; letter-spacing: .04em; transition: .2s ease; }
-.civic-admin-city-filter button:hover, .civic-admin-city-filter button[aria-selected="true"] { border-color: rgb(232 160 74 / .45); color: #fff; background: rgb(232 160 74 / .15); box-shadow: 0 0 18px rgb(232 160 74 / .12); }
-.civic-admin-next-sync { display: inline-flex; align-items: center; gap: .42rem; color: #87a4c7; font-size: .62rem; font-weight: 800; letter-spacing: .13em; }
-.civic-admin-next-sync strong { color: #e8f2ff; font-variant-numeric: tabular-nums; }
-.civic-admin-pulse-dot { width: .45rem; height: .45rem; border-radius: 999px; background: #42d5a4; box-shadow: 0 0 0 .25rem rgb(66 213 164 / .12), 0 0 14px #42d5a4; animation: civic-admin-live-blink 1.3s ease-in-out infinite; }
-.civic-admin-city-lanes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
-.civic-admin-city-lane { min-width: 0; overflow: hidden; border: 1px solid rgb(112 166 219 / .24); border-radius: 1.15rem; background: linear-gradient(155deg, rgb(8 26 53 / .88), rgb(3 13 29 / .84)); box-shadow: inset 0 1px 0 rgb(255 255 255 / .06), 0 20px 50px -38px #000; }
-.civic-admin-city-lane--vadodara { --lane-accent: #e8a04a; --lane-accent-rgb: 232 160 74; }
-.civic-admin-city-lane--bengaluru { --lane-accent: #26c4b5; --lane-accent-rgb: 38 196 181; }
-.civic-admin-city-lane__header { display: flex; align-items: flex-start; justify-content: space-between; gap: .8rem; padding: 1rem; border-bottom: 1px solid rgb(112 166 219 / .16); background: linear-gradient(110deg, rgb(var(--lane-accent-rgb) / .14), transparent 60%); }
-.civic-admin-city-lane__identity { display: flex; align-items: center; gap: .7rem; min-width: 0; }
-.civic-admin-city-emblem { display: grid; flex: 0 0 2.45rem; width: 2.45rem; height: 2.45rem; place-items: center; border: 1px solid rgb(var(--lane-accent-rgb) / .52); border-radius: .75rem; color: var(--lane-accent); background: rgb(var(--lane-accent-rgb) / .12); box-shadow: 0 0 22px rgb(var(--lane-accent-rgb) / .22); }
-.civic-admin-city-kicker { color: var(--lane-accent); font-size: .57rem; font-weight: 900; letter-spacing: .16em; text-transform: uppercase; }
-.civic-admin-city-lane h3 { margin: .18rem 0 0; color: #f7fbff; font-size: 1.15rem; font-weight: 850; letter-spacing: -.02em; }
-.civic-admin-city-lane p { margin: .15rem 0 0; color: #86a3c7; font-size: .66rem; }
-.civic-admin-city-health { display: inline-flex; align-items: center; gap: .4rem; padding: .35rem .48rem; border: 1px solid rgb(112 166 219 / .2); border-radius: .6rem; color: #8faaca; font-size: .55rem; font-weight: 900; letter-spacing: .12em; white-space: nowrap; }
-.civic-admin-city-health span { width: .38rem; height: .38rem; border-radius: 999px; background: #8198b4; }
-.civic-admin-city-health--active span { background: #42d5a4; box-shadow: 0 0 10px #42d5a4; }
-.civic-admin-city-health--critical { border-color: rgb(239 108 92 / .44); color: #ffaaa0; }
-.civic-admin-city-health--critical span { background: #ef6c5c; box-shadow: 0 0 12px #ef6c5c; animation: civic-admin-live-blink 1.1s ease-in-out infinite; }
-.civic-admin-city-lane__summary { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .45rem; padding: .85rem 1rem; }
-.civic-admin-city-lane__summary > div { min-width: 0; padding: .55rem .6rem; border: 1px solid rgb(112 166 219 / .16); border-radius: .65rem; background: rgb(2 12 28 / .42); }
-.civic-admin-city-lane__summary strong { display: block; color: #fff; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 1.05rem; font-variant-numeric: tabular-nums; }
-.civic-admin-city-lane__summary span { display: block; margin-top: .2rem; color: #7894b7; font-size: .52rem; font-weight: 850; letter-spacing: .1em; }
-.civic-admin-city-lane__summary .is-risk { border-color: rgb(239 108 92 / .56); background: rgb(239 108 92 / .1); }
-.civic-admin-city-lane__summary .is-risk strong { color: #ffaaa0; }
-.civic-admin-stage-track { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0; padding: .55rem 1rem 1rem; }
-.civic-admin-stage-step { position: relative; min-width: 0; }
-.civic-admin-stage-card { position: relative; display: block; min-height: 7.55rem; padding: .72rem .55rem .55rem; border: 1px solid rgb(112 166 219 / .16); border-radius: .75rem; color: inherit; background: rgb(2 12 28 / .52); transition: transform .22s ease, border-color .22s ease, background .22s ease; }
-.civic-admin-stage-card:hover { z-index: 2; transform: translateY(-.2rem); border-color: rgb(var(--lane-accent-rgb) / .72); background: rgb(var(--lane-accent-rgb) / .12); }
-.civic-admin-stage-card--active { border-color: rgb(66 213 164 / .38); }
-.civic-admin-stage-card--complete { border-color: rgb(38 196 181 / .38); }
-.civic-admin-stage-card--critical { border-color: rgb(239 108 92 / .72); box-shadow: inset 0 0 18px rgb(239 108 92 / .08), 0 0 20px rgb(239 108 92 / .1); }
-.civic-admin-stage-card--critical .civic-admin-pipeline-node { animation: civic-admin-node-pulse-danger 1.45s ease-in-out infinite; }
-.civic-admin-stage-card .civic-admin-pipeline-node { width: 2.3rem; height: 2.3rem; border-radius: .7rem; box-shadow: 0 0 0 .22rem rgb(3 13 29 / .95), 0 0 17px currentColor; }
-.civic-admin-stage-card__copy { min-width: 0; margin-top: .65rem; }
-.civic-admin-stage-card__copy > span { display: block; min-height: 1.7rem; overflow: hidden; color: #dceaff; font-size: .62rem; font-weight: 800; line-height: 1.35; }
-.civic-admin-stage-card__copy strong { display: block; margin-top: .25rem; color: #fff; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 1.2rem; font-variant-numeric: tabular-nums; }
-.civic-admin-stage-card__copy small { display: block; margin-top: .18rem; overflow: hidden; color: #87a4c7; font-size: .52rem; font-weight: 800; letter-spacing: .06em; text-overflow: ellipsis; text-transform: uppercase; white-space: nowrap; }
-.civic-admin-stage-card--quiet .civic-admin-stage-card__copy strong { color: #91a6bf; }
-.civic-admin-stage-connector { position: absolute; top: 1.75rem; left: calc(100% - .1rem); z-index: 1; width: .35rem; height: .18rem; background: rgb(var(--lane-accent-rgb) / .36); }
-.civic-admin-stage-connector::before { content: ""; position: absolute; top: -.13rem; left: .15rem; width: .45rem; height: .45rem; border-top: 1px solid var(--lane-accent); border-right: 1px solid var(--lane-accent); transform: rotate(45deg); opacity: .72; }
-.civic-admin-stage-connector span { position: absolute; top: .02rem; left: -.15rem; width: .55rem; height: .12rem; border-radius: 1rem; background: var(--lane-accent); box-shadow: 0 0 9px var(--lane-accent); animation: civic-admin-flow-run 2.2s linear infinite; }
-.civic-admin-risk-marker { position: absolute; top: .5rem; right: .42rem; display: inline-flex; align-items: center; gap: .16rem; color: #ffaaa0; font-size: .49rem; font-weight: 900; letter-spacing: .08em; }
-.civic-admin-lane-events { margin: 0 1rem 1rem; padding: .7rem; border: 1px solid rgb(var(--lane-accent-rgb) / .2); border-radius: .75rem; background: rgb(var(--lane-accent-rgb) / .06); }
-.civic-admin-lane-events__label { display: flex; align-items: center; gap: .4rem; color: var(--lane-accent); font-size: .55rem; font-weight: 900; letter-spacing: .13em; }
-.civic-admin-lane-events__items { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .45rem; margin-top: .55rem; }
-.civic-admin-live-event { display: block; min-width: 0; padding: .55rem; border: 1px solid rgb(112 166 219 / .14); border-radius: .6rem; background: rgb(2 12 28 / .44); transition: .2s ease; }
-.civic-admin-live-event:hover { border-color: rgb(var(--lane-accent-rgb) / .62); background: rgb(var(--lane-accent-rgb) / .12); }
-.civic-admin-live-event--critical, .civic-admin-live-event--high { border-color: rgb(239 108 92 / .45); }
-.civic-admin-live-event__time, .civic-admin-live-event__stage { display: inline-block; color: #8aa6c8; font-size: .49rem; font-weight: 850; letter-spacing: .05em; }
-.civic-admin-live-event__stage { margin-left: .35rem; color: var(--lane-accent); text-transform: uppercase; }
-.civic-admin-live-event strong { display: block; margin-top: .25rem; overflow: hidden; color: #e8f2ff; font-size: .62rem; text-overflow: ellipsis; white-space: nowrap; }
-.civic-admin-live-event small { display: block; margin-top: .2rem; overflow: hidden; color: #7894b7; font-size: .53rem; text-overflow: ellipsis; white-space: nowrap; }
-.civic-admin-live-event-empty { display: block; padding: .7rem .2rem .1rem; color: #7894b7; font-size: .58rem; }
-.civic-admin-compare-row { display: block; padding: .55rem .65rem; border: 1px solid rgb(112 166 219 / .14); border-radius: .7rem; background: rgb(3 14 32 / .34); transition: .2s ease; }
-.civic-admin-compare-row:hover { border-color: rgb(232 160 74 / .5); background: rgb(232 160 74 / .08); }
-.civic-admin-compare-row strong { color: #fff; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .72rem; }
-.civic-admin-compare-track { height: .36rem; margin-top: .45rem; overflow: hidden; border-radius: 999px; background: rgb(112 166 219 / .14); }
-.civic-admin-compare-track span { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #e8a04a, #26c4b5); box-shadow: 0 0 12px rgb(38 196 181 / .45); transition: width .65s ease; }
-@keyframes civic-admin-flow-run { from { transform: translateX(0); opacity: .15; } 20% { opacity: 1; } to { transform: translateX(1.35rem); opacity: 0; } }
-@keyframes civic-admin-live-blink { 0%, 100% { opacity: .55; } 50% { opacity: 1; } }
-@keyframes civic-admin-node-pulse-danger { 0%, 100% { box-shadow: 0 0 0 .22rem rgb(3 13 29 / .95), 0 0 14px currentColor; } 50% { box-shadow: 0 0 0 .38rem rgb(3 13 29 / .95), 0 0 28px #ef6c5c; } }
-@media (max-width: 1050px) { .civic-admin-stage-track { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .5rem; } .civic-admin-stage-connector { display: none; } .civic-admin-lane-events__items { grid-template-columns: 1fr; } }
-@media (max-width: 760px) { .civic-admin-city-lanes { grid-template-columns: 1fr; } .civic-admin-city-lane__header { flex-direction: column; } .civic-admin-stage-track { grid-template-columns: repeat(2, minmax(0, 1fr)); } .civic-admin-stage-card { min-height: 7.1rem; } }
-@media (max-width: 430px) { .civic-admin-stage-track { grid-template-columns: 1fr; } .civic-admin-city-lane__summary { grid-template-columns: 1fr 1fr; } .civic-admin-city-lane__summary > div:last-child { grid-column: span 2; } }
-@media (prefers-reduced-motion: reduce) { .civic-admin-pulse-dot, .civic-admin-stage-connector span, .civic-admin-stage-card--critical .civic-admin-pipeline-node, .civic-admin-city-health--critical span { animation: none; } }
-
-
-/* Admin portal v4: deep glass command shell. Keeps the super-admin surface dark from chrome to content. */
-body:has(.civic-admin-shell) {
-  background: #050b19;
-  color-scheme: dark;
-}
-.civic-admin-shell {
-  --background: #050b19;
-  --background-secondary: #08142a;
-  --surface: #0b1b35;
-  --surface-elevated: #10284a;
-  --glass: rgb(8 22 45 / 0.62);
-  --glass-strong: rgb(10 27 54 / 0.78);
-  --glass-border: rgb(132 182 235 / 0.22);
-  --card: rgb(9 25 50 / 0.72);
-  --card-foreground: #edf6ff;
-  --foreground: #edf6ff;
-  --muted-foreground: #9db6d3;
-  --subtle-foreground: #7693b5;
-  --primary: #4db7a7;
-  --primary-foreground: #04111d;
-  --ring: #f1ae55;
-  position: relative;
-  isolation: isolate;
-  overflow: hidden;
-  background:
-    radial-gradient(circle at 8% 2%, rgb(200 107 24 / 0.16), transparent 26rem),
-    radial-gradient(circle at 92% 8%, rgb(14 118 110 / 0.17), transparent 28rem),
-    linear-gradient(135deg, #050b19 0%, #08142a 48%, #050b19 100%);
-}
-.civic-admin-shell::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  opacity: .34;
-  background-image:
-    linear-gradient(rgb(117 174 226 / .08) 1px, transparent 1px),
-    linear-gradient(90deg, rgb(117 174 226 / .08) 1px, transparent 1px),
-    radial-gradient(circle at 70% 12%, transparent 0 5rem, rgb(241 174 85 / .10) 5.05rem 5.1rem, transparent 5.15rem 11rem, rgb(77 183 167 / .08) 11.05rem 11.1rem, transparent 11.15rem);
-  background-size: 48px 48px, 48px 48px, auto;
-  mask-image: linear-gradient(180deg, #000 0%, rgb(0 0 0 / .9) 55%, transparent 100%);
-}
-.civic-admin-sidebar {
-  background: white !important;
-  border-color: rgb(132 182 235 / .20) !important;
-  box-shadow: 18px 0 56px -38px rgb(0 0 0 / .95), inset -1px 0 0 rgb(255 255 255 / .04);
-  
-  }
-.civic-admin-sidebar > div:first-child {
-  background: linear-gradient(90deg, rgb(241 174 85 / .07), transparent 72%);
-  border-color: rgb(132 182 235 / .15) !important;
-}
-.civic-admin-sidebar nav a {
-  border: 1px solid transparent;
-  color: #8faaca;
-  transition: transform 180ms cubic-bezier(.22,1,.36,1), background 180ms ease, border-color 180ms ease, color 180ms ease, box-shadow 180ms ease;
-}
-.civic-admin-sidebar nav a:hover,
-.civic-admin-sidebar nav a.civic-admin-nav-active,
-.civic-admin-sidebar nav a[data-status="active"],
-.civic-admin-sidebar nav a[aria-current="page"] {
-  color: #f2f7ff;
-  background: white !important;
-  border-color: rgb(132 182 235 / .24) !important;
-  box-shadow: inset 3px 0 0 #4db7a7, 0 10px 26px -20px rgb(77 183 167 / .72);
-  transform: translateX(2px);
-}
-.civic-admin-sidebar > div:last-child {
-  border-color: rgb(132 182 235 / .15) !important;
-}
-.civic-admin-sidebar > div:last-child > div {
-  background: rgb(8 22 45 / .62) !important;
-  border-color: rgb(132 182 235 / .18) !important;
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / .05);
-}
-.civic-admin-topbar {
-  background: white !important;
-  border-color: rgb(132 182 235 / .18) !important;
-  box-shadow: 0 16px 42px -32px rgb(0 0 0 / .95), inset 0 1px 0 rgb(255 255 255 / .05);
-  
-  }
-.civic-admin-content {
-  position: relative;
-  z-index: 1;
-}
-.civic-admin-shell .glass,
-.civic-admin-shell .glass-card,
-.civic-admin-shell .solid-surface {
-  background: white !important;
-  border-color: rgb(132 182 235 / .18) !important;
-  color: var(--foreground);
-  box-shadow: 0 22px 58px -38px rgb(0 0 0 / .94), inset 0 1px 0 rgb(255 255 255 / .055);
-  
-  }
-.civic-admin-shell .glass-strong {
-  background: white !important;
-  border-color: rgb(132 182 235 / .22) !important;
-  color: var(--foreground);
-  box-shadow: 0 26px 72px -42px rgb(0 0 0 / .98), inset 0 1px 0 rgb(255 255 255 / .07);
-  
-  }
-.civic-admin-shell .civic-admin-command-center {
-  margin: -1rem;
-  min-height: calc(100vh - 4rem);
-}
-.civic-admin-shell input,
-.civic-admin-shell select,
-.civic-admin-shell textarea {
-  color: #edf6ff;
-  background: rgb(3 13 29 / .66) !important;
-  border-color: rgb(132 182 235 / .22) !important;
-}
-.civic-admin-shell input::placeholder,
-.civic-admin-shell textarea::placeholder { color: #718bad; }
-@media (max-width: 1023px) {
-  .civic-admin-sidebar { box-shadow: 24px 0 80px -36px rgb(0 0 0 / .98); }
-  .civic-admin-shell .civic-admin-command-center { margin: -.75rem; min-height: calc(100vh - 3.5rem); }
-}
-@media (prefers-reduced-motion: reduce) {
-  .civic-admin-sidebar nav a { transition: none; }
-}
-
-
-/* ========================================================================
-   Admin portal redesign v4 — institutional workspace, not a haze canvas.
-   The data surfaces stay live; this block only changes presentation.
-   ======================================================================== */
-:root {
-  --admin-workspace: #f3f5f8;
-  --admin-paper: #ffffff;
-  --admin-paper-soft: #eef2f7;
-  --admin-ink: #162238;
-  --admin-muted: #64748b;
-  --admin-line: #dce4ee;
-  --admin-indigo-950: #0b1733;
-  --admin-indigo-900: #12244b;
-  --admin-indigo-700: #234d8f;
-  --admin-teal: #0e766e;
-  --admin-saffron: #c86b18;
-  --admin-danger: #a43d3d;
-}
-
-html,
-body {
-  min-height: 100%;
-}
-
-body {
-  background: var(--admin-workspace);
-  color: var(--admin-ink);
-}
-
-.admin-app-shell {
-  display: flex;
-  min-height: 100vh;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.72), transparent 22rem),
-    var(--admin-workspace);
-  color: var(--admin-ink);
-}
-
-.admin-sidebar {
-  position: fixed;
-  inset: 0 auto 0 0;
-  z-index: 50;
-  display: flex;
-  width: 15.75rem;
-  flex-direction: column;
-  color: #dce8fb;
-  background:
-    linear-gradient(180deg, rgba(36, 77, 143, 0.18), transparent 18rem),
-    linear-gradient(180deg, var(--admin-indigo-950), #0a1530 72%, #09132b);
-  border-right: 1px solid rgba(163, 191, 225, 0.16);
-  box-shadow: 14px 0 36px -28px rgba(11, 23, 51, 0.5);
-  transition: transform 220ms cubic-bezier(0.23, 1, 0.32, 1);
-}
-
-.admin-sidebar::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  opacity: 0.26;
-  background-image:
-    linear-gradient(rgba(150, 184, 226, 0.08) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(150, 184, 226, 0.08) 1px, transparent 1px);
-  background-size: 32px 32px;
-  mask-image: linear-gradient(to bottom, #000, transparent 74%);
-}
-
-.admin-sidebar > * {
-  position: relative;
-  z-index: 1;
-}
-
-.admin-brand-lockup {
-  display: flex;
-  min-height: 5rem;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 1rem 1.1rem;
-  border-bottom: 1px solid rgba(163, 191, 225, 0.14);
-}
-
-.admin-brand-mark {
-  display: grid;
-  width: 2.35rem;
-  height: 2.35rem;
-  flex: 0 0 auto;
-  place-items: center;
-  color: #fff;
-  border: 1px solid rgba(239, 178, 100, 0.7);
-  border-radius: 0.8rem;
-  background: linear-gradient(145deg, var(--admin-saffron), #e29b4d);
-  box-shadow: 0 10px 22px -14px rgba(200, 107, 24, 0.9);
-}
-
-.admin-brand-title {
-  color: #fff;
-  font-size: 0.96rem;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-}
-
-.admin-brand-subtitle {
-  margin-top: 0.2rem;
-  color: #91a9c9;
-  font-size: 0.62rem;
-  font-weight: 650;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-
-.admin-scope-strip {
-  display: flex;
-  align-items: center;
-  gap: 0.45rem;
-  margin: 1rem 1rem 0.4rem;
-  padding: 0.55rem 0.65rem;
-  color: #99b2d3;
-  border: 1px solid rgba(163, 191, 225, 0.14);
-  border-radius: 0.6rem;
-  background: rgba(255, 255, 255, 0.045);
-  font-size: 0.6rem;
-  font-weight: 750;
-  letter-spacing: 0.04em;
-}
-
-.admin-scope-strip strong {
-  margin-left: auto;
-  color: #f0b56f;
-  font-size: 0.58rem;
-  text-transform: uppercase;
-}
-
-.admin-status-dot {
-  width: 0.45rem;
-  height: 0.45rem;
-  flex: 0 0 auto;
-  border-radius: 999px;
-  background: #43d3a3;
-  box-shadow: 0 0 0 0.22rem rgba(67, 211, 163, 0.12);
-}
-
-.admin-navigation {
-  flex: 1;
-  overflow-y: auto;
-  padding: 1.15rem 0.8rem;
-}
-
-.admin-nav-group {
-  margin-bottom: 1.35rem;
-}
-
-.admin-nav-group--last {
-  margin-bottom: 0;
-}
-
-.admin-nav-label {
-  padding: 0 0.65rem;
-  color: #7189ad;
-  font-size: 0.58rem;
-  font-weight: 850;
-  letter-spacing: 0.17em;
-  text-transform: uppercase;
-}
-
-.admin-nav-list {
-  display: grid;
-  gap: 0.28rem;
-  margin-top: 0.55rem;
-}
-
-.admin-nav-item {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 0.72rem;
-  min-height: 2.75rem;
-  padding: 0.62rem 0.7rem;
-  color: #9bb1d0;
-  border: 1px solid transparent;
-  border-radius: 0.7rem;
-  font-size: 0.76rem;
-  font-weight: 700;
-  transition: color 160ms ease-out, background 160ms ease-out, border-color 160ms ease-out, transform 160ms ease-out;
-}
-
-.admin-nav-item:hover {
-  color: #fff;
-  background: rgba(255, 255, 255, 0.065);
-  border-color: rgba(163, 191, 225, 0.13);
-}
-
-.admin-nav-item:active {
-  transform: scale(0.985);
-}
-
-.admin-nav-item.is-active {
-  color: #fff;
-  border-color: rgba(132, 177, 231, 0.24);
-  background: linear-gradient(90deg, rgba(72, 131, 211, 0.26), rgba(72, 131, 211, 0.08));
-  box-shadow: inset 3px 0 0 var(--admin-saffron), 0 9px 24px -18px rgba(72, 131, 211, 0.8);
-}
-
-.admin-nav-item.is-active svg:first-child {
-  color: #f0b56f;
-}
-
-.admin-nav-chevron {
-  margin-left: auto;
-  color: #536d94;
-  opacity: 0;
-  transition: opacity 160ms ease-out, transform 160ms ease-out;
-}
-
-.admin-nav-item:hover .admin-nav-chevron,
-.admin-nav-item.is-active .admin-nav-chevron {
-  opacity: 1;
-  transform: translateX(0.12rem);
-}
-
-.admin-sidebar-footer {
-  display: grid;
-  gap: 0.65rem;
-  padding: 0.85rem;
-  border-top: 1px solid rgba(163, 191, 225, 0.14);
-}
-
-.admin-profile-card {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  min-width: 0;
-  padding: 0.7rem;
-  border: 1px solid rgba(163, 191, 225, 0.16);
-  border-radius: 0.75rem;
-  background: rgba(255, 255, 255, 0.055);
-}
-
-.admin-avatar {
-  display: grid;
-  width: 2rem;
-  height: 2rem;
-  flex: 0 0 auto;
-  place-items: center;
-  color: #fff;
-  border-radius: 0.65rem;
-  background: linear-gradient(145deg, #315e9d, #173466);
-  font-size: 0.78rem;
-  font-weight: 850;
-}
-
-.admin-profile-name {
-  color: #f7fbff;
-  font-size: 0.72rem;
-  font-weight: 750;
-}
-
-.admin-profile-email {
-  margin-top: 0.12rem;
-  color: #829abd;
-  font-size: 0.58rem;
-}
-
-.admin-profile-role {
-  align-self: flex-start;
-  color: #f0b56f;
-  font-size: 0.5rem;
-  font-weight: 850;
-  letter-spacing: 0.1em;
-}
-
-.admin-signout-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.45rem;
-  min-height: 2.4rem;
-  color: #b6c6db;
-  border: 1px solid transparent;
-  border-radius: 0.65rem;
-  font-size: 0.7rem;
-  font-weight: 750;
-  transition: color 160ms ease-out, background 160ms ease-out, border-color 160ms ease-out;
-}
-
-.admin-signout-button:hover {
-  color: #ffb0a9;
-  border-color: rgba(224, 119, 106, 0.25);
-  background: rgba(224, 119, 106, 0.09);
-}
-
-.admin-main {
-  min-width: 0;
-  min-height: 100vh;
-  flex: 1;
-  margin-left: 15.75rem;
-}
-
-.admin-topbar {
-  position: sticky;
-  top: 0;
-  z-index: 40;
-  display: flex;
-  min-height: 4.5rem;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  padding: 0 2.1rem;
-  background: rgba(255, 255, 255, 0.86);
-  border-bottom: 1px solid var(--admin-line);
-  box-shadow: 0 9px 26px -24px rgba(22, 34, 56, 0.5);
-  
-}
-
-.admin-icon-button {
-  display: grid;
-  width: 2.2rem;
-  height: 2.2rem;
-  place-items: center;
-  color: var(--admin-muted);
-  border: 1px solid var(--admin-line);
-  border-radius: 0.65rem;
-  background: #fff;
-  transition: color 160ms ease-out, border-color 160ms ease-out, background 160ms ease-out;
-}
-
-.admin-icon-button:hover {
-  color: var(--admin-indigo-700);
-  border-color: #b9cbe3;
-  background: var(--admin-paper-soft);
-}
-
-.admin-breadcrumbs {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  min-width: 0;
-  color: #8a98aa;
-  font-size: 0.68rem;
-  font-weight: 650;
-}
-
-.admin-breadcrumbs strong {
-  color: var(--admin-ink);
-  font-weight: 800;
-}
-
-.admin-topbar-actions {
-  display: flex;
-  align-items: center;
-  gap: 0.65rem;
-}
-
-.admin-topbar-scope,
-.admin-topbar-date {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.38rem;
-  color: var(--admin-muted);
-  font-size: 0.62rem;
-  font-weight: 750;
-}
-
-.admin-topbar-scope {
-  color: var(--admin-teal);
-}
-
-.admin-topbar-date {
-  padding-left: 0.7rem;
-  border-left: 1px solid var(--admin-line);
-}
-
-.admin-content {
-  width: 100%;
-  max-width: 1320px;
-  margin: 0 auto;
-  padding: 2rem 2.1rem 3.5rem;
-}
-
-.civic-admin-command-center {
-  --background: var(--admin-workspace);
-  --background-secondary: #e9eef5;
-  --surface: #fff;
-  --surface-elevated: #fff;
-  --glass-strong: #fff;
-  --glass-border: var(--admin-line);
-  --card: #fff;
-  --card-foreground: var(--admin-ink);
-  --foreground: var(--admin-ink);
-  --muted-foreground: var(--admin-muted);
-  --subtle-foreground: #8290a2;
-  --primary: var(--admin-indigo-700);
-  --primary-foreground: #fff;
-  position: relative;
-  isolation: isolate;
-  min-height: 100%;
-  margin: -0.2rem 0 0;
-  padding: 0;
-  overflow: visible;
-  color: var(--admin-ink);
-  background: transparent;
-}
-
-.civic-admin-command-center::before,
-.civic-admin-command-center::after {
-  display: none;
-}
-
-.civic-admin-command-center > * {
-  position: relative;
-  z-index: 1;
-}
-
-.civic-admin-command-center .glass,
-.civic-admin-command-center .glass-strong,
-.civic-admin-command-center .solid-surface {
-  color: var(--admin-ink);
-  background: var(--admin-paper);
-  border-color: var(--admin-line);
-  box-shadow: 0 16px 35px -30px rgba(30, 53, 86, 0.72), 0 1px 0 rgba(255, 255, 255, 0.8) inset;
-  
-}
-
-.civic-admin-command-center .glass:hover,
-.civic-admin-command-center .glass-strong:hover {
-  border-color: #c7d4e3;
-}
-
-.civic-admin-command-center .text-\[var\(--muted-foreground\)\] {
-  color: var(--admin-muted) !important;
-}
-
-.civic-admin-telemetry-hero {
-  --foreground: #f7fbff;
-  --muted-foreground: #aebfda;
-  min-height: 0;
-  border: 1px solid rgba(108, 151, 208, 0.28);
-  border-radius: 1.1rem;
-  background:
-    linear-gradient(135deg, rgba(11, 23, 51, 0.99), rgba(25, 57, 107, 0.97) 56%, rgba(13, 118, 110, 0.84)),
-    radial-gradient(circle at 88% 12%, rgba(240, 181, 111, 0.25), transparent 15rem);
-  box-shadow: 0 26px 54px -36px rgba(13, 31, 64, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.08);
-}
-
-.civic-admin-telemetry-hero::before {
-  opacity: 0.22;
-  background-image:
-    linear-gradient(rgba(178, 211, 249, 0.12) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(178, 211, 249, 0.12) 1px, transparent 1px);
-  background-size: 42px 42px;
-  mask-image: linear-gradient(to bottom, #000, transparent 82%);
-  mix-blend-mode: normal;
-  animation: none;
-}
-
-.civic-admin-telemetry-hero__scan::before {
-  opacity: 0.22;
-  height: 1px;
-  box-shadow: none;
-  background: linear-gradient(90deg, transparent, rgba(240, 181, 111, 0.8), transparent);
-  animation: civic-admin-scanline 8s ease-in-out infinite;
-}
-
-.civic-admin-kicker {
-  color: #f0b56f;
-  font-size: 0.6rem;
-  letter-spacing: 0.18em;
-}
-
-.civic-admin-telemetry-meta > div {
-  border-color: rgba(176, 204, 237, 0.2);
-  background: rgba(5, 16, 37, 0.36);
-  box-shadow: none;
-}
-
-.civic-admin-telemetry-meta span,
-.civic-admin-pipeline-stage span {
-  color: #91a9ca;
-}
-
-.civic-admin-city-filter {
-  border-color: rgba(176, 204, 237, 0.22);
-  background: rgba(5, 16, 37, 0.35);
-}
-
-.civic-admin-city-filter button {
-  color: #b6c7dd;
-}
-
-.civic-admin-city-filter button:hover,
-.civic-admin-city-filter button[aria-selected="true"] {
-  color: #fff;
-  border-color: rgba(240, 181, 111, 0.55);
-  background: rgba(240, 181, 111, 0.16);
-  box-shadow: none;
-}
-
-.civic-admin-next-sync {
-  color: #aebfda;
-}
-
-.civic-admin-city-lanes {
-  gap: 0.9rem;
-}
-
-.civic-admin-city-lane {
-  border-color: #d7e1ec;
-  border-radius: 0.95rem;
-  background: #fff;
-  box-shadow: 0 18px 35px -32px rgba(15, 33, 63, 0.85);
-}
-
-.civic-admin-city-lane__header {
-  border-bottom-color: #e5ebf2;
-  background: linear-gradient(115deg, rgba(var(--lane-accent-rgb), 0.08), transparent 65%);
-}
-
-.civic-admin-city-lane h3 {
-  color: var(--admin-ink);
-}
-
-.civic-admin-city-lane p {
-  color: #718197;
-}
-
-.civic-admin-city-health {
-  color: #6b7d93;
-  border-color: #dfe7ef;
-}
-
-.civic-admin-city-lane__summary > div {
-  border-color: #e4eaf1;
-  background: #f7f9fc;
-}
-
-.civic-admin-city-lane__summary strong,
-.civic-admin-stage-card__copy strong {
-  color: var(--admin-ink);
-}
-
-.civic-admin-city-lane__summary span,
-.civic-admin-stage-card__copy small,
-.civic-admin-live-event__time,
-.civic-admin-live-event small,
-.civic-admin-live-event-empty {
-  color: #7b8da3;
-}
-
-.civic-admin-stage-card {
-  border-color: #e1e8f0;
-  color: var(--admin-ink);
-  background: #fbfcfe;
-}
-
-.civic-admin-stage-card:hover {
-  background: rgba(var(--lane-accent-rgb), 0.08);
-}
-
-.civic-admin-stage-card__copy > span,
-.civic-admin-live-event strong {
-  color: #33445d;
-}
-
-.civic-admin-live-event {
-  border-color: #e3eaf2;
-  background: #f8fafc;
-}
-
-.civic-admin-lane-events {
-  border-color: rgba(var(--lane-accent-rgb), 0.2);
-  background: rgba(var(--lane-accent-rgb), 0.055);
-}
-
-.civic-admin-compare-row {
-  border-color: #e1e8f0;
-  background: #f8fafc;
-}
-
-.civic-admin-compare-row strong {
-  color: var(--admin-ink);
-}
-
-.civic-admin-command-center > .grid > .glass,
-.civic-admin-command-center > .grid > .glass-strong {
-  border-radius: 0.95rem;
-}
-
-.civic-admin-command-center > .grid .label-xs {
-  color: #74849a;
-}
-
-.civic-admin-command-center h1,
-.civic-admin-command-center h2,
-.civic-admin-command-center h3 {
-  color: var(--admin-ink);
-}
-
-.civic-admin-telemetry-hero h2,
-.civic-admin-telemetry-hero h3,
-.civic-admin-telemetry-hero .text-\[var\(--foreground\)\] {
-  color: #f7fbff !important;
-}
-
-.civic-admin-command-center .civic-admin-command-card {
-  border-color: rgba(30, 77, 143, 0.22);
-  background: linear-gradient(145deg, #ffffff, #f8fbff);
-}
-
-.civic-admin-command-center .civic-admin-command-card h2,
-.civic-admin-command-center .civic-admin-command-card h3 {
-  color: var(--admin-ink);
-}
-
-.civic-admin-command-center .civic-admin-command-card .civic-admin-signal-icon {
-  color: var(--admin-saffron);
-  border-color: rgba(200, 107, 24, 0.32);
-  background: rgba(200, 107, 24, 0.09);
-  box-shadow: none;
-}
-
-.civic-admin-command-center .civic-admin-command-card .civic-admin-access-badge {
-  color: var(--admin-indigo-700);
-  border-color: rgba(35, 77, 143, 0.2);
-  background: rgba(35, 77, 143, 0.07);
-}
-
-.civic-admin-command-center .civic-admin-live-badge {
-  color: var(--admin-teal);
-}
-
-.civic-admin-command-center .recharts-cartesian-grid line {
-  stroke: #e4eaf1;
-}
-
-.civic-admin-command-center .recharts-text {
-  fill: #718197;
-}
-
-.civic-admin-command-center input,
-.civic-admin-command-center select,
-.civic-admin-command-center textarea {
-  color: var(--admin-ink);
-  border-color: var(--admin-line);
-  background: #fff;
-}
-
-.civic-admin-command-center input::placeholder,
-.civic-admin-command-center textarea::placeholder {
-  color: #95a3b5;
-}
-
-.admin-sidebar-scrim {
-  position: fixed;
-  inset: 0;
-  z-index: 40;
-  border: 0;
-  background: rgba(11, 23, 51, 0.42);
-  
-}
-
-@media (max-width: 1023px) {
-  .admin-sidebar {
-    transform: translateX(-100%);
-  }
-
-  .admin-sidebar.is-open {
-    transform: translateX(0);
-  }
-
-  .admin-main {
-    margin-left: 0;
-  }
-}
-
-@media (max-width: 767px) {
-  .admin-topbar {
-    min-height: 4rem;
-    padding: 0 1rem;
-  }
-
-  .admin-topbar-date {
-    display: none;
-  }
-
-  .admin-content {
-    padding: 1.25rem 1rem 2.5rem;
-  }
-
-  .civic-admin-command-center {
-    margin: 0;
-  }
-
-  .civic-admin-city-filter {
-    width: 100%;
-    overflow-x: auto;
-    flex-wrap: nowrap;
-  }
-
-  .civic-admin-city-filter button {
-    flex: 0 0 auto;
-    white-space: nowrap;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .admin-sidebar,
-  .admin-nav-item,
-  .admin-icon-button,
-  .admin-signout-button {
-    transition: none;
-  }
-}
-
-
-/* v4.1 visual correction: no legacy atmosphere images inside admin data cards. */
-.civic-admin-command-center .civic-admin-command-card::before,
-.civic-admin-command-center .civic-admin-command-card::after {
-  display: none;
-}
-
-.civic-admin-command-center .civic-admin-telemetry-hero {
-  color: #f7fbff;
-  background:
-    linear-gradient(135deg, rgba(11, 23, 51, 0.99), rgba(25, 57, 107, 0.98) 56%, rgba(13, 118, 110, 0.9)),
-    radial-gradient(circle at 88% 12%, rgba(240, 181, 111, 0.22), transparent 15rem) !important;
-  border-color: rgba(108, 151, 208, 0.34);
-}
-
-.civic-admin-command-center .civic-admin-telemetry-hero h2,
-.civic-admin-command-center .civic-admin-telemetry-hero p,
-.civic-admin-command-center .civic-admin-telemetry-hero span,
-.civic-admin-command-center .civic-admin-telemetry-hero strong {
-  color: inherit;
-}
-
-.civic-admin-command-center .civic-admin-telemetry-hero__scan::before {
-  display: block;
-}
-
-
-/* ========================================================================
-   Admin heritage v5 — Indian civic institution palette.
-   Blue is no longer the dominant color; data contracts remain untouched.
-   ======================================================================== */
-:root {
-  --heritage-ivory: #f5efe5;
-  --heritage-paper: #fffdf8;
-  --heritage-sandstone: #e8d6bf;
-  --heritage-sandstone-deep: #d6b895;
-  --heritage-terracotta: #b95232;
-  --heritage-terracotta-dark: #8f3b2a;
-  --heritage-maroon: #541f2b;
-  --heritage-maroon-deep: #38131f;
-  --heritage-turmeric: #d6922e;
-  --heritage-leaf: #39735a;
-  --heritage-teal: #176c68;
-  --heritage-ink: #2b2320;
-  --heritage-muted: #796c63;
-}
-
-body:has(.admin-app-shell) {
-  background: var(--heritage-ivory) !important;
-  color: var(--heritage-ink) !important;
+/* Public portal visual correction: remove the opaque ivory wash and restore a deeper heritage glass canvas. */
+body.civic-heritage-shell {
+  background: #f5f0e7;
   color-scheme: light;
+  --background: #f5f0e7;
+  --background-secondary: #ece4d8;
+  --surface: rgb(255 255 255 / .58);
+  --surface-elevated: rgb(255 252 247 / .78);
+  --glass: rgb(255 255 255 / .48);
+  --glass-strong: rgb(255 252 247 / .70);
+  --glass-border: rgb(16 27 61 / .16);
+  --border: rgb(16 27 61 / .14);
+  --input: rgb(16 27 61 / .18);
+  --foreground: #172033;
+  --card: rgb(255 255 255 / .64);
+  --card-foreground: #172033;
+  --popover: rgb(255 252 247 / .92);
+  --popover-foreground: #172033;
+  --muted: #eee6db;
+  --muted-foreground: #526078;
+  --subtle-foreground: #68748a;
+  --civic-paper: #fffaf3;
+  --civic-sand-100: #f5f0e7;
+  --civic-ink: #172033;
+  --civic-muted: #526078;
+  --civic-indigo-950: #101b3d;
+  --civic-indigo-700: #234a84;
+  --primary: #234a84;
+  --primary-foreground: #ffffff;
+  --secondary: #f1e8dc;
+  --secondary-foreground: #172033;
+  --accent: #f4e8d8;
+  --accent-foreground: #7c3f19;
+  --ring: #c86b18;
+  --shadow-soft: 0 10px 28px -18px rgb(74 48 28 / .24), inset 0 1px 0 rgb(255 255 255 / .72);
+  --shadow-lift: 0 24px 58px -28px rgb(74 48 28 / .28), 0 0 28px -10px color-mix(in srgb, var(--civic-city-accent) 18%, transparent), inset 0 1px 0 rgb(255 255 255 / .82);
 }
-
-.admin-app-shell {
+body.civic-heritage-shell .civic-city-shell {
+  background-color: #f8f9fa;
+  background-position: center top, center top, center top;
+  background-size: cover, cover, cover;
+  background-attachment: fixed;
+}
+body.civic-heritage-shell .civic-city-shell::before {
+  opacity: .12;
   background:
-    linear-gradient(180deg, rgba(255, 253, 248, 0.9), transparent 24rem),
-    var(--heritage-ivory) !important;
-  color: var(--heritage-ink) !important;
+    linear-gradient(90deg, transparent 0 6%, rgb(16 27 61 / .10) 6.1% 6.2%, transparent 6.3% 93.7%, rgb(16 27 61 / .10) 93.8% 93.9%, transparent 94%),
+    repeating-linear-gradient(0deg, transparent 0 5.2rem, rgb(16 27 61 / .08) 5.25rem 5.32rem, transparent 5.38rem 10.5rem);
 }
-
-.admin-sidebar {
-  color: #f7e9d8 !important;
-  background:
-    linear-gradient(180deg, rgba(182, 82, 50, 0.2), transparent 16rem),
-    linear-gradient(160deg, var(--heritage-maroon) 0%, var(--heritage-maroon-deep) 70%, #28101b 100%) !important;
-  border-right-color: rgba(232, 214, 191, 0.18) !important;
-  box-shadow: 14px 0 36px -28px rgba(84, 31, 43, 0.65) !important;
+body.civic-heritage-shell .civic-atmosphere-panel,
+body.civic-heritage-shell .jm-heritage-card {
+  background: color-mix(in srgb, var(--civic-paper) 75%, transparent) !important;
+  backdrop-filter: blur(16px) saturate(1.4) !important;
+  border-color: color-mix(in srgb, var(--civic-city-accent) 38%, var(--glass-border)) !important;
+  box-shadow: var(--shadow-lift);
 }
-
-.admin-sidebar::before {
-  opacity: 0.32 !important;
-  background-image:
-    radial-gradient(circle at 50% 0%, rgba(214, 184, 149, 0.18) 0 1px, transparent 1.5px),
-    linear-gradient(45deg, transparent 46%, rgba(232, 214, 191, 0.08) 47% 53%, transparent 54%),
-    linear-gradient(-45deg, transparent 46%, rgba(232, 214, 191, 0.08) 47% 53%, transparent 54%) !important;
-  background-size: 26px 26px, 26px 26px, 26px 26px !important;
-  mask-image: linear-gradient(to bottom, #000, transparent 80%) !important;
+body.civic-heritage-shell .civic-atmosphere-panel > .animate-rise:first-child {
+  background: color-mix(in srgb, var(--civic-paper) 70%, transparent) !important;
+  backdrop-filter: blur(16px) saturate(1.4) !important;
+  border-color: rgb(16 27 61 / .16) !important;
+  box-shadow: 0 18px 40px -26px rgb(74 48 28 / .22), inset 0 1px 0 rgb(255 255 255 / .72);
 }
-
-.admin-brand-mark {
-  color: #fff7ec !important;
-  border-color: rgba(255, 230, 180, 0.74) !important;
-  background:
-    radial-gradient(circle, rgba(255, 235, 190, 0.22) 0 27%, transparent 28%),
-    conic-gradient(from 0deg, var(--heritage-turmeric), var(--heritage-terracotta), var(--heritage-turmeric)) !important;
-  box-shadow: 0 10px 22px -14px rgba(214, 146, 46, 0.95) !important;
+body.civic-heritage-shell .civic-data-rail,
+body.civic-heritage-shell .civic-city-chip {
+  background: color-mix(in srgb, var(--civic-paper) 70%, transparent) !important;
+  backdrop-filter: blur(10px) saturate(1.1) !important;
+  color: #172033 !important;
+  border-color: rgb(16 27 61 / .16) !important;
 }
-
-.admin-brand-title,
-.admin-profile-name {
-  color: #fffaf2 !important;
+body.civic-heritage-shell .civic-brand-wordmark { color: #101b3d; }
+body.civic-heritage-shell .civic-brand-logo-mark { background: rgb(255 252 247 / .35); }
+body.civic-heritage-shell [class*="bg-white/"],
+body.civic-heritage-shell [class*="bg-amber-50/"],
+body.civic-heritage-shell [class*="bg-orange-50/"] {
+  background-color: rgb(255 255 255 / .15) !important;
+  backdrop-filter: blur(4px) saturate(1.1) !important;
 }
-
-.admin-brand-subtitle,
-.admin-profile-email {
-  color: #d6bda5 !important;
+body.civic-heritage-shell [class*="from-white/"],
+body.civic-heritage-shell [class*="via-white/"],
+body.civic-heritage-shell [class*="to-white/"] {
+  --tw-gradient-from: rgb(255 255 255 / .25) var(--tw-gradient-from-position) !important;
+  --tw-gradient-to: rgb(255 255 255 / 0) var(--tw-gradient-to-position) !important;
 }
-
-.admin-scope-strip,
-.admin-profile-card {
-  color: #e6cdb5 !important;
-  border-color: rgba(232, 214, 191, 0.18) !important;
-  background: rgba(255, 253, 248, 0.065) !important;
+body.civic-heritage-shell [class*="via-amber-50/"],
+body.civic-heritage-shell [class*="to-amber-50/"],
+body.civic-heritage-shell [class*="via-emerald-50/"],
+body.civic-heritage-shell [class*="to-emerald-50/"] {
+  --tw-gradient-via: rgb(255 219 180 / .15) var(--tw-gradient-via-position) !important;
+  --tw-gradient-to: rgb(220 244 231 / 0) var(--tw-gradient-to-position) !important;
 }
-
-.admin-scope-strip strong,
-.admin-profile-role {
-  color: #f0c56f !important;
-}
-
-.admin-status-dot {
-  background: #79a96d !important;
-  box-shadow: 0 0 0 0.22rem rgba(121, 169, 109, 0.16) !important;
-}
-
-.admin-nav-label {
-  color: #b69480 !important;
-}
-
-.admin-nav-item {
-  color: #d7bda8 !important;
-}
-
-.admin-nav-item:hover {
-  color: #fffaf2 !important;
-  background: rgba(255, 253, 248, 0.075) !important;
-  border-color: rgba(232, 214, 191, 0.16) !important;
-}
-
-.admin-nav-item.is-active {
-  color: #fffaf2 !important;
-  background: white !important;
-  border-color: rgba(232, 214, 191, 0.22) !important;
-  box-shadow: inset 3px 0 0 var(--heritage-turmeric), 0 9px 24px -18px rgba(185, 82, 50, 0.9) !important;
-}
-
-.admin-nav-item.is-active svg:first-child {
-  color: #f0c56f !important;
-}
-
-.admin-nav-chevron {
-  color: #9b7668 !important;
-}
-
-.admin-sidebar-footer {
-  border-top-color: rgba(232, 214, 191, 0.18) !important;
-}
-
-.admin-avatar {
-  color: #fff8ee !important;
-  background: white !important;
-}
-
-.admin-signout-button {
-  color: #d7bda8 !important;
-}
-
-.admin-signout-button:hover {
-  color: #ffd0be !important;
-  border-color: rgba(231, 128, 96, 0.32) !important;
-  background: rgba(185, 82, 50, 0.16) !important;
-}
-
-.admin-topbar {
-  background: rgba(255, 253, 248, 0.92) !important;
-  border-bottom-color: var(--heritage-sandstone) !important;
-  box-shadow: 0 9px 26px -24px rgba(84, 31, 43, 0.46) !important;
-}
-
-.admin-icon-button {
-  color: var(--heritage-maroon) !important;
-  border-color: var(--heritage-sandstone) !important;
-  background: var(--heritage-paper) !important;
-}
-
-.admin-icon-button:hover {
-  color: var(--heritage-terracotta) !important;
-  border-color: var(--heritage-sandstone-deep) !important;
-  background: #f8eadb !important;
-}
-
-.admin-breadcrumbs {
-  color: #a08e80 !important;
-}
-
-.admin-breadcrumbs strong {
-  color: var(--heritage-maroon) !important;
-}
-
-.admin-topbar-scope {
-  color: var(--heritage-leaf) !important;
-}
-
-.admin-topbar-date {
-  color: var(--heritage-muted) !important;
-  border-left-color: var(--heritage-sandstone) !important;
-}
-
-.civic-admin-command-center {
-  --background: var(--heritage-ivory) !important;
-  --surface: var(--heritage-paper) !important;
-  --surface-elevated: var(--heritage-paper) !important;
-  --glass-border: var(--heritage-sandstone) !important;
-  --card: var(--heritage-paper) !important;
-  --card-foreground: var(--heritage-ink) !important;
-  --foreground: var(--heritage-ink) !important;
-  --muted-foreground: var(--heritage-muted) !important;
-  --primary: var(--heritage-terracotta) !important;
-  color: var(--heritage-ink) !important;
-  background: transparent !important;
-}
-
-.civic-admin-command-center .glass,
-.civic-admin-command-center .glass-strong,
-.civic-admin-command-center .solid-surface {
-  color: var(--heritage-ink) !important;
-  background: var(--heritage-paper) !important;
-  border-color: var(--heritage-sandstone) !important;
-  box-shadow: 0 16px 35px -30px rgba(84, 31, 43, 0.48), 0 1px 0 rgba(255, 255, 255, 0.86) inset !important;
-}
-
-.civic-admin-command-center h1,
-.civic-admin-command-center h2,
-.civic-admin-command-center h3 {
-  color: var(--heritage-maroon) !important;
-}
-
-.civic-admin-command-center .text-\[var\(--muted-foreground\)\] {
-  color: var(--heritage-muted) !important;
-}
-
-.civic-admin-telemetry-hero,
-.civic-admin-command-center .civic-admin-telemetry-hero {
-  --foreground: #fff8ee !important;
-  --muted-foreground: #e2c8b1 !important;
-  color: #fff8ee !important;
-  border-color: rgba(232, 214, 191, 0.28) !important;
-  background:
-    radial-gradient(circle at 86% 19%, rgba(214, 146, 46, 0.24) 0 1px, transparent 2px),
-    repeating-radial-gradient(circle at 86% 19%, transparent 0 4.5rem, rgba(214, 146, 46, 0.16) 4.55rem 4.62rem, transparent 4.68rem 8.2rem),
-    linear-gradient(135deg, var(--heritage-maroon-deep), var(--heritage-maroon) 58%, var(--heritage-terracotta-dark)) !important;
-  box-shadow: 0 26px 54px -36px rgba(84, 31, 43, 0.84), inset 0 1px 0 rgba(255, 253, 248, 0.1) !important;
-}
-
-.civic-admin-telemetry-hero::before {
-  opacity: 0.22 !important;
-  background-image:
-    linear-gradient(30deg, transparent 46%, rgba(232, 214, 191, 0.15) 47% 53%, transparent 54%),
-    linear-gradient(150deg, transparent 46%, rgba(232, 214, 191, 0.15) 47% 53%, transparent 54%) !important;
-  background-size: 44px 44px !important;
-  mask-image: linear-gradient(to bottom, #000, transparent 84%) !important;
-  animation: none !important;
-}
-
-.civic-admin-telemetry-hero h2,
-.civic-admin-telemetry-hero h3,
-.civic-admin-telemetry-hero p,
-.civic-admin-telemetry-hero span,
-.civic-admin-telemetry-hero strong {
-  color: inherit !important;
-}
-
-.civic-admin-kicker {
-  color: #f0c56f !important;
-}
-
-.civic-admin-telemetry-meta > div {
-  border-color: rgba(232, 214, 191, 0.22) !important;
-  background: rgba(56, 19, 31, 0.34) !important;
-}
-
-.civic-admin-telemetry-meta span,
-.civic-admin-pipeline-stage span {
-  color: #d6bda5 !important;
-}
-
-.civic-admin-city-filter {
-  border-color: rgba(232, 214, 191, 0.26) !important;
-  background: rgba(56, 19, 31, 0.42) !important;
-}
-
-.civic-admin-city-filter button {
-  color: #e2c8b1 !important;
-}
-
-.civic-admin-city-filter button:hover,
-.civic-admin-city-filter button[aria-selected="true"] {
-  color: #fff8ee !important;
-  border-color: rgba(240, 197, 111, 0.62) !important;
-  background: rgba(214, 146, 46, 0.2) !important;
-  box-shadow: none !important;
-}
-
-.civic-admin-city-lane {
-  border-color: var(--heritage-sandstone) !important;
-  background: var(--heritage-paper) !important;
-  box-shadow: 0 18px 35px -32px rgba(84, 31, 43, 0.72) !important;
-}
-
-.civic-admin-city-lane--vadodara {
-  --lane-accent: var(--heritage-terracotta) !important;
-  --lane-accent-rgb: 185 82 50 !important;
-}
-
-.civic-admin-city-lane--bengaluru {
-  --lane-accent: var(--heritage-teal) !important;
-  --lane-accent-rgb: 23 108 104 !important;
-}
-
-.civic-admin-city-lane__header {
-  border-bottom-color: #efe3d4 !important;
-  background: white !important;
-}
-
-.civic-admin-city-lane h3 {
-  color: var(--heritage-maroon) !important;
-}
-
-.civic-admin-city-kicker,
-.civic-admin-city-emblem {
-  color: var(--lane-accent) !important;
-}
-
-.civic-admin-city-emblem {
-  border-color: rgba(var(--lane-accent-rgb), 0.38) !important;
-  background: rgba(var(--lane-accent-rgb), 0.1) !important;
-  box-shadow: none !important;
-}
-
-.civic-admin-city-lane__summary > div,
-.civic-admin-stage-card,
-.civic-admin-live-event,
-.civic-admin-compare-row {
-  border-color: #eee3d6 !important;
-  background: #fffaf3 !important;
-}
-
-.civic-admin-city-lane__summary strong,
-.civic-admin-stage-card__copy strong,
-.civic-admin-compare-row strong {
-  color: var(--heritage-ink) !important;
-}
-
-.civic-admin-city-lane__summary span,
-.civic-admin-stage-card__copy small,
-.civic-admin-live-event__time,
-.civic-admin-live-event small,
-.civic-admin-live-event-empty {
-  color: #8a786c !important;
-}
-
-.civic-admin-stage-card:hover,
-.civic-admin-live-event:hover,
-.civic-admin-compare-row:hover {
-  border-color: rgba(var(--lane-accent-rgb), 0.52) !important;
-  background: rgba(var(--lane-accent-rgb), 0.08) !important;
-}
-
-.civic-admin-lane-events {
-  border-color: rgba(var(--lane-accent-rgb), 0.2) !important;
-  background: rgba(var(--lane-accent-rgb), 0.06) !important;
-}
-
-.civic-admin-pipeline-node {
-  border-color: rgba(84, 31, 43, 0.25) !important;
-  box-shadow: 0 0 0 0.22rem #fffaf3, 0 0 16px currentColor !important;
-}
-
-.civic-admin-compare-track {
-  background: #eadfd2 !important;
-}
-
-.civic-admin-compare-track span {
-  background: white !important;
-  box-shadow: none !important;
-}
-
-.civic-admin-command-center input,
-.civic-admin-command-center select,
-.civic-admin-command-center textarea {
-  color: var(--heritage-ink) !important;
-  border-color: var(--heritage-sandstone) !important;
-  background: var(--heritage-paper) !important;
-}
-
-.civic-admin-command-center input::placeholder,
-.civic-admin-command-center textarea::placeholder {
-  color: #a18d7d !important;
-}
-
 @media (max-width: 767px) {
-  .admin-content {
-    padding: 1.25rem 1rem 2.5rem;
+  body.civic-heritage-shell .civic-city-shell {
+    background-attachment: scroll;
+    background-size: auto 58rem, auto 58rem, cover;
+    background-position: center top, 50% 4.5rem, center top;
   }
-
-  .civic-admin-telemetry-hero,
-  .civic-admin-command-center .civic-admin-telemetry-hero {
-    border-radius: 0.9rem;
+  body.civic-heritage-shell .civic-atmosphere-panel > .animate-rise:first-child {
+    background: color-mix(in srgb, var(--civic-paper) 45%, transparent) !important;
   }
-}
-
-
-/* ========================================================================
-   Admin heritage v6 — composition reset, not another palette patch.
-   The admin must feel native to Civic Sathi's public heritage storytelling.
-   ======================================================================== */
-
-body:has(.admin-app-shell) {
-  background:
-    radial-gradient(circle at 8% 2%, rgba(185, 82, 50, .10), transparent 24rem),
-    radial-gradient(circle at 92% 16%, rgba(23, 108, 104, .08), transparent 26rem),
-    var(--heritage-ivory) !important;
-}
-
-.admin-content {
-  background: transparent !important;
-}
-
-.civic-admin-command-center {
-  min-height: calc(100vh - 4.25rem) !important;
-  margin: 0 !important;
-  padding: 1.5rem clamp(1rem, 3vw, 2.6rem) 4rem !important;
-  background:
-    linear-gradient(90deg, transparent 0 49.8%, rgba(214, 184, 149, .13) 50%, transparent 50.2%),
-    linear-gradient(0deg, transparent 0 49.8%, rgba(214, 184, 149, .10) 50%, transparent 50.2%),
-    radial-gradient(circle at 12% 4%, rgba(214, 146, 46, .11), transparent 21rem),
-    var(--heritage-ivory) !important;
-  background-size: 5.5rem 5.5rem, 5.5rem 5.5rem, auto, auto !important;
-}
-
-.civic-admin-command-center::before,
-.civic-admin-command-center::after {
-  display: block !important;
-  position: absolute;
-  pointer-events: none;
-  content: "";
-}
-
-.civic-admin-command-center::before {
-  inset: 0 0 auto auto;
-  width: min(42vw, 34rem);
-  height: 32rem;
-  z-index: 0;
-  opacity: .28;
-  background:
-    radial-gradient(ellipse 78% 80% at 100% 0%, transparent 0 50%, rgba(185, 82, 50, .25) 50.5% 50.9%, transparent 51.4%),
-    radial-gradient(ellipse 60% 62% at 100% 0%, transparent 0 50%, rgba(214, 146, 46, .24) 50.5% 50.9%, transparent 51.4%),
-    repeating-linear-gradient(45deg, transparent 0 1.55rem, rgba(84, 31, 43, .08) 1.6rem 1.68rem);
-  mask-image: linear-gradient(180deg, #000 0%, transparent 88%);
-}
-
-.civic-admin-command-center::after {
-  inset: auto 0 0;
-  height: 14rem;
-  z-index: 0;
-  opacity: .42;
-  background: linear-gradient(180deg, transparent, rgba(214, 184, 149, .16));
-}
-
-.civic-admin-command-center > * {
-  position: relative;
-  z-index: 1;
-}
-
-.civic-admin-command-center > .flex:first-child {
-  padding: .35rem 0 .55rem;
-  border-bottom: 1px solid rgba(214, 184, 149, .52);
-}
-
-.civic-admin-command-center > .flex:first-child h1 {
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(2rem, 3.6vw, 3.25rem) !important;
-  line-height: .98;
-  letter-spacing: -.045em;
-  color: var(--heritage-maroon) !important;
-}
-
-.civic-admin-command-center > .flex:first-child p {
-  max-width: 36rem;
-  color: var(--heritage-muted) !important;
-}
-
-.civic-admin-command-center > .flex:first-child button,
-.civic-admin-command-center > .flex:first-child a {
-  min-height: 2.55rem;
-  border-radius: .55rem !important;
-  box-shadow: 0 8px 18px -16px rgba(84, 31, 43, .8) !important;
-}
-
-.civic-admin-telemetry-hero,
-.civic-admin-command-center .civic-admin-telemetry-hero {
-  min-height: 0 !important;
-  border: 1px solid var(--heritage-sandstone) !important;
-  border-radius: 1.65rem !important;
-  color: var(--heritage-ink) !important;
-  background:
-    linear-gradient(135deg, rgba(255, 253, 248, .98), rgba(245, 239, 229, .94) 56%, rgba(232, 214, 191, .84)) !important;
-  box-shadow: 0 28px 70px -46px rgba(84, 31, 43, .74), inset 0 1px 0 rgba(255,255,255,.9) !important;
-}
-
-.civic-admin-telemetry-hero::before {
-  opacity: .34 !important;
-  background-image:
-    radial-gradient(ellipse 68% 92% at 100% 0%, transparent 0 47%, rgba(185, 82, 50, .32) 47.5% 48.2%, transparent 48.8%),
-    radial-gradient(ellipse 49% 66% at 100% 0%, transparent 0 47%, rgba(214, 146, 46, .28) 47.5% 48.2%, transparent 48.8%),
-    linear-gradient(45deg, transparent 46%, rgba(84, 31, 43, .08) 47% 53%, transparent 54%),
-    linear-gradient(-45deg, transparent 46%, rgba(84, 31, 43, .08) 47% 53%, transparent 54%) !important;
-  background-size: auto, auto, 2.6rem 2.6rem, 2.6rem 2.6rem !important;
-  mask-image: linear-gradient(90deg, transparent 0%, #000 34%, #000 100%) !important;
-}
-
-.civic-admin-telemetry-hero__scan::before {
-  opacity: .24 !important;
-  background: white !important;
-}
-
-.civic-admin-telemetry-hero .relative.z-10 {
-  padding: clamp(1.25rem, 3vw, 2.4rem) !important;
-}
-
-.civic-admin-telemetry-hero h2,
-.civic-admin-telemetry-hero h3,
-.civic-admin-telemetry-hero p,
-.civic-admin-telemetry-hero span,
-.civic-admin-telemetry-hero strong {
-  color: inherit !important;
-}
-
-.civic-admin-telemetry-hero h2 {
-  max-width: 42rem !important;
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(2rem, 4vw, 3.45rem) !important;
-  line-height: .98;
-  letter-spacing: -.045em;
-  color: var(--heritage-maroon) !important;
-}
-
-.civic-admin-telemetry-hero p {
-  max-width: 40rem !important;
-  color: var(--heritage-muted) !important;
-}
-
-.civic-admin-kicker {
-  color: var(--heritage-terracotta) !important;
-  font-weight: 800;
-  letter-spacing: .22em !important;
-}
-
-.civic-admin-telemetry-meta > div {
-  min-width: 10rem;
-  border: 1px solid rgba(185, 82, 50, .24) !important;
-  border-radius: .9rem;
-  background: rgba(255, 253, 248, .66) !important;
-  box-shadow: 0 12px 26px -24px rgba(84, 31, 43, .78);
-}
-
-.civic-admin-telemetry-meta span,
-.civic-admin-pipeline-stage span {
-  color: var(--heritage-muted) !important;
-}
-
-.civic-admin-telemetry-meta strong {
-  color: var(--heritage-maroon) !important;
-}
-
-.civic-admin-pipeline-toolbar {
-  align-items: center;
-  border-top: 1px solid rgba(214, 184, 149, .55);
-  padding-top: 1rem;
-}
-
-.civic-admin-city-filter {
-  border: 1px solid var(--heritage-sandstone) !important;
-  border-radius: .7rem !important;
-  background: rgba(255, 253, 248, .74) !important;
-}
-
-.civic-admin-city-filter button {
-  color: var(--heritage-muted) !important;
-  border-radius: .48rem !important;
-}
-
-.civic-admin-city-filter button:hover,
-.civic-admin-city-filter button[aria-selected="true"] {
-  color: #fff8ee !important;
-  border-color: var(--heritage-terracotta) !important;
-  background: var(--heritage-terracotta) !important;
-  box-shadow: none !important;
-}
-
-.civic-admin-next-sync {
-  color: var(--heritage-muted) !important;
-}
-
-.civic-admin-pulse-dot {
-  background: var(--heritage-leaf) !important;
-  box-shadow: 0 0 0 .25rem rgba(57, 115, 90, .13) !important;
-}
-
-.civic-admin-city-lanes {
-  display: grid !important;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1.25rem !important;
-}
-
-.civic-admin-city-lane {
-  min-width: 0;
-  border: 1px solid var(--heritage-sandstone) !important;
-  border-radius: 1.25rem !important;
-  background: rgba(255, 253, 248, .91) !important;
-  box-shadow: 0 22px 45px -38px rgba(84, 31, 43, .8) !important;
-}
-
-.civic-admin-city-lane__header {
-  min-height: 5.8rem;
-  padding: 1.05rem 1.15rem !important;
-  border-bottom-color: #eadbca !important;
-  background: white !important;
-}
-
-.civic-admin-city-emblem {
-  width: 2.8rem !important;
-  height: 2.8rem !important;
-  border-radius: 1rem !important;
-  border-color: rgba(var(--lane-accent-rgb), .38) !important;
-  background: rgba(var(--lane-accent-rgb), .10) !important;
-}
-
-.civic-admin-city-kicker {
-  color: var(--lane-accent) !important;
-  font-size: .63rem !important;
-  letter-spacing: .16em;
-}
-
-.civic-admin-city-lane h3 {
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 1.5rem !important;
-  color: var(--heritage-maroon) !important;
-}
-
-.civic-admin-city-lane p {
-  color: var(--heritage-muted) !important;
-}
-
-.civic-admin-city-health {
-  color: var(--heritage-leaf) !important;
-  border-color: rgba(57, 115, 90, .24) !important;
-  background: rgba(57, 115, 90, .07) !important;
-}
-
-.civic-admin-city-lane__summary {
-  padding: 1rem 1.15rem .7rem !important;
-  gap: .6rem !important;
-}
-
-.civic-admin-city-lane__summary > div {
-  min-height: 4.35rem;
-  border: 0 !important;
-  border-left: 3px solid rgba(var(--lane-accent-rgb), .42) !important;
-  border-radius: 0 !important;
-  background: transparent !important;
-  padding: .15rem .55rem !important;
-}
-
-.civic-admin-city-lane__summary strong {
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 1.55rem !important;
-  color: var(--heritage-maroon) !important;
-}
-
-.civic-admin-city-lane__summary span,
-.civic-admin-stage-card__copy small,
-.civic-admin-live-event__time,
-.civic-admin-live-event small,
-.civic-admin-live-event-empty {
-  color: #8a786c !important;
-}
-
-.civic-admin-stage-track {
-  display: grid !important;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: .15rem !important;
-  margin: .2rem 1.15rem 0 !important;
-  padding: 1rem 0 .85rem !important;
-  border-top: 1px solid #eee3d6;
-  border-bottom: 1px solid #eee3d6;
-}
-
-.civic-admin-stage-step {
-  position: relative;
-  min-width: 0;
-}
-
-.civic-admin-stage-card {
-  min-height: 7.2rem;
-  display: flex !important;
-  align-items: center;
-  flex-direction: column;
-  justify-content: flex-start;
-  gap: .4rem;
-  padding: .1rem .2rem !important;
-  border: 0 !important;
-  background: transparent !important;
-  text-align: center;
-}
-
-.civic-admin-stage-card:hover {
-  background: rgba(var(--lane-accent-rgb), .06) !important;
-}
-
-.civic-admin-pipeline-node {
-  width: 2.15rem !important;
-  height: 2.15rem !important;
-  border: 2px solid #fffaf3 !important;
-  box-shadow: 0 0 0 1px rgba(var(--lane-accent-rgb), .28), 0 6px 14px -10px currentColor !important;
-}
-
-.civic-admin-flow-teal { background: var(--heritage-teal) !important; }
-.civic-admin-flow-saffron { background: var(--heritage-turmeric) !important; }
-.civic-admin-flow-indigo { background: var(--heritage-terracotta) !important; }
-.civic-admin-flow-blue { background: var(--heritage-leaf) !important; }
-
-.civic-admin-stage-card__copy > span {
-  min-height: 2rem;
-  color: var(--heritage-maroon) !important;
-  font-size: .62rem !important;
-  line-height: 1.25;
-}
-
-.civic-admin-stage-card__copy strong {
-  color: var(--heritage-ink) !important;
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 1.35rem !important;
-}
-
-.civic-admin-stage-connector {
-  display: block !important;
-  position: absolute;
-  top: 1.1rem;
-  left: 60%;
-  width: 80%;
-  height: 1px;
-  background: linear-gradient(90deg, var(--heritage-sandstone-deep), rgba(214, 184, 149, .15));
-  z-index: -1;
-}
-
-.civic-admin-lane-events {
-  margin: 1rem 1.15rem 1.15rem !important;
-  border: 1px solid rgba(var(--lane-accent-rgb), .18) !important;
-  border-radius: .9rem !important;
-  background: rgba(var(--lane-accent-rgb), .045) !important;
-}
-
-.civic-admin-lane-events__label {
-  color: var(--lane-accent) !important;
-}
-
-.civic-admin-live-event {
-  border-color: rgba(var(--lane-accent-rgb), .16) !important;
-  background: rgba(255, 253, 248, .58) !important;
-}
-
-.civic-admin-live-event strong {
-  color: var(--heritage-maroon) !important;
-}
-
-.civic-admin-command-center > .grid {
-  gap: 1.25rem !important;
-}
-
-.civic-admin-command-center > .grid > .glass,
-.civic-admin-command-center > .grid > .glass-strong,
-.civic-admin-command-center .civic-admin-command-card {
-  border-radius: 1.15rem !important;
-  border-color: var(--heritage-sandstone) !important;
-  background: rgba(255, 253, 248, .88) !important;
-  box-shadow: 0 18px 40px -34px rgba(84, 31, 43, .68), inset 0 1px 0 rgba(255,255,255,.86) !important;
-}
-
-.civic-admin-command-center .recharts-cartesian-grid line {
-  stroke: rgba(84, 31, 43, .12) !important;
-}
-
-.civic-admin-command-center .recharts-text {
-  fill: var(--heritage-muted) !important;
-}
-
-.civic-admin-compare-row {
-  border-color: #eadbca !important;
-  background: #fffaf3 !important;
-}
-
-.civic-admin-compare-row strong {
-  color: var(--heritage-maroon) !important;
-}
-
-.civic-admin-compare-track {
-  background: #eadfd2 !important;
-}
-
-.civic-admin-compare-track span {
-  background: white !important;
-}
-
-.civic-admin-signal-icon {
-  color: var(--heritage-terracotta) !important;
-  border-color: rgba(185, 82, 50, .28) !important;
-  background: rgba(185, 82, 50, .08) !important;
-  box-shadow: none !important;
-}
-
-.civic-admin-access-badge,
-.civic-admin-live-badge {
-  color: var(--heritage-leaf) !important;
-  border-color: rgba(57, 115, 90, .28) !important;
-  background: rgba(57, 115, 90, .07) !important;
-}
-
-@media (max-width: 1023px) {
-  .civic-admin-city-lanes { grid-template-columns: 1fr; }
-}
-
-@media (max-width: 767px) {
-  .civic-admin-command-center { padding: 1rem .8rem 3rem !important; }
-  .civic-admin-command-center > .flex:first-child { padding-top: 0; }
-  .civic-admin-command-center > .flex:first-child h1 { font-size: 2.2rem !important; }
-  .civic-admin-telemetry-hero h2 { font-size: 2.25rem !important; }
-  .civic-admin-telemetry-meta { width: 100%; }
-  .civic-admin-telemetry-meta > div { flex: 1; min-width: 0; }
-  .civic-admin-stage-track { overflow-x: auto; grid-template-columns: repeat(5, minmax(5.8rem, 1fr)); }
-  .civic-admin-stage-card { min-height: 6.6rem; }
-  .civic-admin-stage-card__copy > span { font-size: .57rem !important; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .civic-admin-command-center::before,
-  .civic-admin-command-center::after,
-  .civic-admin-telemetry-hero::before { animation: none !important; }
-}
-
-
-/* ========================================================================
-   Admin controls + real Civic Sathi brand mark.
-   ======================================================================== */
-
-.admin-brand-mark {
-  display: grid !important;
-  place-items: center !important;
-  width: 2.55rem !important;
-  height: 2.55rem !important;
-  padding: .22rem !important;
-  overflow: hidden !important;
-  border-radius: .82rem !important;
-  border: 1px solid rgba(255, 230, 180, .72) !important;
-  background: #fffaf1 !important;
-  box-shadow: 0 10px 22px -14px rgba(214, 146, 46, .96) !important;
-}
-
-.admin-brand-mark img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  border-radius: .58rem;
-}
-
-.admin-topbar-brand {
-  display: inline-flex;
-  align-items: center;
-  gap: .48rem;
-  color: var(--heritage-maroon);
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: .96rem;
-  font-weight: 700;
-}
-
-.admin-topbar-brand img {
-  width: 1.85rem;
-  height: 1.85rem;
-  border-radius: .52rem;
-  object-fit: contain;
-  background: #fffaf1;
-  border: 1px solid var(--heritage-sandstone);
-}
-
-.admin-command-actions {
-  gap: .55rem !important;
-}
-
-.admin-command-action {
-  min-height: 2.65rem !important;
-  border-radius: .58rem !important;
-  border-width: 1px !important;
-  letter-spacing: .01em;
-  transition: transform 160ms cubic-bezier(.22,1,.36,1), box-shadow 160ms ease-out, background-color 160ms ease-out, border-color 160ms ease-out !important;
-}
-
-.admin-command-action:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 10px 20px -16px rgba(84, 31, 43, .88) !important;
-}
-
-.admin-command-action:active {
-  transform: translateY(0) scale(.98);
-}
-
-.admin-command-action--primary {
-  color: #fffaf2 !important;
-  border-color: var(--heritage-terracotta-dark) !important;
-  background: white !important;
-}
-
-.admin-command-action--secondary {
-  color: var(--heritage-maroon) !important;
-  border-color: rgba(214, 146, 46, .58) !important;
-  background: white !important;
-}
-
-.admin-command-action--tertiary {
-  color: var(--heritage-maroon) !important;
-  border-color: var(--heritage-sandstone) !important;
-  background: var(--heritage-paper) !important;
-}
-
-.admin-command-action svg {
-  flex: 0 0 auto;
-}
-
-@media (max-width: 767px) {
-  .admin-command-actions {
-    width: 100%;
-  }
-
-  .admin-command-action {
-    flex: 1 1 auto;
-    justify-content: center;
-  }
-}
-
-/* Admin v6 - zoom-safe shell and restrained navigation density. */
-.admin-app-shell {
-  min-height: 100dvh;
-  height: auto;
-  min-width: 0;
-  overflow-x: clip;
-  overflow-y: visible;
-}
-.admin-main { min-width: 0; min-height: 100dvh; }
-.admin-content { min-width: 0; overflow-x: clip; overflow-y: visible; }
-.admin-sidebar { overflow: hidden; }
-.admin-navigation { min-height: 0; overflow-y: auto; scrollbar-width: none; }
-.admin-navigation::-webkit-scrollbar { display: none; width: 0; height: 0; }
-.admin-nav-item { min-width: 0; }
-@media (min-width: 1024px) and (max-width: 1550px) {
-  .admin-sidebar { width: 14rem; }
-  .admin-nav-item { gap: .55rem; padding: .55rem .72rem; font-size: .76rem; }
-  .admin-nav-label { margin-bottom: .35rem; font-size: .58rem; }
-  .admin-nav-group { margin-bottom: .8rem; }
-  .admin-brand-lockup { padding: .9rem .85rem; }
-  .admin-scope-strip { margin-inline: .75rem; padding: .55rem .65rem; font-size: .68rem; }
-  .admin-sidebar-footer { padding: .75rem; }
-  .admin-profile-card { padding: .65rem; }
-  .admin-signout-button { padding-block: .55rem; }
-  .admin-content { padding: 1rem; }
-}
-@media (max-width: 1023px) {
-  .admin-sidebar { overflow-y: auto; scrollbar-width: none; }
-  .admin-sidebar::-webkit-scrollbar { display: none; }
 }
 
 /* Historic Map Overlay */
@@ -3075,3 +988,4 @@ body:has(.admin-app-shell) {
   mix-blend-mode: screen;
   opacity: 0.25;
 }
+

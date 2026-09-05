@@ -131,10 +131,10 @@ function ReportPage() {
 
   return (
     <PageShell className="max-w-3xl">
-      <div className="animate-rise space-y-2">
+      <div className="animate-rise space-y-2 p-6 rounded-[1.5rem] border border-[var(--glass-border)] bg-[var(--civic-paper)]/60 backdrop-blur-md shadow-sm mb-6 inline-block w-full">
         <SectionLabel>{t('ui.new_report')}</SectionLabel>
         <h1 className="text-2xl font-semibold sm:text-3xl">{t('ui.tell_civicsathi_what_happened')}</h1>
-        <p className="text-sm text-muted-foreground">
+        <p className="text-sm text-muted-foreground mt-2">
           {t('ui.you_don_t_need_to_pick_a_categ')}</p>
       </div>
 
