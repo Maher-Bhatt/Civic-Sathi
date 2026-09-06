@@ -19,24 +19,6 @@ const COLORS = {
   muted: "hsl(var(--muted-foreground))"
 };
 
-// Mock data for trends
-const mockMonthlyTrend = [
-  { name: 'Jan', filed: 4000, resolved: 2400 },
-  { name: 'Feb', filed: 3000, resolved: 1398 },
-  { name: 'Mar', filed: 2000, resolved: 9800 },
-  { name: 'Apr', filed: 2780, resolved: 3908 },
-  { name: 'May', filed: 1890, resolved: 4800 },
-  { name: 'Jun', filed: 2390, resolved: 3800 },
-];
-
-const mockDepartmentLoad = [
-  { name: 'Water', issues: 400 },
-  { name: 'Road', issues: 300 },
-  { name: 'Drainage', issues: 300 },
-  { name: 'Sanitation', issues: 200 },
-  { name: 'Electrical', issues: 100 },
-];
-
 function CommandCenterDashboard() {
   const { data: snapshot } = useQuery({
     queryKey: ["command-center-snapshot"],
@@ -50,13 +32,16 @@ function CommandCenterDashboard() {
     refetchInterval: 60000,
   });
 
-  const [health] = useState({
+  const health = snapshot?.subsystem_health || {
     municipal: { status: "online", ping: 42, uptime: "99.9%" },
     water: { status: "online", ping: 120, uptime: "98.5%" },
     road: { status: "degraded", ping: 450, uptime: "94.2%" },
     drainage: { status: "online", ping: 85, uptime: "99.1%" },
     contractor: { status: "online", ping: 60, uptime: "99.5%" },
-  });
+  };
+
+  const trendData = snapshot?.monthly_trend?.length > 0 ? snapshot.monthly_trend : [];
+  const loadData = snapshot?.department_load?.length > 0 ? snapshot.department_load : [];
 
   const cityData = snapshot?.cities ?? [];
   const statusData = snapshot?.complaint_status ? [
@@ -165,7 +150,7 @@ function CommandCenterDashboard() {
           <SectionLabel>Monthly Trends</SectionLabel>
           <div className="h-72 mt-4">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={mockMonthlyTrend}>
+              <LineChart data={trendData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--glass-border)" />
                 <XAxis dataKey="name" stroke="currentColor" fontSize={12} />
                 <YAxis stroke="currentColor" fontSize={12} />
@@ -183,7 +168,7 @@ function CommandCenterDashboard() {
           <SectionLabel>Department-wise Load</SectionLabel>
           <div className="h-72 mt-4">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={mockDepartmentLoad} layout="vertical" margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+              <BarChart data={loadData} layout="vertical" margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--glass-border)" />
                 <XAxis type="number" stroke="currentColor" fontSize={12} />
                 <YAxis dataKey="name" type="category" stroke="currentColor" fontSize={12} width={80} />
