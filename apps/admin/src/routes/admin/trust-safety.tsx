@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { GlassCard, SectionLabel } from '@/components/ui/glass-card'
-import { ShieldAlert, Users, UserX, CheckCircle, Ban } from 'lucide-react'
+import { ShieldAlert, Users, UserX, CheckCircle, Ban, Info } from 'lucide-react'
 
 export const Route = createFileRoute('/admin/trust-safety')({
   component: TrustSafetyPage,
@@ -37,6 +37,18 @@ function getSeverityColor(severity: string) {
 function TrustSafetyPage() {
   return (
     <div className="p-6 max-w-7xl mx-auto space-y-8 muni-page-enter">
+      <GlassCard className="p-4 border-amber-500/30 bg-amber-500/10 flex items-start gap-3">
+        <Info className="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
+        <div>
+          <div className="text-sm font-bold text-foreground">
+            Prototype Concept — Not Connected to Live Data
+          </div>
+          <div className="text-xs text-muted-foreground mt-0.5 leading-relaxed">
+            Platform moderation queue, content flagging, and citizen suspension management are prototype interfaces for demonstration. Live moderation service integration is not yet connected.
+          </div>
+        </div>
+      </GlassCard>
+
       <div>
         <SectionLabel>Safety & Moderation</SectionLabel>
         <h1 className="text-3xl font-bold text-foreground tracking-tight mt-1">Trust & Safety</h1>

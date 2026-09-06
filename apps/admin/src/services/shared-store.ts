@@ -1055,3 +1055,101 @@ export async function getReputationSummary(): Promise<{
   return adminApiFetch<any>("/api/v1/admin/reputation/summary");
 }
 
+// ================================================================ Master Data Management (MDM)
+
+export async function getMdmZones(cityId?: string): Promise<any[]> {
+  const query = cityId ? `?city_id=${encodeURIComponent(cityId)}` : "";
+  const res = await adminApiFetch<any[]>(`/api/v1/mdm/zones${query}`);
+  return Array.isArray(res) ? res : [];
+}
+
+export async function createMdmZone(data: { name: string; city_id: string }): Promise<any> {
+  return adminApiFetch<any>("/api/v1/mdm/zones", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
+
+export async function getMdmWards(cityId?: string, zoneId?: string): Promise<any[]> {
+  const params = new URLSearchParams();
+  if (cityId) params.set("city_id", cityId);
+  if (zoneId) params.set("zone_id", zoneId);
+  const query = params.toString() ? `?${params.toString()}` : "";
+  const res = await adminApiFetch<any[]>(`/api/v1/mdm/wards${query}`);
+  return Array.isArray(res) ? res : [];
+}
+
+export async function createMdmWard(data: {
+  ward_number: number;
+  name: string;
+  city_id: string;
+  zone_id?: string | undefined;
+}): Promise<any> {
+  return adminApiFetch<any>("/api/v1/mdm/wards", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
+
+export async function getMdmDepartments(): Promise<any[]> {
+  const res = await adminApiFetch<any[]>("/api/v1/mdm/departments");
+  return Array.isArray(res) ? res : [];
+}
+
+export async function createMdmDepartment(data: {
+  name: string;
+  slug: string;
+  contact_email?: string | undefined;
+}): Promise<any> {
+  return adminApiFetch<any>("/api/v1/mdm/departments", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
+
+// ================================================================ Sathi Setu Interoperability
+
+export async function getSetuSystems(): Promise<Array<{
+  key: string;
+  name: string;
+  classification: string;
+  status: string;
+  description: string;
+  last_sync: string;
+}>> {
+  const setuBaseUrl =
+    (typeof import.meta !== "undefined" && import.meta.env && import.meta.env["VITE_SETU_API_BASE_URL"])
+      ? String(import.meta.env["VITE_SETU_API_BASE_URL"])
+      : "http://localhost:8001";
+
+  const res = await fetch(`${setuBaseUrl}/v1/systems`, {
+    headers: { "Content-Type": "application/json" },
+  });
+  if (!res.ok) {
+    throw new Error(`Setu HTTP ${res.status}: ${res.statusText}`);
+  }
+  return await res.json();
+}
+
+// ================================================================ Global Complaints (Admin)
+
+export async function listGlobalComplaints(params?: {
+  city?: string | undefined;
+  ward?: number | undefined;
+  status?: string | undefined;
+  category?: string | undefined;
+  limit?: number | undefined;
+  offset?: number | undefined;
+}): Promise<any> {
+  const q = new URLSearchParams();
+  if (params?.city) q.set("city", params.city);
+  if (params?.ward) q.set("ward", String(params.ward));
+  if (params?.status) q.set("status", params.status);
+  if (params?.category) q.set("category", params.category);
+  q.set("limit", String(params?.limit ?? 20));
+  q.set("offset", String(params?.offset ?? 0));
+  return adminApiFetch<any>(`/api/v1/complaints?${q.toString()}`);
+}
+
+
+

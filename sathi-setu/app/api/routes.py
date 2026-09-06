@@ -94,6 +94,22 @@ def catalogue(db: Db) -> dict:
     }
 
 
+@router.get("/systems")
+def list_systems(db: Db) -> list[dict]:
+    systems = db.scalars(select(ExternalSystem).order_by(ExternalSystem.name)).all()
+    return [
+        {
+            "key": item.key,
+            "name": item.name,
+            "classification": item.classification,
+            "status": item.status,
+            "description": item.description,
+            "last_sync": "Not recorded",
+        }
+        for item in systems
+    ]
+
+
 @router.get("/demo/snapshot")
 def demo_snapshot(db: Db) -> dict:
     """Safe, unauthenticated read model for the local prototype console."""

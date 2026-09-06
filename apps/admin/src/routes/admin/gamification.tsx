@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { GlassCard, SectionLabel } from '@/components/ui/glass-card'
-import { Trophy, Star, ShieldCheck, Target, Zap, Medal } from 'lucide-react'
+import { Trophy, Star, ShieldCheck, Target, Zap, Medal, Info } from 'lucide-react'
 
 export const Route = createFileRoute('/admin/gamification')({
   component: GamificationPage,
@@ -26,6 +26,18 @@ const MOCK_MISSIONS = [
 function GamificationPage() {
   return (
     <div className="p-6 max-w-7xl mx-auto space-y-8 muni-page-enter">
+      <GlassCard className="p-4 border-amber-500/30 bg-amber-500/10 flex items-start gap-3">
+        <Info className="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
+        <div>
+          <div className="text-sm font-bold text-foreground">
+            Prototype Concept — Not Connected to Live Data
+          </div>
+          <div className="text-xs text-muted-foreground mt-0.5 leading-relaxed">
+            Civic engagement XP, achievement badges, and seasonal missions are an architectural concept. Citizen profile points and rewards backend is scheduled for future release.
+          </div>
+        </div>
+      </GlassCard>
+
       <div>
         <SectionLabel>Engagement & Rewards</SectionLabel>
         <h1 className="text-3xl font-bold text-foreground tracking-tight mt-1">Gamification Engine</h1>

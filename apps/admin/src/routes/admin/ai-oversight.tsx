@@ -1,12 +1,12 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { GlassCard, SectionLabel } from '@/components/ui/glass-card'
-import { Brain, TrendingUp, AlertTriangle, Activity, Check, X } from 'lucide-react'
+import { Brain, TrendingUp, AlertTriangle, Activity, Check, X, Info } from 'lucide-react'
 
 export const Route = createFileRoute('/admin/ai-oversight')({
   component: AiOversightPage,
 })
 
-const MOCK_DECISIONS = [
+const SAMPLE_EVAL_DECISIONS = [
   { id: 'C-2026-9011', input: 'Huge crater on MG Road causing traffic jam', aiCat: 'Roads/Pothole', conf: 98, override: false, final: 'Roads/Pothole' },
   { id: 'C-2026-9012', input: 'Water smells like sewage in sector 4', aiCat: 'Water Contamination', conf: 92, override: false, final: 'Water Contamination' },
   { id: 'C-2026-9013', input: 'Tree fell down near the park', aiCat: 'Parks & Rec', conf: 65, override: true, final: 'Emergency/Disaster' },
@@ -26,6 +26,19 @@ function getConfidenceColor(conf: number) {
 function AiOversightPage() {
   return (
     <div className="p-6 max-w-7xl mx-auto space-y-8 muni-page-enter">
+      {/* Prototype Concept Notice Banner */}
+      <GlassCard className="p-4 border-amber-500/30 bg-amber-500/10 flex items-start gap-3">
+        <Info className="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
+        <div>
+          <div className="text-sm font-bold text-foreground">
+            Prototype Concept — Not Connected to Live ML Telemetry
+          </div>
+          <div className="text-xs text-muted-foreground mt-0.5 leading-relaxed">
+            Live complaint classification does not yet persist historical categorization confidence or officer overrides. The metrics and evaluation rows below are an architectural preview for the SIH AI oversight pipeline.
+          </div>
+        </div>
+      </GlassCard>
+
       <div>
         <SectionLabel>Machine Learning Oversight</SectionLabel>
         <h1 className="text-3xl font-bold text-foreground tracking-tight mt-1">AI Oversight</h1>
@@ -94,7 +107,7 @@ function AiOversightPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-[var(--glass-border)]">
-                {MOCK_DECISIONS.map((decision) => (
+                {SAMPLE_EVAL_DECISIONS.map((decision) => (
                   <tr key={decision.id} className="hover:bg-[var(--surface-elevated)]/50 transition-colors">
                     <td className="px-6 py-4 font-mono font-semibold text-xs text-blue-600 dark:text-blue-400">{decision.id}</td>
                     <td className="px-6 py-4 font-medium text-foreground truncate max-w-xs" title={decision.input}>{decision.input}</td>
