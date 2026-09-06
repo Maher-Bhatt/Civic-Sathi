@@ -168,6 +168,7 @@ function seededReports(): NearbyReport[] {
       id: `h${i}`,
       category: "Water Supply",
       severity: i % 4 === 0 ? "Critical" : "High",
+      distanceMeters: 0,
       x: hotspot.x + Math.cos(a) * r * 1.5,
       y: hotspot.y + Math.sin(a) * r,
       ageHours: 2 + i * 3,
@@ -184,7 +185,7 @@ function seededReports(): NearbyReport[] {
     [0.1, 0.52, "Sewage", "Moderate"],
   ];
   scatter.forEach(([x, y, category, severity], i) =>
-    out.push({ id: `s${i}`, x, y, category, severity, ageHours: 12 + i * 9 }),
+    out.push({ id: `s${i}`, x, y, category, severity, ageHours: 12 + i * 9, distanceMeters: 0 }),
   );
   return out;
 }

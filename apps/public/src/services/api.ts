@@ -1,4 +1,4 @@
-import { APIClient, Endpoints } from "@civicsathi/api-client";
+import { APIClient, Endpoints, APIClientError } from "@civicsathi/api-client";
 import type {
   User,
   Complaint,
@@ -179,6 +179,8 @@ export async function loginUser(input: { email: string; password: string }): Pro
   }
 }
 
+// FIX (Finding 3): Only clear auth on HTTP 401. Transient errors (timeout,
+// 500, network blip) must NOT destroy the session — the cached user stays.
 export async function getCurrentUser(): Promise<User | null> {
   if (typeof window === "undefined") return null;
   const token = window.localStorage.getItem(LS.token);
@@ -202,10 +204,18 @@ export async function getCurrentUser(): Promise<User | null> {
       };
       write(LS.user, user);
       return user;
-    } catch {
-      window.localStorage.removeItem(LS.token);
-      window.localStorage.removeItem(LS.user);
-      return null;
+    } catch (err: unknown) {
+      // Only clear session on definitive 401 (token is invalid/expired).
+      // Transient errors (timeout, 500, network) should NOT nuke session.
+      const isUnauthorized =
+        err instanceof APIClientError && err.status === 401;
+      if (isUnauthorized) {
+        window.localStorage.removeItem(LS.token);
+        window.localStorage.removeItem(LS.user);
+        return null;
+      }
+      // For transient errors, keep cached credentials intact
+      return cached;
     }
   };
 
@@ -226,10 +236,25 @@ export async function logoutUser(): Promise<void> {
   }
 }
 
+// FIX (Finding 2): Profile save now persists to the server via PATCH /api/v1/auth/me.
 export async function updateProfile(patch: Partial<User>): Promise<User> {
   const current = await getCurrentUser();
   if (!current) throw new Error("You must be signed in to update your profile.");
-  const next = { ...current, ...patch };
+
+  // Send to server
+  const serverPatch: Record<string, string> = {};
+  if (patch.name !== undefined) serverPatch["name"] = patch.name;
+  if (patch.phone !== undefined) serverPatch["phone"] = patch.phone;
+  if (patch.ward !== undefined) serverPatch["ward"] = patch.ward;
+
+  const updated = await client.patch<any>("/api/v1/auth/me", serverPatch);
+  const next: User = {
+    ...current,
+    name: updated["name"] ?? current.name,
+    email: updated["email"] ?? current.email,
+    phone: updated["phone"] ?? current.phone,
+    ward: updated["ward"] ?? current.ward,
+  };
   write(LS.user, next);
   return next;
 }
@@ -426,6 +451,21 @@ export async function analyzeImage(
   return analyzeComplaintPhoto(dataUrl);
 }
 
+// FIX (Finding 1): Real Haversine distance calculation replaces fake Math.random() distance.
+/** Haversine distance between two lat/lng points, in metres. */
+function haversineMeters(lat1: number, lng1: number, lat2: number, lng2: number): number {
+  const toRad = (deg: number) => (deg * Math.PI) / 180;
+  const R = 6_371_000; // Earth radius in metres
+  const dLat = toRad(lat2 - lat1);
+  const dLng = toRad(lng2 - lng1);
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLng / 2) ** 2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
+const NEARBY_RADIUS_METERS = 500;
+
 export async function getNearbyComplaints(location?: LocationInfo): Promise<NearbyReport[]> {
   try {
     const res = await api.complaints.list({ limit: 100, city: location?.city });
@@ -435,14 +475,20 @@ export async function getNearbyComplaints(location?: LocationInfo): Promise<Near
     return (Array.isArray(list) ? list : [])
       .map((raw: any) => normalizeComplaint(raw))
       .filter((complaint) => complaint.location.lat !== 0 && complaint.location.lng !== 0)
-      .map((complaint) => ({
-        id: complaint.id,
-        category: complaint.category,
-        severity: complaint.severity,
-        x: Math.max(0, Math.min(1, 0.5 + (complaint.location.lng - lng) * 18)),
-        y: Math.max(0, Math.min(1, 0.5 - (complaint.location.lat - lat) * 18)),
-        ageHours: Math.max(0, Math.round((Date.now() - new Date(complaint.createdAt).getTime()) / 3_600_000)),
-      }));
+      .map((complaint) => {
+        const dist = haversineMeters(lat, lng, complaint.location.lat, complaint.location.lng);
+        return {
+          id: complaint.id,
+          category: complaint.category,
+          severity: complaint.severity,
+          distanceMeters: Math.round(dist),
+          x: Math.max(0, Math.min(1, 0.5 + (complaint.location.lng - lng) * 18)),
+          y: Math.max(0, Math.min(1, 0.5 - (complaint.location.lat - lat) * 18)),
+          ageHours: Math.max(0, Math.round((Date.now() - new Date(complaint.createdAt).getTime()) / 3_600_000)),
+        };
+      })
+      .filter((report) => report.distanceMeters <= NEARBY_RADIUS_METERS)
+      .sort((a, b) => a.distanceMeters - b.distanceMeters);
   } catch {
     return [];
   }

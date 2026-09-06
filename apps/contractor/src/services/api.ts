@@ -1,5 +1,5 @@
 import { FALLBACK_BACKEND_URL } from '@civicsathi/api-client';
-import { APIClient, Endpoints } from "@civicsathi/api-client";
+import { APIClient, APIClientError, Endpoints } from "@civicsathi/api-client";
 import type { CityId } from "@/services/cities";
 import type { User } from "@civicsathi/api-client";
 import type { Contractor, ContractorSpecialization } from "./types";
@@ -115,10 +115,22 @@ export async function getContractorUser(): Promise<ContractorUser | null> {
         write(LS.contractor, me);
         return me as ContractorUser;
       }
-    } catch {
-      // ignore — use cached
+      return null;
+    } catch (err: unknown) {
+      // Only clear session on 401 (invalid token). Transient errors
+      // (timeout, 500, network) should NOT destroy the session.
+      const isUnauthorized =
+        err instanceof APIClientError && err.status === 401;
+      if (isUnauthorized) {
+        if (typeof window !== "undefined") {
+          window.localStorage.removeItem(LS.token);
+          window.localStorage.removeItem(LS.contractor);
+        }
+        return null;
+      }
+      // Transient error — return cached if available
+      return cached;
     }
-    return null;
   };
 
   if (cached) {

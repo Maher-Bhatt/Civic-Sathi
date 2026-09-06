@@ -109,6 +109,8 @@ export interface NearbyReport {
   id: string;
   category: IssueCategory;
   severity: Severity;
+  /** Real Haversine distance from user's location, in metres. */
+  distanceMeters: number;
   /** Normalized 0-1 coordinates for the schematic map. */
   x: number;
   y: number;

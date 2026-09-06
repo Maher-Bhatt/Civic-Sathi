@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { getTenderDetails, submitBid } from "@/services/api";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, AlertTriangle, Clock } from "lucide-react";
 import { toast } from "sonner";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useI18n } from "@/lib/i18n";
@@ -19,7 +19,7 @@ function TenderDetail() {
   const [bidAmount, setBidAmount] = useState("");
   const [proposal, setProposal] = useState("");
 
-  const { data: tender, isLoading: loading } = useQuery({
+  const { data: tender, isLoading: loading, error: queryError, isError } = useQuery({
     queryKey: ["tender", id],
     queryFn: () => getTenderDetails(id),
   });
@@ -44,6 +44,13 @@ function TenderDetail() {
   }
 
   if (loading) return <div className="p-8 text-center text-[var(--muted-foreground)]">{t('ui.loading_tender')}</div>;
+  if (isError) return (
+    <div className="p-8 text-center space-y-3">
+      <AlertTriangle className="h-8 w-8 text-[var(--destructive)] mx-auto" />
+      <p className="text-[var(--destructive)] font-medium">Failed to load tender details</p>
+      <p className="text-sm text-[var(--muted-foreground)]">{(queryError as any)?.message || 'Service unavailable. Please retry.'}</p>
+    </div>
+  );
   if (!tender) return <div className="p-8 text-center text-[var(--critical)]">{t('ui.tender_not_found')}</div>;
 
   return (
@@ -81,41 +88,67 @@ function TenderDetail() {
         </div>
       </header>
 
-      <div className="rounded-xl border border-[var(--glass-border)] bg-[var(--surface)] p-6 md:p-8">
-        <h2 className="text-xl font-semibold mb-6">{t('ui.submit_sealed_bid')}</h2>
-        <form onSubmit={handleBid} className="space-y-5">
-          <div>
-            <label className="block text-sm font-medium mb-2">{t('ui.quoted_amount')}</label>
-            <input
-              type="number"
-              required
-              min="0"
-              value={bidAmount}
-              onChange={e => setBidAmount(e.target.value)}
-              className="w-full bg-[var(--surface-elevated)] border border-[var(--glass-border)] rounded-md px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
-              placeholder={t('ui.e_g_500000')}
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium mb-2">{t('ui.technical_proposal_notes')}</label>
-            <textarea
-              required
-              rows={5}
-              value={proposal}
-              onChange={e => setProposal(e.target.value)}
-              className="w-full bg-[var(--surface-elevated)] border border-[var(--glass-border)] rounded-md px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
-              placeholder={t('ui.detail_your_approach_timeline_')}
-            />
-          </div>
-          <button
-            type="submit"
-            disabled={submitMutation.isPending}
-            className="w-full bg-[var(--primary)] text-white font-medium py-3 rounded-md hover:bg-[var(--primary)]/90 transition-colors disabled:opacity-50"
-          >
-            {submitMutation.isPending ? "Submitting securely..." : "Submit Sealed Bid"}
-          </button>
-        </form>
-      </div>
+      {/* Lifecycle guard: only show bid form for open tenders with future deadline */}
+      {(() => {
+        const isClosed = tender.status && tender.status !== 'OPEN';
+        const isPastDeadline = tender.closed_at && new Date(tender.closed_at) <= new Date();
+        if (isClosed || isPastDeadline) {
+          return (
+            <div className="rounded-xl border border-[var(--glass-border)] bg-amber-500/10 p-6 md:p-8 flex items-start gap-3">
+              <Clock className="h-5 w-5 text-amber-600 shrink-0 mt-0.5" />
+              <div>
+                <h2 className="text-lg font-semibold text-[var(--foreground)]">
+                  {isClosed ? 'Tender Closed' : 'Submission Deadline Passed'}
+                </h2>
+                <p className="text-sm text-[var(--muted-foreground)] mt-1">
+                  {isClosed
+                    ? `This tender is currently in "${tender.status}" status and is no longer accepting bids.`
+                    : `The submission deadline was ${new Date(tender.closed_at).toLocaleDateString('en-IN')}. This tender is no longer accepting bids.`}
+                </p>
+              </div>
+            </div>
+          );
+        }
+        return null;
+      })()}
+
+      {(!tender.status || tender.status === 'OPEN') && (!tender.closed_at || new Date(tender.closed_at) > new Date()) && (
+        <div className="rounded-xl border border-[var(--glass-border)] bg-[var(--surface)] p-6 md:p-8">
+          <h2 className="text-xl font-semibold mb-6">{t('ui.submit_sealed_bid')}</h2>
+          <form onSubmit={handleBid} className="space-y-5">
+            <div>
+              <label className="block text-sm font-medium mb-2">{t('ui.quoted_amount')}</label>
+              <input
+                type="number"
+                required
+                min="0"
+                value={bidAmount}
+                onChange={e => setBidAmount(e.target.value)}
+                className="w-full bg-[var(--surface-elevated)] border border-[var(--glass-border)] rounded-md px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
+                placeholder={t('ui.e_g_500000')}
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-2">{t('ui.technical_proposal_notes')}</label>
+              <textarea
+                required
+                rows={5}
+                value={proposal}
+                onChange={e => setProposal(e.target.value)}
+                className="w-full bg-[var(--surface-elevated)] border border-[var(--glass-border)] rounded-md px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
+                placeholder={t('ui.detail_your_approach_timeline_')}
+              />
+            </div>
+            <button
+              type="submit"
+              disabled={submitMutation.isPending}
+              className="w-full bg-[var(--primary)] text-white font-medium py-3 rounded-md hover:bg-[var(--primary)]/90 transition-colors disabled:opacity-50"
+            >
+              {submitMutation.isPending ? "Submitting securely..." : "Submit Sealed Bid"}
+            </button>
+          </form>
+        </div>
+      )}
     </div>
   );
 }

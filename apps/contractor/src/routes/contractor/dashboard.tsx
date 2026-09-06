@@ -46,16 +46,24 @@ function ContractorDashboard() {
   return (
     <div className="space-y-6 animate-fade max-w-6xl mx-auto pb-12">
       
-      {/* Gov Integration Sync Banner */}
+      {/* Data Source Banner — reflects actual query state */}
       <GlassCard className="bg-[var(--primary)]/5 border-[var(--primary)]/20 p-3 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="relative flex h-2.5 w-2.5">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
-            <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-green-500" />
+            {error ? (
+              <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-red-500" />
+            ) : (
+              <>
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
+                <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-green-500" />
+              </>
+            )}
           </div>
-          <span className="text-sm font-semibold tracking-wide">Connected to Civic Sathi Government Integration Hub</span>
+          <span className="text-sm font-semibold tracking-wide">Civic Sathi Operations Data</span>
         </div>
-        <span className="text-[10px] uppercase font-bold text-muted-foreground bg-[var(--surface-elevated)] px-2 py-1 rounded">API Sync: Online</span>
+        <span className="text-[10px] uppercase font-bold text-muted-foreground bg-[var(--surface-elevated)] px-2 py-1 rounded">
+          {error ? 'Offline' : 'Live Data'}
+        </span>
       </GlassCard>
 
       {/* Header */}
@@ -109,7 +117,8 @@ function ContractorDashboard() {
         </GlassCard>
         <GlassCard className="p-5 glass-strong flex flex-col gap-1 lift">
           <div className="flex items-center gap-2 text-[var(--muted-foreground)] mb-2"><Banknote className="h-4 w-4" /> {t('ui.payments_pending')}</div>
-          <span className="text-3xl font-light text-[var(--success)]">₹0.00</span>
+          <span className="text-lg font-light text-[var(--muted-foreground)]">Not available</span>
+          <span className="text-[10px] text-[var(--muted-foreground)]">Payment tracking not yet connected</span>
         </GlassCard>
         <GlassCard className="p-5 glass-strong flex flex-col gap-1 lift">
           <div className="flex items-center gap-2 text-[var(--muted-foreground)] mb-2"><AlertCircle className="h-4 w-4" /> {t('ui.risk_alerts')}</div>

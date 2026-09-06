@@ -93,7 +93,7 @@ function AnalyzingPage() {
             reportCount: 1,
             ward: draft.location?.ward || "Nearby"
           },
-          distance: Math.floor(Math.random() * 200) + 50
+          distance: s.distanceMeters
         })));
         window.clearInterval(timer);
         return;

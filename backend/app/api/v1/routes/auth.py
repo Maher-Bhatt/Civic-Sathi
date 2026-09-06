@@ -83,6 +83,50 @@ def get_me(
     )
 
 
+class MeUpdateIn(BaseModel):
+    name: Optional[str] = None
+    phone: Optional[str] = None
+    ward: Optional[str] = None
+
+
+@router.patch("/me", response_model=MeOut)
+def update_me(
+    body: MeUpdateIn,
+    credentials: HTTPAuthorizationCredentials = Depends(HTTPBearer()),
+    db: Session = Depends(get_db),
+):
+    """Update the current authenticated user's mutable profile fields."""
+    from app.core.security import SECRET_KEY, ALGORITHM
+    import jwt as pyjwt
+    try:
+        payload = pyjwt.decode(credentials.credentials, SECRET_KEY, algorithms=[ALGORITHM])
+    except Exception:
+        raise HTTPException(status_code=401, detail="Invalid or expired token")
+    user = db.get(User, UUID(payload["sub"]))
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    if body.name is not None:
+        user.name = body.name.strip()
+    if body.phone is not None:
+        user.phone = body.phone.strip()
+    if body.ward is not None:
+        user.ward = body.ward.strip()
+    db.commit()
+    db.refresh(user)
+    return MeOut(
+        id=str(user.id),
+        name=user.name,
+        email=user.email,
+        phone=user.phone,
+        role=user.role,
+        city=user.city,
+        department=user.department,
+        ward=user.ward,
+        designation=user.designation,
+        is_super_admin=is_super_admin_user(user),
+    )
+
+
 # ── Admin / Officer setup schema ──────────────────────────────────────────────
 
 class AdminSetupRequest(BaseModel):
