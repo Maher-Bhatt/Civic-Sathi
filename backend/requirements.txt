@@ -19,4 +19,4 @@ testcontainers[postgres]>=4.9,<5
 httpx>=0.27,<1
 # BUG-015: spacy is optional — only include if NLP features are explicitly needed.
 # The application catches ImportError for spacy so it won't crash without it.
-# To use spacy features, install manually: pip install spacy && python -m spacy download en_core_web_sm
+spacy>=3.7,<4
