@@ -286,6 +286,47 @@ function AnalyticsPage() {
         </GlassCard>
 
       </div>
+
+      <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2">
+        <GlassCard elevation="raised" className="jm-chart-card p-5">
+          <SectionLabel>Citizen Sentiment Analysis</SectionLabel>
+          <div className="mt-4 flex flex-col justify-center h-[220px]">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-sm font-medium">Overall Satisfaction</span>
+              <span className="text-xl font-bold text-green-500">68%</span>
+            </div>
+            <div className="w-full bg-[var(--glass)] h-4 rounded-full overflow-hidden border border-[var(--glass-border)]">
+              <div className="bg-green-500 h-full" style={{ width: "68%" }}></div>
+            </div>
+            <p className="text-sm text-muted-foreground mt-4 leading-relaxed">
+              Sentiment improved by <strong className="text-foreground">4%</strong> this week. 
+              <br/><br/>
+              Top Positive Keywords: <em>"Quick resolution"</em>, <em>"Helpful"</em><br/>
+              Top Negative Keywords: <em>"Delayed"</em>, <em>"Still pending"</em>
+            </p>
+          </div>
+        </GlassCard>
+
+        <GlassCard elevation="raised" className="jm-chart-card p-5">
+          <SectionLabel>Predictive Resource Heatmap</SectionLabel>
+          <div className="mt-4 flex flex-col justify-center h-[220px] gap-3">
+            <div className="rounded-xl border border-[var(--glass-border)] bg-[var(--surface-elevated)] p-4 flex items-start gap-4">
+              <div className="w-6 h-6 rounded-full bg-orange-500/20 text-orange-500 flex items-center justify-center shrink-0 mt-1">!</div>
+              <div>
+                <h4 className="font-semibold text-foreground">Ward 4 Sanitation</h4>
+                <p className="text-xs text-muted-foreground mt-1">High concentration of unresolved sanitation issues detected. Predictive model suggests deploying <strong>+2 sanitation crews</strong>.</p>
+              </div>
+            </div>
+            <div className="rounded-xl border border-[var(--glass-border)] bg-[var(--surface-elevated)] p-4 flex items-start gap-4">
+              <div className="w-6 h-6 rounded-full bg-yellow-500/20 text-yellow-500 flex items-center justify-center shrink-0 mt-1">!</div>
+              <div>
+                <h4 className="font-semibold text-foreground">Sector 12 Roads</h4>
+                <p className="text-xs text-muted-foreground mt-1">Pothole reports increasing by 15% daily. Recommend immediate tender generation before monsoon.</p>
+              </div>
+            </div>
+          </div>
+        </GlassCard>
+      </div>
     </div>
   );
 }

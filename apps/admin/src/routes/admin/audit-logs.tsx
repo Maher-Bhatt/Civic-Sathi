@@ -19,6 +19,8 @@ function AuditLogsPage() {
   const [roleFilter, setRoleFilter] = useState("ALL");
   const [entityFilter, setEntityFilter] = useState("ALL");
   const [search, setSearch] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
   const [lastRefreshed, setLastRefreshed] = useState<Date>(new Date());
 
   const loadData = async () => {
@@ -45,6 +47,8 @@ function AuditLogsPage() {
     if (entityFilter !== "ALL" && log.entityType !== entityFilter) return false;
     if (search && !log.actorName.toLowerCase().includes(search.toLowerCase()) &&
         !log.action.toLowerCase().includes(search.toLowerCase())) return false;
+    if (startDate && new Date(log.at) < new Date(startDate)) return false;
+    if (endDate && new Date(log.at) > new Date(new Date(endDate).setHours(23, 59, 59, 999))) return false;
     return true;
   });
 
@@ -69,8 +73,8 @@ function AuditLogsPage() {
       </div>
 
       <GlassCard className="p-4">
-        <div className="flex flex-col md:flex-row gap-4">
-          <div className="relative flex-1">
+        <div className="flex flex-col md:flex-row gap-4 flex-wrap">
+          <div className="relative flex-1 min-w-[200px]">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--muted-foreground)]" />
             <input
               type="text"
@@ -81,7 +85,7 @@ function AuditLogsPage() {
             />
           </div>
           <select 
-            className="ambient-field min-w-[150px]"
+            className="ambient-field min-w-[130px]"
             value={roleFilter}
             onChange={(e) => setRoleFilter(e.target.value)}
           >
@@ -89,13 +93,30 @@ function AuditLogsPage() {
             {uniqueRoles.map(r => <option key={r} value={r}>{r}</option>)}
           </select>
           <select 
-            className="ambient-field min-w-[150px]"
+            className="ambient-field min-w-[130px]"
             value={entityFilter}
             onChange={(e) => setEntityFilter(e.target.value)}
           >
             <option value="ALL">{t('ui.all_entities')}</option>
             {uniqueEntities.map(e => <option key={e} value={e}>{e}</option>)}
           </select>
+          <div className="flex items-center gap-2">
+            <input 
+              type="date" 
+              className="ambient-field text-sm" 
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+              title="Start Date"
+            />
+            <span className="text-muted-foreground">-</span>
+            <input 
+              type="date" 
+              className="ambient-field text-sm"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+              title="End Date"
+            />
+          </div>
         </div>
       </GlassCard>
 

@@ -9,7 +9,17 @@ import {
 import { GlassCard, SectionLabel } from "@/components/ui/glass-card";
 import { LoadingState, ErrorState } from "@/components/ui/states";
 import { toast } from "sonner";
-import { Calendar, Clock, FileText, IndianRupee, CheckCircle2, ArrowLeft } from "lucide-react";
+import {
+  Calendar,
+  Clock,
+  FileText,
+  IndianRupee,
+  CheckCircle2,
+  ArrowLeft,
+  MapPin,
+  Loader2,
+  AlertCircle,
+} from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { useI18n } from "@/lib/i18n";
 
@@ -97,6 +107,10 @@ function ContractorWorkOrderDetail() {
   const [fileData, setFileData] = useState("");
   const [evidenceDesc, setEvidenceDesc] = useState("");
 
+  // Geo-Verification
+  const [isGeoVerified, setIsGeoVerified] = useState(false);
+  const [verifying, setVerifying] = useState(false);
+
   const loadData = async () => {
     try {
       setLoading(true);
@@ -141,9 +155,34 @@ function ContractorWorkOrderDetail() {
     }
   };
 
+  /* ── Location verification handler ────────────────────────────────── */
+  const handleVerifyLocation = () => {
+    if (typeof navigator === "undefined" || !navigator.geolocation) {
+      toast.error("Geolocation is not supported by your browser.");
+      return;
+    }
+    setVerifying(true);
+    navigator.geolocation.getCurrentPosition(
+      (_position) => {
+        setVerifying(false);
+        setIsGeoVerified(true);
+        toast.success("Location verified! On-site check-in successful.");
+      },
+      (err) => {
+        setVerifying(false);
+        toast.error(err.message || "Failed to obtain location. Please enable GPS permissions.");
+      },
+      { enableHighAccuracy: true, timeout: 10000 },
+    );
+  };
+
   /* ── Evidence submit ──────────────────────────────────────────────── */
   const handleEvidenceSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!isGeoVerified) {
+      toast.error("You must be physically present at the site to submit an update.");
+      return;
+    }
     if (!fileData) {
       toast.error("Please select a photo.");
       return;
@@ -310,8 +349,30 @@ function ContractorWorkOrderDetail() {
           {["IN_PROGRESS", "REWORK"].includes(wo.status) && (
             <GlassCard className="p-5 border border-[var(--primary)]/30">
               <SectionLabel className="flex items-center gap-2 text-[var(--primary)]">
-                <FileText size={16} /> {t('ui.submit_field_evidence')}</SectionLabel>
+                <FileText size={16} /> {t('ui.submit_field_evidence')}
+              </SectionLabel>
               <form onSubmit={handleEvidenceSubmit} className="mt-4 space-y-4">
+                
+                {/* Geolocation check-in */}
+                <div>
+                  <button
+                    type="button"
+                    onClick={handleVerifyLocation}
+                    disabled={isGeoVerified || verifying}
+                    className={`w-full flex items-center justify-center gap-2 py-2 rounded-md text-sm font-medium border transition-colors ${
+                      isGeoVerified
+                        ? "bg-[var(--success)]/10 text-[var(--success)] border-[var(--success)]/20"
+                        : "bg-[var(--surface-elevated)] text-[var(--foreground)] border-[var(--glass-border)] hover:bg-[var(--primary)]/10"
+                    }`}
+                  >
+                    <MapPin size={16} />
+                    {verifying ? "Locating..." : isGeoVerified ? "Location Verified (Check-in complete)" : "Check-in at Site (Required)"}
+                  </button>
+                  {!isGeoVerified && (
+                    <p className="text-[10px] text-[var(--critical)] mt-1 ml-1">You must be on-site to submit updates.</p>
+                  )}
+                </div>
+
                 <div>
                   <label className="label-xs block mb-1">{t('ui.stage')}</label>
                   <select
@@ -336,6 +397,15 @@ function ContractorWorkOrderDetail() {
                   />
                 </div>
                 <div>
+                  <label className="label-xs block mb-1">Material Logging (Optional)</label>
+                  <input
+                    type="text"
+                    placeholder="e.g., 2 tons of asphalt, 5 pipes"
+                    className="w-full px-3 py-2 rounded-md bg-[var(--surface)] text-[var(--foreground)] border border-[var(--glass-border)] text-sm focus:outline-none focus:ring-1 focus:ring-[var(--primary)]"
+                  />
+                  <p className="text-[10px] text-[var(--muted-foreground)] mt-1 ml-1">Log materials used to justify budget expenditure.</p>
+                </div>
+                <div>
                   <label className="label-xs block mb-1">{t('ui.photo')}</label>
                   <input
                     type="file"
@@ -353,7 +423,7 @@ function ContractorWorkOrderDetail() {
                 </div>
                 <button
                   type="submit"
-                  disabled={actionLoading || !fileData}
+                  disabled={actionLoading || !fileData || !isGeoVerified}
                   className="w-full py-2 rounded-md text-sm font-medium text-white bg-[var(--primary)] hover:opacity-90 transition-opacity disabled:opacity-50"
                 >
                   {actionLoading ? "Uploading…" : "Upload Evidence"}

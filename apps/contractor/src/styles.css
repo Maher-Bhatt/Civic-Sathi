@@ -96,8 +96,8 @@
   /* Crazy Liquid Glass Surfaces */
   --surface:              rgba(255, 255, 255, 0.78);
   --surface-elevated:     rgba(255, 255, 255, 0.94);
-  --glass:                rgba(255, 255, 255, 0.72);
-  --glass-strong:         rgba(255, 255, 255, 0.88);
+  --glass: rgba(255, 255, 255, 0.90);
+  --glass-strong: rgba(255, 255, 255, 0.98);
   --glass-border:         rgba(255, 111, 0, 0.20);  /* subtle saffron-tinted refraction */
   --glass-border-green:   rgba(14, 138, 75, 0.20);
 
@@ -873,10 +873,10 @@ body.civic-heritage-shell {
   color-scheme: light;
   --background: #f5f0e7;
   --background-secondary: #ece4d8;
-  --surface: rgb(255 255 255 / .58);
-  --surface-elevated: rgb(255 252 247 / .78);
-  --glass: rgb(255 255 255 / .48);
-  --glass-strong: rgb(255 252 247 / .70);
+  --surface: rgb(255 255 255 / .85);
+  --surface-elevated: rgb(255 252 247 / .95);
+  --glass: rgb(255 255 255 / .85);
+  --glass-strong: rgb(255 252 247 / .95);
   --glass-border: rgb(16 27 61 / .16);
   --border: rgb(16 27 61 / .14);
   --input: rgb(16 27 61 / .18);

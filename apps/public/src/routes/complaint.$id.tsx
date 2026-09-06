@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 
 import { useQuery } from "@tanstack/react-query";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Share2 } from "lucide-react";
 
 import { PageShell } from "@/components/site-nav";
 import { AuthGate } from "@/lib/require-auth";
@@ -82,6 +82,24 @@ function ComplaintDetail() {
               <SectionLabel className="tabular-nums">{data.id}</SectionLabel>
               <StatusBadge status={data.status} />
               <SeverityBadge severity={data.severity} />
+              <div className="ml-auto">
+                <button
+                  type="button"
+                  onClick={() => {
+                    const text = `Support my civic report: ${data.category} at ${mapCityId}!`;
+                    const url = window.location.href;
+                    if (navigator.share) {
+                      navigator.share({ title: "Civic Sathi Report", text, url }).catch(() => {});
+                    } else {
+                      window.location.href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text + " " + url)}`;
+                    }
+                  }}
+                  className="inline-flex h-8 items-center gap-1.5 rounded-full border border-border bg-[var(--glass)] px-3 text-xs font-medium text-foreground transition-colors hover:bg-[var(--glass-strong)]"
+                >
+                  <Share2 className="h-3.5 w-3.5" />
+                  Share
+                </button>
+              </div>
             </div>
 
             <GlassCard elevation="raised" className="animate-rise space-y-6 p-5 sm:p-7">

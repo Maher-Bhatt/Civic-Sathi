@@ -32,7 +32,7 @@ function CommandCenterDashboard() {
     refetchInterval: 60000,
   });
 
-  const health = snapshot?.subsystem_health || {
+  const health: Record<string, { status: string; ping: number | string; uptime: string }> = (snapshot?.subsystem_health as any) || {
     municipal: { status: "online", ping: 42, uptime: "99.9%" },
     water: { status: "online", ping: 120, uptime: "98.5%" },
     road: { status: "degraded", ping: 450, uptime: "94.2%" },

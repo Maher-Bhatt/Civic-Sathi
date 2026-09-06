@@ -14,6 +14,7 @@ import { Route as AnalyzingRouteImport } from './routes/analyzing'
 import { Route as ComplaintsRouteImport } from './routes/complaints'
 import { Route as ContractorsRouteImport } from './routes/contractors'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
+import { Route as HubRouteImport } from './routes/hub'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as MapRouteImport } from './routes/map'
 import { Route as NotificationsRouteImport } from './routes/notifications'
@@ -45,6 +46,11 @@ const ContractorsRoute = ContractorsRouteImport.update({
 const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
   id: '/forgot-password',
   path: '/forgot-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HubRoute = HubRouteImport.update({
+  id: '/hub',
+  path: '/hub',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -89,6 +95,7 @@ export interface FileRoutesByFullPath {
   '/complaints': typeof ComplaintsRoute
   '/contractors': typeof ContractorsRoute
   '/forgot-password': typeof ForgotPasswordRoute
+  '/hub': typeof HubRoute
   '/login': typeof LoginRoute
   '/map': typeof MapRoute
   '/notifications': typeof NotificationsRoute
@@ -103,6 +110,7 @@ export interface FileRoutesByTo {
   '/complaints': typeof ComplaintsRoute
   '/contractors': typeof ContractorsRoute
   '/forgot-password': typeof ForgotPasswordRoute
+  '/hub': typeof HubRoute
   '/login': typeof LoginRoute
   '/map': typeof MapRoute
   '/notifications': typeof NotificationsRoute
@@ -118,6 +126,7 @@ export interface FileRoutesById {
   '/complaints': typeof ComplaintsRoute
   '/contractors': typeof ContractorsRoute
   '/forgot-password': typeof ForgotPasswordRoute
+  '/hub': typeof HubRoute
   '/login': typeof LoginRoute
   '/map': typeof MapRoute
   '/notifications': typeof NotificationsRoute
@@ -134,6 +143,7 @@ export interface FileRouteTypes {
     | '/complaints'
     | '/contractors'
     | '/forgot-password'
+    | '/hub'
     | '/login'
     | '/map'
     | '/notifications'
@@ -148,6 +158,7 @@ export interface FileRouteTypes {
     | '/complaints'
     | '/contractors'
     | '/forgot-password'
+    | '/hub'
     | '/login'
     | '/map'
     | '/notifications'
@@ -162,6 +173,7 @@ export interface FileRouteTypes {
     | '/complaints'
     | '/contractors'
     | '/forgot-password'
+    | '/hub'
     | '/login'
     | '/map'
     | '/notifications'
@@ -177,6 +189,7 @@ export interface RootRouteChildren {
   ComplaintsRoute: typeof ComplaintsRoute
   ContractorsRoute: typeof ContractorsRoute
   ForgotPasswordRoute: typeof ForgotPasswordRoute
+  HubRoute: typeof HubRoute
   LoginRoute: typeof LoginRoute
   MapRoute: typeof MapRoute
   NotificationsRoute: typeof NotificationsRoute
@@ -221,6 +234,13 @@ declare module '@tanstack/react-router' {
       path: '/forgot-password'
       fullPath: '/forgot-password'
       preLoaderRoute: typeof ForgotPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/hub': {
+      id: '/hub'
+      path: '/hub'
+      fullPath: '/hub'
+      preLoaderRoute: typeof HubRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -281,6 +301,7 @@ const rootRouteChildren: RootRouteChildren = {
   ComplaintsRoute: ComplaintsRoute,
   ContractorsRoute: ContractorsRoute,
   ForgotPasswordRoute: ForgotPasswordRoute,
+  HubRoute: HubRoute,
   LoginRoute: LoginRoute,
   MapRoute: MapRoute,
   NotificationsRoute: NotificationsRoute,
