@@ -1,12 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useContractorAuth } from "@/lib/contractor-auth";
-import { getContractor, getMyCivicRolePerformance } from "@/services/api";
+import { getContractor, getMyCivicRolePerformance, client } from "@/services/api";
 import { Contractor, CivicRolePerformance } from "@/services/types";
 import { GlassCard, SectionLabel } from "@/components/ui/glass-card";
 import { LoadingState, ErrorState } from "@/components/ui/states";
-import { Building, MapPin, Phone, Mail, FileText, CheckCircle2 } from "lucide-react";
+import { Building, MapPin, Phone, Mail, FileText, CheckCircle2, Edit2, Save, X, Lock } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/contractor/profile")({
   head: () => ({ meta: [{ title: "Profile - Contractor Portal" }] }),
@@ -14,13 +15,23 @@ export const Route = createFileRoute("/contractor/profile")({
 });
 
 function ContractorProfile() {
-    const { t } = useI18n();
+  const { t } = useI18n();
   const { contractor: contractorAuth, signOut } = useContractorAuth();
   const [contractor, setContractor] = useState<Contractor | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
   const [performance, setPerformance] = useState<CivicRolePerformance | null>(null);
   const [performanceError, setPerformanceError] = useState("");
+
+  // Profile edit state
+  const [editing, setEditing] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [form, setForm] = useState({ name: "", phone: "" });
+
+  // Password change state
+  const [changingPwd, setChangingPwd] = useState(false);
+  const [pwdSaving, setPwdSaving] = useState(false);
+  const [pwdForm, setPwdForm] = useState({ current: "", next: "", confirm: "" });
 
   useEffect(() => {
     async function loadData() {
@@ -49,6 +60,16 @@ function ContractorProfile() {
     return () => { active = false; };
   }, [contractorAuth?.id]);
 
+  // Sync form with loaded auth data
+  useEffect(() => {
+    if (contractorAuth) {
+      setForm({
+        name: contractorAuth.name ?? "",
+        phone: (contractorAuth as any).phone ?? "",
+      });
+    }
+  }, [contractorAuth]);
+
   if (loading) return <LoadingState message="Loading profile..." />;
   if (error) return <ErrorState description={error?.message ?? "Error loading profile."} />;
 
@@ -63,6 +84,48 @@ function ContractorProfile() {
   const displayPan = (contractor as any)?.pan ?? "";
   const displayContactPerson = contractor?.contactPerson ?? contractorAuth?.name ?? "";
   const unavailable = t('ui.unavailable', 'Unavailable — not provided by backend');
+
+  async function handleSaveProfile() {
+    setSaving(true);
+    try {
+      const patch: Record<string, string> = {};
+      if (form.name.trim()) patch.name = form.name.trim();
+      if (form.phone.trim()) patch.phone = form.phone.trim();
+      await client.patch("/api/v1/auth/me", patch);
+      toast.success("Profile updated");
+      setEditing(false);
+      window.location.reload();
+    } catch (err: any) {
+      toast.error(err?.message ?? "Failed to update profile");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function handleChangePassword() {
+    if (pwdForm.next !== pwdForm.confirm) {
+      toast.error("New passwords do not match");
+      return;
+    }
+    if (pwdForm.next.length < 8) {
+      toast.error("New password must be at least 8 characters");
+      return;
+    }
+    setPwdSaving(true);
+    try {
+      await client.patch("/api/v1/auth/me", {
+        current_password: pwdForm.current,
+        new_password: pwdForm.next,
+      });
+      toast.success("Password changed successfully");
+      setChangingPwd(false);
+      setPwdForm({ current: "", next: "", confirm: "" });
+    } catch (err: any) {
+      toast.error(err?.message ?? "Failed to change password");
+    } finally {
+      setPwdSaving(false);
+    }
+  }
 
   return (
     <div className="max-w-4xl mx-auto space-y-6 animate-fade">
@@ -173,6 +236,144 @@ function ContractorProfile() {
         </div>
         
       </div>
+
+      {/* Personal Account Edit */}
+      <GlassCard className="p-6 glass-strong">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <SectionLabel>Personal Account</SectionLabel>
+            <p className="text-[var(--muted-foreground)] text-xs mt-1">Update your login name and phone number</p>
+          </div>
+          {!editing && (
+            <button
+              onClick={() => setEditing(true)}
+              className="flex items-center gap-1.5 text-sm text-[var(--primary)] hover:underline"
+            >
+              <Edit2 size={14} /> Edit
+            </button>
+          )}
+        </div>
+        {editing ? (
+          <div className="space-y-4">
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div>
+                <label className="text-xs text-[var(--muted-foreground)] block mb-1">Full Name</label>
+                <input
+                  value={form.name}
+                  onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
+                  className="w-full px-3 py-2 rounded-lg border border-[var(--glass-border)] bg-[var(--surface)] text-sm focus:outline-none focus:ring-1 focus:ring-[var(--primary)]"
+                />
+              </div>
+              <div>
+                <label className="text-xs text-[var(--muted-foreground)] block mb-1">Phone</label>
+                <input
+                  value={form.phone}
+                  onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))}
+                  className="w-full px-3 py-2 rounded-lg border border-[var(--glass-border)] bg-[var(--surface)] text-sm focus:outline-none focus:ring-1 focus:ring-[var(--primary)]"
+                  placeholder="+91 XXXXX XXXXX"
+                />
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <button
+                onClick={handleSaveProfile}
+                disabled={saving}
+                className="flex items-center gap-1.5 px-4 py-2 bg-[var(--primary)] text-white rounded-lg text-sm font-medium hover:opacity-90 disabled:opacity-50"
+              >
+                <Save size={14} /> {saving ? "Saving…" : "Save Changes"}
+              </button>
+              <button
+                onClick={() => setEditing(false)}
+                className="flex items-center gap-1.5 px-4 py-2 border border-[var(--glass-border)] rounded-lg text-sm font-medium hover:bg-[var(--surface-elevated)]"
+              >
+                <X size={14} /> Cancel
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div className="grid gap-3 sm:grid-cols-2">
+            <div className="p-3 bg-[var(--surface)] border border-[var(--glass-border)] rounded-lg">
+              <div className="text-[var(--muted-foreground)] text-xs mb-1">Login Name</div>
+              <div className="text-[var(--foreground)] font-medium">{contractorAuth?.name || unavailable}</div>
+            </div>
+            <div className="p-3 bg-[var(--surface)] border border-[var(--glass-border)] rounded-lg">
+              <div className="text-[var(--muted-foreground)] text-xs mb-1">Login Email</div>
+              <div className="text-[var(--foreground)] font-medium break-all">{displayEmail}</div>
+            </div>
+          </div>
+        )}
+      </GlassCard>
+
+      {/* Password Change */}
+      <GlassCard className="p-6 glass-strong">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <SectionLabel>Security</SectionLabel>
+            <p className="text-[var(--muted-foreground)] text-xs mt-1">Change your login password</p>
+          </div>
+          {!changingPwd && (
+            <button
+              onClick={() => setChangingPwd(true)}
+              className="flex items-center gap-1.5 text-sm text-[var(--primary)] hover:underline"
+            >
+              <Lock size={14} /> Change Password
+            </button>
+          )}
+        </div>
+        {changingPwd ? (
+          <div className="space-y-4">
+            <div>
+              <label className="text-xs text-[var(--muted-foreground)] block mb-1">Current Password</label>
+              <input
+                type="password"
+                value={pwdForm.current}
+                onChange={(e) => setPwdForm((f) => ({ ...f, current: e.target.value }))}
+                className="w-full px-3 py-2 rounded-lg border border-[var(--glass-border)] bg-[var(--surface)] text-sm focus:outline-none focus:ring-1 focus:ring-[var(--primary)]"
+                placeholder="••••••••"
+              />
+            </div>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div>
+                <label className="text-xs text-[var(--muted-foreground)] block mb-1">New Password</label>
+                <input
+                  type="password"
+                  value={pwdForm.next}
+                  onChange={(e) => setPwdForm((f) => ({ ...f, next: e.target.value }))}
+                  className="w-full px-3 py-2 rounded-lg border border-[var(--glass-border)] bg-[var(--surface)] text-sm focus:outline-none focus:ring-1 focus:ring-[var(--primary)]"
+                  placeholder="Min 8 characters"
+                />
+              </div>
+              <div>
+                <label className="text-xs text-[var(--muted-foreground)] block mb-1">Confirm New Password</label>
+                <input
+                  type="password"
+                  value={pwdForm.confirm}
+                  onChange={(e) => setPwdForm((f) => ({ ...f, confirm: e.target.value }))}
+                  className="w-full px-3 py-2 rounded-lg border border-[var(--glass-border)] bg-[var(--surface)] text-sm focus:outline-none focus:ring-1 focus:ring-[var(--primary)]"
+                  placeholder="••••••••"
+                />
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <button
+                onClick={handleChangePassword}
+                disabled={pwdSaving}
+                className="px-4 py-2 bg-[var(--primary)] text-white rounded-lg text-sm font-medium hover:opacity-90 disabled:opacity-50"
+              >
+                {pwdSaving ? "Changing…" : "Change Password"}
+              </button>
+              <button
+                onClick={() => { setChangingPwd(false); setPwdForm({ current: "", next: "", confirm: "" }); }}
+                className="px-4 py-2 border border-[var(--glass-border)] rounded-lg text-sm font-medium hover:bg-[var(--surface-elevated)]"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        ) : (
+          <p className="text-sm text-[var(--muted-foreground)]">Use a strong, unique password. You can also reset it via the forgot password flow on the login page.</p>
+        )}
+      </GlassCard>
 
       <GlassCard className="p-6 glass-strong space-y-5">
         <div className="flex flex-wrap items-end justify-between gap-3">

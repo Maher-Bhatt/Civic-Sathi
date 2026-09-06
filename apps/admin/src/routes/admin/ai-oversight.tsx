@@ -1,21 +1,12 @@
 import { createFileRoute } from '@tanstack/react-router'
+import { useQuery } from '@tanstack/react-query'
 import { GlassCard, SectionLabel } from '@/components/ui/glass-card'
-import { Brain, TrendingUp, AlertTriangle, Activity, Check, X, Info } from 'lucide-react'
+import { Brain, TrendingUp, AlertTriangle, Activity, Check, X } from 'lucide-react'
+import { adminApiFetch } from '@/services/shared-store'
 
 export const Route = createFileRoute('/admin/ai-oversight')({
   component: AiOversightPage,
 })
-
-const SAMPLE_EVAL_DECISIONS = [
-  { id: 'C-2026-9011', input: 'Huge crater on MG Road causing traffic jam', aiCat: 'Roads/Pothole', conf: 98, override: false, final: 'Roads/Pothole' },
-  { id: 'C-2026-9012', input: 'Water smells like sewage in sector 4', aiCat: 'Water Contamination', conf: 92, override: false, final: 'Water Contamination' },
-  { id: 'C-2026-9013', input: 'Tree fell down near the park', aiCat: 'Parks & Rec', conf: 65, override: true, final: 'Emergency/Disaster' },
-  { id: 'C-2026-9014', input: 'Streetlights not working since 3 days', aiCat: 'Electricity', conf: 95, override: false, final: 'Electricity' },
-  { id: 'C-2026-9015', input: 'Garbage pile smelling very bad', aiCat: 'Waste Management', conf: 88, override: false, final: 'Waste Management' },
-  { id: 'C-2026-9016', input: 'Stray dogs biting people', aiCat: 'Public Health', conf: 72, override: true, final: 'Animal Control' },
-  { id: 'C-2026-9017', input: 'Illegal construction blocking footpath', aiCat: 'Traffic', conf: 55, override: true, final: 'Building Violations' },
-  { id: 'C-2026-9018', input: 'Pipe burst spraying water everywhere', aiCat: 'Water Supply', conf: 99, override: false, final: 'Water Supply' },
-]
 
 function getConfidenceColor(conf: number) {
   if (conf >= 90) return 'text-emerald-700 dark:text-emerald-400'
@@ -24,24 +15,51 @@ function getConfidenceColor(conf: number) {
 }
 
 function AiOversightPage() {
+  const { data: stats } = useQuery({
+    queryKey: ['model-run-stats'],
+    queryFn: () => adminApiFetch<any>('/api/v1/admin/model-runs/stats'),
+    refetchInterval: 60_000,
+    retry: 1,
+  })
+
+  const { data: runs } = useQuery({
+    queryKey: ['model-runs'],
+    queryFn: () => adminApiFetch<any>('/api/v1/admin/model-runs?limit=20'),
+    refetchInterval: 60_000,
+    retry: 1,
+  })
+
+  const totalRuns = stats?.total_runs ?? 0
+  const isLive = totalRuns > 0
+
   return (
     <div className="p-6 max-w-7xl mx-auto space-y-8 muni-page-enter">
-      {/* Prototype Concept Notice Banner */}
-      <GlassCard className="p-4 border-amber-500/30 bg-amber-500/10 flex items-start gap-3">
-        <Info className="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
-        <div>
-          <div className="text-sm font-bold text-foreground">
-            Prototype Concept — Not Connected to Live ML Telemetry
+      {/* Live / Prototype Banner */}
+      {!isLive && (
+        <GlassCard className="p-4 border-amber-500/30 bg-amber-500/10 flex items-start gap-3">
+          <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+          <div>
+            <div className="text-sm font-bold">No model run history yet</div>
+            <div className="text-xs text-muted-foreground mt-0.5">
+              AI model runs will appear here once the Groq API key is set and complaints are processed through the AI triage pipeline. Set <code className="font-mono bg-amber-500/10 px-1 rounded">GROQ_API_KEY</code> in your Render environment variables.
+            </div>
           </div>
-          <div className="text-xs text-muted-foreground mt-0.5 leading-relaxed">
-            Live complaint classification does not yet persist historical categorization confidence or officer overrides. The metrics and evaluation rows below are an architectural preview for the SIH AI oversight pipeline.
+        </GlassCard>
+      )}
+
+      {isLive && (
+        <GlassCard className="p-3 border-emerald-500/30 bg-emerald-500/10 flex items-center gap-3">
+          <div className="relative flex h-2.5 w-2.5">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+            <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-500" />
           </div>
-        </div>
-      </GlassCard>
+          <span className="text-sm font-semibold text-emerald-700 dark:text-emerald-400">Live ML Telemetry — Connected to Groq API</span>
+        </GlassCard>
+      )}
 
       <div>
         <SectionLabel>Machine Learning Oversight</SectionLabel>
-        <h1 className="text-3xl font-bold text-foreground tracking-tight mt-1">AI Oversight</h1>
+        <h1 className="text-3xl font-bold tracking-tight mt-1">AI Oversight</h1>
         <p className="text-muted-foreground mt-1 text-sm">Monitor AI model performance, accuracy, and systemic insights</p>
       </div>
 
@@ -55,78 +73,82 @@ function AiOversightPage() {
               </div>
               <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Total AI Decisions</h3>
             </div>
-            <div className="text-3xl font-bold text-foreground">124,592</div>
-            <div className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 mt-2">↑ 12% this month</div>
+            <div className="text-3xl font-bold">{(stats?.total_runs ?? 0).toLocaleString()}</div>
+            <div className="text-xs text-muted-foreground mt-2">All time</div>
           </GlassCard>
           <GlassCard className="p-6">
             <div className="flex items-center gap-3 mb-2">
               <div className="p-2.5 rounded-xl bg-emerald-500/15 text-emerald-600 dark:text-emerald-400">
                 <Activity className="w-5 h-5" />
               </div>
-              <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Accuracy Rate</h3>
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Runs Last 30 Days</h3>
             </div>
-            <div className="text-3xl font-bold text-foreground">94.2%</div>
-            <div className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 mt-2">↑ 0.5% this month</div>
+            <div className="text-3xl font-bold">{(stats?.runs_last_30_days ?? 0).toLocaleString()}</div>
+            <div className="text-xs text-muted-foreground mt-2">Rolling window</div>
           </GlassCard>
           <GlassCard className="p-6">
             <div className="flex items-center gap-3 mb-2">
               <div className="p-2.5 rounded-xl bg-amber-500/15 text-amber-600 dark:text-amber-400">
                 <AlertTriangle className="w-5 h-5" />
               </div>
-              <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Override Rate</h3>
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Error Rate</h3>
             </div>
-            <div className="text-3xl font-bold text-foreground">5.8%</div>
-            <div className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 mt-2">↓ 1.2% this month</div>
+            <div className="text-3xl font-bold">{stats?.error_rate_pct ?? 0}%</div>
+            <div className="text-xs text-muted-foreground mt-2">{stats?.error_count ?? 0} errors</div>
           </GlassCard>
           <GlassCard className="p-6">
             <div className="flex items-center gap-3 mb-2">
               <div className="p-2.5 rounded-xl bg-blue-500/15 text-blue-600 dark:text-blue-400">
                 <TrendingUp className="w-5 h-5" />
               </div>
-              <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Avg Confidence</h3>
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Avg Duration</h3>
             </div>
-            <div className="text-3xl font-bold text-foreground">88.5%</div>
-            <div className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 mt-2">↑ 2.1% this month</div>
+            <div className="text-3xl font-bold">{stats?.avg_duration_ms ?? 0}ms</div>
+            <div className="text-xs text-muted-foreground mt-2">Per model run</div>
           </GlassCard>
         </div>
       </section>
 
       <section>
-        <SectionLabel>Recent AI Triage Decisions</SectionLabel>
+        <SectionLabel>Recent Model Runs</SectionLabel>
         <GlassCard className="mt-4 overflow-hidden p-0">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
               <thead className="bg-[var(--surface-elevated)]/70 uppercase text-[11px] font-semibold text-muted-foreground tracking-wider border-b border-[var(--glass-border)]">
                 <tr>
-                  <th className="px-6 py-3.5">Case ID</th>
-                  <th className="px-6 py-3.5">User Input Summary</th>
-                  <th className="px-6 py-3.5">AI Category</th>
-                  <th className="px-6 py-3.5">Confidence</th>
-                  <th className="px-6 py-3.5">Final Category</th>
-                  <th className="px-6 py-3.5">Override?</th>
+                  <th className="px-6 py-3.5">Run Type</th>
+                  <th className="px-6 py-3.5">Model</th>
+                  <th className="px-6 py-3.5">Inputs</th>
+                  <th className="px-6 py-3.5">Duration</th>
+                  <th className="px-6 py-3.5">Status</th>
+                  <th className="px-6 py-3.5">Timestamp</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[var(--glass-border)]">
-                {SAMPLE_EVAL_DECISIONS.map((decision) => (
-                  <tr key={decision.id} className="hover:bg-[var(--surface-elevated)]/50 transition-colors">
-                    <td className="px-6 py-4 font-mono font-semibold text-xs text-blue-600 dark:text-blue-400">{decision.id}</td>
-                    <td className="px-6 py-4 font-medium text-foreground truncate max-w-xs" title={decision.input}>{decision.input}</td>
-                    <td className="px-6 py-4 text-foreground/80">{decision.aiCat}</td>
-                    <td className="px-6 py-4 font-bold">
-                      <span className={getConfidenceColor(decision.conf)}>{decision.conf}%</span>
+                {!runs?.items?.length ? (
+                  <tr>
+                    <td colSpan={6} className="px-6 py-8 text-center text-muted-foreground text-sm">
+                      {isLive ? "Loading model runs…" : "No model runs recorded yet. Process complaints through the AI triage pipeline to populate this table."}
                     </td>
-                    <td className="px-6 py-4 font-semibold text-foreground">{decision.final}</td>
+                  </tr>
+                ) : runs.items.map((run: any) => (
+                  <tr key={run.id} className="hover:bg-[var(--surface-elevated)]/50 transition-colors">
+                    <td className="px-6 py-4 font-mono text-xs text-blue-600 dark:text-blue-400">{run.run_type}</td>
+                    <td className="px-6 py-4 text-foreground/80">{run.model_name}</td>
+                    <td className="px-6 py-4">{run.input_count}</td>
+                    <td className="px-6 py-4">{run.duration_ms ? `${run.duration_ms}ms` : '—'}</td>
                     <td className="px-6 py-4">
-                      {decision.override ? (
-                        <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-amber-500/15 text-amber-700 dark:text-amber-300 border border-amber-500/30">
-                          Yes
+                      {run.error_message ? (
+                        <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-red-500/15 text-red-600 border border-red-500/30">
+                          <X className="w-3 h-3 mr-1" /> Error
                         </span>
                       ) : (
                         <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30">
-                          No
+                          <Check className="w-3 h-3 mr-1" /> OK
                         </span>
                       )}
                     </td>
+                    <td className="px-6 py-4 text-muted-foreground text-xs">{new Date(run.created_at).toLocaleString()}</td>
                   </tr>
                 ))}
               </tbody>

@@ -84,9 +84,13 @@ def get_me(
 
 
 class MeUpdateIn(BaseModel):
-    name: Optional[str] = None
-    phone: Optional[str] = None
-    ward: Optional[str] = None
+    name: Optional[str] = Field(None, min_length=2, max_length=100)
+    phone: Optional[str] = Field(None, min_length=7, max_length=20)
+    ward: Optional[str] = Field(None, max_length=100)
+    designation: Optional[str] = Field(None, min_length=2, max_length=100)
+    # In-profile password change — requires current_password for verification
+    current_password: Optional[str] = Field(None, min_length=1, max_length=100)
+    new_password: Optional[str] = Field(None, min_length=8, max_length=100)
 
 
 @router.patch("/me", response_model=MeOut)
@@ -95,7 +99,10 @@ def update_me(
     credentials: HTTPAuthorizationCredentials = Depends(HTTPBearer()),
     db: Session = Depends(get_db),
 ):
-    """Update the current authenticated user's mutable profile fields."""
+    """Update the current authenticated user's mutable profile fields.
+    Supports name, phone, ward, designation.
+    Also supports in-profile password change when current_password + new_password are both provided.
+    """
     from app.core.security import SECRET_KEY, ALGORITHM
     import jwt as pyjwt
     try:
@@ -108,9 +115,21 @@ def update_me(
     if body.name is not None:
         user.name = body.name.strip()
     if body.phone is not None:
-        user.phone = body.phone.strip()
+        phone = body.phone.strip()
+        if len(phone) < 7:
+            raise HTTPException(status_code=400, detail="A valid phone number is required (min 7 digits)")
+        user.phone = phone
     if body.ward is not None:
         user.ward = body.ward.strip()
+    if body.designation is not None:
+        user.designation = body.designation.strip()
+    # In-profile password change
+    if body.new_password is not None:
+        if not body.current_password:
+            raise HTTPException(status_code=400, detail="current_password is required to set a new password")
+        if not user.password_hash or not verify_password(body.current_password, user.password_hash):
+            raise HTTPException(status_code=401, detail="Current password is incorrect")
+        user.password_hash = hash_password(body.new_password)
     db.commit()
     db.refresh(user)
     return MeOut(

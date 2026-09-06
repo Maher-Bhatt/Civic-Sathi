@@ -21,7 +21,6 @@ function MuniLoginPage() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [city, setCity] = useState<CityId>("mumbai");
   const [remember, setRemember] = useState(true);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -39,7 +38,7 @@ function MuniLoginPage() {
     setBusy(true);
     setError(null);
     try {
-      await signIn(email.trim().toLowerCase(), password, city);
+      await signIn(email.trim().toLowerCase(), password);
       toast.success("Signed in to Municipal Intelligence");
       void navigate({ to: "/dashboard" as any });
     } catch (err: any) {
@@ -94,23 +93,8 @@ function MuniLoginPage() {
             error={error ?? undefined}
           />
 
-          <div>
-            <label className="label-xs mb-1.5 block">{t("ui.city")}</label>
-            <select
-              value={city}
-              onChange={(e) => setCity(e.target.value as CityId)}
-              className="filter-input"
-            >
-              {CITIES.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.name}
-                </option>
-              ))}
-            </select>
-          </div>
-
           <div className="rounded-lg border border-[var(--glass-border)] bg-[var(--glass)] px-3 py-2 text-xs text-muted-foreground">
-            <p>Your role is assigned to your professional account and verified by the backend. It cannot be selected or changed on the login screen.</p>
+            <p>Your role and city are assigned to your professional account and verified by the backend. They cannot be selected or changed on the login screen.</p>
             <p className="mt-1.5 text-[11px] text-foreground/75">Supported municipal roles: Commissioner / Collector, Department Head, Supervisor, and Ward Officer.</p>
           </div>
 

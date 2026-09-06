@@ -4,6 +4,7 @@ import { type CityId } from "@/services/cities";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/lib/i18n";
 import { getCityVisuals } from "@civicsathi/visual-system";
+import { GlassCard } from "@/components/ui/glass-card";
 
 interface HeritageStory {
   id: string;
@@ -322,50 +323,52 @@ export function CityHeritagePanel({
   return (
     <section id="city-heritage" className="space-y-6 pt-16 sm:pt-24">
       {/* Section Header */}
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-        <div className="space-y-2">
-          <div className="inline-flex items-center gap-2 rounded-full border border-orange-500/30 bg-orange-500/10 px-3.5 py-1">
-            <Sparkles className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400" />
-            <span className="text-[0.68rem] tracking-[0.14em] font-semibold text-amber-800 dark:text-amber-300 uppercase">
-              {t("heritage.heading", "Indian Civic Heritage & Historical Engineering")}
-            </span>
+      <GlassCard className="p-6 sm:p-8 space-y-4">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div className="space-y-3">
+            <div className="inline-flex items-center gap-2 rounded-full border border-orange-500/30 bg-orange-500/10 px-3.5 py-1">
+              <Sparkles className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400" />
+              <span className="text-[0.68rem] tracking-[0.14em] font-semibold text-amber-800 dark:text-amber-300 uppercase">
+                {t("heritage.heading", "Indian Civic Heritage & Historical Engineering")}
+              </span>
+            </div>
+            <h2 className="text-2xl font-bold tracking-tight sm:text-3xl lg:text-4xl text-foreground">
+              {cityData.cityName} <span className="jm-indian-gradient-text">· {cityData.cityTitle}</span>
+            </h2>
+            <p className="text-sm font-medium text-amber-700 dark:text-amber-400">
+              {cityData.vernacularName}
+            </p>
           </div>
-          <h2 className="text-2xl font-bold tracking-tight sm:text-3xl lg:text-4xl text-[var(--foreground)]">
-            {cityData.cityName} <span className="jm-indian-gradient-text">· {cityData.cityTitle}</span>
-          </h2>
-          <p className="text-sm font-medium text-amber-700 dark:text-amber-400">
-            {cityData.vernacularName}
-          </p>
+
+          {/* City Toggle if callback provided */}
+          {onSelectCity && (
+            <div className="flex flex-wrap items-center gap-1.5 p-1 rounded-xl bg-[var(--surface-elevated)] border border-[var(--glass-border)] shadow-sm">
+              {cities.map((c) => (
+                <button
+                  key={c.id}
+                  type="button"
+                  onClick={() => {
+                    onSelectCity(c.id);
+                    setActiveStoryId(null);
+                  }}
+                  className={cn(
+                    "px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200",
+                    cityId === c.id
+                      ? "bg-primary text-primary-foreground shadow-sm"
+                      : "text-muted-foreground hover:text-foreground"
+                  )}
+                >
+                  {c.label}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
-        {/* City Toggle if callback provided */}
-        {onSelectCity && (
-          <div className="flex flex-wrap items-center gap-1.5 p-1 rounded-xl bg-white/60 dark:bg-stone-900/60 backdrop-blur-md border border-stone-200/50 dark:border-stone-800/50 shadow-sm">
-            {cities.map((c) => (
-              <button
-                key={c.id}
-                type="button"
-                onClick={() => {
-                  onSelectCity(c.id);
-                  setActiveStoryId(null);
-                }}
-                className={cn(
-                  "px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200",
-                  cityId === c.id
-                    ? "bg-[#1A2744] text-white shadow-sm"
-                    : "text-muted-foreground hover:text-foreground"
-                )}
-              >
-                {c.label}
-              </button>
-            ))}
-          </div>
-        )}
-      </div>
-
-      <p className="max-w-3xl text-sm leading-relaxed text-muted-foreground">
-        {cityData.intro}
-      </p>
+        <p className="max-w-3xl text-sm leading-relaxed text-foreground font-medium">
+          {cityData.intro}
+        </p>
+      </GlassCard>
 
       {/* Stories Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -378,10 +381,10 @@ export function CityHeritagePanel({
               type="button"
               onClick={() => setActiveStoryId(s.id)}
               className={cn(
-                "p-5 text-left transition-all border rounded-2xl group backdrop-blur-md",
+                "p-5 text-left transition-all border rounded-2xl group",
                 isActive
-                  ? "border-[#F4801A] bg-white/80 dark:bg-stone-900/80 shadow-md ring-1 ring-[#F4801A]"
-                  : "border-stone-200/50 dark:border-stone-800/50 bg-white/60 dark:bg-stone-900/60 hover:border-stone-300/60 hover:bg-white/70"
+                  ? "border-[#F4801A] bg-[var(--surface-elevated)] shadow-md ring-1 ring-[#F4801A]"
+                  : "border-[var(--glass-border)] bg-[var(--glass)] hover:bg-[var(--surface)]"
               )}
             >
               <div className="space-y-2">
@@ -399,7 +402,7 @@ export function CityHeritagePanel({
                 <h3 className="text-sm font-bold text-foreground line-clamp-2">{s.title}</h3>
                 <p className="text-xs text-muted-foreground line-clamp-2">{s.tagline}</p>
               </div>
-              <div className="pt-2 border-t border-stone-100 dark:border-stone-800">
+              <div className="pt-2 border-t border-[var(--glass-border)] mt-3">
                 <span className="text-[11px] font-medium text-amber-600 dark:text-amber-400">
                   {s.vernacular}
                 </span>
@@ -410,7 +413,7 @@ export function CityHeritagePanel({
       </div>
 
       {/* Active Story Spotlight */}
-      <div className="p-6 rounded-xl border border-stone-200/50 dark:border-stone-800/50 bg-white/60 dark:bg-stone-900/60 backdrop-blur-md shadow-sm">
+      <GlassCard className="p-6">
         <div className="flex items-start gap-4">
           <span
             className="p-3 rounded-xl hidden sm:inline-flex"
@@ -436,7 +439,7 @@ export function CityHeritagePanel({
             </blockquote>
           </div>
         </div>
-      </div>
+      </GlassCard>
     </section>
   );
 }

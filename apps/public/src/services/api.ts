@@ -259,9 +259,9 @@ export async function updateProfile(patch: Partial<User>): Promise<User> {
   return next;
 }
 
-function normalizeComplaint(raw: any, fallbackInput?: any): Complaint {
+function normalizeComplaint(raw: any, fallbackInput?: any): Complaint | null {
   const source = raw?.data || raw;
-  if (!source) return null as any;
+  if (!source) return null;
 
   const sourceLocation = source.location || {};
   const fallbackLocation = fallbackInput?.location || {};
@@ -362,7 +362,7 @@ export async function createComplaint(input: any): Promise<Complaint> {
 export async function getMyComplaints(): Promise<Complaint[]> {
   const res = await api.complaints.list({ limit: 100 });
   const list = res?.items ?? res?.data ?? res;
-  return (Array.isArray(list) ? list : []).map((c) => normalizeComplaint(c));
+  return (Array.isArray(list) ? list : []).map((c) => normalizeComplaint(c)).filter((c): c is Complaint => c !== null);
 }
 
 export async function getComplaint(id: string): Promise<Complaint> {

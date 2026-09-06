@@ -21,10 +21,13 @@ import {
   Brain,
   Network,
   Map,
+  Sun,
+  Moon,
 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { useI18n } from "@/lib/i18n";
+import { useTheme } from "@/lib/theme";
 
 export const Route = createFileRoute("/admin")({
   component: AdminLayout,
@@ -73,6 +76,9 @@ function AdminShell() {
   const { admin, signOut } = useAdminAuth();
   const { navigate } = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { mode, setMode } = useTheme();
+  const nextMode = mode === 'dark' ? 'light' : mode === 'light' ? 'system' : 'dark';
+  const themeLabel = mode === 'dark' ? '🌙' : mode === 'light' ? '☀️' : '⚙️';
 
   const handleSignOut = () => {
     signOut();
@@ -155,6 +161,14 @@ function AdminShell() {
         </nav>
 
         <div className="admin-sidebar-footer">
+          <button
+            onClick={() => setMode(nextMode)}
+            className="flex items-center gap-2 w-full px-3 py-2 text-sm text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--surface-elevated)] rounded-md transition-colors capitalize mb-2"
+            title={`Theme: ${mode} — click to switch to ${nextMode}`}
+          >
+            <span>{themeLabel}</span>
+            <span className="capitalize">{mode} mode</span>
+          </button>
           <div className="admin-profile-card">
             <div className="admin-avatar">{admin?.name?.charAt(0) || "M"}</div>
             <div className="min-w-0 flex-1">

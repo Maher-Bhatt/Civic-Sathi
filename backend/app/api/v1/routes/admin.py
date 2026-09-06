@@ -1557,3 +1557,63 @@ def reconcile_reputation(
     ))
     db.commit()
     return {"success": True, **result}
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# AI / ML Oversight — model run history
+# ─────────────────────────────────────────────────────────────────────────────
+
+@router.get("/model-runs")
+def list_model_runs(
+    limit: int = Query(50, ge=1, le=200),
+    offset: int = Query(0, ge=0),
+    run_type: Optional[str] = None,
+    db: Session = Depends(get_db),
+    current: dict = Depends(require_admin),
+):
+    """List ML/AI model execution history for AI oversight dashboard."""
+    from app.models.audit import ModelRun
+    query = db.query(ModelRun).order_by(ModelRun.created_at.desc()).offset(offset).limit(limit)
+    if run_type:
+        query = query.filter(ModelRun.run_type == run_type)
+    runs = query.all()
+    total = db.query(func.count(ModelRun.id)).scalar() or 0
+    return {
+        "total": total,
+        "items": [
+            {
+                "id": str(r.id),
+                "run_type": r.run_type,
+                "model_name": r.model_name,
+                "input_count": r.input_count,
+                "output_summary": r.output_summary_json,
+                "duration_ms": r.duration_ms,
+                "error_message": r.error_message,
+                "created_at": r.created_at.isoformat(),
+            }
+            for r in runs
+        ],
+    }
+
+
+@router.get("/model-runs/stats")
+def model_run_stats(
+    db: Session = Depends(get_db),
+    current: dict = Depends(require_admin),
+):
+    """Aggregate stats for AI Oversight KPIs."""
+    from app.models.audit import ModelRun
+    from datetime import timedelta
+    since_30d = datetime.now(timezone.utc) - timedelta(days=30)
+    total = int(db.query(func.count(ModelRun.id)).scalar() or 0)
+    total_30d = int(db.query(func.count(ModelRun.id)).filter(ModelRun.created_at >= since_30d).scalar() or 0)
+    error_count = int(db.query(func.count(ModelRun.id)).filter(ModelRun.error_message.is_not(None)).scalar() or 0)
+    avg_duration = db.query(func.avg(ModelRun.duration_ms)).filter(ModelRun.duration_ms.is_not(None)).scalar()
+    return {
+        "total_runs": total,
+        "runs_last_30_days": total_30d,
+        "error_count": error_count,
+        "error_rate_pct": round(error_count / max(1, total) * 100, 1),
+        "avg_duration_ms": round(float(avg_duration or 0), 1),
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+    }

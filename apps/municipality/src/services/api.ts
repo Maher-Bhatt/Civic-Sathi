@@ -114,7 +114,7 @@ function normalizeOfficer(
 export async function muniLogin(input: {
   email: string;
   password: string;
-  city: CityId;
+  city?: CityId;
   designation?: string;
 }): Promise<Officer> {
   try {

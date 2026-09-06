@@ -702,7 +702,7 @@ function normalizeAdminUser(userData: any, fallbackEmail = ""): AdminUser {
   };
 }
 
-async function adminApiFetch<T>(path: string, options: RequestInit = {}): Promise<T> {
+export async function adminApiFetch<T>(path: string, options: RequestInit = {}): Promise<T> {
   const token = getAdminToken();
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
