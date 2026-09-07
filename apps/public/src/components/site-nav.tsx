@@ -19,7 +19,6 @@ const primaryLinks = [
 ] as const;
 
 const secondaryLinks = [
-  { to: "/presentation", tKey: "nav.presentation", defaultLabel: "📊 Architecture Pitch Deck" },
   { to: "/state-command-center", tKey: "nav.command_center", defaultLabel: "🏛️ Maharashtra Command Center" },
   { to: "/live-orchestration", tKey: "nav.live_orchestration", defaultLabel: "⚡ Live Orchestrator (SIH26129)" },
   { to: "/integration-hub", tKey: "nav.integration_hub", defaultLabel: "🔌 Government Integration Hub" },

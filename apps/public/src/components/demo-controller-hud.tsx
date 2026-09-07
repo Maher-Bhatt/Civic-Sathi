@@ -71,13 +71,6 @@ const DEMO_STEPS = [
     badge: "7. MDM",
     description: "Identity deduplication & Golden Record merge",
   },
-  {
-    step: 8,
-    title: "Architecture Pitch Deck",
-    route: "/presentation",
-    badge: "8. Pitch",
-    description: "SIH26129 India Stack & X-Road presentation",
-  },
 ];
 
 export function DemoControllerHUD() {

@@ -22,7 +22,6 @@ import { Route as LiveOrchestrationRouteImport } from './routes/live-orchestrati
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as MapRouteImport } from './routes/map'
 import { Route as NotificationsRouteImport } from './routes/notifications'
-import { Route as PresentationRouteImport } from './routes/presentation'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as ReportRouteImport } from './routes/report'
@@ -96,11 +95,6 @@ const NotificationsRoute = NotificationsRouteImport.update({
   path: '/notifications',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PresentationRoute = PresentationRouteImport.update({
-  id: '/presentation',
-  path: '/presentation',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ProfileRoute = ProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
@@ -151,7 +145,6 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/map': typeof MapRoute
   '/notifications': typeof NotificationsRoute
-  '/presentation': typeof PresentationRoute
   '/profile': typeof ProfileRoute
   '/register': typeof RegisterRoute
   '/report': typeof ReportRoute
@@ -174,7 +167,6 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/map': typeof MapRoute
   '/notifications': typeof NotificationsRoute
-  '/presentation': typeof PresentationRoute
   '/profile': typeof ProfileRoute
   '/register': typeof RegisterRoute
   '/report': typeof ReportRoute
@@ -198,7 +190,6 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/map': typeof MapRoute
   '/notifications': typeof NotificationsRoute
-  '/presentation': typeof PresentationRoute
   '/profile': typeof ProfileRoute
   '/register': typeof RegisterRoute
   '/report': typeof ReportRoute
@@ -223,7 +214,6 @@ export interface FileRouteTypes {
     | '/login'
     | '/map'
     | '/notifications'
-    | '/presentation'
     | '/profile'
     | '/register'
     | '/report'
@@ -246,7 +236,6 @@ export interface FileRouteTypes {
     | '/login'
     | '/map'
     | '/notifications'
-    | '/presentation'
     | '/profile'
     | '/register'
     | '/report'
@@ -269,7 +258,6 @@ export interface FileRouteTypes {
     | '/login'
     | '/map'
     | '/notifications'
-    | '/presentation'
     | '/profile'
     | '/register'
     | '/report'
@@ -293,7 +281,6 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   MapRoute: typeof MapRoute
   NotificationsRoute: typeof NotificationsRoute
-  PresentationRoute: typeof PresentationRoute
   ProfileRoute: typeof ProfileRoute
   RegisterRoute: typeof RegisterRoute
   ReportRoute: typeof ReportRoute
@@ -396,13 +383,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NotificationsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/presentation': {
-      id: '/presentation'
-      path: '/presentation'
-      fullPath: '/presentation'
-      preLoaderRoute: typeof PresentationRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/profile': {
       id: '/profile'
       path: '/profile'
@@ -469,7 +449,6 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   MapRoute: MapRoute,
   NotificationsRoute: NotificationsRoute,
-  PresentationRoute: PresentationRoute,
   ProfileRoute: ProfileRoute,
   RegisterRoute: RegisterRoute,
   ReportRoute: ReportRoute,
