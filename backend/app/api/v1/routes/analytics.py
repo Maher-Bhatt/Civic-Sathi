@@ -90,3 +90,46 @@ def trigger_hotspot_detection(
     """Run hotspot detection logic on civic issues (officer only)."""
     service = AnalyticsService(db)
     return service.detect_hotspots()
+
+
+@router.get("/state-command-center")
+def get_state_command_center():
+    """
+    State-level command center telemetry for Government of Maharashtra (SIH26129).
+    Aggregates active cases, SLA metrics, and digital twin coordinates across 27 municipal corporations.
+    """
+    from app.services.state_command_service import get_state_command_center_telemetry
+    return get_state_command_center_telemetry()
+
+
+@router.get("/predict-systemic-risk")
+def predict_systemic_risk(
+    title: str = "High-Pressure Water Conduit Rupture Causing Road Subsidence",
+    description: str = "A 300mm underground municipal water main has burst beneath asphalt. Water gushing onto carriageway, causing sub-base soil erosion, crater, and pavement collapse.",
+    severity: str = "CRITICAL",
+    priority: str = "P1",
+    departments: str = "water,roads",
+    lat: float = 19.0596,
+    lng: float = 72.8295,
+    ward_name: str = "Ward H-West (Bandra West)",
+    city_name: str = "Mumbai",
+):
+    """
+    "What Happens If We Don't Fix This?"
+    Predictive systemic risk simulator computing cascading infrastructure collapse radius,
+    affected population, and financial escalation cost multiplier.
+    """
+    from app.services.predictive_risk import calculate_systemic_risk
+    dept_list = [d.strip() for d in departments.split(",") if d.strip()]
+    return calculate_systemic_risk(
+        case_title=title,
+        description=description,
+        severity=severity,
+        priority=priority,
+        departments=dept_list,
+        lat=lat,
+        lng=lng,
+        ward_name=ward_name,
+        city_name=city_name,
+    )
+

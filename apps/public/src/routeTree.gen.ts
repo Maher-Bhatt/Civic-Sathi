@@ -12,15 +12,23 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AnalyzingRouteImport } from './routes/analyzing'
 import { Route as ComplaintsRouteImport } from './routes/complaints'
+import { Route as ConsentRouteImport } from './routes/consent'
 import { Route as ContractorsRouteImport } from './routes/contractors'
+import { Route as ExceptionsRouteImport } from './routes/exceptions'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as HubRouteImport } from './routes/hub'
+import { Route as IntegrationHubRouteImport } from './routes/integration-hub'
+import { Route as LiveOrchestrationRouteImport } from './routes/live-orchestration'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as MapRouteImport } from './routes/map'
 import { Route as NotificationsRouteImport } from './routes/notifications'
+import { Route as PresentationRouteImport } from './routes/presentation'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as ReportRouteImport } from './routes/report'
+import { Route as StateCommandCenterRouteImport } from './routes/state-command-center'
+import { Route as SubmitRouteImport } from './routes/submit'
+import { Route as CaseIdRouteImport } from './routes/case.$id'
 import { Route as ComplaintIdRouteImport } from './routes/complaint.$id'
 
 const IndexRoute = IndexRouteImport.update({
@@ -38,9 +46,19 @@ const ComplaintsRoute = ComplaintsRouteImport.update({
   path: '/complaints',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ConsentRoute = ConsentRouteImport.update({
+  id: '/consent',
+  path: '/consent',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ContractorsRoute = ContractorsRouteImport.update({
   id: '/contractors',
   path: '/contractors',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExceptionsRoute = ExceptionsRouteImport.update({
+  id: '/exceptions',
+  path: '/exceptions',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
@@ -51,6 +69,16 @@ const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
 const HubRoute = HubRouteImport.update({
   id: '/hub',
   path: '/hub',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IntegrationHubRoute = IntegrationHubRouteImport.update({
+  id: '/integration-hub',
+  path: '/integration-hub',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LiveOrchestrationRoute = LiveOrchestrationRouteImport.update({
+  id: '/live-orchestration',
+  path: '/live-orchestration',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -68,6 +96,11 @@ const NotificationsRoute = NotificationsRouteImport.update({
   path: '/notifications',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PresentationRoute = PresentationRouteImport.update({
+  id: '/presentation',
+  path: '/presentation',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProfileRoute = ProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
@@ -83,6 +116,21 @@ const ReportRoute = ReportRouteImport.update({
   path: '/report',
   getParentRoute: () => rootRouteImport,
 } as any)
+const StateCommandCenterRoute = StateCommandCenterRouteImport.update({
+  id: '/state-command-center',
+  path: '/state-command-center',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SubmitRoute = SubmitRouteImport.update({
+  id: '/submit',
+  path: '/submit',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CaseIdRoute = CaseIdRouteImport.update({
+  id: '/case/$id',
+  path: '/case/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ComplaintIdRoute = ComplaintIdRouteImport.update({
   id: '/complaint/$id',
   path: '/complaint/$id',
@@ -93,30 +141,46 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/analyzing': typeof AnalyzingRoute
   '/complaints': typeof ComplaintsRoute
+  '/consent': typeof ConsentRoute
   '/contractors': typeof ContractorsRoute
+  '/exceptions': typeof ExceptionsRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/hub': typeof HubRoute
+  '/integration-hub': typeof IntegrationHubRoute
+  '/live-orchestration': typeof LiveOrchestrationRoute
   '/login': typeof LoginRoute
   '/map': typeof MapRoute
   '/notifications': typeof NotificationsRoute
+  '/presentation': typeof PresentationRoute
   '/profile': typeof ProfileRoute
   '/register': typeof RegisterRoute
   '/report': typeof ReportRoute
+  '/state-command-center': typeof StateCommandCenterRoute
+  '/submit': typeof SubmitRoute
+  '/case/$id': typeof CaseIdRoute
   '/complaint/$id': typeof ComplaintIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/analyzing': typeof AnalyzingRoute
   '/complaints': typeof ComplaintsRoute
+  '/consent': typeof ConsentRoute
   '/contractors': typeof ContractorsRoute
+  '/exceptions': typeof ExceptionsRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/hub': typeof HubRoute
+  '/integration-hub': typeof IntegrationHubRoute
+  '/live-orchestration': typeof LiveOrchestrationRoute
   '/login': typeof LoginRoute
   '/map': typeof MapRoute
   '/notifications': typeof NotificationsRoute
+  '/presentation': typeof PresentationRoute
   '/profile': typeof ProfileRoute
   '/register': typeof RegisterRoute
   '/report': typeof ReportRoute
+  '/state-command-center': typeof StateCommandCenterRoute
+  '/submit': typeof SubmitRoute
+  '/case/$id': typeof CaseIdRoute
   '/complaint/$id': typeof ComplaintIdRoute
 }
 export interface FileRoutesById {
@@ -124,15 +188,23 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/analyzing': typeof AnalyzingRoute
   '/complaints': typeof ComplaintsRoute
+  '/consent': typeof ConsentRoute
   '/contractors': typeof ContractorsRoute
+  '/exceptions': typeof ExceptionsRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/hub': typeof HubRoute
+  '/integration-hub': typeof IntegrationHubRoute
+  '/live-orchestration': typeof LiveOrchestrationRoute
   '/login': typeof LoginRoute
   '/map': typeof MapRoute
   '/notifications': typeof NotificationsRoute
+  '/presentation': typeof PresentationRoute
   '/profile': typeof ProfileRoute
   '/register': typeof RegisterRoute
   '/report': typeof ReportRoute
+  '/state-command-center': typeof StateCommandCenterRoute
+  '/submit': typeof SubmitRoute
+  '/case/$id': typeof CaseIdRoute
   '/complaint/$id': typeof ComplaintIdRoute
 }
 export interface FileRouteTypes {
@@ -141,45 +213,69 @@ export interface FileRouteTypes {
     | '/'
     | '/analyzing'
     | '/complaints'
+    | '/consent'
     | '/contractors'
+    | '/exceptions'
     | '/forgot-password'
     | '/hub'
+    | '/integration-hub'
+    | '/live-orchestration'
     | '/login'
     | '/map'
     | '/notifications'
+    | '/presentation'
     | '/profile'
     | '/register'
     | '/report'
+    | '/state-command-center'
+    | '/submit'
+    | '/case/$id'
     | '/complaint/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/analyzing'
     | '/complaints'
+    | '/consent'
     | '/contractors'
+    | '/exceptions'
     | '/forgot-password'
     | '/hub'
+    | '/integration-hub'
+    | '/live-orchestration'
     | '/login'
     | '/map'
     | '/notifications'
+    | '/presentation'
     | '/profile'
     | '/register'
     | '/report'
+    | '/state-command-center'
+    | '/submit'
+    | '/case/$id'
     | '/complaint/$id'
   id:
     | '__root__'
     | '/'
     | '/analyzing'
     | '/complaints'
+    | '/consent'
     | '/contractors'
+    | '/exceptions'
     | '/forgot-password'
     | '/hub'
+    | '/integration-hub'
+    | '/live-orchestration'
     | '/login'
     | '/map'
     | '/notifications'
+    | '/presentation'
     | '/profile'
     | '/register'
     | '/report'
+    | '/state-command-center'
+    | '/submit'
+    | '/case/$id'
     | '/complaint/$id'
   fileRoutesById: FileRoutesById
 }
@@ -187,15 +283,23 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AnalyzingRoute: typeof AnalyzingRoute
   ComplaintsRoute: typeof ComplaintsRoute
+  ConsentRoute: typeof ConsentRoute
   ContractorsRoute: typeof ContractorsRoute
+  ExceptionsRoute: typeof ExceptionsRoute
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   HubRoute: typeof HubRoute
+  IntegrationHubRoute: typeof IntegrationHubRoute
+  LiveOrchestrationRoute: typeof LiveOrchestrationRoute
   LoginRoute: typeof LoginRoute
   MapRoute: typeof MapRoute
   NotificationsRoute: typeof NotificationsRoute
+  PresentationRoute: typeof PresentationRoute
   ProfileRoute: typeof ProfileRoute
   RegisterRoute: typeof RegisterRoute
   ReportRoute: typeof ReportRoute
+  StateCommandCenterRoute: typeof StateCommandCenterRoute
+  SubmitRoute: typeof SubmitRoute
+  CaseIdRoute: typeof CaseIdRoute
   ComplaintIdRoute: typeof ComplaintIdRoute
 }
 
@@ -222,11 +326,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ComplaintsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/consent': {
+      id: '/consent'
+      path: '/consent'
+      fullPath: '/consent'
+      preLoaderRoute: typeof ConsentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/contractors': {
       id: '/contractors'
       path: '/contractors'
       fullPath: '/contractors'
       preLoaderRoute: typeof ContractorsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/exceptions': {
+      id: '/exceptions'
+      path: '/exceptions'
+      fullPath: '/exceptions'
+      preLoaderRoute: typeof ExceptionsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/forgot-password': {
@@ -241,6 +359,20 @@ declare module '@tanstack/react-router' {
       path: '/hub'
       fullPath: '/hub'
       preLoaderRoute: typeof HubRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/integration-hub': {
+      id: '/integration-hub'
+      path: '/integration-hub'
+      fullPath: '/integration-hub'
+      preLoaderRoute: typeof IntegrationHubRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/live-orchestration': {
+      id: '/live-orchestration'
+      path: '/live-orchestration'
+      fullPath: '/live-orchestration'
+      preLoaderRoute: typeof LiveOrchestrationRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -264,6 +396,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NotificationsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/presentation': {
+      id: '/presentation'
+      path: '/presentation'
+      fullPath: '/presentation'
+      preLoaderRoute: typeof PresentationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/profile': {
       id: '/profile'
       path: '/profile'
@@ -285,6 +424,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ReportRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/state-command-center': {
+      id: '/state-command-center'
+      path: '/state-command-center'
+      fullPath: '/state-command-center'
+      preLoaderRoute: typeof StateCommandCenterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/submit': {
+      id: '/submit'
+      path: '/submit'
+      fullPath: '/submit'
+      preLoaderRoute: typeof SubmitRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/case/$id': {
+      id: '/case/$id'
+      path: '/case/$id'
+      fullPath: '/case/$id'
+      preLoaderRoute: typeof CaseIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/complaint/$id': {
       id: '/complaint/$id'
       path: '/complaint/$id'
@@ -299,15 +459,23 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AnalyzingRoute: AnalyzingRoute,
   ComplaintsRoute: ComplaintsRoute,
+  ConsentRoute: ConsentRoute,
   ContractorsRoute: ContractorsRoute,
+  ExceptionsRoute: ExceptionsRoute,
   ForgotPasswordRoute: ForgotPasswordRoute,
   HubRoute: HubRoute,
+  IntegrationHubRoute: IntegrationHubRoute,
+  LiveOrchestrationRoute: LiveOrchestrationRoute,
   LoginRoute: LoginRoute,
   MapRoute: MapRoute,
   NotificationsRoute: NotificationsRoute,
+  PresentationRoute: PresentationRoute,
   ProfileRoute: ProfileRoute,
   RegisterRoute: RegisterRoute,
   ReportRoute: ReportRoute,
+  StateCommandCenterRoute: StateCommandCenterRoute,
+  SubmitRoute: SubmitRoute,
+  CaseIdRoute: CaseIdRoute,
   ComplaintIdRoute: ComplaintIdRoute,
 }
 export const routeTree = rootRouteImport

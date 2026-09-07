@@ -7,16 +7,25 @@ import { useAuth } from "@/lib/auth";
 import { useI18n } from "@/lib/i18n";
 import { LanguageToggle } from "@/components/language-toggle";
 import { InstallPwaButton } from "@/components/install-pwa-button";
+import { DemoControllerHUD } from "@/components/demo-controller-hud";
 import { cn } from "@/lib/utils";
 
 const primaryLinks = [
   { to: "/", tKey: "nav.home", defaultLabel: "Home" },
+  { to: "/submit", tKey: "nav.submit", defaultLabel: "⚡ AI Smart Composer" },
   { to: "/map", tKey: "nav.map", defaultLabel: "Civic Map" },
   { to: "/report", tKey: "nav.report", defaultLabel: "Report Problem" },
   { to: "/complaints", tKey: "nav.complaints", defaultLabel: "My Complaints" },
 ] as const;
 
 const secondaryLinks = [
+  { to: "/presentation", tKey: "nav.presentation", defaultLabel: "📊 Architecture Pitch Deck" },
+  { to: "/state-command-center", tKey: "nav.command_center", defaultLabel: "🏛️ Maharashtra Command Center" },
+  { to: "/live-orchestration", tKey: "nav.live_orchestration", defaultLabel: "⚡ Live Orchestrator (SIH26129)" },
+  { to: "/integration-hub", tKey: "nav.integration_hub", defaultLabel: "🔌 Government Integration Hub" },
+  { to: "/consent", tKey: "nav.consent", defaultLabel: "🛡️ Sathi Sahamati (DEPA Consent)" },
+  { to: "/exceptions", tKey: "nav.exceptions", defaultLabel: "⚖️ MDM Exception Queue" },
+  { to: "/case/MH-MCGM-2026-DEMO", tKey: "nav.case_passport", defaultLabel: "Digital Case Passport (Demo)" },
   { to: "/contractors", tKey: "nav.contractors", defaultLabel: "Contractor Ratings" },
   { to: "/", tKey: "nav.howitworks", defaultLabel: "How It Works", hash: true },
 ] as const;
@@ -95,5 +104,14 @@ export function MobileTabBar() {
 }
 
 export function PageShell({ children, className, dataCity }: { children: React.ReactNode; className?: string; dataCity?: string }) {
-  return <div data-city={dataCity} className="ambient-field civic-city-shell min-h-screen"><SiteNav /><main className={cn("mx-auto w-full max-w-6xl px-4 pt-28 pb-28 sm:px-6 sm:pb-20", className)}>{children}</main><MobileTabBar /></div>;
+  return (
+    <div data-city={dataCity} className="ambient-field civic-city-shell min-h-screen">
+      <SiteNav />
+      <main className={cn("mx-auto w-full max-w-6xl px-4 pt-28 pb-28 sm:px-6 sm:pb-20", className)}>
+        {children}
+      </main>
+      <DemoControllerHUD />
+      <MobileTabBar />
+    </div>
+  );
 }

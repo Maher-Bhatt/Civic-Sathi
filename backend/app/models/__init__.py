@@ -24,6 +24,7 @@ from app.models.reputation import (
     CivicRewardConfig,
     CivicReputationFlag,
 )
+from app.models.case import CivicCase, CaseDepartment
 
 __all__ = [
     "Base",
@@ -32,6 +33,8 @@ __all__ = [
     "Department",
     "Complaint",
     "ComplaintAnalysis",
+    "CivicCase",
+    "CaseDepartment",
     "IssueCluster",
     "IssueComplaint",
     "RootCause",

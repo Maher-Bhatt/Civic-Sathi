@@ -5,10 +5,12 @@ from typing import Any
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, Field
 
-from app.core.security import get_current_user
+from app.core.security import get_current_user, get_optional_user
+from app.schemas.case import AnalyzeCaseRequest, AnalyzeCaseResponse
 from app.services.ai_service import ai_service
 
 router = APIRouter()
+
 
 
 class ComplaintTextAnalysisRequest(BaseModel):
@@ -63,3 +65,24 @@ async def analyze_complaint_image(
     # trust its explicit source marker rather than the static configuration flag.
     source = str(result.pop("source", "vision-model" if ai_service.vision_configured else "manual-review-fallback"))
     return {"source": source, **result}
+
+
+@router.post("/analyze-case", response_model=AnalyzeCaseResponse)
+async def analyze_case(
+    request: AnalyzeCaseRequest,
+    current_user=Depends(get_optional_user),
+):
+    """
+    SIH26129 Macro Interoperability AI:
+    Analyze civic incident text, location, and imagery to detect multi-departmental
+    routing, cross-department dependencies, and preventive engineering impact.
+    """
+    result = await ai_service.analyze_multi_dept_case(
+        title=request.title,
+        description=request.description,
+        lat=request.latitude,
+        lng=request.longitude,
+        image_url=request.image_url,
+        city=request.city,
+    )
+    return result
