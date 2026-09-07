@@ -45,6 +45,7 @@ interface NavItem {
 const NAV: NavItem[] = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard, access: ["all"] },
   { to: "/ai-triage", label: "AI Triage", icon: AlertTriangle, access: ["Triage Officer", "Municipal Supervisor", "Commissioner", "Department Head"] },
+  { to: "/live-orchestration", label: "Live Orchestrator", icon: Zap, access: ["all"] },
   { to: "/map", label: "Civic Map", icon: Map, access: ["all"] },
   { to: "/civic-issues", label: "Civic Issues", icon: Zap, access: ["Field Inspector", "Triage Officer", "Municipal Supervisor", "Commissioner", "Department Head"] },
   { to: "/complaints", label: "Complaints", icon: FileText, access: ["all"] },

@@ -46,6 +46,7 @@ const navGroups = [
     label: "Command center",
     items: [
       { label: "Dashboard", icon: LayoutDashboard, to: "/admin/dashboard" },
+      { label: "State Command Center", icon: Globe2, to: "/admin/state-command-center" },
       { label: "Global Complaints", icon: Search, to: "/admin/global-complaints" },
       { label: "Users", icon: Users, to: "/admin/users" },
       { label: "Contractors", icon: Building2, to: "/admin/contractors/" },
@@ -55,6 +56,7 @@ const navGroups = [
     label: "Operations",
     items: [
       { label: "Work Orders", icon: ClipboardList, to: "/admin/work-orders-overview" },
+      { label: "MDM Exceptions", icon: ShieldAlert, to: "/admin/exceptions" },
       { label: "SLA Config", icon: Timer, to: "/admin/sla" },
       { label: "Audit Logs", icon: Shield, to: "/admin/audit-logs" },
     ],
@@ -62,6 +64,7 @@ const navGroups = [
   {
     label: "Platform",
     items: [
+      { label: "Integration Hub", icon: Network, to: "/admin/integration-hub" },
       { label: "Master Data (MDM)", icon: Map, to: "/admin/mdm" },
       { label: "AI Oversight", icon: Brain, to: "/admin/ai-oversight" },
       { label: "Trust & Safety", icon: ShieldAlert, to: "/admin/trust-safety" },
