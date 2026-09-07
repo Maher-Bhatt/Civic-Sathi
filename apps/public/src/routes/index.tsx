@@ -3,13 +3,9 @@ import {
   Activity,
   Camera,
   ChevronRight,
-  FileCheck,
   MapPin,
   MessageSquareText,
-  Radio,
-  Server,
   Sparkles,
-  Zap,
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { PageShell } from "@/components/site-nav";
@@ -151,36 +147,17 @@ function Landing() {
             <GlassButton
               asChild
               size="lg"
-              className="w-full bg-gradient-to-r from-orange-500 to-amber-500 border border-orange-400/40 text-white font-bold shadow-lg shadow-orange-500/25 hover:brightness-110 sm:w-auto"
-            >
-              <Link to="/submit">
-                <Zap className="h-4 w-4 mr-1.5 text-amber-200 animate-pulse" />
-                AI Smart Composer (SIH26129)
-                <ChevronRight className="h-4 w-4 ml-1" aria-hidden />
-              </Link>
-            </GlassButton>
-            <GlassButton
-              asChild
-              size="lg"
               style={{ backgroundColor: cityVisuals.accent, boxShadow: `0 14px 30px ${cityVisuals.accent}33` }}
               className="w-full border border-white/25 text-white hover:brightness-110 sm:w-auto"
             >
               <Link to="/report">
                 <Sparkles className="h-4 w-4 mr-1 text-amber-200" />
                 {t("nav.report", "Report a problem")}
+                <ChevronRight className="h-4 w-4 ml-1" aria-hidden />
               </Link>
             </GlassButton>
             <GlassButton asChild size="lg" variant="glass" className="w-full sm:w-auto border-orange-500/25 hover:border-orange-500/50">
-              <Link to="/case/MH-MCGM-2026-DEMO">
-                <FileCheck className="h-4 w-4 mr-1.5 text-orange-500" />
-                Case Passport
-              </Link>
-            </GlassButton>
-            <GlassButton asChild size="lg" variant="glass" className="w-full sm:w-auto border-orange-500/25 hover:border-orange-500/50">
-              <Link to="/live-orchestration">
-                <Radio className="h-4 w-4 mr-1.5 text-orange-500 animate-pulse" />
-                Live Orchestrator
-              </Link>
+              <a href="#how-it-works">{t("home.hero.howitworks", "How it works")}</a>
             </GlassButton>
           </div>
 

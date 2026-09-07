@@ -12,13 +12,13 @@ import { cn } from "@/lib/utils";
 
 const primaryLinks = [
   { to: "/", tKey: "nav.home", defaultLabel: "Home" },
-  { to: "/submit", tKey: "nav.submit", defaultLabel: "⚡ AI Smart Composer" },
   { to: "/map", tKey: "nav.map", defaultLabel: "Civic Map" },
   { to: "/report", tKey: "nav.report", defaultLabel: "Report Problem" },
   { to: "/complaints", tKey: "nav.complaints", defaultLabel: "My Complaints" },
 ] as const;
 
 const secondaryLinks = [
+  { to: "/submit", tKey: "nav.submit", defaultLabel: "⚡ AI Smart Composer" },
   { to: "/state-command-center", tKey: "nav.command_center", defaultLabel: "🏛️ Maharashtra Command Center" },
   { to: "/live-orchestration", tKey: "nav.live_orchestration", defaultLabel: "⚡ Live Orchestrator (SIH26129)" },
   { to: "/integration-hub", tKey: "nav.integration_hub", defaultLabel: "🔌 Government Integration Hub" },
