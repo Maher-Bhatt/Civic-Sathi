@@ -28,6 +28,7 @@ import { GlassButton } from "@/components/ui/glass-button";
 import { getDepaConsents, grantDepaConsent, revokeDepaConsent } from "@/services/api";
 import type { DepaConsent } from "@/services/types";
 import { cn } from "@/lib/utils";
+import { FeatureExplainerBanner } from "@/components/feature-explainer-banner";
 
 export const Route = createFileRoute("/consent")({
   head: () => ({
@@ -204,6 +205,16 @@ export function ConsentGovernancePage() {
             </GlassButton>
           </div>
         </div>
+      </div>
+
+      {/* Friendly Plain-English Explainer Banner */}
+      <div className="mb-8">
+        <FeatureExplainerBanner
+          title="Sathi Sahamati (Citizen Data Consent & Privacy Governance)"
+          problem="Citizens worry that reporting a civic issue will lead to government departments silently sharing, selling, or leaking their phone numbers, Aadhaar, and home addresses."
+          solution="Compliant with India's Digital Personal Data Protection (DPDP) Act 2023, departments can only share your details across agencies when you explicitly grant consent for that specific repair."
+          benefit="Complete privacy control: Grant or revoke access with 1 click, verified with tamper-proof cryptographic audit receipts."
+        />
       </div>
 
       {/* Toast Notification */}

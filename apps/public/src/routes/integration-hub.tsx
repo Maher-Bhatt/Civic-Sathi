@@ -28,6 +28,7 @@ import { GlassButton } from "@/components/ui/glass-button";
 import { getConnectedSystems, pingConnectedSystem } from "@/services/api";
 import type { ConnectedSystem } from "@/services/types";
 import { cn } from "@/lib/utils";
+import { FeatureExplainerBanner } from "@/components/feature-explainer-banner";
 
 export const Route = createFileRoute("/integration-hub")({
   head: () => ({
@@ -233,6 +234,16 @@ export function IntegrationHubPage() {
             </GlassButton>
           </div>
         </div>
+      </div>
+
+      {/* Friendly Plain-English Explainer Banner */}
+      <div className="mx-auto max-w-6xl mb-8">
+        <FeatureExplainerBanner
+          title="Government Integration Hub (Connecting Old Systems Without Rebuilding Them)"
+          problem="Every government agency (Water, Roads, Electricity, Police) uses completely separate, older computer software that cannot talk to each other, creating endless delays."
+          solution="Civic Sathi acts as a secure universal adapter (inspired by India Stack and Estonia's X-Road) that translates and routes messages between departments instantly without replacing their software."
+          benefit="Faster coordination, 18-34ms instant communication between agencies, and no expensive multi-crore software replacement bills for taxpayers."
+        />
       </div>
 
       {/* Toast Notification */}

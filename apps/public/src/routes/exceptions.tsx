@@ -21,6 +21,7 @@ import { GlassButton } from "@/components/ui/glass-button";
 import { getMdmExceptions, resolveMdmException } from "@/services/api";
 import type { MdmException } from "@/services/types";
 import { cn } from "@/lib/utils";
+import { FeatureExplainerBanner } from "@/components/feature-explainer-banner";
 
 export const Route = createFileRoute("/exceptions")({
   head: () => ({
@@ -190,6 +191,16 @@ export function MdmExceptionQueuePage() {
             </GlassButton>
           </div>
         </div>
+      </div>
+
+      {/* Friendly Plain-English Explainer Banner */}
+      <div className="mb-8">
+        <FeatureExplainerBanner
+          title="Data Quality & Profile Record Sync (Master Data Management)"
+          problem="If your phone number is updated in the Water Department records but outdated in the PWD Road records, SMS notifications fail and field workers cannot reach you."
+          solution="Civic Sathi automatically catches these conflicting records across departments and lets citizens or officials merge them into a single verified 'Golden Record' in 1 click."
+          benefit="Never miss a repair update, eliminate duplicate profiles, and ensure all municipal departments have your accurate contact information."
+        />
       </div>
 
       {/* Toast Notification */}

@@ -40,6 +40,7 @@ import {
 } from "@/services/api";
 import type { LiveTransitMessage, IntegrationEventIn } from "@/services/types";
 import { cn } from "@/lib/utils";
+import { FeatureExplainerBanner } from "@/components/feature-explainer-banner";
 
 export const Route = createFileRoute("/live-orchestration")({
   head: () => ({
@@ -618,6 +619,14 @@ export function LiveOrchestrationPage() {
             </GlassButton>
           </div>
         </div>
+
+        {/* Friendly Plain-English Explainer Banner */}
+        <FeatureExplainerBanner
+          title="Smart Department Coordination (The Anti-Road-Digging Guarantee)"
+          problem="The #1 complaint in Indian cities: a road gets newly tarred on Monday, and the water or power department digs it right back up on Wednesday because they had no idea each other was working there."
+          solution="Civic Sathi holds back the Road Repair work order automatically until the Water Board finishes fixing the underground pipeline. Once the pipe is fixed, an automated signal unlocks the road crew to pave."
+          benefit="No newly built roads destroyed, no repeated traffic jams, and millions of rupees in taxpayer money saved from being wasted."
+        />
 
         {/* Case Selector and Speed Toggles */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 rounded-2xl bg-surface/80 border border-border/50 text-xs backdrop-blur-md">

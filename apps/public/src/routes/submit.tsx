@@ -23,6 +23,7 @@ import { analyzeMultiDeptCase, createMasterCase } from "@/services/api";
 import type { MultiDeptAnalysisResult } from "@/services/types";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/lib/i18n";
+import { FeatureExplainerBanner } from "@/components/feature-explainer-banner";
 
 export const Route = createFileRoute("/submit")({
   head: () => ({
@@ -221,6 +222,16 @@ function SubmitPage() {
           Break sovereign departmental silos. Automatically detect cascading municipal failures, sequence
           inter-agency dependencies, and dispatch unified tickets to Water Board, PWD Roads, SWD, and MSEDCL.
         </p>
+      </div>
+
+      {/* Friendly Plain-English Explainer Banner */}
+      <div className="mx-auto max-w-4xl mb-8">
+        <FeatureExplainerBanner
+          title="Single Citizen Complaint (AI Multi-Department Fan-Out)"
+          problem="If a water pipe bursts and ruins a road, you usually have to figure out who to call, file 2 separate complaints with different offices, and neither department takes responsibility."
+          solution="Describe what happened once. Civic Sathi uses AI to automatically detect all involved departments (e.g. Water Board + PWD Roads) and creates linked tasks for each agency."
+          benefit="Zero guesswork for citizens, no duplicate reports, and accountability for every department involved."
+        />
       </div>
 
       {/* Demo Preset Buttons */}

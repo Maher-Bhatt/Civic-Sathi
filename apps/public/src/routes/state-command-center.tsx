@@ -26,6 +26,7 @@ import { StateCommandMap } from "@/components/state-command-map";
 import { getStateCommandCenter } from "@/services/api";
 import type { StateCommandData, CorporationTelemetry, DigitalTwinIncident } from "@/services/types";
 import { cn } from "@/lib/utils";
+import { FeatureExplainerBanner } from "@/components/feature-explainer-banner";
 
 export const Route = createFileRoute("/state-command-center")({
   head: () => ({
@@ -117,6 +118,16 @@ export function StateCommandCenterPage() {
             </GlassButton>
           </div>
         </div>
+      </div>
+
+      {/* Friendly Plain-English Explainer Banner */}
+      <div className="mx-auto max-w-6xl mb-8">
+        <FeatureExplainerBanner
+          title="Maharashtra Civic Command Center (Statewide Public Fund Savings)"
+          problem="State leaders and municipal commissioners usually learn about massive civic failures only after public outrage, road cave-ins, or local news reports."
+          solution="A live digital twin map tracking 27 Municipal Corporations across Maharashtra, showing where departments are collaborating, where bottlenecks are stuck, and measuring real-time taxpayer savings."
+          benefit="Taxpayer Money Saved: ₹4.82 Crores preserved by eliminating duplicate road excavations, alongside 4.2x faster emergency resolution."
+        />
       </div>
 
       {/* 5-TILE STATE-LEVEL EXECUTIVE KPI RIBBON */}

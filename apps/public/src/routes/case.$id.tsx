@@ -34,6 +34,7 @@ import type { CivicCase, CaseDepartment, CaseTimelineItem } from "@/services/typ
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/lib/i18n";
 import { PredictiveRiskCard } from "@/components/predictive-risk-card";
+import { FeatureExplainerBanner } from "@/components/feature-explainer-banner";
 
 export const Route = createFileRoute("/case/$id")({
   head: () => ({
@@ -358,6 +359,16 @@ function CasePassportPage() {
           </button>
         </div>
       )}
+
+      {/* Friendly Plain-English Explainer Banner */}
+      <div className="mx-auto max-w-5xl mb-6">
+        <FeatureExplainerBanner
+          title="Digital Case Passport & Predictive Risk"
+          problem="When you file a complaint about a major issue, you get bounced between departments, no one knows who is responsible, and minor pipe leaks get ignored until they collapse the entire road."
+          solution="This Digital Passport gives you 1 unified tracking number for all departments, automatically locks dependent road repairs until water pipes are fixed, and predicts exact risks before they escalate."
+          benefit="Real-time visibility, 12.3x taxpayer savings by acting before catastrophic road collapse, and zero finger-pointing between municipal agencies."
+        />
+      </div>
 
       {/* Official Government Case Passport Card */}
       <div className="mx-auto max-w-5xl space-y-6">
