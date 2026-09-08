@@ -20,6 +20,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as MapRouteImport } from './routes/map'
 import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as ProjectsRouteImport } from './routes/projects'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as ReportRouteImport } from './routes/report'
 import { Route as SubmitRouteImport } from './routes/submit'
@@ -81,6 +82,11 @@ const ProfileRoute = ProfileRouteImport.update({
   path: '/profile',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProjectsRoute = ProjectsRouteImport.update({
+  id: '/projects',
+  path: '/projects',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RegisterRoute = RegisterRouteImport.update({
   id: '/register',
   path: '/register',
@@ -119,6 +125,7 @@ export interface FileRoutesByFullPath {
   '/map': typeof MapRoute
   '/notifications': typeof NotificationsRoute
   '/profile': typeof ProfileRoute
+  '/projects': typeof ProjectsRoute
   '/register': typeof RegisterRoute
   '/report': typeof ReportRoute
   '/submit': typeof SubmitRoute
@@ -137,6 +144,7 @@ export interface FileRoutesByTo {
   '/map': typeof MapRoute
   '/notifications': typeof NotificationsRoute
   '/profile': typeof ProfileRoute
+  '/projects': typeof ProjectsRoute
   '/register': typeof RegisterRoute
   '/report': typeof ReportRoute
   '/submit': typeof SubmitRoute
@@ -156,6 +164,7 @@ export interface FileRoutesById {
   '/map': typeof MapRoute
   '/notifications': typeof NotificationsRoute
   '/profile': typeof ProfileRoute
+  '/projects': typeof ProjectsRoute
   '/register': typeof RegisterRoute
   '/report': typeof ReportRoute
   '/submit': typeof SubmitRoute
@@ -176,6 +185,7 @@ export interface FileRouteTypes {
     | '/map'
     | '/notifications'
     | '/profile'
+    | '/projects'
     | '/register'
     | '/report'
     | '/submit'
@@ -194,6 +204,7 @@ export interface FileRouteTypes {
     | '/map'
     | '/notifications'
     | '/profile'
+    | '/projects'
     | '/register'
     | '/report'
     | '/submit'
@@ -212,6 +223,7 @@ export interface FileRouteTypes {
     | '/map'
     | '/notifications'
     | '/profile'
+    | '/projects'
     | '/register'
     | '/report'
     | '/submit'
@@ -231,6 +243,7 @@ export interface RootRouteChildren {
   MapRoute: typeof MapRoute
   NotificationsRoute: typeof NotificationsRoute
   ProfileRoute: typeof ProfileRoute
+  ProjectsRoute: typeof ProjectsRoute
   RegisterRoute: typeof RegisterRoute
   ReportRoute: typeof ReportRoute
   SubmitRoute: typeof SubmitRoute
@@ -317,6 +330,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/projects': {
+      id: '/projects'
+      path: '/projects'
+      fullPath: '/projects'
+      preLoaderRoute: typeof ProjectsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/register': {
       id: '/register'
       path: '/register'
@@ -367,6 +387,7 @@ const rootRouteChildren: RootRouteChildren = {
   MapRoute: MapRoute,
   NotificationsRoute: NotificationsRoute,
   ProfileRoute: ProfileRoute,
+  ProjectsRoute: ProjectsRoute,
   RegisterRoute: RegisterRoute,
   ReportRoute: ReportRoute,
   SubmitRoute: SubmitRoute,
