@@ -22,7 +22,7 @@ import {
   Eye,
   X,
 } from "lucide-react";
-import { PageShell } from "@/components/site-nav";
+
 import { GlassCard } from "@/components/ui/glass-card";
 import { GlassButton } from "@/components/ui/glass-button";
 import { getConnectedSystems, pingConnectedSystem } from "@/services/api";
@@ -30,7 +30,7 @@ import type { ConnectedSystem } from "@/services/types";
 import { cn } from "@/lib/utils";
 import { FeatureExplainerBanner } from "@/components/feature-explainer-banner";
 
-export const Route = createFileRoute("/integration-hub")({
+export const Route = createFileRoute("/admin/integration-hub")({
   head: () => ({
     meta: [
       { title: "Government Integration Hub — SIH26129 Interoperability Catalogue" },
@@ -193,7 +193,7 @@ export function IntegrationHubPage() {
   };
 
   return (
-    <PageShell className="pt-24 sm:pt-28 pb-20">
+    <div className="space-y-6 pt-24 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
       {/* Header */}
       <div className="mx-auto max-w-6xl mb-8 space-y-3">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -510,6 +510,6 @@ export function IntegrationHubPage() {
           </GlassCard>
         </div>
       )}
-    </PageShell>
+    </div>
   );
 }

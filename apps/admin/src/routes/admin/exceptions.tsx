@@ -15,7 +15,7 @@ import {
   Radio,
   FileCheck,
 } from "lucide-react";
-import { PageShell } from "@/components/site-nav";
+
 import { GlassCard } from "@/components/ui/glass-card";
 import { GlassButton } from "@/components/ui/glass-button";
 import { getMdmExceptions, resolveMdmException } from "@/services/api";
@@ -23,7 +23,7 @@ import type { MdmException } from "@/services/types";
 import { cn } from "@/lib/utils";
 import { FeatureExplainerBanner } from "@/components/feature-explainer-banner";
 
-export const Route = createFileRoute("/exceptions")({
+export const Route = createFileRoute("/admin/exceptions")({
   head: () => ({
     meta: [
       { title: "MDM Data Quality & Exception Queue — Govt. of Maharashtra (SIH26129)" },
@@ -161,7 +161,7 @@ export function MdmExceptionQueuePage() {
   };
 
   return (
-    <PageShell className="pt-24 sm:pt-28 pb-20 max-w-6xl">
+    <div className="space-y-6 pt-24 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
       {/* Header */}
       <div className="mb-8 space-y-3">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -396,6 +396,6 @@ export function MdmExceptionQueuePage() {
           })}
         </div>
       </div>
-    </PageShell>
+    </div>
   );
 }

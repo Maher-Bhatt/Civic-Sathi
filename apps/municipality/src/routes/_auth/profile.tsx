@@ -63,9 +63,9 @@ function ProfilePage() {
     setSaving(true);
     try {
       const patch: Record<string, string> = {};
-      if (form.name.trim()) patch.name = form.name.trim();
-      if (form.phone.trim()) patch.phone = form.phone.trim();
-      if (form.designation.trim()) patch.designation = form.designation.trim();
+      if (form.name.trim()) patch['name'] = form.name.trim();
+      if (form.phone.trim()) patch['phone'] = form.phone.trim();
+      if (form.designation.trim()) patch['designation'] = form.designation.trim();
       await client.patch("/api/v1/auth/me", patch);
       toast.success("Profile updated");
       setEditing(false);

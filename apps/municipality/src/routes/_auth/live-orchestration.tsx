@@ -29,7 +29,7 @@ import {
   Check,
   RefreshCw,
 } from "lucide-react";
-import { PageShell } from "@/components/site-nav";
+
 import { GlassCard } from "@/components/ui/glass-card";
 import { GlassButton } from "@/components/ui/glass-button";
 import {
@@ -42,7 +42,7 @@ import type { LiveTransitMessage, IntegrationEventIn } from "@/services/types";
 import { cn } from "@/lib/utils";
 import { FeatureExplainerBanner } from "@/components/feature-explainer-banner";
 
-export const Route = createFileRoute("/live-orchestration")({
+export const Route = createFileRoute("/_auth/live-orchestration")({
   head: () => ({
     meta: [
       { title: "Live Case Orchestration Engine — Govt. of Maharashtra (SIH26129)" },
@@ -534,7 +534,7 @@ export function LiveOrchestrationPage() {
   };
 
   return (
-    <PageShell className="pt-24 sm:pt-28 pb-20 max-w-7xl">
+    <div className="space-y-6 pt-24 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
       {/* Top Header & Context Badges */}
       <div className="mb-6 space-y-4">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
@@ -1181,6 +1181,6 @@ export function LiveOrchestrationPage() {
           </GlassCard>
         </div>
       )}
-    </PageShell>
+    </div>
   );
 }

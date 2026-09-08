@@ -19,7 +19,7 @@ import {
   CheckCircle2,
   Lock,
 } from "lucide-react";
-import { PageShell } from "@/components/site-nav";
+
 import { GlassCard } from "@/components/ui/glass-card";
 import { GlassButton } from "@/components/ui/glass-button";
 import { StateCommandMap } from "@/components/state-command-map";
@@ -28,7 +28,7 @@ import type { StateCommandData, CorporationTelemetry, DigitalTwinIncident } from
 import { cn } from "@/lib/utils";
 import { FeatureExplainerBanner } from "@/components/feature-explainer-banner";
 
-export const Route = createFileRoute("/state-command-center")({
+export const Route = createFileRoute("/admin/state-command-center")({
   head: () => ({
     meta: [
       { title: "Maharashtra Civic Command Center & Digital Twin (SIH26129)" },
@@ -82,7 +82,7 @@ export function StateCommandCenterPage() {
   );
 
   return (
-    <PageShell className="pt-24 sm:pt-28 pb-20 max-w-7xl">
+    <div className="space-y-6 pt-24 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
       {/* Top Header */}
       <div className="mb-8 space-y-3">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
@@ -459,6 +459,6 @@ export function StateCommandCenterPage() {
           </div>
         </GlassCard>
       </div>
-    </PageShell>
+    </div>
   );
 }

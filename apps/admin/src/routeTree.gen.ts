@@ -16,12 +16,15 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as AdminAiOversightRouteImport } from './routes/admin/ai-oversight'
 import { Route as AdminAuditLogsRouteImport } from './routes/admin/audit-logs'
 import { Route as AdminDashboardRouteImport } from './routes/admin/dashboard'
+import { Route as AdminExceptionsRouteImport } from './routes/admin/exceptions'
 import { Route as AdminGamificationRouteImport } from './routes/admin/gamification'
 import { Route as AdminGlobalComplaintsRouteImport } from './routes/admin/global-complaints'
+import { Route as AdminIntegrationHubRouteImport } from './routes/admin/integration-hub'
 import { Route as AdminInteroperabilityRouteImport } from './routes/admin/interoperability'
 import { Route as AdminMdmRouteImport } from './routes/admin/mdm'
 import { Route as AdminSettingsRouteImport } from './routes/admin/settings'
 import { Route as AdminSlaRouteImport } from './routes/admin/sla'
+import { Route as AdminStateCommandCenterRouteImport } from './routes/admin/state-command-center'
 import { Route as AdminTrustSafetyRouteImport } from './routes/admin/trust-safety'
 import { Route as AdminUsersRouteImport } from './routes/admin/users'
 import { Route as AdminWorkOrdersOverviewRouteImport } from './routes/admin/work-orders-overview'
@@ -63,6 +66,11 @@ const AdminDashboardRoute = AdminDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AdminRouteRoute,
 } as any)
+const AdminExceptionsRoute = AdminExceptionsRouteImport.update({
+  id: '/exceptions',
+  path: '/exceptions',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
 const AdminGamificationRoute = AdminGamificationRouteImport.update({
   id: '/gamification',
   path: '/gamification',
@@ -71,6 +79,11 @@ const AdminGamificationRoute = AdminGamificationRouteImport.update({
 const AdminGlobalComplaintsRoute = AdminGlobalComplaintsRouteImport.update({
   id: '/global-complaints',
   path: '/global-complaints',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminIntegrationHubRoute = AdminIntegrationHubRouteImport.update({
+  id: '/integration-hub',
+  path: '/integration-hub',
   getParentRoute: () => AdminRouteRoute,
 } as any)
 const AdminInteroperabilityRoute = AdminInteroperabilityRouteImport.update({
@@ -91,6 +104,11 @@ const AdminSettingsRoute = AdminSettingsRouteImport.update({
 const AdminSlaRoute = AdminSlaRouteImport.update({
   id: '/sla',
   path: '/sla',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminStateCommandCenterRoute = AdminStateCommandCenterRouteImport.update({
+  id: '/state-command-center',
+  path: '/state-command-center',
   getParentRoute: () => AdminRouteRoute,
 } as any)
 const AdminTrustSafetyRoute = AdminTrustSafetyRouteImport.update({
@@ -127,12 +145,15 @@ export interface FileRoutesByFullPath {
   '/admin/ai-oversight': typeof AdminAiOversightRoute
   '/admin/audit-logs': typeof AdminAuditLogsRoute
   '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin/exceptions': typeof AdminExceptionsRoute
   '/admin/gamification': typeof AdminGamificationRoute
   '/admin/global-complaints': typeof AdminGlobalComplaintsRoute
+  '/admin/integration-hub': typeof AdminIntegrationHubRoute
   '/admin/interoperability': typeof AdminInteroperabilityRoute
   '/admin/mdm': typeof AdminMdmRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/sla': typeof AdminSlaRoute
+  '/admin/state-command-center': typeof AdminStateCommandCenterRoute
   '/admin/trust-safety': typeof AdminTrustSafetyRoute
   '/admin/users': typeof AdminUsersRoute
   '/admin/work-orders-overview': typeof AdminWorkOrdersOverviewRoute
@@ -147,12 +168,15 @@ export interface FileRoutesByTo {
   '/admin/ai-oversight': typeof AdminAiOversightRoute
   '/admin/audit-logs': typeof AdminAuditLogsRoute
   '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin/exceptions': typeof AdminExceptionsRoute
   '/admin/gamification': typeof AdminGamificationRoute
   '/admin/global-complaints': typeof AdminGlobalComplaintsRoute
+  '/admin/integration-hub': typeof AdminIntegrationHubRoute
   '/admin/interoperability': typeof AdminInteroperabilityRoute
   '/admin/mdm': typeof AdminMdmRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/sla': typeof AdminSlaRoute
+  '/admin/state-command-center': typeof AdminStateCommandCenterRoute
   '/admin/trust-safety': typeof AdminTrustSafetyRoute
   '/admin/users': typeof AdminUsersRoute
   '/admin/work-orders-overview': typeof AdminWorkOrdersOverviewRoute
@@ -168,12 +192,15 @@ export interface FileRoutesById {
   '/admin/ai-oversight': typeof AdminAiOversightRoute
   '/admin/audit-logs': typeof AdminAuditLogsRoute
   '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin/exceptions': typeof AdminExceptionsRoute
   '/admin/gamification': typeof AdminGamificationRoute
   '/admin/global-complaints': typeof AdminGlobalComplaintsRoute
+  '/admin/integration-hub': typeof AdminIntegrationHubRoute
   '/admin/interoperability': typeof AdminInteroperabilityRoute
   '/admin/mdm': typeof AdminMdmRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/sla': typeof AdminSlaRoute
+  '/admin/state-command-center': typeof AdminStateCommandCenterRoute
   '/admin/trust-safety': typeof AdminTrustSafetyRoute
   '/admin/users': typeof AdminUsersRoute
   '/admin/work-orders-overview': typeof AdminWorkOrdersOverviewRoute
@@ -190,12 +217,15 @@ export interface FileRouteTypes {
     | '/admin/ai-oversight'
     | '/admin/audit-logs'
     | '/admin/dashboard'
+    | '/admin/exceptions'
     | '/admin/gamification'
     | '/admin/global-complaints'
+    | '/admin/integration-hub'
     | '/admin/interoperability'
     | '/admin/mdm'
     | '/admin/settings'
     | '/admin/sla'
+    | '/admin/state-command-center'
     | '/admin/trust-safety'
     | '/admin/users'
     | '/admin/work-orders-overview'
@@ -210,12 +240,15 @@ export interface FileRouteTypes {
     | '/admin/ai-oversight'
     | '/admin/audit-logs'
     | '/admin/dashboard'
+    | '/admin/exceptions'
     | '/admin/gamification'
     | '/admin/global-complaints'
+    | '/admin/integration-hub'
     | '/admin/interoperability'
     | '/admin/mdm'
     | '/admin/settings'
     | '/admin/sla'
+    | '/admin/state-command-center'
     | '/admin/trust-safety'
     | '/admin/users'
     | '/admin/work-orders-overview'
@@ -230,12 +263,15 @@ export interface FileRouteTypes {
     | '/admin/ai-oversight'
     | '/admin/audit-logs'
     | '/admin/dashboard'
+    | '/admin/exceptions'
     | '/admin/gamification'
     | '/admin/global-complaints'
+    | '/admin/integration-hub'
     | '/admin/interoperability'
     | '/admin/mdm'
     | '/admin/settings'
     | '/admin/sla'
+    | '/admin/state-command-center'
     | '/admin/trust-safety'
     | '/admin/users'
     | '/admin/work-orders-overview'
@@ -301,6 +337,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminDashboardRouteImport
       parentRoute: typeof AdminRouteRoute
     }
+    '/admin/exceptions': {
+      id: '/admin/exceptions'
+      path: '/exceptions'
+      fullPath: '/admin/exceptions'
+      preLoaderRoute: typeof AdminExceptionsRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
     '/admin/gamification': {
       id: '/admin/gamification'
       path: '/gamification'
@@ -313,6 +356,13 @@ declare module '@tanstack/react-router' {
       path: '/global-complaints'
       fullPath: '/admin/global-complaints'
       preLoaderRoute: typeof AdminGlobalComplaintsRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/integration-hub': {
+      id: '/admin/integration-hub'
+      path: '/integration-hub'
+      fullPath: '/admin/integration-hub'
+      preLoaderRoute: typeof AdminIntegrationHubRouteImport
       parentRoute: typeof AdminRouteRoute
     }
     '/admin/interoperability': {
@@ -341,6 +391,13 @@ declare module '@tanstack/react-router' {
       path: '/sla'
       fullPath: '/admin/sla'
       preLoaderRoute: typeof AdminSlaRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/state-command-center': {
+      id: '/admin/state-command-center'
+      path: '/state-command-center'
+      fullPath: '/admin/state-command-center'
+      preLoaderRoute: typeof AdminStateCommandCenterRouteImport
       parentRoute: typeof AdminRouteRoute
     }
     '/admin/trust-safety': {
@@ -385,12 +442,15 @@ interface AdminRouteRouteChildren {
   AdminAiOversightRoute: typeof AdminAiOversightRoute
   AdminAuditLogsRoute: typeof AdminAuditLogsRoute
   AdminDashboardRoute: typeof AdminDashboardRoute
+  AdminExceptionsRoute: typeof AdminExceptionsRoute
   AdminGamificationRoute: typeof AdminGamificationRoute
   AdminGlobalComplaintsRoute: typeof AdminGlobalComplaintsRoute
+  AdminIntegrationHubRoute: typeof AdminIntegrationHubRoute
   AdminInteroperabilityRoute: typeof AdminInteroperabilityRoute
   AdminMdmRoute: typeof AdminMdmRoute
   AdminSettingsRoute: typeof AdminSettingsRoute
   AdminSlaRoute: typeof AdminSlaRoute
+  AdminStateCommandCenterRoute: typeof AdminStateCommandCenterRoute
   AdminTrustSafetyRoute: typeof AdminTrustSafetyRoute
   AdminUsersRoute: typeof AdminUsersRoute
   AdminWorkOrdersOverviewRoute: typeof AdminWorkOrdersOverviewRoute
@@ -402,12 +462,15 @@ const AdminRouteRouteChildren: AdminRouteRouteChildren = {
   AdminAiOversightRoute: AdminAiOversightRoute,
   AdminAuditLogsRoute: AdminAuditLogsRoute,
   AdminDashboardRoute: AdminDashboardRoute,
+  AdminExceptionsRoute: AdminExceptionsRoute,
   AdminGamificationRoute: AdminGamificationRoute,
   AdminGlobalComplaintsRoute: AdminGlobalComplaintsRoute,
+  AdminIntegrationHubRoute: AdminIntegrationHubRoute,
   AdminInteroperabilityRoute: AdminInteroperabilityRoute,
   AdminMdmRoute: AdminMdmRoute,
   AdminSettingsRoute: AdminSettingsRoute,
   AdminSlaRoute: AdminSlaRoute,
+  AdminStateCommandCenterRoute: AdminStateCommandCenterRoute,
   AdminTrustSafetyRoute: AdminTrustSafetyRoute,
   AdminUsersRoute: AdminUsersRoute,
   AdminWorkOrdersOverviewRoute: AdminWorkOrdersOverviewRoute,

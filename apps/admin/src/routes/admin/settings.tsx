@@ -36,8 +36,8 @@ function AdminSettings() {
     setSaving(true);
     try {
       const patch: Record<string, string> = {};
-      if (form.name.trim()) patch.name = form.name.trim();
-      if (form.phone.trim()) patch.phone = form.phone.trim();
+      if (form.name.trim()) patch['name'] = form.name.trim();
+      if (form.phone.trim()) patch['phone'] = form.phone.trim();
       await patchMe(patch);
       toast.success("Profile updated");
       setEditing(false);

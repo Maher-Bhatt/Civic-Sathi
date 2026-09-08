@@ -1132,3 +1132,254 @@ export interface MergeConfirmResponse {
   operation: string;
   audit_action: string;
 }
+
+
+export interface DepartmentRoutingItem {
+  department_code: string;
+  department_name: string;
+  external_system_key?: string | null;
+  action_required: string;
+  sla_hours: number;
+  sequence_order: number;
+  depends_on?: string | null;
+  dependency_note?: string | null;
+  status: string;
+}
+
+export interface MultiDeptAnalysisResult {
+  title: string;
+  summary: string;
+  severity: string;
+  priority: string;
+  root_cause: string;
+  preventive_warning: string;
+  departments: DepartmentRoutingItem[];
+  estimated_total_sla_hours: number;
+  source: string;
+}
+
+export interface CaseDepartment {
+  id: string;
+  case_id: string;
+  department_id?: string | null;
+  department_name: string;
+  department_code: string;
+  external_system_key?: string | null;
+  external_ticket_id?: string | null;
+  sequence_order: number;
+  dependency_case_dept_id?: string | null;
+  dependency_note?: string | null;
+  status: "WAITING" | "READY_FOR_REPAIR" | "IN_PROGRESS" | "COMPLETED" | "FAILED" | string;
+  action_required?: string | null;
+  sla_hours: number;
+  sla_deadline?: string | null;
+  assigned_officer_name?: string | null;
+  assigned_officer_phone?: string | null;
+  assigned_at?: string | null;
+  completed_at?: string | null;
+  completion_evidence_url?: string | null;
+  completion_notes?: string | null;
+  is_blocked: boolean;
+}
+
+export interface CaseTimelineItem {
+  id: string;
+  title: string;
+  description: string;
+  timestamp: string;
+  status: "completed" | "in-progress" | "blocked" | "pending" | string;
+  actor?: string | null;
+  department?: string | null;
+}
+
+export interface CivicCase {
+  id: string;
+  case_number: string;
+  title: string;
+  description: string;
+  latitude?: number | null;
+  longitude?: number | null;
+  address_text?: string | null;
+  city_name?: string | null;
+  ward_name?: string | null;
+  severity: string;
+  priority: string;
+  root_cause?: string | null;
+  preventive_warning?: string | null;
+  action_plan_summary?: string | null;
+  status: "SUBMITTED" | "IN_PROGRESS" | "RESOLVED" | "CLOSED" | string;
+  estimated_total_sla_hours: number;
+  photo_url?: string | null;
+  created_at: string;
+  updated_at: string;
+  departments: CaseDepartment[];
+  timeline: CaseTimelineItem[];
+}
+
+export interface ConnectedSystem {
+  system_key: string;
+  name: string;
+  protocol: string;
+  endpoint_url: string;
+  status: "ONLINE" | "STANDBY" | "HEALTHY" | "DEGRADED" | string;
+  latency_ms: number;
+  uptime_percent: number;
+  total_events_synced: number;
+  last_sync_at?: string | null;
+  supported_schemas: string[];
+  schema_mapping_preview: Record<string, string>;
+}
+
+export interface IntegrationEventIn {
+  event_id?: string;
+  event_type: string;
+  source_system: string;
+  target_system?: string;
+  case_number?: string;
+  case_id?: string;
+  external_ticket_id?: string;
+  department_code: string;
+  status: string;
+  notes?: string;
+  actor?: string;
+  telemetry?: Record<string, any>;
+}
+
+export interface IntegrationEventOut {
+  event_id: string;
+  status: string;
+  processed_at: string;
+  unblocked_departments: string[];
+  case_status?: string | null;
+  timeline_event_id?: string | null;
+  message: string;
+}
+
+export interface LiveTransitMessage {
+  id: string;
+  timestamp: string;
+  source: string;
+  target: string;
+  event_type: string;
+  summary: string;
+  case_number?: string | null;
+  status: "success" | "warning" | "error" | string;
+  payload?: Record<string, any> | null;
+}
+
+export interface PredictiveRiskCostAnalysis {
+  current_repair_cost_inr: number;
+  escalated_cost_inr: number;
+  cost_multiplier: number;
+  taxpayer_savings_inr: number;
+  currency: string;
+  cost_escalation_explanation: string;
+}
+
+export interface PredictiveRiskResult {
+  calculated_at: string;
+  case_title: string;
+  ward_name: string;
+  city_name: string;
+  coordinates: { lat: number; lng: number };
+  risk_level: string;
+  risk_score_index: number;
+  impact_radius_km: number;
+  impact_area_sqkm: number;
+  affected_population: number;
+  time_to_critical_failure_hours: number;
+  cost_analysis: PredictiveRiskCostAnalysis;
+  systemic_failure_forecast: string;
+  preventive_intervention_directives: string;
+  collateral_risks: string[];
+  departments_involved: string[];
+}
+
+export interface CorporationTelemetry {
+  id: string;
+  name: string;
+  city: string;
+  division: string;
+  lat: number;
+  lng: number;
+  active_cases: number;
+  resolved_rate: number;
+  connected_depts: number;
+  critical_cascades: number;
+  taxpayer_savings_cr: number;
+  status: string;
+}
+
+export interface DigitalTwinIncident {
+  id: string;
+  city: string;
+  ward: string;
+  title: string;
+  location: string;
+  lat: number;
+  lng: number;
+  severity: string;
+  priority: string;
+  status: string;
+  departments: string[];
+  cost_multiplier: number;
+  affected_citizens: number;
+  impact_radius_km: number;
+}
+
+export interface StateCommandData {
+  generated_at: string;
+  state_name: string;
+  protocol: string;
+  architecture: string;
+  summary: {
+    total_municipal_corporations: number;
+    monitored_municipalities: number;
+    total_sovereign_departments: number;
+    total_active_cases: number;
+    average_resolution_rate: number;
+    critical_systemic_cascades: number;
+    average_inter_agency_latency_ms: number;
+    estimated_taxpayer_savings_cr: number;
+    sla_compliance_rate: number;
+  };
+  corporations: CorporationTelemetry[];
+  critical_incidents: DigitalTwinIncident[];
+  digital_twin_layers: Array<{
+    id: string;
+    name: string;
+    count: number;
+    color: string;
+  }>;
+}
+
+export interface DepaConsent {
+  id: string;
+  citizen_name: string;
+  citizen_masked_id: string;
+  source_authority: string;
+  target_authority: string;
+  data_attributes: string[];
+  purpose: string;
+  status: "GRANTED" | "PENDING" | "REVOKED";
+  legal_basis: string;
+  expires_at: string;
+  granted_at?: string | null;
+  audit_hash: string;
+}
+
+export interface MdmException {
+  id: string;
+  issue_type: string;
+  title: string;
+  system_a: { name: string; field: string; value: string };
+  system_b: { name: string; field: string; value: string };
+  severity: "HIGH" | "MEDIUM" | "LOW" | string;
+  status: "OPEN" | "RESOLVED" | string;
+  confidence_score: number;
+  recommended_action: string;
+  occurred_at: string;
+}
+
+
+

@@ -18,11 +18,11 @@ import { Route as AuthAiTriageRouteImport } from './routes/_auth/ai-triage'
 import { Route as AuthAlertsRouteImport } from './routes/_auth/alerts'
 import { Route as AuthAnalyticsRouteImport } from './routes/_auth/analytics'
 import { Route as AuthDashboardRouteImport } from './routes/_auth/dashboard'
+import { Route as AuthLiveOrchestrationRouteImport } from './routes/_auth/live-orchestration'
 import { Route as AuthMapRouteImport } from './routes/_auth/map'
 import { Route as AuthProfileRouteImport } from './routes/_auth/profile'
 import { Route as AuthSettingsRouteImport } from './routes/_auth/settings'
 import { Route as AuthWorkPackagesRouteImport } from './routes/_auth/work-packages'
-import { Route as MunicipalityAnalyticsRouteImport } from './routes/municipality/analytics'
 import { Route as MunicipalityCitizenFeedbackRouteImport } from './routes/municipality/citizen-feedback'
 import { Route as MunicipalityContractorInvoicesRouteImport } from './routes/municipality/contractor-invoices'
 import { Route as MunicipalitySlaBreachRouteImport } from './routes/municipality/sla-breach'
@@ -85,6 +85,11 @@ const AuthDashboardRoute = AuthDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthRouteRoute,
 } as any)
+const AuthLiveOrchestrationRoute = AuthLiveOrchestrationRouteImport.update({
+  id: '/live-orchestration',
+  path: '/live-orchestration',
+  getParentRoute: () => AuthRouteRoute,
+} as any)
 const AuthMapRoute = AuthMapRouteImport.update({
   id: '/map',
   path: '/map',
@@ -104,11 +109,6 @@ const AuthWorkPackagesRoute = AuthWorkPackagesRouteImport.update({
   id: '/work-packages',
   path: '/work-packages',
   getParentRoute: () => AuthRouteRoute,
-} as any)
-const MunicipalityAnalyticsRoute = MunicipalityAnalyticsRouteImport.update({
-  id: '/municipality/analytics',
-  path: '/municipality/analytics',
-  getParentRoute: () => rootRouteImport,
 } as any)
 const MunicipalityCitizenFeedbackRoute =
   MunicipalityCitizenFeedbackRouteImport.update({
@@ -207,11 +207,11 @@ export interface FileRoutesByFullPath {
   '/alerts': typeof AuthAlertsRoute
   '/analytics': typeof AuthAnalyticsRoute
   '/dashboard': typeof AuthDashboardRoute
+  '/live-orchestration': typeof AuthLiveOrchestrationRoute
   '/map': typeof AuthMapRoute
   '/profile': typeof AuthProfileRoute
   '/settings': typeof AuthSettingsRoute
   '/work-packages': typeof AuthWorkPackagesRoute
-  '/municipality/analytics': typeof MunicipalityAnalyticsRoute
   '/municipality/citizen-feedback': typeof MunicipalityCitizenFeedbackRoute
   '/municipality/contractor-invoices': typeof MunicipalityContractorInvoicesRoute
   '/municipality/sla-breach': typeof MunicipalitySlaBreachRoute
@@ -239,11 +239,11 @@ export interface FileRoutesByTo {
   '/alerts': typeof AuthAlertsRoute
   '/analytics': typeof AuthAnalyticsRoute
   '/dashboard': typeof AuthDashboardRoute
+  '/live-orchestration': typeof AuthLiveOrchestrationRoute
   '/map': typeof AuthMapRoute
   '/profile': typeof AuthProfileRoute
   '/settings': typeof AuthSettingsRoute
   '/work-packages': typeof AuthWorkPackagesRoute
-  '/municipality/analytics': typeof MunicipalityAnalyticsRoute
   '/municipality/citizen-feedback': typeof MunicipalityCitizenFeedbackRoute
   '/municipality/contractor-invoices': typeof MunicipalityContractorInvoicesRoute
   '/municipality/sla-breach': typeof MunicipalitySlaBreachRoute
@@ -273,11 +273,11 @@ export interface FileRoutesById {
   '/_auth/alerts': typeof AuthAlertsRoute
   '/_auth/analytics': typeof AuthAnalyticsRoute
   '/_auth/dashboard': typeof AuthDashboardRoute
+  '/_auth/live-orchestration': typeof AuthLiveOrchestrationRoute
   '/_auth/map': typeof AuthMapRoute
   '/_auth/profile': typeof AuthProfileRoute
   '/_auth/settings': typeof AuthSettingsRoute
   '/_auth/work-packages': typeof AuthWorkPackagesRoute
-  '/municipality/analytics': typeof MunicipalityAnalyticsRoute
   '/municipality/citizen-feedback': typeof MunicipalityCitizenFeedbackRoute
   '/municipality/contractor-invoices': typeof MunicipalityContractorInvoicesRoute
   '/municipality/sla-breach': typeof MunicipalitySlaBreachRoute
@@ -307,11 +307,11 @@ export interface FileRouteTypes {
     | '/alerts'
     | '/analytics'
     | '/dashboard'
+    | '/live-orchestration'
     | '/map'
     | '/profile'
     | '/settings'
     | '/work-packages'
-    | '/municipality/analytics'
     | '/municipality/citizen-feedback'
     | '/municipality/contractor-invoices'
     | '/municipality/sla-breach'
@@ -339,11 +339,11 @@ export interface FileRouteTypes {
     | '/alerts'
     | '/analytics'
     | '/dashboard'
+    | '/live-orchestration'
     | '/map'
     | '/profile'
     | '/settings'
     | '/work-packages'
-    | '/municipality/analytics'
     | '/municipality/citizen-feedback'
     | '/municipality/contractor-invoices'
     | '/municipality/sla-breach'
@@ -372,11 +372,11 @@ export interface FileRouteTypes {
     | '/_auth/alerts'
     | '/_auth/analytics'
     | '/_auth/dashboard'
+    | '/_auth/live-orchestration'
     | '/_auth/map'
     | '/_auth/profile'
     | '/_auth/settings'
     | '/_auth/work-packages'
-    | '/municipality/analytics'
     | '/municipality/citizen-feedback'
     | '/municipality/contractor-invoices'
     | '/municipality/sla-breach'
@@ -401,7 +401,6 @@ export interface RootRouteChildren {
   AuthRouteRoute: typeof AuthRouteRouteWithChildren
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   LoginRoute: typeof LoginRoute
-  MunicipalityAnalyticsRoute: typeof MunicipalityAnalyticsRoute
   MunicipalityCitizenFeedbackRoute: typeof MunicipalityCitizenFeedbackRoute
   MunicipalityContractorInvoicesRoute: typeof MunicipalityContractorInvoicesRoute
   MunicipalitySlaBreachRoute: typeof MunicipalitySlaBreachRoute
@@ -472,6 +471,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthDashboardRouteImport
       parentRoute: typeof AuthRouteRoute
     }
+    '/_auth/live-orchestration': {
+      id: '/_auth/live-orchestration'
+      path: '/live-orchestration'
+      fullPath: '/live-orchestration'
+      preLoaderRoute: typeof AuthLiveOrchestrationRouteImport
+      parentRoute: typeof AuthRouteRoute
+    }
     '/_auth/map': {
       id: '/_auth/map'
       path: '/map'
@@ -499,13 +505,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/work-packages'
       preLoaderRoute: typeof AuthWorkPackagesRouteImport
       parentRoute: typeof AuthRouteRoute
-    }
-    '/municipality/analytics': {
-      id: '/municipality/analytics'
-      path: '/municipality/analytics'
-      fullPath: '/municipality/analytics'
-      preLoaderRoute: typeof MunicipalityAnalyticsRouteImport
-      parentRoute: typeof rootRouteImport
     }
     '/municipality/citizen-feedback': {
       id: '/municipality/citizen-feedback'
@@ -635,6 +634,7 @@ interface AuthRouteRouteChildren {
   AuthAlertsRoute: typeof AuthAlertsRoute
   AuthAnalyticsRoute: typeof AuthAnalyticsRoute
   AuthDashboardRoute: typeof AuthDashboardRoute
+  AuthLiveOrchestrationRoute: typeof AuthLiveOrchestrationRoute
   AuthMapRoute: typeof AuthMapRoute
   AuthProfileRoute: typeof AuthProfileRoute
   AuthSettingsRoute: typeof AuthSettingsRoute
@@ -661,6 +661,7 @@ const AuthRouteRouteChildren: AuthRouteRouteChildren = {
   AuthAlertsRoute: AuthAlertsRoute,
   AuthAnalyticsRoute: AuthAnalyticsRoute,
   AuthDashboardRoute: AuthDashboardRoute,
+  AuthLiveOrchestrationRoute: AuthLiveOrchestrationRoute,
   AuthMapRoute: AuthMapRoute,
   AuthProfileRoute: AuthProfileRoute,
   AuthSettingsRoute: AuthSettingsRoute,
@@ -690,7 +691,6 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRouteRoute: AuthRouteRouteWithChildren,
   ForgotPasswordRoute: ForgotPasswordRoute,
   LoginRoute: LoginRoute,
-  MunicipalityAnalyticsRoute: MunicipalityAnalyticsRoute,
   MunicipalityCitizenFeedbackRoute: MunicipalityCitizenFeedbackRoute,
   MunicipalityContractorInvoicesRoute: MunicipalityContractorInvoicesRoute,
   MunicipalitySlaBreachRoute: MunicipalitySlaBreachRoute,
