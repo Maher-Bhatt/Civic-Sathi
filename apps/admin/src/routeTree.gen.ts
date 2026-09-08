@@ -24,10 +24,12 @@ import { Route as AdminInteroperabilityRouteImport } from './routes/admin/intero
 import { Route as AdminMdmRouteImport } from './routes/admin/mdm'
 import { Route as AdminSettingsRouteImport } from './routes/admin/settings'
 import { Route as AdminSlaRouteImport } from './routes/admin/sla'
+import { Route as AdminSmartComposerRouteImport } from './routes/admin/smart-composer'
 import { Route as AdminStateCommandCenterRouteImport } from './routes/admin/state-command-center'
 import { Route as AdminTrustSafetyRouteImport } from './routes/admin/trust-safety'
 import { Route as AdminUsersRouteImport } from './routes/admin/users'
 import { Route as AdminWorkOrdersOverviewRouteImport } from './routes/admin/work-orders-overview'
+import { Route as AdminCaseIdRouteImport } from './routes/admin/case.$id'
 import { Route as AdminContractorsIndexRouteImport } from './routes/admin/contractors/index'
 import { Route as AdminContractorsIdRouteImport } from './routes/admin/contractors/$id'
 
@@ -106,6 +108,11 @@ const AdminSlaRoute = AdminSlaRouteImport.update({
   path: '/sla',
   getParentRoute: () => AdminRouteRoute,
 } as any)
+const AdminSmartComposerRoute = AdminSmartComposerRouteImport.update({
+  id: '/smart-composer',
+  path: '/smart-composer',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
 const AdminStateCommandCenterRoute = AdminStateCommandCenterRouteImport.update({
   id: '/state-command-center',
   path: '/state-command-center',
@@ -124,6 +131,11 @@ const AdminUsersRoute = AdminUsersRouteImport.update({
 const AdminWorkOrdersOverviewRoute = AdminWorkOrdersOverviewRouteImport.update({
   id: '/work-orders-overview',
   path: '/work-orders-overview',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminCaseIdRoute = AdminCaseIdRouteImport.update({
+  id: '/case/$id',
+  path: '/case/$id',
   getParentRoute: () => AdminRouteRoute,
 } as any)
 const AdminContractorsIndexRoute = AdminContractorsIndexRouteImport.update({
@@ -153,10 +165,12 @@ export interface FileRoutesByFullPath {
   '/admin/mdm': typeof AdminMdmRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/sla': typeof AdminSlaRoute
+  '/admin/smart-composer': typeof AdminSmartComposerRoute
   '/admin/state-command-center': typeof AdminStateCommandCenterRoute
   '/admin/trust-safety': typeof AdminTrustSafetyRoute
   '/admin/users': typeof AdminUsersRoute
   '/admin/work-orders-overview': typeof AdminWorkOrdersOverviewRoute
+  '/admin/case/$id': typeof AdminCaseIdRoute
   '/admin/contractors/$id': typeof AdminContractorsIdRoute
   '/admin/contractors/': typeof AdminContractorsIndexRoute
 }
@@ -176,10 +190,12 @@ export interface FileRoutesByTo {
   '/admin/mdm': typeof AdminMdmRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/sla': typeof AdminSlaRoute
+  '/admin/smart-composer': typeof AdminSmartComposerRoute
   '/admin/state-command-center': typeof AdminStateCommandCenterRoute
   '/admin/trust-safety': typeof AdminTrustSafetyRoute
   '/admin/users': typeof AdminUsersRoute
   '/admin/work-orders-overview': typeof AdminWorkOrdersOverviewRoute
+  '/admin/case/$id': typeof AdminCaseIdRoute
   '/admin/contractors/$id': typeof AdminContractorsIdRoute
   '/admin/contractors': typeof AdminContractorsIndexRoute
 }
@@ -200,10 +216,12 @@ export interface FileRoutesById {
   '/admin/mdm': typeof AdminMdmRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/sla': typeof AdminSlaRoute
+  '/admin/smart-composer': typeof AdminSmartComposerRoute
   '/admin/state-command-center': typeof AdminStateCommandCenterRoute
   '/admin/trust-safety': typeof AdminTrustSafetyRoute
   '/admin/users': typeof AdminUsersRoute
   '/admin/work-orders-overview': typeof AdminWorkOrdersOverviewRoute
+  '/admin/case/$id': typeof AdminCaseIdRoute
   '/admin/contractors/$id': typeof AdminContractorsIdRoute
   '/admin/contractors/': typeof AdminContractorsIndexRoute
 }
@@ -225,10 +243,12 @@ export interface FileRouteTypes {
     | '/admin/mdm'
     | '/admin/settings'
     | '/admin/sla'
+    | '/admin/smart-composer'
     | '/admin/state-command-center'
     | '/admin/trust-safety'
     | '/admin/users'
     | '/admin/work-orders-overview'
+    | '/admin/case/$id'
     | '/admin/contractors/$id'
     | '/admin/contractors/'
   fileRoutesByTo: FileRoutesByTo
@@ -248,10 +268,12 @@ export interface FileRouteTypes {
     | '/admin/mdm'
     | '/admin/settings'
     | '/admin/sla'
+    | '/admin/smart-composer'
     | '/admin/state-command-center'
     | '/admin/trust-safety'
     | '/admin/users'
     | '/admin/work-orders-overview'
+    | '/admin/case/$id'
     | '/admin/contractors/$id'
     | '/admin/contractors'
   id:
@@ -271,10 +293,12 @@ export interface FileRouteTypes {
     | '/admin/mdm'
     | '/admin/settings'
     | '/admin/sla'
+    | '/admin/smart-composer'
     | '/admin/state-command-center'
     | '/admin/trust-safety'
     | '/admin/users'
     | '/admin/work-orders-overview'
+    | '/admin/case/$id'
     | '/admin/contractors/$id'
     | '/admin/contractors/'
   fileRoutesById: FileRoutesById
@@ -393,6 +417,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminSlaRouteImport
       parentRoute: typeof AdminRouteRoute
     }
+    '/admin/smart-composer': {
+      id: '/admin/smart-composer'
+      path: '/smart-composer'
+      fullPath: '/admin/smart-composer'
+      preLoaderRoute: typeof AdminSmartComposerRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
     '/admin/state-command-center': {
       id: '/admin/state-command-center'
       path: '/state-command-center'
@@ -419,6 +450,13 @@ declare module '@tanstack/react-router' {
       path: '/work-orders-overview'
       fullPath: '/admin/work-orders-overview'
       preLoaderRoute: typeof AdminWorkOrdersOverviewRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/case/$id': {
+      id: '/admin/case/$id'
+      path: '/case/$id'
+      fullPath: '/admin/case/$id'
+      preLoaderRoute: typeof AdminCaseIdRouteImport
       parentRoute: typeof AdminRouteRoute
     }
     '/admin/contractors/': {
@@ -450,10 +488,12 @@ interface AdminRouteRouteChildren {
   AdminMdmRoute: typeof AdminMdmRoute
   AdminSettingsRoute: typeof AdminSettingsRoute
   AdminSlaRoute: typeof AdminSlaRoute
+  AdminSmartComposerRoute: typeof AdminSmartComposerRoute
   AdminStateCommandCenterRoute: typeof AdminStateCommandCenterRoute
   AdminTrustSafetyRoute: typeof AdminTrustSafetyRoute
   AdminUsersRoute: typeof AdminUsersRoute
   AdminWorkOrdersOverviewRoute: typeof AdminWorkOrdersOverviewRoute
+  AdminCaseIdRoute: typeof AdminCaseIdRoute
   AdminContractorsIdRoute: typeof AdminContractorsIdRoute
   AdminContractorsIndexRoute: typeof AdminContractorsIndexRoute
 }
@@ -470,10 +510,12 @@ const AdminRouteRouteChildren: AdminRouteRouteChildren = {
   AdminMdmRoute: AdminMdmRoute,
   AdminSettingsRoute: AdminSettingsRoute,
   AdminSlaRoute: AdminSlaRoute,
+  AdminSmartComposerRoute: AdminSmartComposerRoute,
   AdminStateCommandCenterRoute: AdminStateCommandCenterRoute,
   AdminTrustSafetyRoute: AdminTrustSafetyRoute,
   AdminUsersRoute: AdminUsersRoute,
   AdminWorkOrdersOverviewRoute: AdminWorkOrdersOverviewRoute,
+  AdminCaseIdRoute: AdminCaseIdRoute,
   AdminContractorsIdRoute: AdminContractorsIdRoute,
   AdminContractorsIndexRoute: AdminContractorsIndexRoute,
 }

@@ -26,7 +26,7 @@ import {
   Waves,
   Radio,
 } from "lucide-react";
-import { PageShell } from "@/components/site-nav";
+
 import { GlassCard } from "@/components/ui/glass-card";
 import { GlassButton } from "@/components/ui/glass-button";
 import { getCasePassport, simulateCompleteDepartment } from "@/services/api";
@@ -36,7 +36,7 @@ import { useI18n } from "@/lib/i18n";
 import { PredictiveRiskCard } from "@/components/predictive-risk-card";
 import { FeatureExplainerBanner } from "@/components/feature-explainer-banner";
 
-export const Route = createFileRoute("/case/$id")({
+export const Route = createFileRoute("/admin/case/$id")({
   head: () => ({
     meta: [
       { title: "Digital Case Passport — Govt. of Maharashtra (SIH26129)" },
@@ -276,7 +276,7 @@ function CasePassportPage() {
 
   if (loading && !caseData) {
     return (
-      <PageShell className="pt-32 text-center">
+      <div className="p-6">
         <div className="mx-auto max-w-sm space-y-4 py-20">
           <Loader2 className="h-10 w-10 animate-spin text-orange-500 mx-auto" />
           <h2 className="text-lg font-bold text-foreground">
@@ -286,13 +286,13 @@ function CasePassportPage() {
             Synchronizing sovereign department registries across Water Board, PWD, and SWD.
           </p>
         </div>
-      </PageShell>
+      </div>
     );
   }
 
   if (!caseData) {
     return (
-      <PageShell className="pt-32 text-center">
+      <div className="p-6">
         <div className="mx-auto max-w-md space-y-4 py-20">
           <AlertTriangle className="h-12 w-12 text-amber-500 mx-auto" />
           <h2 className="text-xl font-bold text-foreground">Case Passport Not Found</h2>
@@ -306,7 +306,7 @@ function CasePassportPage() {
             </Link>
           </GlassButton>
         </div>
-      </PageShell>
+      </div>
     );
   }
 
@@ -314,7 +314,7 @@ function CasePassportPage() {
   const isWaterDone = waterDept?.status === "COMPLETED";
 
   return (
-    <PageShell className="pt-24 sm:pt-28 pb-20">
+    <div className="p-6">
       {/* Back link & Top bar */}
       <div className="mx-auto max-w-5xl mb-6 flex items-center justify-between flex-wrap gap-2">
         <Link
@@ -814,6 +814,6 @@ function CasePassportPage() {
           </div>
         </GlassCard>
       </div>
-    </PageShell>
+    </div>
   );
 }

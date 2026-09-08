@@ -22,11 +22,13 @@ import { Route as AuthLiveOrchestrationRouteImport } from './routes/_auth/live-o
 import { Route as AuthMapRouteImport } from './routes/_auth/map'
 import { Route as AuthProfileRouteImport } from './routes/_auth/profile'
 import { Route as AuthSettingsRouteImport } from './routes/_auth/settings'
+import { Route as AuthSmartComposerRouteImport } from './routes/_auth/smart-composer'
 import { Route as AuthWorkPackagesRouteImport } from './routes/_auth/work-packages'
 import { Route as MunicipalityCitizenFeedbackRouteImport } from './routes/municipality/citizen-feedback'
 import { Route as MunicipalityContractorInvoicesRouteImport } from './routes/municipality/contractor-invoices'
 import { Route as MunicipalitySlaBreachRouteImport } from './routes/municipality/sla-breach'
 import { Route as AuthAreasIndexRouteImport } from './routes/_auth/areas/index'
+import { Route as AuthCaseIdRouteImport } from './routes/_auth/case.$id'
 import { Route as AuthCivicIssuesIndexRouteImport } from './routes/_auth/civic-issues/index'
 import { Route as AuthCivicIssuesIdRouteImport } from './routes/_auth/civic-issues/$id'
 import { Route as AuthComplaintsIndexRouteImport } from './routes/_auth/complaints/index'
@@ -105,6 +107,11 @@ const AuthSettingsRoute = AuthSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => AuthRouteRoute,
 } as any)
+const AuthSmartComposerRoute = AuthSmartComposerRouteImport.update({
+  id: '/smart-composer',
+  path: '/smart-composer',
+  getParentRoute: () => AuthRouteRoute,
+} as any)
 const AuthWorkPackagesRoute = AuthWorkPackagesRouteImport.update({
   id: '/work-packages',
   path: '/work-packages',
@@ -130,6 +137,11 @@ const MunicipalitySlaBreachRoute = MunicipalitySlaBreachRouteImport.update({
 const AuthAreasIndexRoute = AuthAreasIndexRouteImport.update({
   id: '/areas/',
   path: '/areas/',
+  getParentRoute: () => AuthRouteRoute,
+} as any)
+const AuthCaseIdRoute = AuthCaseIdRouteImport.update({
+  id: '/case/$id',
+  path: '/case/$id',
   getParentRoute: () => AuthRouteRoute,
 } as any)
 const AuthCivicIssuesIndexRoute = AuthCivicIssuesIndexRouteImport.update({
@@ -211,10 +223,12 @@ export interface FileRoutesByFullPath {
   '/map': typeof AuthMapRoute
   '/profile': typeof AuthProfileRoute
   '/settings': typeof AuthSettingsRoute
+  '/smart-composer': typeof AuthSmartComposerRoute
   '/work-packages': typeof AuthWorkPackagesRoute
   '/municipality/citizen-feedback': typeof MunicipalityCitizenFeedbackRoute
   '/municipality/contractor-invoices': typeof MunicipalityContractorInvoicesRoute
   '/municipality/sla-breach': typeof MunicipalitySlaBreachRoute
+  '/case/$id': typeof AuthCaseIdRoute
   '/civic-issues/$id': typeof AuthCivicIssuesIdRoute
   '/complaints/$id': typeof AuthComplaintsIdRoute
   '/departments/$id': typeof AuthDepartmentsIdRoute
@@ -243,10 +257,12 @@ export interface FileRoutesByTo {
   '/map': typeof AuthMapRoute
   '/profile': typeof AuthProfileRoute
   '/settings': typeof AuthSettingsRoute
+  '/smart-composer': typeof AuthSmartComposerRoute
   '/work-packages': typeof AuthWorkPackagesRoute
   '/municipality/citizen-feedback': typeof MunicipalityCitizenFeedbackRoute
   '/municipality/contractor-invoices': typeof MunicipalityContractorInvoicesRoute
   '/municipality/sla-breach': typeof MunicipalitySlaBreachRoute
+  '/case/$id': typeof AuthCaseIdRoute
   '/civic-issues/$id': typeof AuthCivicIssuesIdRoute
   '/complaints/$id': typeof AuthComplaintsIdRoute
   '/departments/$id': typeof AuthDepartmentsIdRoute
@@ -277,10 +293,12 @@ export interface FileRoutesById {
   '/_auth/map': typeof AuthMapRoute
   '/_auth/profile': typeof AuthProfileRoute
   '/_auth/settings': typeof AuthSettingsRoute
+  '/_auth/smart-composer': typeof AuthSmartComposerRoute
   '/_auth/work-packages': typeof AuthWorkPackagesRoute
   '/municipality/citizen-feedback': typeof MunicipalityCitizenFeedbackRoute
   '/municipality/contractor-invoices': typeof MunicipalityContractorInvoicesRoute
   '/municipality/sla-breach': typeof MunicipalitySlaBreachRoute
+  '/_auth/case/$id': typeof AuthCaseIdRoute
   '/_auth/civic-issues/$id': typeof AuthCivicIssuesIdRoute
   '/_auth/complaints/$id': typeof AuthComplaintsIdRoute
   '/_auth/departments/$id': typeof AuthDepartmentsIdRoute
@@ -311,10 +329,12 @@ export interface FileRouteTypes {
     | '/map'
     | '/profile'
     | '/settings'
+    | '/smart-composer'
     | '/work-packages'
     | '/municipality/citizen-feedback'
     | '/municipality/contractor-invoices'
     | '/municipality/sla-breach'
+    | '/case/$id'
     | '/civic-issues/$id'
     | '/complaints/$id'
     | '/departments/$id'
@@ -343,10 +363,12 @@ export interface FileRouteTypes {
     | '/map'
     | '/profile'
     | '/settings'
+    | '/smart-composer'
     | '/work-packages'
     | '/municipality/citizen-feedback'
     | '/municipality/contractor-invoices'
     | '/municipality/sla-breach'
+    | '/case/$id'
     | '/civic-issues/$id'
     | '/complaints/$id'
     | '/departments/$id'
@@ -376,10 +398,12 @@ export interface FileRouteTypes {
     | '/_auth/map'
     | '/_auth/profile'
     | '/_auth/settings'
+    | '/_auth/smart-composer'
     | '/_auth/work-packages'
     | '/municipality/citizen-feedback'
     | '/municipality/contractor-invoices'
     | '/municipality/sla-breach'
+    | '/_auth/case/$id'
     | '/_auth/civic-issues/$id'
     | '/_auth/complaints/$id'
     | '/_auth/departments/$id'
@@ -499,6 +523,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthSettingsRouteImport
       parentRoute: typeof AuthRouteRoute
     }
+    '/_auth/smart-composer': {
+      id: '/_auth/smart-composer'
+      path: '/smart-composer'
+      fullPath: '/smart-composer'
+      preLoaderRoute: typeof AuthSmartComposerRouteImport
+      parentRoute: typeof AuthRouteRoute
+    }
     '/_auth/work-packages': {
       id: '/_auth/work-packages'
       path: '/work-packages'
@@ -532,6 +563,13 @@ declare module '@tanstack/react-router' {
       path: '/areas'
       fullPath: '/areas/'
       preLoaderRoute: typeof AuthAreasIndexRouteImport
+      parentRoute: typeof AuthRouteRoute
+    }
+    '/_auth/case/$id': {
+      id: '/_auth/case/$id'
+      path: '/case/$id'
+      fullPath: '/case/$id'
+      preLoaderRoute: typeof AuthCaseIdRouteImport
       parentRoute: typeof AuthRouteRoute
     }
     '/_auth/civic-issues/': {
@@ -638,7 +676,9 @@ interface AuthRouteRouteChildren {
   AuthMapRoute: typeof AuthMapRoute
   AuthProfileRoute: typeof AuthProfileRoute
   AuthSettingsRoute: typeof AuthSettingsRoute
+  AuthSmartComposerRoute: typeof AuthSmartComposerRoute
   AuthWorkPackagesRoute: typeof AuthWorkPackagesRoute
+  AuthCaseIdRoute: typeof AuthCaseIdRoute
   AuthCivicIssuesIdRoute: typeof AuthCivicIssuesIdRoute
   AuthComplaintsIdRoute: typeof AuthComplaintsIdRoute
   AuthDepartmentsIdRoute: typeof AuthDepartmentsIdRoute
@@ -665,7 +705,9 @@ const AuthRouteRouteChildren: AuthRouteRouteChildren = {
   AuthMapRoute: AuthMapRoute,
   AuthProfileRoute: AuthProfileRoute,
   AuthSettingsRoute: AuthSettingsRoute,
+  AuthSmartComposerRoute: AuthSmartComposerRoute,
   AuthWorkPackagesRoute: AuthWorkPackagesRoute,
+  AuthCaseIdRoute: AuthCaseIdRoute,
   AuthCivicIssuesIdRoute: AuthCivicIssuesIdRoute,
   AuthComplaintsIdRoute: AuthComplaintsIdRoute,
   AuthDepartmentsIdRoute: AuthDepartmentsIdRoute,

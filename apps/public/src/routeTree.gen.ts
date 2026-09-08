@@ -23,8 +23,6 @@ import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as ProjectsRouteImport } from './routes/projects'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as ReportRouteImport } from './routes/report'
-import { Route as SubmitRouteImport } from './routes/submit'
-import { Route as CaseIdRouteImport } from './routes/case.$id'
 import { Route as ComplaintIdRouteImport } from './routes/complaint.$id'
 
 const IndexRoute = IndexRouteImport.update({
@@ -97,16 +95,6 @@ const ReportRoute = ReportRouteImport.update({
   path: '/report',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SubmitRoute = SubmitRouteImport.update({
-  id: '/submit',
-  path: '/submit',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CaseIdRoute = CaseIdRouteImport.update({
-  id: '/case/$id',
-  path: '/case/$id',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ComplaintIdRoute = ComplaintIdRouteImport.update({
   id: '/complaint/$id',
   path: '/complaint/$id',
@@ -128,8 +116,6 @@ export interface FileRoutesByFullPath {
   '/projects': typeof ProjectsRoute
   '/register': typeof RegisterRoute
   '/report': typeof ReportRoute
-  '/submit': typeof SubmitRoute
-  '/case/$id': typeof CaseIdRoute
   '/complaint/$id': typeof ComplaintIdRoute
 }
 export interface FileRoutesByTo {
@@ -147,8 +133,6 @@ export interface FileRoutesByTo {
   '/projects': typeof ProjectsRoute
   '/register': typeof RegisterRoute
   '/report': typeof ReportRoute
-  '/submit': typeof SubmitRoute
-  '/case/$id': typeof CaseIdRoute
   '/complaint/$id': typeof ComplaintIdRoute
 }
 export interface FileRoutesById {
@@ -167,8 +151,6 @@ export interface FileRoutesById {
   '/projects': typeof ProjectsRoute
   '/register': typeof RegisterRoute
   '/report': typeof ReportRoute
-  '/submit': typeof SubmitRoute
-  '/case/$id': typeof CaseIdRoute
   '/complaint/$id': typeof ComplaintIdRoute
 }
 export interface FileRouteTypes {
@@ -188,8 +170,6 @@ export interface FileRouteTypes {
     | '/projects'
     | '/register'
     | '/report'
-    | '/submit'
-    | '/case/$id'
     | '/complaint/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -207,8 +187,6 @@ export interface FileRouteTypes {
     | '/projects'
     | '/register'
     | '/report'
-    | '/submit'
-    | '/case/$id'
     | '/complaint/$id'
   id:
     | '__root__'
@@ -226,8 +204,6 @@ export interface FileRouteTypes {
     | '/projects'
     | '/register'
     | '/report'
-    | '/submit'
-    | '/case/$id'
     | '/complaint/$id'
   fileRoutesById: FileRoutesById
 }
@@ -246,8 +222,6 @@ export interface RootRouteChildren {
   ProjectsRoute: typeof ProjectsRoute
   RegisterRoute: typeof RegisterRoute
   ReportRoute: typeof ReportRoute
-  SubmitRoute: typeof SubmitRoute
-  CaseIdRoute: typeof CaseIdRoute
   ComplaintIdRoute: typeof ComplaintIdRoute
 }
 
@@ -351,20 +325,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ReportRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/submit': {
-      id: '/submit'
-      path: '/submit'
-      fullPath: '/submit'
-      preLoaderRoute: typeof SubmitRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/case/$id': {
-      id: '/case/$id'
-      path: '/case/$id'
-      fullPath: '/case/$id'
-      preLoaderRoute: typeof CaseIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/complaint/$id': {
       id: '/complaint/$id'
       path: '/complaint/$id'
@@ -390,8 +350,6 @@ const rootRouteChildren: RootRouteChildren = {
   ProjectsRoute: ProjectsRoute,
   RegisterRoute: RegisterRoute,
   ReportRoute: ReportRoute,
-  SubmitRoute: SubmitRoute,
-  CaseIdRoute: CaseIdRoute,
   ComplaintIdRoute: ComplaintIdRoute,
 }
 export const routeTree = rootRouteImport

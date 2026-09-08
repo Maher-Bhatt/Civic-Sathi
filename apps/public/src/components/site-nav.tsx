@@ -18,10 +18,7 @@ const primaryLinks = [
 ] as const;
 
 const secondaryLinks = [
-  { to: "/submit", tKey: "nav.submit", defaultLabel: "⚡ AI Smart Composer" },
-  { to: "/consent", tKey: "nav.consent", defaultLabel: "🛡️ Sathi Sahamati (DEPA Consent)" },
-  { to: "/case/MH-MCGM-2026-DEMO", tKey: "nav.case_passport", defaultLabel: "Digital Case Passport (Demo)" },
-  { to: "/contractors", tKey: "nav.contractors", defaultLabel: "Contractor Ratings" },
+  { to: "/projects", tKey: "nav.projects", defaultLabel: "Community Projects" },
   { to: "/", tKey: "nav.howitworks", defaultLabel: "How It Works", hash: true },
 ] as const;
 

@@ -15,7 +15,7 @@ import {
   Waves,
   Cpu,
 } from "lucide-react";
-import { PageShell } from "@/components/site-nav";
+
 import { GlassCard } from "@/components/ui/glass-card";
 import { GlassButton } from "@/components/ui/glass-button";
 import { GlassInput, GlassTextarea } from "@/components/ui/glass-input";
@@ -25,7 +25,7 @@ import { cn } from "@/lib/utils";
 import { useI18n } from "@/lib/i18n";
 import { FeatureExplainerBanner } from "@/components/feature-explainer-banner";
 
-export const Route = createFileRoute("/submit")({
+export const Route = createFileRoute("/admin/smart-composer")({
   head: () => ({
     meta: [
       { title: "AI Multi-Department Case Composer — Civic Sathi" },
@@ -208,7 +208,7 @@ function SubmitPage() {
   };
 
   return (
-    <PageShell className="pt-24 sm:pt-28 pb-20">
+    <div className="p-6">
       {/* Top Protocol Header */}
       <div className="mx-auto max-w-4xl mb-8 text-center space-y-3">
         <div className="inline-flex items-center gap-2 rounded-full border border-orange-500/30 bg-orange-500/10 px-3.5 py-1 text-xs font-semibold text-orange-600 dark:text-orange-400">
@@ -638,6 +638,6 @@ function SubmitPage() {
           </GlassCard>
         </div>
       )}
-    </PageShell>
+    </div>
   );
 }
