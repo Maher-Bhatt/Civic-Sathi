@@ -38,12 +38,17 @@ function SLAConfig() {
 
   const handleUpdate = async (ruleId: string, field: keyof SLARule, value: any) => {
     if (!admin) return;
+    // Optimistic local update to prevent visual flicker
+    setRules((prev) =>
+      prev.map((r) => (r.id === ruleId ? { ...r, [field]: value } : r))
+    );
     try {
       await updateSLARule(ruleId, { [field]: value }, admin.id, admin.name);
       toast.success("SLA Rule updated");
-      loadData();
+      loadData(); // Sync from server to confirm
     } catch (error) {
       toast.error("Failed to update rule");
+      loadData(); // Revert on failure
     }
   };
 

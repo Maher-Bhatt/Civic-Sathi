@@ -362,7 +362,9 @@ export async function createComplaint(input: any): Promise<Complaint> {
     const existing = read<AppNotification[]>(LS.notifications, []);
     write(LS.notifications, [notif, ...existing]);
 
-    return normalizeComplaint(created, input);
+    const normalized = normalizeComplaint(created, input);
+    if (!normalized) throw new Error("Complaint was created but response data is missing");
+    return normalized;
   } catch (err) {
     console.error("Complaint creation failed:", err);
     throw err instanceof Error
@@ -379,7 +381,9 @@ export async function getMyComplaints(): Promise<Complaint[]> {
 
 export async function getComplaint(id: string): Promise<Complaint> {
   const res = await api.complaints.get(id);
-  return normalizeComplaint(res);
+  const normalized = normalizeComplaint(res);
+  if (!normalized) throw new Error(`Complaint ${id} could not be loaded`);
+  return normalized;
 }
 
 const BACKEND_CATEGORY_TO_UI: Record<string, IssueCategory> = {

@@ -4,7 +4,6 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status as http_sta
 from pydantic import BaseModel, Field
 from sqlalchemy import func as sqlfunc
 from sqlalchemy.orm import Session
-from uuid import UUID
 
 from app.core.database import get_db
 from app.core.security import get_current_user, require_officer_permission
@@ -74,10 +73,12 @@ def list_complaints(
     if current_user.role not in OFFICER_ROLES:
         owner_id = current_user.id
         requested_city_id = None
-    elif current_user.role != "admin" and current_user.city:
-        officer_city_id = resolve_city_id(db, current_user.city)
-        if officer_city_id:
-            requested_city_id = officer_city_id
+    elif current_user.city:
+        from app.core.security import is_super_admin_user
+        if not is_super_admin_user(current_user):
+            officer_city_id = resolve_city_id(db, current_user.city)
+            if officer_city_id:
+                requested_city_id = officer_city_id
 
     status_enum = None
     if status_filter:
@@ -174,8 +175,6 @@ def upvote_complaint(
 ):
     """Upvote an existing canonical complaint instead of submitting a duplicate."""
     from app.models.complaint import Complaint
-    from sqlalchemy.orm import Session
-    from fastapi import HTTPException
     
     complaint = db.get(Complaint, complaint_id)
     if not complaint:

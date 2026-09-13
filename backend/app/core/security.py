@@ -165,7 +165,12 @@ def get_current_officer_user(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Access denied - officer role required",
         )
-    user = db.query(User).filter(User.id == token_data.get("sub")).first()
+    from uuid import UUID as _UUID
+    try:
+        user_id = _UUID(str(token_data.get("sub", "")))
+    except (ValueError, AttributeError):
+        raise HTTPException(status_code=401, detail="Invalid token subject")
+    user = db.get(User, user_id)
     if not user or user.role not in OFFICER_ROLES:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Officer account not found")
     return user
@@ -200,9 +205,13 @@ def require_officer_permission(permission: str):
 
 
 def get_current_user(token_data: dict = Depends(verify_token), db = Depends(get_db)):
-
     from app.models.user import User
-    user = db.query(User).filter(User.id == token_data.get("sub")).first()
+    from uuid import UUID as _UUID
+    try:
+        user_id = _UUID(str(token_data.get("sub", "")))
+    except (ValueError, AttributeError):
+        raise HTTPException(status_code=401, detail="Invalid token subject")
+    user = db.get(User, user_id)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     return user

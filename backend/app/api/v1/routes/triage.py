@@ -121,6 +121,11 @@ def reject_duplicate(
         db.delete(link)
         
     complaint = analysis.complaint
+    if complaint is None:
+        # Orphaned analysis — clean up and return success without creating an issue
+        analysis.ai_status = "UNIQUE"
+        db.commit()
+        return {"status": "success", "message": "Orphaned analysis cleaned up"}
     
     # Create new issue
     from datetime import datetime, timezone

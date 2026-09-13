@@ -143,9 +143,14 @@ function ContractorProfile() {
               {displayName.substring(0, 1)}
             </div>
             <h2 className="text-lg font-semibold text-[var(--foreground)] leading-tight mb-1">{displayName}</h2>
-            <div className="inline-flex items-center gap-1.5 px-2 py-1 bg-[var(--success)]/10 text-[var(--success)] border border-[var(--success)]/20 rounded-md text-xs font-medium mb-6">
+            <div className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-xs font-medium mb-6 ${
+              contractor?.verificationStatus === "VERIFIED"
+                ? "bg-[var(--success)]/10 text-[var(--success)] border border-[var(--success)]/20"
+                : "bg-[var(--warning)]/10 text-[var(--warning)] border border-[var(--warning)]/20"
+            }`}>
               <CheckCircle2 size={14} />
-              {t('ui.verified_contractor')}</div>
+              {contractor?.verificationStatus === "VERIFIED" ? t('ui.verified_contractor') : "Pending Verification"}
+            </div>
             
             <button 
               onClick={() => void signOut()}

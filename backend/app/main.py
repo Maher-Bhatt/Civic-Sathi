@@ -3,6 +3,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.exceptions import RequestValidationError
+from contextlib import asynccontextmanager
 
 from app.core.config import settings
 from app.core.logging import setup_logging
@@ -18,15 +19,22 @@ from app.core.audit_listeners import setup_auditing
 # Setup logging
 setup_logging()
 
-# Setup automated SQLAlchemy audit logging
-setup_auditing()
-
 # Create FastAPI app
+
+@asynccontextmanager
+async def lifespan(app_instance):
+    """Startup and shutdown lifecycle."""
+    # Setup automated SQLAlchemy audit logging on startup
+    setup_auditing()
+    yield
+    # (shutdown: nothing to clean up currently)
+
 app = FastAPI(
     title=settings.app_name,
     version=settings.app_version,
     docs_url="/docs" if settings.docs_enabled else None,
     redoc_url="/redoc" if settings.docs_enabled else None,
+    lifespan=lifespan,
 )
 
 # CORS middleware. A wildcard origin cannot be combined with credentials in

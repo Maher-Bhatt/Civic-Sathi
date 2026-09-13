@@ -798,6 +798,7 @@ def submit_contractor_rating(
         evidence_urls=review_in.evidence_urls
     )
     db.add(review)
+    db.flush()  # Flush so the new review is visible in the same session for the average calc
     
     # Recalculate average rating for that category
     all_reviews = db.query(ContractorReview).filter(

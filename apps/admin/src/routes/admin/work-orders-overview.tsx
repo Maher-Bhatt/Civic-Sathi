@@ -14,15 +14,15 @@ export const Route = createFileRoute("/admin/work-orders-overview")({
 });
 
 const WO_STATUS_COLORS: Record<string, string> = {
-  "DRAFT":              "#74b9ff",
-  "PUBLISHED":          "#0984e3",
+  "ISSUED":             "#74b9ff",
+  "ACCEPTED":           "#0984e3",
   "IN_PROGRESS":        "#fdcb6e",
-  "COMPLETED":          "#00b894",
   "INSPECTION_PENDING": "#a29bfe",
   "INSPECTION_FAILED":  "#d63031",
   "REWORK":             "#e17055",
-  "CANCELLED":          "#636e72",
+  "COMPLETED":          "#00b894",
   "CLOSED":             "#55efc4",
+  "CANCELLED":          "#636e72",
 };
 
 function WorkOrdersOverview() {
@@ -135,7 +135,7 @@ function WorkOrdersOverview() {
                     <div className="font-medium">{wo.title}</div>
                     <div className="text-xs text-[var(--muted-foreground)] font-mono">{wo.id.substring(0, 8)}</div>
                   </td>
-                  <td className="py-3 px-4">{wo.cityId} - {wo.department}</td>
+                  <td className="py-3 px-4">{(wo as any).cityId || (wo as any).city || "—"}</td>
                   <td className="py-3 px-4 text-xs">{wo.contractorName || wo.contractorId}</td>
                   <td className="py-3 px-4">
                     <span className="px-2.5 py-1 rounded-full text-xs font-semibold" style={{

@@ -98,8 +98,12 @@ def get_state_command_center():
     State-level command center telemetry for Government of Maharashtra (SIH26129).
     Aggregates active cases, SLA metrics, and digital twin coordinates across 27 municipal corporations.
     """
-    from app.services.state_command_service import get_state_command_center_telemetry
-    return get_state_command_center_telemetry()
+    try:
+        from app.services.state_command_service import get_state_command_center_telemetry
+        return get_state_command_center_telemetry()
+    except ImportError:
+        from fastapi import HTTPException
+        raise HTTPException(status_code=503, detail="State command service is not yet configured")
 
 
 @router.get("/predict-systemic-risk")
@@ -119,7 +123,11 @@ def predict_systemic_risk(
     Predictive systemic risk simulator computing cascading infrastructure collapse radius,
     affected population, and financial escalation cost multiplier.
     """
-    from app.services.predictive_risk import calculate_systemic_risk
+    try:
+        from app.services.predictive_risk import calculate_systemic_risk
+    except ImportError:
+        from fastapi import HTTPException
+        raise HTTPException(status_code=503, detail="Predictive risk service is not yet configured")
     dept_list = [d.strip() for d in departments.split(",") if d.strip()]
     return calculate_systemic_risk(
         case_title=title,

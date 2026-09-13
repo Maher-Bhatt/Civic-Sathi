@@ -14,8 +14,9 @@ from app.core.logging import get_logger
 
 from app.core.security import (
     create_access_token, hash_password, verify_password, verify_officer_key,
-    is_super_admin_user,
+    is_super_admin_user, SECRET_KEY, ALGORITHM,
 )
+import jwt as pyjwt
 
 from app.schemas.officer import OfficerLoginRequest, OfficerLoginResponse, OfficerInfo
 from app.schemas.citizen import CitizenRegisterRequest, CitizenLoginRequest, CitizenAuthResponse, CitizenInfo
@@ -60,8 +61,6 @@ def get_me(
     db: Session = Depends(get_db),
 ):
     """Return the current authenticated user's profile. Works for all roles."""
-    from app.core.security import SECRET_KEY, ALGORITHM
-    import jwt as pyjwt
     try:
         payload = pyjwt.decode(credentials.credentials, SECRET_KEY, algorithms=[ALGORITHM])
     except Exception:
@@ -103,8 +102,6 @@ def update_me(
     Supports name, phone, ward, designation.
     Also supports in-profile password change when current_password + new_password are both provided.
     """
-    from app.core.security import SECRET_KEY, ALGORITHM
-    import jwt as pyjwt
     try:
         payload = pyjwt.decode(credentials.credentials, SECRET_KEY, algorithms=[ALGORITHM])
     except Exception:
@@ -687,8 +684,8 @@ def demo_login(
             contractor = Contractor(
                 id=uuid4(),
                 company_name=profile["company"],
-                contact_email=email,
-                contact_phone="+91-0000000000",
+                email=email,
+                phone="+91-0000000000",
                 auth_user_id=str(user.id),
             )
             db.add(contractor)
@@ -718,8 +715,8 @@ def demo_login(
                 contractor = Contractor(
                     id=uuid4(),
                     company_name=profile["company"],
-                    contact_email=email,
-                    contact_phone="+91-0000000000",
+                    email=email,
+                    phone="+91-0000000000",
                     auth_user_id=str(user.id),
                 )
                 db.add(contractor)
@@ -735,6 +732,7 @@ def demo_login(
                             status=RegistrationStatus.APPROVED,
                         ))
                 db.commit()
+                db.refresh(user)
 
         access_token = create_access_token(
             data={"sub": str(user.id), "email": user.email, "role": user.role, "city": city, "name": user.name}

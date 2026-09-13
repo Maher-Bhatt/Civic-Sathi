@@ -237,7 +237,13 @@ def get_my_role_performance(
             if city:
                 base = base.filter(Complaint.city_id == city.id)
         handled = int(base.count())
-        resolved = int(base.filter(Complaint.status == "resolved").count())
+        resolved_query = db.query(Complaint).filter(Complaint.city_id.is_not(None))
+        if city_name:
+            from app.models.procurement import City
+            city = db.query(City).filter(func.lower(City.name) == city_name.lower()).first()
+            if city:
+                resolved_query = resolved_query.filter(Complaint.city_id == city.id)
+        resolved = int(resolved_query.filter(Complaint.status == "resolved").count())
         rate = round((resolved / handled) * 100) if handled else 0
         return RolePerformanceOut(role=current_user.role, subject_name=current_user.name, score=rate, metrics={"handled_complaints": handled, "resolved_complaints": resolved, "resolution_rate": rate, "data_status": "live; quality metrics expand with inspection confirmations"}, achievements=[])
     if current_user.role == "contractor":

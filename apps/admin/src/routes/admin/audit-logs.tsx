@@ -154,7 +154,7 @@ function AuditLogsPage() {
                   <td className="py-3 px-4">
                     <div className="flex flex-col">
                       <span>{log.entityType}</span>
-                      <span className="text-xs text-[var(--muted-foreground)] font-mono">{log.entityId.substring(0, 8)}...</span>
+                      <span className="text-xs text-[var(--muted-foreground)] font-mono">{(log.entityId ?? "").substring(0, 8)}...</span>
                     </div>
                   </td>
                   <td className="py-3 px-4">

@@ -32,7 +32,7 @@ function CommandCenterDashboard() {
     refetchInterval: 60000,
   });
 
-  const health: Record<string, { status: string; ping: number | string; uptime: string }> = (snapshot?.subsystem_health as any) || {
+  const health: Record<string, { status: string; ping: number | string; uptime: string }> = ((snapshot as any)?.subsystem_health) || {
     municipal: { status: "online", ping: 42, uptime: "99.9%" },
     water: { status: "online", ping: 120, uptime: "98.5%" },
     road: { status: "degraded", ping: 450, uptime: "94.2%" },
@@ -40,8 +40,8 @@ function CommandCenterDashboard() {
     contractor: { status: "online", ping: 60, uptime: "99.5%" },
   };
 
-  const trendData = snapshot?.monthly_trend?.length > 0 ? snapshot.monthly_trend : [];
-  const loadData = snapshot?.department_load?.length > 0 ? snapshot.department_load : [];
+  const trendData: any[] = Array.isArray((snapshot as any)?.monthly_trend) ? (snapshot as any).monthly_trend : [];
+  const loadData: any[] = Array.isArray((snapshot as any)?.department_load) ? (snapshot as any).department_load : [];
 
   const cityData = snapshot?.cities ?? [];
   const statusData = snapshot?.complaint_status ? [
