@@ -589,3 +589,163 @@ def confirm_password_reset(
     user.reset_otp_requested_at = None
     db.commit()
     return PasswordResetConfirmResponse(success=True, message="Password reset successfully. You can now sign in.")
+
+
+# ── Demo login endpoints — instant login for showcases/videos ──────────────
+
+class DemoLoginRequest(BaseModel):
+    city: str = Field(default="vadodara", description="City for the demo session")
+    portal: str = Field(default="municipality", pattern="^(municipality|contractor)$")
+
+DEMO_OFFICER_PROFILES = {
+    "vadodara": {"name": "Demo Officer (Vadodara)", "email": "demo.officer@vmc.gov.in", "department": "Urban Development", "designation": "Ward Officer"},
+    "mumbai": {"name": "Demo Officer (Mumbai)", "email": "demo.officer@bmc.gov.in", "department": "Infrastructure", "designation": "Supervisor"},
+    "bengaluru": {"name": "Demo Officer (Bengaluru)", "email": "demo.officer@bbmp.gov.in", "department": "Public Works", "designation": "Department Head"},
+    "delhi": {"name": "Demo Officer (Delhi)", "email": "demo.officer@mcd.gov.in", "department": "Sanitation", "designation": "Ward Officer"},
+}
+
+DEMO_CONTRACTOR_PROFILES = {
+    "vadodara": {"name": "Demo Contractor (Vadodara)", "email": "demo.contractor@vadodara-infra.in", "company": "Demo Infrastructure Pvt. Ltd."},
+    "mumbai": {"name": "Demo Contractor (Mumbai)", "email": "demo.contractor@mumbai-infra.in", "company": "Demo Infrastructure Pvt. Ltd."},
+    "bengaluru": {"name": "Demo Contractor (Bengaluru)", "email": "demo.contractor@bengaluru-infra.in", "company": "Demo Infrastructure Pvt. Ltd."},
+    "delhi": {"name": "Demo Contractor (Delhi)", "email": "demo.contractor@delhi-infra.in", "company": "Demo Infrastructure Pvt. Ltd."},
+}
+
+@router.post("/demo-login")
+def demo_login(
+    req: DemoLoginRequest,
+    db: Session = Depends(get_db),
+):
+    """
+    Instant demo login — creates or resets a demo user and returns a valid JWT.
+    Used for hackathon showcases and video recordings. No password needed.
+    """
+    city = req.city.strip().lower()
+
+    if req.portal == "municipality":
+        profile = DEMO_OFFICER_PROFILES.get(city, DEMO_OFFICER_PROFILES["vadodara"])
+        email = profile["email"]
+        role = "officer"
+
+        user = db.query(User).filter(User.email == email).first()
+        if not user:
+            user = User(
+                id=uuid4(),
+                name=profile["name"],
+                email=email,
+                role=role,
+                city=city.title(),
+                department=profile["department"],
+                designation=profile["designation"],
+                password_hash=hash_password("DemoLogin@2026"),
+            )
+            db.add(user)
+            db.commit()
+            db.refresh(user)
+
+        access_token = create_access_token(
+            data={"sub": str(user.id), "email": user.email, "role": user.role, "name": user.name}
+        )
+        return {
+            "access_token": access_token,
+            "token_type": "bearer",
+            "officer": {
+                "id": str(user.id),
+                "name": user.name,
+                "email": user.email,
+                "department": user.department or "General",
+                "designation": user.designation,
+                "role": user.role.title(),
+                "city": user.city or city.title(),
+                "is_super_admin": False,
+            },
+        }
+
+    else:  # contractor
+        profile = DEMO_CONTRACTOR_PROFILES.get(city, DEMO_CONTRACTOR_PROFILES["vadodara"])
+        email = profile["email"]
+
+        user = db.query(User).filter(User.email == email).first()
+        if not user:
+            user = User(
+                id=uuid4(),
+                name=profile["name"],
+                email=email,
+                role="contractor",
+                city=city.title(),
+                password_hash=hash_password("DemoLogin@2026"),
+            )
+            db.add(user)
+            db.flush()
+
+            # Create contractor company profile
+            contractor = Contractor(
+                id=uuid4(),
+                company_name=profile["company"],
+                contact_email=email,
+                contact_phone="+91-0000000000",
+                auth_user_id=str(user.id),
+            )
+            db.add(contractor)
+            db.flush()
+
+            # Create APPROVED city registration for ALL 4 cities
+            for city_name in ["Vadodara", "Mumbai", "Bengaluru", "Delhi"]:
+                city_obj = db.query(City).filter(func.lower(City.name) == city_name.lower()).first()
+                if city_obj:
+                    existing_reg = db.query(ContractorCityRegistration).filter(
+                        ContractorCityRegistration.contractor_id == contractor.id,
+                        ContractorCityRegistration.city_id == city_obj.id,
+                    ).first()
+                    if not existing_reg:
+                        db.add(ContractorCityRegistration(
+                            id=uuid4(),
+                            contractor_id=contractor.id,
+                            city_id=city_obj.id,
+                            status=RegistrationStatus.APPROVED,
+                        ))
+            db.commit()
+            db.refresh(user)
+        else:
+            # Ensure contractor profile and registrations exist
+            contractor = db.query(Contractor).filter(Contractor.auth_user_id == str(user.id)).first()
+            if not contractor:
+                contractor = Contractor(
+                    id=uuid4(),
+                    company_name=profile["company"],
+                    contact_email=email,
+                    contact_phone="+91-0000000000",
+                    auth_user_id=str(user.id),
+                )
+                db.add(contractor)
+                db.flush()
+
+                for city_name in ["Vadodara", "Mumbai", "Bengaluru", "Delhi"]:
+                    city_obj = db.query(City).filter(func.lower(City.name) == city_name.lower()).first()
+                    if city_obj:
+                        db.add(ContractorCityRegistration(
+                            id=uuid4(),
+                            contractor_id=contractor.id,
+                            city_id=city_obj.id,
+                            status=RegistrationStatus.APPROVED,
+                        ))
+                db.commit()
+
+        access_token = create_access_token(
+            data={"sub": str(user.id), "email": user.email, "role": user.role, "city": city, "name": user.name}
+        )
+        return {
+            "access_token": access_token,
+            "token_type": "bearer",
+            "citizen": {
+                "id": str(user.id),
+                "name": user.name,
+                "email": user.email,
+                "phone": "",
+                "ward": "Demo Ward",
+                "city": city,
+                "role": "contractor",
+                "notifyStatus": True,
+                "notifyNearby": True,
+            },
+        }

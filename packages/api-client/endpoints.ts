@@ -30,6 +30,9 @@ export class Endpoints {
       const raw = await this.client.post<any>('/api/v1/auth/register', data);
       return normaliseAuthResponse(raw);
     },
+    demoLogin: async (data: { city?: string; portal: 'municipality' | 'contractor' }): Promise<any> => {
+      return this.client.post<any>('/api/v1/auth/demo-login', data);
+    },
     me: async (): Promise<User> => {
       return this.client.get<any>('/api/v1/auth/me');
     },

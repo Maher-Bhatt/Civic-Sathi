@@ -141,6 +141,16 @@ export async function muniLogin(input: {
   }
 }
 
+export async function muniDemoLogin(city: string = "vadodara"): Promise<Officer> {
+  const res = await api.auth.demoLogin({ city, portal: "municipality" });
+  if (typeof window !== "undefined") window.localStorage.setItem(LS.token, res.access_token);
+  const backendUser = res.officer || res.user;
+  if (!backendUser) throw new Error("Demo login failed: no user data returned");
+  const officer = normalizeOfficer(backendUser, city as CityId);
+  write(LS.officer, officer);
+  return officer;
+}
+
 export async function muniLogout(): Promise<void> {
   if (typeof window !== "undefined") {
     window.localStorage.removeItem(LS.token);

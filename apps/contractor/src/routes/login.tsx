@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { useContractorAuth } from "@/lib/contractor-auth";
+import { contractorDemoLogin } from "@/services/api";
 import { GlassCard } from "@/components/ui/glass-card";
 import { useI18n } from "@/lib/i18n";
 import type { CityId } from "@/services/cities";
@@ -82,7 +83,6 @@ function ContractorLogin() {
               <option value="mumbai">Mumbai · BMC</option>
               <option value="bengaluru">Bengaluru · BBMP</option>
               <option value="delhi">Delhi · MCD</option>
-              
             </select>
           </div>
 
@@ -114,6 +114,34 @@ function ContractorLogin() {
           <Link to="/forgot-password" className="text-primary underline-offset-4 hover:underline">Forgot password?</Link>
         </div>
 
+        <div className="mt-4 border-t border-[var(--glass-border)] pt-4">
+          <p className="text-center text-[11px] font-semibold uppercase tracking-wider text-[var(--muted-foreground)] mb-3">
+            Quick Demo Access
+          </p>
+          <button
+            type="button"
+            disabled={loading}
+            onClick={async () => {
+              setLoading(true);
+              setError(null);
+              try {
+                await contractorDemoLogin(city);
+                navigate({ to: "/contractor/dashboard" as any });
+              } catch (err: any) {
+                setError(err?.message || "Demo login failed. The backend may be starting up — please retry in 30 seconds.");
+              } finally {
+                setLoading(false);
+              }
+            }}
+            className="w-full rounded-xl bg-gradient-to-r from-blue-500 to-cyan-500 px-4 py-2.5 text-sm font-bold text-white shadow-md hover:shadow-lg transition-all disabled:opacity-50"
+          >
+            {loading ? "Starting demo..." : "⚡ Instant Demo Login (No Password)"}
+          </button>
+          <p className="mt-2 text-center text-[10px] text-muted-foreground">
+            Creates a demo contractor account for {city.charAt(0).toUpperCase() + city.slice(1)}
+          </p>
+        </div>
+
         <div className="mt-6 border-t border-[var(--glass-border)] pt-5 text-center">
           <p className="text-[11px] font-semibold uppercase tracking-wider text-[var(--muted-foreground)]">
             Registered contractor access
@@ -126,8 +154,7 @@ function ContractorLogin() {
         <div className="mt-6 text-center text-xs text-[var(--muted-foreground)]">
           <p>{t("ui.sign_in_with_your_registered_c")}</p>
           <p className="mt-2 text-[10px] uppercase font-semibold text-primary/80">
-            Want to bid on Civic Projects? Contact your local municipality admin to register your
-            company.
+            Want to bid on Civic Projects? Contact your local municipality admin to register your company.
           </p>
         </div>
       </GlassCard>

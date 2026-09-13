@@ -91,6 +91,15 @@ export async function contractorLogin(input: {
   }
 }
 
+export async function contractorDemoLogin(city: string = "vadodara"): Promise<User> {
+  const res = await client.post<any>("/api/v1/auth/demo-login", { city, portal: "contractor" });
+  const userData = res.citizen || res.user || res.contractor;
+  if (!userData) throw new Error("Demo login failed");
+  if (typeof window !== "undefined") window.localStorage.setItem(LS.token, res.access_token);
+  write(LS.contractor, userData);
+  return userData;
+}
+
 export async function contractorLogout(): Promise<void> {
   if (typeof window !== "undefined") {
     window.localStorage.removeItem(LS.token);

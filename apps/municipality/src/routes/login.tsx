@@ -5,6 +5,7 @@ import { GlassCard, SectionLabel } from "@/components/ui/glass-card";
 import { GlassButton } from "@/components/ui/glass-button";
 import { GlassInput } from "@/components/ui/glass-input";
 import { useMuniAuth } from "@/lib/muni-auth";
+import { muniDemoLogin } from "@/services/api";
 import { CITIES, type CityId } from "@/services/cities";
 import { useI18n } from "@/lib/i18n";
 
@@ -120,7 +121,36 @@ function MuniLoginPage() {
           </GlassButton>
         </form>
 
-        <div className="mt-6 border-t border-[var(--glass-border)] pt-5 text-center">
+        <div className="mt-4 border-t border-[var(--glass-border)] pt-4">
+          <p className="text-center text-[11px] font-semibold uppercase tracking-wider text-[var(--muted-foreground)] mb-3">
+            Quick Demo Access
+          </p>
+          <button
+            type="button"
+            disabled={busy}
+            onClick={async () => {
+              setBusy(true);
+              setError(null);
+              try {
+                await muniDemoLogin("vadodara");
+                toast.success("Demo session started — Welcome, Officer!");
+                void navigate({ to: "/dashboard" as any });
+              } catch (err: any) {
+                setError(err?.message || "Demo login failed. The backend may be starting up — please retry in 30 seconds.");
+              } finally {
+                setBusy(false);
+              }
+            }}
+            className="w-full rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 px-4 py-2.5 text-sm font-bold text-white shadow-md hover:shadow-lg transition-all disabled:opacity-50"
+          >
+            {busy ? "Starting demo..." : "⚡ Instant Demo Login (No Password)"}
+          </button>
+          <p className="mt-2 text-center text-[10px] text-muted-foreground">
+            Creates a temporary demo officer account for Vadodara
+          </p>
+        </div>
+
+        <div className="mt-4 border-t border-[var(--glass-border)] pt-5 text-center">
           <p className="text-[11px] font-semibold uppercase tracking-wider text-[var(--muted-foreground)]">
             Authorized municipal access
           </p>
