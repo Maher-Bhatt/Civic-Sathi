@@ -1,4 +1,4 @@
-﻿@import "tailwindcss" source(none);
+@import "tailwindcss" source(none);
 @source "../src";
 @import "tw-animate-css";
 
@@ -1833,14 +1833,15 @@ body:has(.admin-app-shell) {
 }
 
 .admin-nav-item.is-active {
-  color: #fffaf2 !important;
-  background: white !important;
-  border-color: rgba(232, 214, 191, 0.22) !important;
+  color: #1C130D !important;
+  background: rgba(255, 253, 248, 0.95) !important;
+  border-color: rgba(232, 214, 191, 0.35) !important;
   box-shadow: inset 3px 0 0 var(--heritage-turmeric), 0 9px 24px -18px rgba(185, 82, 50, 0.9) !important;
+  font-weight: 600;
 }
 
 .admin-nav-item.is-active svg:first-child {
-  color: #f0c56f !important;
+  color: #b5651d !important;
 }
 
 .admin-nav-chevron {

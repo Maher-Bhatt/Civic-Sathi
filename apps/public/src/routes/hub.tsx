@@ -42,9 +42,9 @@ function CityHubPage() {
         
         {/* Environmental Dashboard */}
         <section>
-          <div className="flex items-center justify-between mb-4">
-            <SectionLabel>Live Environment Metrics</SectionLabel>
-            <span className="text-xs text-muted-foreground font-medium flex items-center gap-1">
+          <div className="flex items-center justify-between mb-4 px-4 py-2 rounded-xl bg-white/80 dark:bg-zinc-900/80 backdrop-blur-sm border border-zinc-200/50 dark:border-zinc-700/50">
+            <SectionLabel className="!text-zinc-800 dark:!text-zinc-100 font-bold">Live Environment Metrics</SectionLabel>
+            <span className="text-xs text-zinc-700 dark:text-zinc-200 font-semibold flex items-center gap-1">
               <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
               Live Data
             </span>

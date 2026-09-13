@@ -288,8 +288,9 @@
   line-height: 1rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  font-weight: 600;
-  color: var(--subtle-foreground);
+  font-weight: 700;
+  color: var(--foreground);
+  text-shadow: 0 1px 3px rgba(255, 255, 255, 0.6);
 }
 
 @utility ambient-field {

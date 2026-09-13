@@ -213,9 +213,28 @@ function ProfilePage() {
           </div>
           {reputationBusy && !reputation ? <p className="text-sm text-muted-foreground">{t("profile.loadingAchievements", "Loading verified achievements…")}</p> : null}
           {!reputationBusy && !reputation?.badges.length ? (
-            <div className="rounded-xl border border-dashed border-border p-4 text-sm text-muted-foreground">
-              <p className="font-medium text-foreground">{t("profile.journeyEmpty", "Your Civic Journey Starts Here")}</p>
-              <p className="mt-1">{t("profile.journeyBody", "Report your first genuine civic issue and begin building Civic Impact.")}</p>
+            <div className="space-y-4">
+              <div className="rounded-xl border border-dashed border-primary/30 bg-primary/5 p-5 text-sm">
+                <p className="font-semibold text-foreground text-base">🎯 {t("profile.journeyEmpty", "Your Civic Journey Starts Here")}</p>
+                <p className="mt-2 text-muted-foreground">{t("profile.journeyBody", "Complete these starter missions to earn your first badges and build your Civic Impact score.")}</p>
+              </div>
+              <div className="grid gap-3">
+                {[
+                  { icon: "📝", title: "First Report", desc: "Submit your first civic issue report", xp: "+50 XP" },
+                  { icon: "⭐", title: "Rate a Contractor", desc: "Leave a verified rating on a contractor's work", xp: "+30 XP" },
+                  { icon: "🗳️", title: "Community Voice", desc: "Vote on a participatory budgeting project", xp: "+20 XP" },
+                  { icon: "🗺️", title: "Map Explorer", desc: "Use the Civic Map to explore local issues", xp: "+10 XP" },
+                ].map((mission) => (
+                  <div className="flex items-center gap-4 rounded-xl border border-border bg-[var(--glass)] p-4" key={mission.title}>
+                    <span className="text-2xl">{mission.icon}</span>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium text-sm">{mission.title}</p>
+                      <p className="text-xs text-muted-foreground mt-0.5">{mission.desc}</p>
+                    </div>
+                    <span className="text-xs font-semibold text-primary whitespace-nowrap">{mission.xp}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           ) : null}
           <div className="grid gap-3 sm:grid-cols-2">
@@ -275,7 +294,11 @@ function ProfilePage() {
                     civic?.display_mode === mode ? "border-primary bg-primary/10 text-foreground" : "border-border text-muted-foreground hover:text-foreground",
                   )}
                 >
-                  {mode === "initials" ? "M Maher" : mode === "first_name" ? "Maher" : "Civic Guardian #482"}
+                  {mode === "initials"
+                    ? `${(user?.name || "U").charAt(0)} ${(user?.name || "User").split(" ").pop()?.charAt(0) || ""}`
+                    : mode === "first_name"
+                    ? (user?.name || "User").split(" ")[0]
+                    : `Civic Guardian #${String(user?.id || "").slice(-3) || "001"}`}
                 </button>
               ))}
             </div>

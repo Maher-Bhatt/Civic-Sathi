@@ -89,14 +89,14 @@ export function StateCommandCenterPage() {
           <div className="space-y-1">
             <div className="inline-flex items-center gap-2 rounded-full border border-orange-500/30 bg-orange-500/10 px-3.5 py-1 text-xs font-semibold text-orange-600 dark:text-orange-400">
               <Shield className="h-3.5 w-3.5" />
-              <span>Govt. of Maharashtra · SIH26129 State Command Center</span>
+              <span>Civic Sathi · SIH26129 Multi-State Command Center</span>
             </div>
             <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-foreground">
-              Maharashtra Civic Command Center & Digital Twin
+              National Civic Command Center & Digital Twin
             </h1>
             <p className="text-sm text-muted-foreground max-w-3xl">
-              Cross-jurisdictional municipal oversight across 27 Municipal Corporations and 143
-              sovereign departments. Synchronized via MeitY API Setu & Estonia X-Road architecture.
+              Cross-jurisdictional municipal oversight across 4 cities (Vadodara, Mumbai, Bengaluru, Delhi)
+              spanning Gujarat, Maharashtra, Karnataka, and NCT Delhi. Synchronized via MeitY API Setu & Estonia X-Road architecture.
             </p>
           </div>
 
@@ -123,9 +123,9 @@ export function StateCommandCenterPage() {
       {/* Friendly Plain-English Explainer Banner */}
       <div className="mx-auto max-w-6xl mb-8">
         <FeatureExplainerBanner
-          title="Maharashtra Civic Command Center (Statewide Public Fund Savings)"
+          title="National Civic Command Center (Multi-State Public Fund Savings)"
           problem="State leaders and municipal commissioners usually learn about massive civic failures only after public outrage, road cave-ins, or local news reports."
-          solution="A live digital twin map tracking 27 Municipal Corporations across Maharashtra, showing where departments are collaborating, where bottlenecks are stuck, and measuring real-time taxpayer savings."
+          solution="A live digital twin map tracking 4 cities across 4 states (Gujarat, Maharashtra, Karnataka, Delhi), showing where departments are collaborating, where bottlenecks are stuck, and measuring real-time taxpayer savings."
           benefit="Taxpayer Money Saved: ₹4.82 Crores preserved by eliminating duplicate road excavations, alongside 4.2x faster emergency resolution."
         />
       </div>
@@ -140,7 +140,7 @@ export function StateCommandCenterPage() {
             {data?.summary.total_active_cases.toLocaleString() || "17,090"}
           </div>
           <span className="text-[0.65rem] text-muted-foreground font-semibold block">
-            Across 27 Corporations
+            Across 4 Cities · 4 States
           </span>
         </GlassCard>
 
