@@ -598,10 +598,10 @@ class DemoLoginRequest(BaseModel):
     portal: str = Field(default="municipality", pattern="^(municipality|contractor)$")
 
 DEMO_OFFICER_PROFILES = {
-    "vadodara": {"name": "Demo Officer (Vadodara)", "email": "demo.officer@vmc.gov.in", "department": "Urban Development", "designation": "Ward Officer"},
-    "mumbai": {"name": "Demo Officer (Mumbai)", "email": "demo.officer@bmc.gov.in", "department": "Infrastructure", "designation": "Supervisor"},
+    "vadodara": {"name": "Demo Officer (Vadodara)", "email": "demo.officer@vmc.gov.in", "department": "Urban Development", "designation": "Department Head"},
+    "mumbai": {"name": "Demo Officer (Mumbai)", "email": "demo.officer@bmc.gov.in", "department": "Infrastructure", "designation": "Department Head"},
     "bengaluru": {"name": "Demo Officer (Bengaluru)", "email": "demo.officer@bbmp.gov.in", "department": "Public Works", "designation": "Department Head"},
-    "delhi": {"name": "Demo Officer (Delhi)", "email": "demo.officer@mcd.gov.in", "department": "Sanitation", "designation": "Ward Officer"},
+    "delhi": {"name": "Demo Officer (Delhi)", "email": "demo.officer@mcd.gov.in", "department": "Sanitation", "designation": "Department Head"},
 }
 
 DEMO_CONTRACTOR_PROFILES = {
@@ -640,6 +640,11 @@ def demo_login(
                 password_hash=hash_password("DemoLogin@2026"),
             )
             db.add(user)
+            db.commit()
+            db.refresh(user)
+        else:
+            # Upgrade existing demo officers to Department Head so they can manage tenders
+            user.designation = profile["designation"]
             db.commit()
             db.refresh(user)
 
