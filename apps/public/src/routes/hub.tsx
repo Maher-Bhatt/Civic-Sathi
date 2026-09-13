@@ -1,9 +1,17 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { GlassCard, SectionLabel } from "@/components/ui/glass-card";
-import { ShieldAlert, Flame, Ambulance, Megaphone, MapPin, Wind, Droplets, Sun, Trophy, ArrowRight, Vote, CheckCircle2 } from "lucide-react";
+import { ShieldAlert, Flame, Ambulance, Megaphone, MapPin, Wind, Droplets, Sun, Trophy, ArrowRight, Vote, CheckCircle2, Loader2, CloudRain } from "lucide-react";
 import { PageShell } from "@/components/site-nav";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
+import { getCityEnvironment, type CityEnvironment } from "@/services/api";
+
+const CITIES = [
+  { id: "vadodara", name: "Vadodara" },
+  { id: "mumbai", name: "Mumbai" },
+  { id: "bengaluru", name: "Bengaluru" },
+  { id: "delhi", name: "Delhi" },
+] as const;
 
 export const Route = createFileRoute("/hub")({
   component: CityHubPage,
@@ -11,6 +19,19 @@ export const Route = createFileRoute("/hub")({
 
 function CityHubPage() {
   const [votedProjects, setVotedProjects] = useState<Record<string, boolean>>({});
+  const [selectedCity, setSelectedCity] = useState("vadodara");
+  const [envData, setEnvData] = useState<CityEnvironment | null>(null);
+  const [envLoading, setEnvLoading] = useState(true);
+
+  useEffect(() => {
+    let active = true;
+    setEnvLoading(true);
+    getCityEnvironment(selectedCity)
+      .then((data) => { if (active) setEnvData(data); })
+      .catch(() => { if (active) setEnvData(null); })
+      .finally(() => { if (active) setEnvLoading(false); });
+    return () => { active = false; };
+  }, [selectedCity]);
 
   const handleCall = (num: string) => {
     window.location.href = `tel:${num}`;
@@ -40,45 +61,77 @@ function CityHubPage() {
 
       <div className="flex flex-col gap-10">
         
-        {/* Environmental Dashboard */}
+        {/* Environmental Dashboard — Real-time data from Open-Meteo */}
         <section>
           <div className="flex items-center justify-between mb-4 px-4 py-2 rounded-xl bg-white/80 dark:bg-zinc-900/80 backdrop-blur-sm border border-zinc-200/50 dark:border-zinc-700/50">
             <SectionLabel className="!text-zinc-800 dark:!text-zinc-100 font-bold">Live Environment Metrics</SectionLabel>
             <span className="text-xs text-zinc-700 dark:text-zinc-200 font-semibold flex items-center gap-1">
               <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-              Live Data
+              {envLoading ? "Loading..." : "Live Data"}
             </span>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <GlassCard className="p-4 flex flex-col items-center justify-center text-center gap-2">
-              <Wind className="w-6 h-6 text-emerald-500" />
-              <div className="space-y-1">
-                <p className="text-2xl font-bold text-foreground">42</p>
-                <p className="text-[10px] uppercase font-bold text-muted-foreground">AQI (Good)</p>
-              </div>
-            </GlassCard>
-            <GlassCard className="p-4 flex flex-col items-center justify-center text-center gap-2">
-              <Sun className="w-6 h-6 text-amber-500" />
-              <div className="space-y-1">
-                <p className="text-2xl font-bold text-foreground">32°C</p>
-                <p className="text-[10px] uppercase font-bold text-muted-foreground">Temperature</p>
-              </div>
-            </GlassCard>
-            <GlassCard className="p-4 flex flex-col items-center justify-center text-center gap-2">
-              <Droplets className="w-6 h-6 text-blue-500" />
-              <div className="space-y-1">
-                <p className="text-2xl font-bold text-foreground">94%</p>
-                <p className="text-[10px] uppercase font-bold text-muted-foreground">Water Supply</p>
-              </div>
-            </GlassCard>
-            <GlassCard className="p-4 flex flex-col items-center justify-center text-center gap-2">
-              <ShieldAlert className="w-6 h-6 text-orange-500" />
-              <div className="space-y-1">
-                <p className="text-2xl font-bold text-foreground">0</p>
-                <p className="text-[10px] uppercase font-bold text-muted-foreground">Active Alerts</p>
-              </div>
-            </GlassCard>
+
+          {/* City Selector Tabs */}
+          <div className="flex gap-2 mb-4 flex-wrap">
+            {CITIES.map((city) => (
+              <button
+                key={city.id}
+                type="button"
+                onClick={() => setSelectedCity(city.id)}
+                className={cn(
+                  "px-4 py-2 rounded-xl text-xs font-bold transition-all border",
+                  selectedCity === city.id
+                    ? "bg-primary text-white border-primary shadow-md"
+                    : "bg-[var(--glass)] text-muted-foreground border-border hover:text-foreground hover:bg-[var(--glass-strong)]"
+                )}
+              >
+                {city.name}
+              </button>
+            ))}
           </div>
+
+          {envLoading ? (
+            <div className="flex items-center justify-center py-12">
+              <Loader2 className="w-6 h-6 animate-spin text-primary" />
+              <span className="ml-2 text-sm text-muted-foreground">Fetching live data for {CITIES.find(c => c.id === selectedCity)?.name}...</span>
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <GlassCard className="p-4 flex flex-col items-center justify-center text-center gap-2">
+                <Wind className="w-6 h-6 text-emerald-500" />
+                <div className="space-y-1">
+                  <p className="text-2xl font-bold text-foreground">{envData?.air_quality.aqi ?? "—"}</p>
+                  <p className="text-[10px] uppercase font-bold text-muted-foreground">AQI ({envData?.air_quality.status ?? "—"})</p>
+                </div>
+              </GlassCard>
+              <GlassCard className="p-4 flex flex-col items-center justify-center text-center gap-2">
+                <Sun className="w-6 h-6 text-amber-500" />
+                <div className="space-y-1">
+                  <p className="text-2xl font-bold text-foreground">{envData?.weather.temperature_c != null ? `${Math.round(envData.weather.temperature_c)}°C` : "—"}</p>
+                  <p className="text-[10px] uppercase font-bold text-muted-foreground">{envData?.weather.condition ?? "Temperature"}</p>
+                </div>
+              </GlassCard>
+              <GlassCard className="p-4 flex flex-col items-center justify-center text-center gap-2">
+                <Droplets className="w-6 h-6 text-blue-500" />
+                <div className="space-y-1">
+                  <p className="text-2xl font-bold text-foreground">{envData?.weather.humidity_percent != null ? `${Math.round(envData.weather.humidity_percent)}%` : "—"}</p>
+                  <p className="text-[10px] uppercase font-bold text-muted-foreground">Humidity</p>
+                </div>
+              </GlassCard>
+              <GlassCard className="p-4 flex flex-col items-center justify-center text-center gap-2">
+                <CloudRain className="w-6 h-6 text-teal-500" />
+                <div className="space-y-1">
+                  <p className="text-2xl font-bold text-foreground">{envData?.weather.wind_speed_kmh != null ? `${Math.round(envData.weather.wind_speed_kmh)}` : "—"}</p>
+                  <p className="text-[10px] uppercase font-bold text-muted-foreground">Wind (km/h)</p>
+                </div>
+              </GlassCard>
+            </div>
+          )}
+          {envData?.last_updated && !envLoading && (
+            <p className="text-[10px] text-muted-foreground mt-2 text-right">
+              Last updated: {new Date(envData.last_updated).toLocaleTimeString()} · Source: Open-Meteo
+            </p>
+          )}
         </section>
 
         {/* Participatory Budgeting */}

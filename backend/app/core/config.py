@@ -29,9 +29,10 @@ class Settings(BaseSettings):
     # CORS
     cors_origins: str = Field(
         default=(
-            "http://localhost:5173,http://localhost:8000,http://localhost:3000,http://localhost:8080,http://localhost:8081,"
+            "http://localhost:5173,http://localhost:8000,http://localhost:3000,http://localhost:8080,http://localhost:8081,http://localhost:8082,"
             "https://janmind-public.vercel.app,https://janmind-municipality.vercel.app,"
-            "https://janmind-contractor.vercel.app,https://janmind-admin.vercel.app"
+            "https://janmind-contractor.vercel.app,https://janmind-admin.vercel.app,"
+            "https://civicsathi-municipality.vercel.app,https://civicsathi-contractor.vercel.app"
         ),
         description="Comma-separated list of allowed origins"
     )

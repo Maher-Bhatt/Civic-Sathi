@@ -133,3 +133,13 @@ def predict_systemic_risk(
         city_name=city_name,
     )
 
+
+@router.get("/environment/{city}")
+async def get_environment(city: str):
+    """
+    Real-time environment data (weather + air quality) for a city.
+    Data sourced from free public APIs (Open-Meteo) — no API keys required.
+    Supported cities: vadodara, mumbai, bengaluru, delhi.
+    """
+    from app.services.environment_service import get_city_environment
+    return await get_city_environment(city)

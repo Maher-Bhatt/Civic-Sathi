@@ -1,6 +1,4 @@
 import type { MultiDeptAnalysisResult, CivicCase, ConnectedSystem, IntegrationEventIn, IntegrationEventOut, LiveTransitMessage, StateCommandData, PredictiveRiskResult, DepaConsent, MdmException } from './types';
-export const API_BASE_URL = import.meta.env['VITE_API_URL'] || 'http://localhost:8000';
-import type { MultiDeptAnalysisResult, CivicCase, ConnectedSystem, IntegrationEventIn, IntegrationEventOut, LiveTransitMessage, StateCommandData, PredictiveRiskResult, DepaConsent, MdmException } from './types';
 import { FALLBACK_BACKEND_URL } from '@civicsathi/api-client';
 import { APIClient, Endpoints } from "@civicsathi/api-client";
 import type { CityId } from "@/services/cities";
@@ -49,9 +47,10 @@ const LS = {
   officer: "civicsathi_muni_officer",
   token: "civicsathi_muni_token",
 };
+export const API_BASE_URL = getApiBaseUrl();
 
 export const client = new APIClient({
-  baseUrl: API_BASE_URL,
+  baseUrl: getApiBaseUrl(),
   getToken: () => {
     if (typeof window === "undefined") return null;
     return window.localStorage.getItem(LS.token);

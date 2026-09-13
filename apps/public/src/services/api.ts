@@ -752,5 +752,30 @@ export async function resetDemoState(): Promise<{ status: string; message: strin
   return client.post("/api/v1/integrations/reset-demo", {});
 }
 
+// -------------------------------------------------------------------------
+// Real-time Environment Data (Weather + AQI from Open-Meteo — free, no key)
+// -------------------------------------------------------------------------
 
+export interface CityEnvironment {
+  city_id: string;
+  city_name: string;
+  weather: {
+    temperature_c: number | null;
+    apparent_temperature_c: number | null;
+    condition: string;
+    weather_code: number;
+    humidity_percent: number | null;
+    wind_speed_kmh: number | null;
+  };
+  air_quality: {
+    aqi: number | null;
+    status: string;
+    pm25: number | null;
+    pm10: number | null;
+  };
+  last_updated: string;
+}
 
+export async function getCityEnvironment(city: string): Promise<CityEnvironment> {
+  return client.get<CityEnvironment>(`/api/v1/analytics/environment/${encodeURIComponent(city)}`);
+}
