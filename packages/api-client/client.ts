@@ -43,7 +43,7 @@ export class APIClient {
 
     let response: Response;
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 15000);
+    const timeoutId = setTimeout(() => controller.abort(), 60000);
     try {
       response = await fetch(url, {
         ...options,
