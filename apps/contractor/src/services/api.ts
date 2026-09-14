@@ -278,8 +278,10 @@ export async function submitFieldEvidence(
   workOrderId: string,
   photoUrl: string,
   description: string,
+  payload?: any
 ) {
-  return await api.workOrders.submitEvidence(workOrderId, { photo_url: photoUrl, description });
+  const finalPayload = payload ? { photo_url: photoUrl, description, ...payload } : { photo_url: photoUrl, description };
+  return await api.workOrders.submitEvidence(workOrderId, finalPayload);
 }
 
 export async function updateWorkOrderStatus(id: string, status: string) {
