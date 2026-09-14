@@ -42,6 +42,22 @@ function getStatusBadge(status: string) {
   }
 }
 
+function formatSyncTime(isoString: string) {
+  if (!isoString) return 'Not recorded'
+  try {
+    const d = new Date(isoString)
+    if (isNaN(d.getTime())) return isoString
+    return new Intl.DateTimeFormat('en-US', {
+      month: 'short',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: '2-digit',
+    }).format(d)
+  } catch {
+    return isoString
+  }
+}
+
 function InteroperabilityPage() {
   const { data: systems = [], isLoading, error, refetch } = useQuery({
     queryKey: ['setu-systems'],
@@ -156,43 +172,45 @@ function InteroperabilityPage() {
               return (
                 <GlassCard key={system.key} className="p-5 flex flex-col justify-between">
                   <div>
-                    <div className="flex justify-between items-start mb-3">
-                      <div className="flex items-center gap-3">
-                        <div className="p-2.5 bg-blue-500/15 rounded-xl text-blue-600 dark:text-blue-400">
+                    <div className="flex justify-between items-start gap-4 mb-4">
+                      <div className="flex items-start gap-3 flex-1 min-w-0">
+                        <div className="shrink-0 p-2.5 bg-blue-500/15 rounded-xl text-blue-600 dark:text-blue-400">
                           <Server className="w-5 h-5" />
                         </div>
-                        <div>
-                          <h3 className="text-base font-bold text-foreground">{system.name}</h3>
-                          <span className="text-[11px] font-mono text-muted-foreground">
+                        <div className="flex-1 min-w-0">
+                          <h3 className="text-[15px] font-bold text-foreground leading-snug line-clamp-2" title={system.name}>
+                            {system.name}
+                          </h3>
+                          <span className="inline-flex mt-1.5 px-2 py-0.5 bg-[var(--surface-elevated)] border border-[var(--glass-border)] rounded text-[10px] font-mono text-muted-foreground uppercase tracking-wider">
                             {system.key}
                           </span>
                         </div>
                       </div>
-                      <div className={`flex items-center gap-1.5 px-2.5 py-0.5 rounded-full border text-xs font-semibold ${badgeStyle.badge}`}>
+                      <div className={`shrink-0 flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-xs font-semibold ${badgeStyle.badge}`}>
                         <span className={`w-2 h-2 rounded-full ${badgeStyle.dot}`} />
-                        <span>{system.status}</span>
+                        <span className="leading-none">{system.status}</span>
                       </div>
                     </div>
-                    <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2">
+                    <p className="mt-2 text-xs text-muted-foreground leading-relaxed line-clamp-2">
                       {system.description || 'Federated grievance ingest and status sync connector.'}
                     </p>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4 mt-5 pt-4 border-t border-[var(--glass-border)]">
+                  <div className="grid grid-cols-2 gap-4 mt-6 pt-4 border-t border-[var(--glass-border)]">
                     <div>
-                      <div className="text-[11px] text-muted-foreground mb-0.5 flex items-center gap-1 font-medium">
-                        <Shield className="w-3 h-3" /> Tier
+                      <div className="text-[10px] text-muted-foreground mb-1 flex items-center gap-1 font-medium uppercase tracking-wider">
+                        <Shield className="w-3.5 h-3.5" /> Tier
                       </div>
-                      <div className="font-semibold text-foreground text-xs uppercase">
+                      <div className="font-semibold text-foreground text-[13px] uppercase">
                         {system.classification || 'STANDARD'}
                       </div>
                     </div>
                     <div>
-                      <div className="text-[11px] text-muted-foreground mb-0.5 flex items-center gap-1 font-medium">
-                        <Activity className="w-3 h-3" /> Last Sync
+                      <div className="text-[10px] text-muted-foreground mb-1 flex items-center gap-1 font-medium uppercase tracking-wider">
+                        <Activity className="w-3.5 h-3.5" /> Last Sync
                       </div>
-                      <div className="font-medium text-muted-foreground text-xs">
-                        {system.last_sync || 'Not recorded'}
+                      <div className="font-medium text-foreground text-[13px] truncate" title={system.last_sync || 'Not recorded'}>
+                        {formatSyncTime(system.last_sync)}
                       </div>
                     </div>
                   </div>
