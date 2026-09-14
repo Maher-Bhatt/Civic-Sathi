@@ -83,12 +83,22 @@ class WorkOrderResponse(BaseModel):
 class FieldEvidenceCreate(BaseModel):
     photo_url: str
     description: Optional[str] = None
+    milestone_name: Optional[str] = None
+    stage: Optional[str] = None
+    gps_lat: Optional[float] = None
+    gps_lng: Optional[float] = None
+    captured_at: Optional[datetime] = None
 
 class FieldEvidenceResponse(BaseModel):
     id: UUID
     work_order_id: UUID
     photo_url: str
     description: Optional[str]
+    milestone_name: Optional[str] = None
+    stage: Optional[str] = None
+    gps_lat: Optional[float] = None
+    gps_lng: Optional[float] = None
+    captured_at: Optional[datetime] = None
     created_at: datetime
     
     class Config:

@@ -624,6 +624,11 @@ def submit_evidence(
         work_order_id=work_order_id,
         photo_url=evidence_in.photo_url,
         description=evidence_in.description,
+        milestone_name=evidence_in.milestone_name,
+        stage=evidence_in.stage,
+        gps_lat=evidence_in.gps_lat,
+        gps_lng=evidence_in.gps_lng,
+        captured_at=evidence_in.captured_at,
     )
     # BUG-007: Only allow evidence submission when work order is in an executable state.
     # Previously this unconditionally rolled back COMPLETED/CLOSED work orders to INSPECTION_PENDING.

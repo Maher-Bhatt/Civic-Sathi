@@ -99,6 +99,7 @@ class Bid(Base, UUIDMixin, TimestampMixin):
     
     quoted_amount: Mapped[float] = mapped_column(Float, nullable=False)
     technical_proposal: Mapped[str | None] = mapped_column(Text)
+    documents: Mapped[list[str] | None] = mapped_column(JSONB)
     status: Mapped[BidStatus] = mapped_column(Enum(BidStatus), default=BidStatus.SUBMITTED, index=True)
 
 
@@ -145,6 +146,13 @@ class FieldEvidence(Base, UUIDMixin, TimestampMixin):
     work_order_id = mapped_column(ForeignKey("work_orders.id"), nullable=False, index=True)
     photo_url: Mapped[str] = mapped_column(Text, nullable=False)
     description: Mapped[str | None] = mapped_column(Text)
+    
+    # Phase 1: GPS and Milestone Tracking
+    milestone_name: Mapped[str | None] = mapped_column(String(255))
+    stage: Mapped[str | None] = mapped_column(String(50)) # Before, During, After
+    gps_lat: Mapped[float | None] = mapped_column(Float)
+    gps_lng: Mapped[float | None] = mapped_column(Float)
+    captured_at: Mapped[DateTime | None] = mapped_column(DateTime(timezone=True))
 
 
 class ReviewAuthorType(str, enum.Enum):
@@ -185,3 +193,31 @@ class Inspection(Base, UUIDMixin, TimestampMixin):
     
     result: Mapped[InspectionResult] = mapped_column(Enum(InspectionResult), nullable=False)
     feedback: Mapped[str | None] = mapped_column(Text)
+
+
+class BillStatus(str, enum.Enum):
+    DRAFT = "DRAFT"
+    SUBMITTED = "SUBMITTED"
+    VERIFIED = "VERIFIED"
+    APPROVED = "APPROVED"
+    PAID = "PAID"
+    REJECTED = "REJECTED"
+
+
+class Bill(Base, UUIDMixin, TimestampMixin):
+    """Contractor Bill for Payment Tracking"""
+    __tablename__ = "bills"
+    
+    work_order_id = mapped_column(ForeignKey("work_orders.id"), nullable=False, index=True)
+    contractor_id = mapped_column(ForeignKey("contractors.id"), nullable=False, index=True)
+    
+    amount: Mapped[float] = mapped_column(Float, nullable=False)
+    status: Mapped[BillStatus] = mapped_column(Enum(BillStatus), default=BillStatus.SUBMITTED, index=True)
+    
+    milestones: Mapped[list[str] | None] = mapped_column(JSONB)
+    tax_details: Mapped[dict | None] = mapped_column(JSONB)
+    invoice_url: Mapped[str | None] = mapped_column(Text)
+    
+    payment_utr: Mapped[str | None] = mapped_column(String(255))
+    paid_at: Mapped[DateTime | None] = mapped_column(DateTime(timezone=True))
+
