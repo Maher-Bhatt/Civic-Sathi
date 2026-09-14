@@ -91,50 +91,68 @@ export function ComplaintTable({
           </TableRow>
         </TableHeader>
         <TableBody>
-          {complaints.map((c) => (
-            <TableRow
-              key={c.id}
-              className={cn(
-                "transition-colors duration-150 hover:bg-[var(--glass)]",
-                selected.has(c.id) && "bg-[var(--glass)]",
-              )}
-            >
-              <TableCell>
-                <input
-                  type="checkbox"
-                  checked={selected.has(c.id)}
-                  onChange={() => toggleOne(c.id)}
-                  aria-label={`Select ${c.id}`}
-                />
-              </TableCell>
-              <TableCell>
-                <Link
-                  to={"/complaints/$id" as any}
-                  params={{ id: c.id } as any}
-                  className="font-medium text-primary hover:underline"
-                >
-                  {c.id}
-                </Link>
-              </TableCell>
-              <TableCell className="min-w-[18rem]">
-                <div className="text-sm font-medium">{c.title}</div>
-                <div className="mt-1 line-clamp-2 text-xs text-muted-foreground">{c.description || "No description supplied"}</div>
-                <div className="mt-1 text-[0.65rem] uppercase tracking-wide text-primary">{c.category}</div>
-              </TableCell>
-              <TableCell className="text-sm text-muted-foreground">{c.area}</TableCell>
-              <TableCell className="text-sm text-muted-foreground">{c.ward}</TableCell>
-              <TableCell>
-                <SeverityBadge severity={c.severity} />
-              </TableCell>
-              <TableCell className="text-sm">{c.department}</TableCell>
-              <TableCell>
-                <StatusBadge status={c.status} />
-              </TableCell>
-              <TableCell className="text-xs text-muted-foreground">
-                {safeFormat(c.createdAt, "dd MMM yyyy")}
+          {complaints.length === 0 ? (
+            <TableRow>
+              <TableCell colSpan={9} className="h-64 text-center">
+                <div className="py-16 text-center">
+                  <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-slate-100 dark:bg-slate-800">
+                    <svg className="h-8 w-8 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                    </svg>
+                  </div>
+                  <h3 className="text-base font-semibold text-slate-900 dark:text-white">No complaints found</h3>
+                  <p className="mx-auto mt-1 max-w-sm text-sm text-slate-500 dark:text-slate-400">
+                    No complaints match your current filters. Try adjusting the search or city filter.
+                  </p>
+                </div>
               </TableCell>
             </TableRow>
-          ))}
+          ) : (
+            complaints.map((c) => (
+              <TableRow
+                key={c.id}
+                className={cn(
+                  "transition-colors duration-150 hover:bg-[var(--glass)]",
+                  selected.has(c.id) && "bg-[var(--glass)]",
+                )}
+              >
+                <TableCell>
+                  <input
+                    type="checkbox"
+                    checked={selected.has(c.id)}
+                    onChange={() => toggleOne(c.id)}
+                    aria-label={`Select ${c.id}`}
+                  />
+                </TableCell>
+                <TableCell>
+                  <Link
+                    to={"/complaints/$id" as any}
+                    params={{ id: c.id } as any}
+                    className="font-medium text-primary hover:underline"
+                  >
+                    {c.id}
+                  </Link>
+                </TableCell>
+                <TableCell className="min-w-[18rem]">
+                  <div className="text-sm font-medium">{c.title}</div>
+                  <div className="mt-1 line-clamp-2 text-xs text-muted-foreground">{c.description || "No description supplied"}</div>
+                  <div className="mt-1 text-[0.65rem] uppercase tracking-wide text-primary">{c.category}</div>
+                </TableCell>
+                <TableCell className="text-sm text-muted-foreground">{c.area}</TableCell>
+                <TableCell className="text-sm text-muted-foreground">{c.ward}</TableCell>
+                <TableCell>
+                  <SeverityBadge severity={c.severity} />
+                </TableCell>
+                <TableCell className="text-sm">{c.department}</TableCell>
+                <TableCell>
+                  <StatusBadge status={c.status} />
+                </TableCell>
+                <TableCell className="text-xs text-muted-foreground">
+                  {safeFormat(c.createdAt, "dd MMM yyyy")}
+                </TableCell>
+              </TableRow>
+            ))
+          )}
         </TableBody>
       </Table>
     </div>

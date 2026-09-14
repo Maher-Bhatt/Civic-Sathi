@@ -205,7 +205,39 @@ function ComplaintsPage() {
     }
   }
 
-  if (loading) return <LoadingState message="Loading complaints..." />;
+  if (loading) {
+    return (
+      <div className="muni-page-enter space-y-6">
+        <header className="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <div className="h-4 w-32 rounded bg-slate-200 dark:bg-slate-800 animate-pulse mb-3" />
+            <div className="h-8 w-64 rounded bg-slate-200 dark:bg-slate-800 animate-pulse" />
+          </div>
+        </header>
+        <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden shadow-sm">
+          <div className="border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 p-4">
+            <div className="flex justify-between items-center">
+              <div className="h-8 w-64 rounded bg-slate-200 dark:bg-slate-800 animate-pulse" />
+              <div className="h-8 w-24 rounded bg-slate-200 dark:bg-slate-800 animate-pulse" />
+            </div>
+          </div>
+          <div className="p-0">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <div key={i} className="flex border-b border-slate-100 dark:border-slate-800 last:border-0 p-4 items-center space-x-4">
+                <div className="h-10 w-10 rounded-full bg-slate-200 dark:bg-slate-800 animate-pulse shrink-0" />
+                <div className="space-y-2 flex-1">
+                  <div className="h-4 w-1/4 rounded bg-slate-200 dark:bg-slate-800 animate-pulse" />
+                  <div className="h-3 w-1/2 rounded bg-slate-100 dark:bg-slate-800/50 animate-pulse" />
+                </div>
+                <div className="h-6 w-20 rounded-full bg-slate-200 dark:bg-slate-800 animate-pulse shrink-0" />
+                <div className="h-6 w-24 rounded-full bg-slate-200 dark:bg-slate-800 animate-pulse shrink-0" />
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
   if (loadError) {
     return (
       <div className="muni-page-enter space-y-6">
@@ -299,55 +331,59 @@ function ComplaintsPage() {
       )}
 
       {mergeProposal && (
-        <GlassCard elevation="raised" className="space-y-4 border-primary/25 bg-primary/5 p-5">
+        <div className="space-y-4 rounded-xl border border-primary/30 bg-primary/5 p-6 shadow-sm dark:bg-primary/10">
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div>
-              <SectionLabel className="flex items-center gap-2 text-primary"><Sparkles className="h-4 w-4" /> AI grouping review</SectionLabel>
-              <p className="mt-1 text-sm text-muted-foreground">
+              <SectionLabel className="flex items-center gap-2 text-primary font-semibold">
+                <Sparkles className="h-4 w-4" /> AI Grouping Review
+              </SectionLabel>
+              <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">
                 Review the evidence before confirmation. Nothing changes in the database until you confirm a group.
               </p>
             </div>
-            <button type="button" className="press rounded-lg p-1 text-muted-foreground hover:bg-[var(--glass)]" onClick={() => setMergeProposal(null)} aria-label="Close AI grouping review">
-              <X className="h-4 w-4" />
+            <button type="button" className="rounded-lg p-1 text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors" onClick={() => setMergeProposal(null)} aria-label="Close AI grouping review">
+              <X className="h-5 w-5" />
             </button>
           </div>
           {mergeProposal.proposals.length === 0 ? (
-            <p className="rounded-xl border border-[var(--glass-border)] bg-[var(--glass)] p-4 text-sm text-muted-foreground">
-              No selected complaints meet the same-city, same-category, same-area, and text-similarity rules.
-            </p>
+            <div className="flex items-center justify-center rounded-xl border border-slate-200 bg-white p-8 text-center shadow-sm dark:border-slate-800 dark:bg-slate-900">
+              <p className="text-sm font-medium text-slate-500">
+                No selected complaints meet the same-city, same-category, same-area, and text-similarity rules.
+              </p>
+            </div>
           ) : (
             <div className="grid gap-4 lg:grid-cols-2">
               {mergeProposal.proposals.map((proposal) => (
-                <div key={proposal.proposal_key} className="rounded-xl border border-[var(--glass-border)] bg-[var(--glass)] p-4">
+                <div key={proposal.proposal_key} className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
                   <div className="flex items-start justify-between gap-3">
                     <div>
-                      <p className="font-semibold capitalize">{proposal.category.replaceAll("_", " ")}</p>
-                      <p className="text-xs text-muted-foreground">{proposal.area_label ?? "Mapped area"} · {proposal.complaint_count} complaints · {Math.round(proposal.confidence_score * 100)}% confidence</p>
+                      <p className="font-bold capitalize text-slate-900 dark:text-white">{proposal.category.replaceAll("_", " ")}</p>
+                      <p className="mt-0.5 text-xs font-medium text-slate-500">{proposal.area_label ?? "Mapped area"} · {proposal.complaint_count} complaints · {Math.round(proposal.confidence_score * 100)}% confidence</p>
                     </div>
-                    <span className="rounded-full bg-primary/10 px-2 py-1 text-[0.65rem] font-semibold text-primary">REVIEW</span>
+                    <span className="rounded-full bg-primary/10 px-2.5 py-1 text-[0.7rem] font-bold tracking-wider text-primary">REVIEW</span>
                   </div>
-                  <p className="mt-3 text-xs leading-relaxed text-muted-foreground">{proposal.explanation}</p>
-                  <div className="mt-3 space-y-2">
+                  <p className="mt-4 text-sm leading-relaxed text-slate-700 dark:text-slate-300">{proposal.explanation}</p>
+                  <div className="mt-4 space-y-2">
                     {proposal.members.map((member) => (
-                      <div key={member.id} className="flex items-center justify-between gap-2 rounded-lg border border-[var(--glass-border)] px-3 py-2 text-xs">
+                      <div key={member.id} className="flex items-center justify-between gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm dark:border-slate-800 dark:bg-slate-900/50">
                         <div className="min-w-0">
-                          <p className="truncate font-medium">{member.public_id}</p>
-                          <p className="truncate text-muted-foreground">{member.title} · {member.ward_number ? `Ward ${member.ward_number}` : member.address_text ?? "Mapped location"}</p>
+                          <p className="truncate font-semibold text-slate-900 dark:text-slate-100">{member.public_id}</p>
+                          <p className="truncate text-xs text-slate-500">{member.title} · {member.ward_number ? `Ward ${member.ward_number}` : member.address_text ?? "Mapped location"}</p>
                         </div>
-                        <button type="button" onClick={() => removeProposalMember(proposal.proposal_key, member.id)} className="shrink-0 rounded-md p-1 text-muted-foreground hover:bg-critical/10 hover:text-critical" aria-label={`Remove ${member.public_id} from proposal`}>
-                          <X className="h-3.5 w-3.5" />
+                        <button type="button" onClick={() => removeProposalMember(proposal.proposal_key, member.id)} className="shrink-0 rounded-md p-1.5 text-slate-400 hover:bg-red-100 hover:text-red-600 transition-colors dark:hover:bg-red-900/30" aria-label={`Remove ${member.public_id} from proposal`}>
+                          <X className="h-4 w-4" />
                         </button>
                       </div>
                     ))}
                   </div>
-                  <button type="button" disabled={mergeBusy || proposal.complaint_count < 2} onClick={() => void confirmProposal(proposal)} className="action-btn mt-4 w-full bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-50">
-                    <Check className="h-3.5 w-3.5" /> Confirm Merge into Civic Issue
+                  <button type="button" disabled={mergeBusy || proposal.complaint_count < 2} onClick={() => void confirmProposal(proposal)} className="mt-5 flex w-full items-center justify-center gap-2 rounded-lg bg-primary py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-primary/90 disabled:opacity-50 transition-colors">
+                    <Check className="h-4 w-4" /> Confirm Merge into Civic Issue
                   </button>
                 </div>
               ))}
             </div>
           )}
-        </GlassCard>
+        </div>
       )}
 
       <ComplaintTable
