@@ -2593,8 +2593,30 @@ body:has(.admin-app-shell) {
   --primary-foreground: #0B1230 !important;
   --secondary: #EFC849 !important;
   --secondary-foreground: #0B1230 !important;
-  --accent: #EFC849 !important;
-  --accent-foreground: #0B1230 !important;
+}
+
+/* SIH DEMO VIBE MATCH - MATCH MUNICIPALITY BACKGROUND */
+body:has(.admin-app-shell) {
+  background-image: 
+    linear-gradient(180deg, color-mix(in srgb, var(--heritage-paper) 25%, transparent), color-mix(in srgb, var(--heritage-ivory) 45%, transparent) 85%, var(--heritage-ivory)),
+    url('/city-atmosphere/delhi-civic-heritage.jpg') !important;
+  background-position: center top !important;
+  background-size: cover !important;
+  background-attachment: fixed !important;
+}
+
+body:has(.admin-app-shell).dark,
+.dark body:has(.admin-app-shell) {
+  background-image: 
+    linear-gradient(180deg, color-mix(in srgb, var(--civic-indigo-950) 45%, transparent), color-mix(in srgb, var(--civic-indigo-950) 65%, transparent) 85%, var(--civic-indigo-950)),
+    url('/city-atmosphere/delhi-civic-heritage.jpg') !important;
+}
+
+.admin-app-shell,
+.admin-main,
+.admin-content,
+.civic-admin-command-center {
+  background: transparent !important;
 }
 
 /* SIH DEMO NUKE-PROOF OVERRIDES (PART 2) - DARK MODE HERITAGE GLASS */
