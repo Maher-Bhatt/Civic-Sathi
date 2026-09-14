@@ -1819,3 +1819,11 @@ Every bug is documented here with the file changed and what was wrong.
 *Last updated: September 2026*  
 *Maintained by the Civic Sathi SIH 2026 team*  
 *For questions, refer to the code, this document, and the commit history.*
+
+
+### 9.4 Cross-Portal Integrations (Municipality & Admin)
+Added in the final push to close the loop between contractors and government:
+- **Evidence Approval Workflow**: PATCH /api/v1/officer/work-orders/{id}/evidence/{evidence_id}/status allows officers to verify GPS-tagged contractor evidence.
+- **SLA Penalties**: Auto-calculated liquidated damages in pp.models.procurement.SLAPenalty.
+- **Ecosystem Analytics**: /api/v1/admin/contractors/ecosystem-analytics for tracking contractor health.
+- **Public Transparency**: Citizens can view real-time work progress via /api/v1/complaints/{id}/work-progress and see the full procurement journey.
