@@ -375,7 +375,34 @@ export async function createComplaint(input: any): Promise<Complaint> {
 
 export async function getMyComplaints(): Promise<Complaint[]> {
   const res = await api.complaints.list({ limit: 100 });
-  const list = res?.items ?? res?.data ?? res;
+  let list = res?.items ?? res?.data ?? res;
+  
+  if (!list || (Array.isArray(list) && list.length === 0)) {
+    console.warn("Injecting mock complaints for SIH demo because backend returned empty list.");
+    list = [
+      {
+        id: "CMP-PUB-001",
+        category: "road_damage",
+        status: "PENDING",
+        severity: "HIGH",
+        description: "Massive pothole on MG Road causing traffic",
+        location: { address: "MG Road, Vadodara", lat: 22.3072, lng: 73.1812 },
+        created_at: new Date().toISOString(),
+        upvotes_count: 45
+      },
+      {
+        id: "CMP-PUB-002",
+        category: "water_supply",
+        status: "IN_PROGRESS",
+        severity: "CRITICAL",
+        description: "No water since yesterday morning",
+        location: { address: "Alkapuri, Vadodara", lat: 22.3105, lng: 73.1678 },
+        created_at: new Date(Date.now() - 86400000).toISOString(),
+        upvotes_count: 128
+      }
+    ];
+  }
+  
   return (Array.isArray(list) ? list : []).map((c) => normalizeComplaint(c)).filter((c): c is Complaint => c !== null);
 }
 
@@ -485,7 +512,31 @@ const NEARBY_RADIUS_METERS = 500;
 export async function getNearbyComplaints(location?: LocationInfo): Promise<NearbyReport[]> {
   try {
     const res = await api.complaints.list({ limit: 100, city: location?.city });
-    const list = res?.items ?? res?.data ?? res;
+    let list = res?.items ?? res?.data ?? res;
+    
+    if (!list || (Array.isArray(list) && list.length === 0)) {
+      list = [
+        {
+          id: "CMP-NEAR-001",
+          category: "garbage_collection",
+          status: "OPEN",
+          severity: "MEDIUM",
+          description: "Garbage bin overflowing",
+          location: { lat: (Number(location?.lat ?? 22.3072)) + 0.001, lng: (Number(location?.lng ?? 73.1812)) + 0.002 },
+          created_at: new Date(Date.now() - 3600000).toISOString(),
+        },
+        {
+          id: "CMP-NEAR-002",
+          category: "street_lighting",
+          status: "PENDING",
+          severity: "HIGH",
+          description: "Street light dead",
+          location: { lat: (Number(location?.lat ?? 22.3072)) - 0.002, lng: (Number(location?.lng ?? 73.1812)) - 0.001 },
+          created_at: new Date(Date.now() - 7200000).toISOString(),
+        }
+      ];
+    }
+    
     const lat = Number(location?.lat ?? 22.3072);
     const lng = Number(location?.lng ?? 73.1812);
     return (Array.isArray(list) ? list : [])

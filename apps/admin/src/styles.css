@@ -2596,3 +2596,31 @@ body:has(.admin-app-shell) {
   --accent: #EFC849 !important;
   --accent-foreground: #0B1230 !important;
 }
+
+/* SIH DEMO NUKE-PROOF OVERRIDES (PART 2) - SOLID FLAT THEME */
+.civic-admin-command-center .glass,
+.civic-admin-command-center .glass-strong,
+.civic-admin-command-center .solid-surface,
+.civic-admin-command-center > .grid > .glass,
+.civic-admin-command-center > .grid > .glass-strong,
+.civic-admin-command-center .civic-admin-command-card {
+  border-radius: 0.75rem !important;
+  border-color: #E5E7EB !important; /* Flat light gray border */
+  background: #FFFFFF !important; /* Pure white background */
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.04) !important; /* Tiny flat shadow */
+}
+
+body.dark .civic-admin-command-center .glass,
+body.dark .civic-admin-command-center .glass-strong,
+body.dark .civic-admin-command-center .solid-surface,
+body.dark .civic-admin-command-center > .grid > .glass,
+body.dark .civic-admin-command-center > .grid > .glass-strong,
+body.dark .civic-admin-command-center .civic-admin-command-card {
+  border-color: #1E293B !important;
+  background: #0F172A !important;
+  box-shadow: none !important;
+}
+
+.civic-admin-command-center .recharts-cartesian-grid line {
+  stroke: #E5E7EB !important;
+}

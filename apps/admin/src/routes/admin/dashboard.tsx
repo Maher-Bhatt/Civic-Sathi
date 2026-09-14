@@ -11,12 +11,12 @@ export const Route = createFileRoute("/admin/dashboard")({
 });
 
 const COLORS = {
-  primary: "var(--primary)",
-  saffron: "var(--saffron)",
-  success: "var(--success)",
-  critical: "var(--critical)",
-  warning: "var(--warning)",
-  muted: "hsl(var(--muted-foreground))"
+  primary: "#7C1D2E", // Admin Burgundy
+  saffron: "#E8750A", // Saffron
+  success: "#059669", // Emerald 600
+  critical: "#DC2626", // Red 600
+  warning: "#D97706", // Amber 600
+  muted: "#9CA3AF"    // Gray 400
 };
 
 function CommandCenterDashboard() {
@@ -89,7 +89,7 @@ function CommandCenterDashboard() {
         </GlassCard>
 
         <GlassCard className="p-5 relative overflow-hidden">
-          <div className="absolute top-0 right-0 p-2 bg-blue-500/10 rounded-bl-xl text-blue-500">
+          <div className="absolute top-0 right-0 p-2 bg-[var(--primary)]/10 rounded-bl-xl text-[var(--primary)]">
             <Globe2 className="h-5 w-5" />
           </div>
           <SectionLabel>Active Cities</SectionLabel>
@@ -110,9 +110,9 @@ function CommandCenterDashboard() {
                 <YAxis stroke="currentColor" fontSize={12} />
                 <Tooltip contentStyle={{ backgroundColor: 'var(--surface-elevated)', borderColor: 'var(--glass-border)' }} />
                 <Legend />
-                <Bar dataKey="open" stackId="a" fill="var(--saffron)" name="Open" />
-                <Bar dataKey="in_progress" stackId="a" fill="var(--warning)" name="In Progress" />
-                <Bar dataKey="resolved" stackId="a" fill="var(--success)" name="Resolved" />
+                <Bar dataKey="open" stackId="a" fill={COLORS.saffron} name="Open" />
+                <Bar dataKey="in_progress" stackId="a" fill={COLORS.warning} name="In Progress" />
+                <Bar dataKey="resolved" stackId="a" fill={COLORS.success} name="Resolved" />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -156,8 +156,8 @@ function CommandCenterDashboard() {
                 <YAxis stroke="currentColor" fontSize={12} />
                 <Tooltip contentStyle={{ backgroundColor: 'var(--surface-elevated)', borderColor: 'var(--glass-border)' }} />
                 <Legend />
-                <Line type="monotone" dataKey="filed" stroke="var(--critical)" name="Filed" />
-                <Line type="monotone" dataKey="resolved" stroke="var(--success)" name="Resolved" />
+                <Line type="monotone" dataKey="filed" stroke={COLORS.critical} name="Filed" />
+                <Line type="monotone" dataKey="resolved" stroke={COLORS.success} name="Resolved" />
               </LineChart>
             </ResponsiveContainer>
           </div>
@@ -173,7 +173,7 @@ function CommandCenterDashboard() {
                 <XAxis type="number" stroke="currentColor" fontSize={12} />
                 <YAxis dataKey="name" type="category" stroke="currentColor" fontSize={12} width={80} />
                 <Tooltip contentStyle={{ backgroundColor: 'var(--surface-elevated)', borderColor: 'var(--glass-border)' }} />
-                <Bar dataKey="issues" fill="var(--primary)" name="Active Issues" />
+                <Bar dataKey="issues" fill={COLORS.primary} name="Active Issues" />
               </BarChart>
             </ResponsiveContainer>
           </div>
