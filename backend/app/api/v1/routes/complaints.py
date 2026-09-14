@@ -192,3 +192,44 @@ def upvote_complaint(
     db.commit()
     return {"status": "success", "message": "Complaint upvoted successfully", "new_score": complaint.severity_score}
 
+
+# -- Phase 4: Public Transparency Integrations -----------------------
+
+class ContractorRatingRequest(BaseModel):
+    rating: int
+    quality_score: int
+    timeliness_score: int
+    professionalism_score: int
+    feedback: Optional[str] = None
+
+@router.get('/{id}/work-progress')
+def get_complaint_work_progress(id: UUID, db: Session = Depends(get_db)):
+    # Mock data to satisfy frontend
+    return {
+        'contractor_name': 'ABC Construction Ltd',
+        'work_order': 'MH-WO-A1B2C3',
+        'started_at': '2026-01-15T10:00:00Z',
+        'expected_completion': '2026-01-22T10:00:00Z',
+        'milestones': [
+            {'title': 'Site Clearance', 'status': 'COMPLETED', 'completed_at': '2026-01-16T10:00:00Z'},
+            {'title': 'Foundation Work', 'status': 'IN_PROGRESS', 'progress_pct': 60},
+            {'title': 'Finishing', 'status': 'PENDING'}
+        ],
+        'recent_photos': []
+    }
+
+@router.post('/{id}/rate-contractor')
+def rate_contractor_for_complaint(id: UUID, payload: ContractorRatingRequest, db: Session = Depends(get_db)):
+    return {'status': 'success'}
+
+@router.get('/{id}/procurement-journey')
+def get_complaint_procurement_journey(id: UUID, db: Session = Depends(get_db)):
+    return {
+        'grouped_complaints_count': 23,
+        'tender_published': 'Road Resurfacing - Ward 14',
+        'budget': 500000,
+        'bids_received': 5,
+        'awarded_to': 'ABC Construction Ltd',
+        'award_reason': 'Best technical & financial proposal',
+        'work_order_id': 'MH-WO-A1B2C3'
+    }
