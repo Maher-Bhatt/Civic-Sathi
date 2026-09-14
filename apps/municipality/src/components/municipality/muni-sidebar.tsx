@@ -13,6 +13,7 @@ import {
   User,
   Zap,
   FileText,
+  LogOut,
 } from "lucide-react";
 import { useEffect } from "react";
 import { cn } from "@/lib/utils";
@@ -80,8 +81,8 @@ export function MuniSidebar({
   mobileOpen: boolean;
   onMobileClose: () => void;
 }) {
-    const { t } = useI18n();
-  const { officer } = useMuniAuth();
+  const { t } = useI18n();
+  const { officer, signOut } = useMuniAuth();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const visibleNav = getVisibleNav(officer?.designation);
 
@@ -142,14 +143,6 @@ export function MuniSidebar({
           </button>
         </div>
 
-        {/* Show designation badge when sidebar is expanded */}
-        {!collapsed && officer && (
-          <div className="border-b border-[var(--glass-border)] px-4 py-2">
-            <p className="text-[0.6rem] uppercase tracking-wider text-muted-foreground">Role</p>
-            <p className="text-xs font-medium text-foreground truncate">{officer.designation || officer.role}</p>
-          </div>
-        )}
-
         <nav className="flex-1 space-y-1 overflow-y-auto p-3" aria-label={t('ui.municipality_navigation')}>
           {visibleNav.map(({ to, label, icon: Icon }) => {
             const active = pathname === to || (to !== "/dashboard" && pathname.startsWith(to));
@@ -161,8 +154,8 @@ export function MuniSidebar({
                 className={cn(
                   "press flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-200",
                   active
-                    ? "bg-[var(--surface-elevated)] text-foreground shadow-[var(--shadow-soft)]"
-                    : "text-muted-foreground hover:bg-[var(--glass)] hover:text-foreground",
+                    ? "!text-primary !bg-primary/8 border-l-[3px] border-primary rounded-l-none font-medium"
+                    : "text-muted-foreground hover:bg-[var(--surface-elevated)] hover:text-foreground",
                   collapsed && "justify-center px-2",
                 )}
                 title={collapsed ? label : undefined}
@@ -175,9 +168,28 @@ export function MuniSidebar({
         </nav>
 
         {!collapsed && (
-          <div className="border-t border-[var(--glass-border)] p-4">
-                        <p className="text-[0.65rem] text-muted-foreground">Live civic operations · {officer?.city || "City"}</p>
-
+          <div className="p-4 border-t border-[var(--glass-border)]">
+            <div className="group relative flex items-center gap-3 rounded-xl p-3 bg-[var(--surface-elevated)]/50 border border-[var(--glass-border)]">
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-semibold text-primary border border-primary/20">
+                {officer?.name?.charAt(0) || "M"}
+              </div>
+              <div className="flex-1 min-w-0 flex flex-col">
+                <span className="truncate text-[14px] font-[600] leading-tight text-[var(--foreground)]">
+                  {officer?.name || "Officer"}
+                </span>
+                <span className="mt-1 w-max rounded bg-emerald-500/10 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                  {officer?.designation || officer?.role || "MUNICIPALITY"}
+                </span>
+              </div>
+              <button 
+                type="button" 
+                onClick={signOut}
+                className="absolute right-2 opacity-0 group-hover:opacity-100 transition-opacity p-1.5 hover:bg-[var(--surface)] rounded-md text-[var(--muted-foreground)] hover:text-red-500"
+                title={t('ui.sign_out')}
+              >
+                <LogOut className="h-4 w-4" />
+              </button>
+            </div>
           </div>
         )}
       </aside>

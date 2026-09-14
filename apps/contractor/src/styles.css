@@ -70,127 +70,135 @@
   --shadow-glass-lg: var(--shadow-lift);
 }
 
+/* --- NEW INJECTED CSS TOKENS --- */
+
+:root {
+  /* FOUNDATION */
+  --font-sans: "Inter", "Noto Sans Devanagari", "Noto Sans Gujarati", system-ui;
+  --font-mono: "JetBrains Mono", "Fira Code", monospace;
+
+  /* SPACING SCALE */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-12: 3rem;
+
+  /* TYPOGRAPHY SCALE */
+  --text-xs: 0.75rem / 1rem;
+  --text-sm: 0.875rem / 1.25rem;
+  --text-base: 1rem / 1.5rem;
+  --text-lg: 1.125rem / 1.75rem;
+  --text-xl: 1.25rem / 1.75rem;
+  --text-2xl: 1.5rem / 2rem;
+  --text-3xl: 1.875rem / 2.25rem;
+
+  /* RADIUS */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --radius-full: 9999px;
+  --radius: 0.85rem; /* fallback */
+
+  /* SEMANTIC COLORS */
+  --critical: #C41E3A;
+  --warning: #B45309;
+  --success: #166534;
+  --info: #1E40AF;
+  --destructive: #C41E3A;
+  --destructive-foreground: #FFFFFF;
+
+  /* PORTAL IDENTITY LIGHT */
+  --primary: #2D4A6B;
+  --primary-foreground: #FFFFFF;
+  --secondary: #D97706;
+  --secondary-foreground: #FFFFFF;
+  --accent: #D97706;
+  --accent-foreground: #FFFFFF;
+
+  --background: #F8F9FA;
+  --background-secondary: #F1F3F5;
+  --foreground: #111827;
+  --card-foreground: #111827;
+  --popover-foreground: #111827;
+  
+  --surface: #FFFFFF;
+  --surface-elevated: #FFFFFF;
+  --card: #FFFFFF;
+  --popover: #FFFFFF;
+  --glass: rgba(255, 255, 255, 0.95);
+  --glass-strong: rgba(255, 255, 255, 0.98);
+  --glass-border: rgba(0, 0, 0, 0.08);
+  
+  --border: rgba(0, 0, 0, 0.1);
+  --input: rgba(0, 0, 0, 0.15);
+  --ring: #2D4A6B;
+
+  --muted: #F3F4F6;
+  --muted-foreground: #6B7280;
+  --subtle-foreground: #9CA3AF;
+  
+  --civic-city-accent: #2D4A6B;
+  --civic-paper: #FFFFFF;
+}
+
+
+.dark {
+  /* PORTAL IDENTITY DARK */
+  --primary: #5D7C9F;
+  --primary-foreground: #0B1230;
+  --secondary: #FBBF24;
+  --secondary-foreground: #0B1230;
+  --accent: #FBBF24;
+  --accent-foreground: #0B1230;
+
+  --background: #0F172A;
+  --background-secondary: #1E293B;
+  --foreground: #F8FAFC;
+  --card-foreground: #F8FAFC;
+  --popover-foreground: #F8FAFC;
+  
+  --surface: #1E293B;
+  --surface-elevated: #334155;
+  --card: #1E293B;
+  --popover: #1E293B;
+  --glass: rgba(15, 23, 42, 0.95);
+  --glass-strong: rgba(15, 23, 42, 0.98);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  
+  --border: rgba(255, 255, 255, 0.15);
+  --input: rgba(255, 255, 255, 0.2);
+  --ring: #5D7C9F;
+
+  --muted: #334155;
+  --muted-foreground: #94A3B8;
+  --subtle-foreground: #64748B;
+
+  --critical: #F87171;
+  --warning: #FBBF24;
+  --success: #4ADE80;
+  --info: #60A5FA;
+  --destructive: #F87171;
+  --destructive-foreground: #FFFFFF;
+  
+  --civic-city-accent: #5D7C9F;
+  --civic-paper: #0F172A;
+}
+
+
+
 /* -------------------------------------------------------------------------
    LIGHT THEME (Default): Luminous Indian Silk Ivory + Rich Jewel Tones
    ------------------------------------------------------------------------- */
-:root {
-  --radius: 0.85rem;
 
-  /* Authentic Indian Jewel Palette */
-  --saffron:       #FF6F00;   /* Royal Bhagwa / Indian Saffron */
-  --saffron-light: #FFF2E5;   /* Saffron mist */
-  --saffron-glow:  rgba(255, 111, 0, 0.22);
-  --india-green:   #0E8A4B;   /* Ashoka Emerald / India Green */
-  --green-light:   #E8F7EE;   /* Mint/Emerald mist */
-  --green-glow:    rgba(14, 138, 75, 0.20);
-  --ashoka-blue:   #0A369D;   /* 24-Spoke Chakra Navy */
-  --blue-light:    #EDF3FF;   /* Celestial blue mist */
-  --marigold:      #F59E0B;   /* Haldi / Marigold Gold */
-  --jaipur-rose:   #E11D48;   /* Jaipur Palace Terracotta / Gulabi */
-  --peacock:       #0F766E;   /* Royal Peacock Teal */
-
-  /* Canvas: Sandalwood Silk + Warm Ivory */
-  --background:           #FAF6F0;   /* Sandalwood Pearl Ivory */
-  --background-secondary: #F4ECE1;   /* Warm Terracotta Mist */
-  
-  /* Crazy Liquid Glass Surfaces */
-  --surface:              rgba(255, 255, 255, 0.78);
-  --surface-elevated:     rgba(255, 255, 255, 0.94);
-  --glass: rgba(255, 255, 255, 0.90);
-  --glass-strong: rgba(255, 255, 255, 0.98);
-  --glass-border:         rgba(255, 111, 0, 0.20);  /* subtle saffron-tinted refraction */
-  --glass-border-green:   rgba(14, 138, 75, 0.20);
-
-  --foreground:           #1C130D;   /* Deep Sandalwood Charcoal */
-  --card:                 rgba(255, 255, 255, 0.82);
-  --card-foreground:      #1C130D;
-  --popover:              rgba(255, 255, 255, 0.96);
-  --popover-foreground:   #1C130D;
-
-  /* Primary: Bold India Green for Action & Progress */
-  --primary:              #0E8A4B;
-  --primary-foreground:   #FFFFFF;
-  
-  /* Saffron Accent */
-  --secondary-accent:     #FF6F00;
-  --secondary:            #FFF2E5;
-  --secondary-foreground: #7C2D12;
-
-  --muted:                #F5EBE1;
-  --muted-foreground:     #785840;
-  --subtle-foreground:    #A37A58;
-
-  --accent:               #FFF4E6;
-  --accent-foreground:    #9A3412;
-
-  --critical:             #DC2626;   /* Alert Red */
-  --warning:              #EA580C;   /* Warm Orange Warning */
-  --success:              #16A34A;   /* Green Success */
-  --destructive:          #DC2626;
-  --destructive-foreground: #FFFFFF;
-
-  --border:               rgba(120, 88, 64, 0.16);
-  --input:                rgba(120, 88, 64, 0.18);
-  --ring:                 #FF6F00;
-
-  /* Specular Light Soft Shadows */
-  --shadow-soft: 0 4px 20px -2px rgba(120, 88, 64, 0.08), 0 2px 6px -1px rgba(0, 0, 0, 0.04), inset 0 1px 1px 0 rgba(255, 255, 255, 0.9);
-  --shadow-lift: 0 16px 36px -6px rgba(255, 111, 0, 0.10), 0 6px 16px -2px rgba(14, 138, 75, 0.08), inset 0 1.5px 1.5px 0 rgba(255, 255, 255, 1);
-  
-  --ambient-1: rgba(255, 111, 0, 0.14);  /* Warm Saffron Sun Glow */
-  --ambient-2: rgba(14, 138, 75, 0.12);  /* Emerald Prosperity Glow */
-  --ambient-3: rgba(10, 54, 157, 0.08);  /* Royal Ashoka Blue Aura */
-}
 
 /* -------------------------------------------------------------------------
    DARK THEME: Midnight Peacock Navy + Electric Saffron & Emerald Fire
    ------------------------------------------------------------------------- */
-.dark {
-  --background:           #0A0F18;   /* Deep Midnight Indigo */
-  --background-secondary: #0F1726;
-  --surface:              rgba(18, 27, 44, 0.78);
-  --surface-elevated:     rgba(24, 36, 58, 0.92);
-  --glass:                rgba(255, 255, 255, 0.05);
-  --glass-strong:         rgba(255, 255, 255, 0.09);
-  --glass-border:         rgba(255, 140, 0, 0.22);
-  --glass-border-green:   rgba(34, 197, 94, 0.22);
 
-  --foreground:           #FBF5ED;   /* Warm Ivory Moonlight */
-  --card:                 rgba(18, 27, 44, 0.78);
-  --card-foreground:      #FBF5ED;
-  --popover:              rgba(18, 27, 44, 0.96);
-  --popover-foreground:   #FBF5ED;
-
-  --primary:              #22C55E;   /* Vivid Emerald */
-  --primary-foreground:   #061E10;
-  --secondary-accent:     #FF9933;   /* Bright Saffron */
-  --secondary:            #1E293B;
-  --secondary-foreground: #FBF5ED;
-
-  --muted:                #1E293B;
-  --muted-foreground:     #B59A7A;
-  --subtle-foreground:    #826B50;
-
-  --accent:               #1E293B;
-  --accent-foreground:    #FBF5ED;
-
-  --critical:             #EF4444;
-  --warning:              #F59E0B;
-  --success:              #22C55E;
-  --destructive:          #EF4444;
-  --destructive-foreground: #FFFFFF;
-
-  --border:               rgba(255, 153, 51, 0.16);
-  --input:                rgba(255, 153, 51, 0.18);
-  --ring:                 #22C55E;
-
-  --shadow-soft: 0 4px 20px -2px rgba(0, 0, 0, 0.5), inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
-  --shadow-lift: 0 20px 48px -8px rgba(0, 0, 0, 0.75), 0 0 24px -4px rgba(255, 140, 0, 0.18);
-  
-  --ambient-1: rgba(34, 197, 94, 0.12);
-  --ambient-2: rgba(255, 140, 0, 0.14);
-  --ambient-3: rgba(59, 130, 246, 0.10);
-}
 
 @layer base {
   * {
@@ -470,62 +478,8 @@ body::after {
    Civic Sathi 2026 public-service visual refresh
    Indigo institution + sandstone paper + restrained Indian civic accents.
    ------------------------------------------------------------------------- */
-:root {
-  --civic-indigo-950: #101B3D;
-  --civic-indigo-700: #234A84;
-  --civic-teal-600: #0E766E;
-  --civic-sand-100: #F5F0E7;
-  --civic-paper: #FFFCF7;
-  --civic-saffron-600: #C86B18;
-  --civic-green-700: #2F6B4F;
-  --civic-red-700: #A43D3D;
-  --civic-ink: #172033;
-  --civic-muted: #526078;
-  --background: #F5F0E7;
-  --background-secondary: #ECE4D8;
-  --primary: #234A84;
-  --primary-foreground: #FFFFFF;
-  --foreground: #172033;
-  --card-foreground: #172033;
-  --popover-foreground: #172033;
-  --muted-foreground: #526078;
-  --subtle-foreground: #68748A;
-  --glass-border: rgba(16, 27, 61, 0.14);
-  --border: rgba(16, 27, 61, 0.14);
-  --input: rgba(16, 27, 61, 0.18);
-  --ring: #234A84;
-  --success: #2F6B4F;
-  --warning: #C86B18;
-  --critical: #A43D3D;
-}
-.dark {
-  --civic-indigo-950: #0B1230;
-  --civic-indigo-700: #6D9DDF;
-  --civic-teal-600: #4CB5A2;
-  --civic-sand-100: #0F172A;
-  --civic-paper: #111C35;
-  --civic-saffron-600: #E0A25B;
-  --civic-green-700: #77BE91;
-  --civic-red-700: #F08B86;
-  --civic-ink: #F5F0E7;
-  --civic-muted: #BAC5D8;
-  --background: #0F172A;
-  --background-secondary: #121E35;
-  --primary: #6D9DDF;
-  --primary-foreground: #0B1230;
-  --foreground: #F5F0E7;
-  --card-foreground: #F5F0E7;
-  --popover-foreground: #F5F0E7;
-  --muted-foreground: #BAC5D8;
-  --subtle-foreground: #8D9BB3;
-  --glass-border: rgba(180, 199, 231, 0.18);
-  --border: rgba(180, 199, 231, 0.18);
-  --input: rgba(180, 199, 231, 0.22);
-  --ring: #6D9DDF;
-  --success: #77BE91;
-  --warning: #E0A25B;
-  --critical: #F08B86;
-}
+
+
 
 :where(button, a, input, select, textarea):focus-visible {
   outline: 3px solid color-mix(in srgb, var(--ring) 70%, white);
@@ -545,18 +499,9 @@ body::after {
    Civic Sathi city atmosphere layer — shared across all portals.
    Architecture and civic-data cues stay subordinate to content.
    ------------------------------------------------------------------------- */
-:root {
-  --civic-architecture-line: rgba(16, 27, 61, 0.10);
-  --civic-city-accent: #C86B18;
-  --civic-city-accent-soft: #F1D2A8;
-  --civic-city-atmosphere: url('/city-atmosphere/india-civic-heritage.jpg');
-}
 
-.dark {
-  --civic-architecture-line: rgba(214, 226, 245, 0.12);
-  --civic-city-accent: #E0A25B;
-  --civic-city-accent-soft: #6E573F;
-}
+
+
 
 .civic-city-shell {
   position: relative;

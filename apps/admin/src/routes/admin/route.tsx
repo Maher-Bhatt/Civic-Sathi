@@ -137,12 +137,11 @@ function AdminShell() {
                     key={item.to}
                     to={item.to as any}
                     onClick={closeMobileMenu}
-                    className="admin-nav-item"
-                    activeProps={{ className: "admin-nav-item is-active" }}
+                    className="flex items-center gap-3 px-3 py-2 text-sm text-[var(--muted-foreground)] hover:bg-[var(--surface-elevated)] hover:text-[var(--foreground)] rounded-md transition-colors"
+                    activeProps={{ className: "!text-primary !bg-primary/8 border-l-[3px] border-primary rounded-l-none font-medium" }}
                   >
                     <item.icon className="h-[17px] w-[17px]" />
                     <span>{item.label}</span>
-                    <ChevronRight className="admin-nav-chevron h-3.5 w-3.5" />
                   </Link>
                 ))}
               </div>
@@ -153,12 +152,11 @@ function AdminShell() {
             <Link
               to="/admin/settings"
               onClick={closeMobileMenu}
-              className="admin-nav-item"
-              activeProps={{ className: "admin-nav-item is-active" }}
+              className="flex items-center gap-3 px-3 py-2 text-sm text-[var(--muted-foreground)] hover:bg-[var(--surface-elevated)] hover:text-[var(--foreground)] rounded-md transition-colors"
+              activeProps={{ className: "!text-primary !bg-primary/8 border-l-[3px] border-primary rounded-l-none font-medium" }}
             >
               <Settings className="h-[17px] w-[17px]" />
               <span>Settings</span>
-              <ChevronRight className="admin-nav-chevron h-3.5 w-3.5" />
             </Link>
           </div>
         </nav>
@@ -172,18 +170,27 @@ function AdminShell() {
             <span>{themeLabel}</span>
             <span className="capitalize">{mode} mode</span>
           </button>
-          <div className="admin-profile-card">
-            <div className="admin-avatar">{admin?.name?.charAt(0) || "M"}</div>
-            <div className="min-w-0 flex-1">
-              <p className="admin-profile-name truncate">{admin?.name || "Super admin"}</p>
-              <p className="admin-profile-email truncate">{admin?.email || "Private access"}</p>
+          <div className="group relative flex items-center gap-3 rounded-xl p-3 bg-[var(--surface-elevated)]/50 border border-[var(--glass-border)]">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-semibold text-primary border border-primary/20">
+              {admin?.name?.charAt(0) || "M"}
             </div>
-            <span className="admin-profile-role">ADMIN</span>
+            <div className="flex-1 min-w-0 flex flex-col">
+              <span className="truncate text-[14px] font-[600] leading-tight text-[var(--foreground)]">
+                {admin?.name || "Super admin"}
+              </span>
+              <span className="mt-1 w-max rounded bg-emerald-500/10 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                ADMIN
+              </span>
+            </div>
+            <button 
+              type="button" 
+              onClick={handleSignOut} 
+              className="absolute right-2 opacity-0 group-hover:opacity-100 transition-opacity p-1.5 hover:bg-[var(--surface)] rounded-md text-[var(--muted-foreground)] hover:text-red-500"
+              title={t("ui.sign_out")}
+            >
+              <LogOut className="h-4 w-4" />
+            </button>
           </div>
-          <button type="button" onClick={handleSignOut} className="admin-signout-button">
-            <LogOut className="h-4 w-4" />
-            {t("ui.sign_out")}
-          </button>
         </div>
       </aside>
 

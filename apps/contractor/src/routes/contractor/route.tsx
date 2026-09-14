@@ -45,8 +45,8 @@ function ContractorLayout({ children }: { children: React.ReactNode }) {
             <Link
               key={item.to}
               to={item.to as any}
-              className="flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-colors hover:bg-[var(--surface-elevated)] text-[var(--muted-foreground)] [&.active]:text-[var(--foreground)] [&.active]:bg-[var(--surface-elevated)] [&.active]:border [&.active]:border-[var(--glass-border)]"
-              activeProps={{ className: "active" }}
+              className="flex items-center gap-3 px-3 py-2.5 rounded-md text-sm transition-colors hover:bg-[var(--surface-elevated)] text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
+              activeProps={{ className: "!text-primary !bg-primary/8 border-l-[3px] border-primary rounded-l-none font-medium" }}
             >
               <item.icon size={18} />
               {item.label}
@@ -54,22 +54,28 @@ function ContractorLayout({ children }: { children: React.ReactNode }) {
           ))}
         </nav>
 
-        <div className="p-4 border-t border-[var(--glass-border)] bg-[var(--surface-elevated)]/50">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-8 h-8 rounded-full bg-[var(--primary)]/20 text-[var(--primary)] flex items-center justify-center font-semibold text-sm border border-[var(--primary)]/30">
+        <div className="p-4 border-t border-[var(--glass-border)]">
+          <div className="group relative flex items-center gap-3 rounded-xl p-3 bg-[var(--surface-elevated)]/50 border border-[var(--glass-border)]">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-semibold text-primary border border-primary/20">
               {contractor?.name?.substring(0, 2).toUpperCase() || 'CN'}
             </div>
-            <div className="flex-1 min-w-0">
-              <div className="text-sm font-medium truncate">{contractor?.name}</div>
-              <div className="text-xs text-[var(--muted-foreground)] truncate">{contractor?.email}</div>
+            <div className="flex-1 min-w-0 flex flex-col">
+              <span className="truncate text-[14px] font-[600] leading-tight text-[var(--foreground)]">
+                {contractor?.name || "Contractor"}
+              </span>
+              <span className="mt-1 w-max rounded bg-emerald-500/10 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                CONTRACTOR
+              </span>
             </div>
+            <button 
+              type="button" 
+              onClick={() => signOut()}
+              className="absolute right-2 opacity-0 group-hover:opacity-100 transition-opacity p-1.5 hover:bg-[var(--surface)] rounded-md text-[var(--muted-foreground)] hover:text-red-500"
+              title={t('ui.sign_out')}
+            >
+              <LogOut className="h-4 w-4" />
+            </button>
           </div>
-          <button
-            onClick={() => signOut()}
-            className="flex items-center gap-2 w-full px-3 py-2 text-sm text-[var(--muted-foreground)] hover:text-[var(--critical)] hover:bg-[var(--critical)]/10 rounded-md transition-colors"
-          >
-            <LogOut size={16} />
-            {t('ui.sign_out')}</button>
         </div>
       </div>
 

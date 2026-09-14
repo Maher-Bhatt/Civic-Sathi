@@ -1,4 +1,6 @@
-import { cn } from "@/lib/utils";
+import glob
+
+content = """import { cn } from "@/lib/utils";
 import type { ComplaintStatus, Severity } from "@/services/types";
 
 const STATUS_STYLES: Record<string, string> = {
@@ -56,3 +58,9 @@ export function SeverityBadge({ severity, className }: { severity: Severity | st
     </span>
   );
 }
+"""
+
+for file in glob.glob('apps/*/src/components/ui/badges.tsx'):
+    with open(file, 'w', encoding='utf-8') as f:
+        f.write(content)
+    print(f'Updated {file}')
