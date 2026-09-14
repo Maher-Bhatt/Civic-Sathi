@@ -221,3 +221,99 @@ class Bill(Base, UUIDMixin, TimestampMixin):
     payment_utr: Mapped[str | None] = mapped_column(String(255))
     paid_at: Mapped[DateTime | None] = mapped_column(DateTime(timezone=True))
 
+
+class MilestoneStatus(str, enum.Enum):
+    PENDING = 'PENDING'
+    IN_PROGRESS = 'IN_PROGRESS'
+    SUBMITTED_FOR_INSPECTION = 'SUBMITTED_FOR_INSPECTION'
+    VERIFIED = 'VERIFIED'
+    REWORK_REQUIRED = 'REWORK_REQUIRED'
+
+class Milestone(Base, UUIDMixin, TimestampMixin):
+    __tablename__ = 'milestones'
+    work_order_id = mapped_column(ForeignKey('work_orders.id', ondelete='CASCADE'), nullable=False, index=True)
+    sequence: Mapped[int] = mapped_column(Integer, nullable=False)
+    title: Mapped[str] = mapped_column(String(255), nullable=False)
+    planned_completion_date = mapped_column(DateTime(timezone=True), nullable=True)
+    payment_percentage: Mapped[float] = mapped_column(Float, nullable=True)
+    status: Mapped[str] = mapped_column(String(50), default=MilestoneStatus.PENDING)
+    officer_verification_notes: Mapped[str | None] = mapped_column(Text)
+
+class DisputeType(str, enum.Enum):
+    INSPECTION_RESULT = 'INSPECTION_RESULT'
+    PAYMENT_DELAY = 'PAYMENT_DELAY'
+    PENALTY_LEVIED = 'PENALTY_LEVIED'
+    OTHER = 'OTHER'
+
+class DisputeStatus(str, enum.Enum):
+    OPEN = 'OPEN'
+    IN_REVIEW = 'IN_REVIEW'
+    RESOLVED = 'RESOLVED'
+    ESCALATED = 'ESCALATED'
+
+class Dispute(Base, UUIDMixin, TimestampMixin):
+    __tablename__ = 'disputes'
+    work_order_id = mapped_column(ForeignKey('work_orders.id', ondelete='CASCADE'), nullable=False, index=True)
+    milestone_id = mapped_column(ForeignKey('milestones.id', ondelete='SET NULL'), nullable=True)
+    raised_by_contractor_id = mapped_column(ForeignKey('contractors.id', ondelete='CASCADE'), nullable=False)
+    dispute_type: Mapped[str] = mapped_column(String(50), nullable=False)
+    reason: Mapped[str] = mapped_column(Text, nullable=False)
+    evidence_urls: Mapped[list[str] | None] = mapped_column(JSONB)
+    status: Mapped[str] = mapped_column(String(50), default=DisputeStatus.OPEN)
+    resolution_notes: Mapped[str | None] = mapped_column(Text)
+    resolved_by_user_id = mapped_column(ForeignKey('users.id', ondelete='SET NULL'), nullable=True)
+    resolved_at = mapped_column(DateTime(timezone=True), nullable=True)
+
+class WorkOrderMessage(Base, UUIDMixin, TimestampMixin):
+    __tablename__ = 'work_order_messages'
+    work_order_id = mapped_column(ForeignKey('work_orders.id', ondelete='CASCADE'), nullable=False, index=True)
+    sender_id = mapped_column(ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
+    sender_role: Mapped[str] = mapped_column(String(50), nullable=False)
+    message: Mapped[str] = mapped_column(Text, nullable=False)
+    attachments: Mapped[list[str] | None] = mapped_column(JSONB)
+
+class ContractorDocumentStatus(str, enum.Enum):
+    PENDING = 'PENDING'
+    VERIFIED = 'VERIFIED'
+    REJECTED = 'REJECTED'
+
+class ContractorDocument(Base, UUIDMixin, TimestampMixin):
+    __tablename__ = 'contractor_documents'
+    contractor_id = mapped_column(ForeignKey('contractors.id', ondelete='CASCADE'), nullable=False, index=True)
+    document_type: Mapped[str] = mapped_column(String(100), nullable=False)
+    document_name: Mapped[str] = mapped_column(String(255), nullable=False)
+    file_url: Mapped[str] = mapped_column(Text, nullable=False)
+    status: Mapped[str] = mapped_column(String(50), default=ContractorDocumentStatus.PENDING)
+    verified_at = mapped_column(DateTime(timezone=True), nullable=True)
+    verified_by = mapped_column(ForeignKey('users.id', ondelete='SET NULL'), nullable=True)
+    expiry_date = mapped_column(DateTime(timezone=True), nullable=True)
+    rejection_reason: Mapped[str | None] = mapped_column(Text)
+
+class TechnicalEvaluation(Base, UUIDMixin, TimestampMixin):
+    __tablename__ = 'technical_evaluations'
+    bid_id = mapped_column(ForeignKey('bids.id', ondelete='CASCADE'), nullable=False, index=True, unique=True)
+    evaluator_id = mapped_column(ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
+    past_performance_score: Mapped[float] = mapped_column(Float, default=0.0)
+    technical_capability_score: Mapped[float] = mapped_column(Float, default=0.0)
+    execution_plan_score: Mapped[float] = mapped_column(Float, default=0.0)
+    resource_availability_score: Mapped[float] = mapped_column(Float, default=0.0)
+    safety_compliance_score: Mapped[float] = mapped_column(Float, default=0.0)
+    total_score: Mapped[float] = mapped_column(Float, default=0.0)
+    comments: Mapped[str | None] = mapped_column(Text)
+    evaluated_at = mapped_column(DateTime(timezone=True), nullable=True)
+
+class SLAPenaltyStatus(str, enum.Enum):
+    PENDING = 'PENDING'
+    APPROVED = 'APPROVED'
+    WAIVED = 'WAIVED'
+
+class SLAPenalty(Base, UUIDMixin, TimestampMixin):
+    __tablename__ = 'sla_penalties'
+    work_order_id = mapped_column(ForeignKey('work_orders.id', ondelete='CASCADE'), nullable=False, index=True)
+    delay_days: Mapped[int] = mapped_column(Integer, nullable=False)
+    penalty_rate_pct: Mapped[float] = mapped_column(Float, nullable=False)
+    penalty_amount: Mapped[float] = mapped_column(Float, nullable=False)
+    status: Mapped[str] = mapped_column(String(50), default=SLAPenaltyStatus.PENDING)
+    approved_by = mapped_column(ForeignKey('users.id', ondelete='SET NULL'), nullable=True)
+    waived_reason: Mapped[str | None] = mapped_column(Text)
+
