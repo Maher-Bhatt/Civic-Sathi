@@ -7,6 +7,7 @@ import {
   updateWorkOrderStatus,
 } from "@/services/api";
 import { GlassCard, SectionLabel } from "@/components/ui/glass-card";
+import { GlassInput } from "@/components/ui/glass-input";
 import { LoadingState, ErrorState } from "@/components/ui/states";
 import { toast } from "sonner";
 import {
@@ -19,6 +20,7 @@ import {
   MapPin,
   Loader2,
   AlertCircle,
+  X,
 } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { useI18n } from "@/lib/i18n";
@@ -106,6 +108,7 @@ function ContractorWorkOrderDetail() {
   const [evidenceStage, setEvidenceStage] = useState("COMPLETION");
   const [fileData, setFileData] = useState("");
   const [evidenceDesc, setEvidenceDesc] = useState("");
+  const [materialLogging, setMaterialLogging] = useState("");
 
   // Geo-Verification
   const [isGeoVerified, setIsGeoVerified] = useState(false);
@@ -189,10 +192,14 @@ function ContractorWorkOrderDetail() {
     }
     setActionLoading(true);
     try {
-      await submitFieldEvidence(wo.id, fileData, evidenceDesc || evidenceStage);
+      const fullDesc = materialLogging 
+        ? `${evidenceDesc || evidenceStage}\n\nMaterials Used: ${materialLogging}`
+        : (evidenceDesc || evidenceStage);
+      await submitFieldEvidence(wo.id, fileData, fullDesc);
       toast.success("Evidence uploaded. Work order is now pending inspection.");
       setFileData("");
       setEvidenceDesc("");
+      setMaterialLogging("");
       await loadData();
     } catch (err: any) {
       toast.error(err.message || "Failed to upload evidence.");
@@ -387,40 +394,61 @@ function ContractorWorkOrderDetail() {
                   </select>
                 </div>
                 <div>
-                  <label className="label-xs block mb-1">{t('ui.description_optional')}</label>
-                  <input
-                    type="text"
+                  <label htmlFor="evidence-desc" className="label-xs block mb-1">{t('ui.description_optional')}</label>
+                  <GlassInput
+                    id="evidence-desc"
                     value={evidenceDesc}
-                    onChange={(e) => setEvidenceDesc(e.target.value)}
+                    onChange={setEvidenceDesc}
                     placeholder={t('ui.brief_note_about_the_photo')}
-                    className="w-full px-3 py-2 rounded-md bg-[var(--surface)] text-[var(--foreground)] border border-[var(--glass-border)] text-sm focus:outline-none focus:ring-1 focus:ring-[var(--primary)]"
                   />
                 </div>
                 <div>
-                  <label className="label-xs block mb-1">Material Logging (Optional)</label>
-                  <input
-                    type="text"
+                  <label htmlFor="material-logging" className="label-xs block mb-1">Material Logging (Optional)</label>
+                  <GlassInput
+                    id="material-logging"
+                    value={materialLogging}
+                    onChange={setMaterialLogging}
                     placeholder="e.g., 2 tons of asphalt, 5 pipes"
-                    className="w-full px-3 py-2 rounded-md bg-[var(--surface)] text-[var(--foreground)] border border-[var(--glass-border)] text-sm focus:outline-none focus:ring-1 focus:ring-[var(--primary)]"
                   />
                   <p className="text-[10px] text-[var(--muted-foreground)] mt-1 ml-1">Log materials used to justify budget expenditure.</p>
                 </div>
                 <div>
-                  <label className="label-xs block mb-1">{t('ui.photo')}</label>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      if (!file) return;
-                      void encodeEvidencePhoto(file)
-                        .then(setFileData)
-                        .catch((err: Error) => toast.error(err.message));
-                    }}
-                    className="w-full text-sm text-[var(--muted-foreground)] file:mr-3 file:py-1.5 file:px-3 file:rounded file:border-0 file:text-xs file:font-medium file:bg-[var(--surface-elevated)] file:text-[var(--foreground)] hover:file:bg-[var(--primary)]/10"
-                    required
-                  />
+                  <label htmlFor="photo-upload" className="label-xs block mb-1">{t('ui.photo')}</label>
+                  {fileData ? (
+                    <div className="relative inline-block mt-2 mb-2">
+                      <img src={fileData} alt="Preview" className="h-24 w-24 object-cover rounded-lg border border-[var(--glass-border)]" />
+                      <button 
+                        type="button" 
+                        onClick={() => setFileData("")}
+                        className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 shadow-sm hover:bg-red-600"
+                        title="Remove photo"
+                      >
+                        <X size={14} />
+                      </button>
+                    </div>
+                  ) : (
+                    <input
+                      id="photo-upload"
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+                        void encodeEvidencePhoto(file)
+                          .then(setFileData)
+                          .catch((err: Error) => toast.error(err.message));
+                      }}
+                      className="w-full text-sm text-[var(--muted-foreground)] file:mr-3 file:py-1.5 file:px-3 file:rounded file:border-0 file:text-xs file:font-medium file:bg-[var(--surface-elevated)] file:text-[var(--foreground)] hover:file:bg-[var(--primary)]/10"
+                      required
+                    />
+                  )}
                 </div>
+                {!isGeoVerified && (
+                  <p className="text-xs text-red-500 mb-2">
+                    <AlertCircle className="inline w-3 h-3 mr-1" />
+                    Please check-in to verify location before uploading evidence.
+                  </p>
+                )}
                 <button
                   type="submit"
                   disabled={actionLoading || !fileData || !isGeoVerified}

@@ -5,6 +5,8 @@ import { ArrowLeft, AlertTriangle, Clock } from "lucide-react";
 import { toast } from "sonner";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useI18n } from "@/lib/i18n";
+import { GlassInput } from "@/components/ui/glass-input";
+import { GlassTextarea } from "@/components/ui/glass-textarea";
 
 export const Route = createFileRoute("/contractor/tenders/$id")({
   component: TenderDetail,
@@ -19,7 +21,7 @@ function TenderDetail() {
   const [bidAmount, setBidAmount] = useState("");
   const [proposal, setProposal] = useState("");
 
-  const { data: tender, isLoading: loading, error: queryError, isError } = useQuery({
+  const { data: tender, isLoading: loading, isError, error: queryError } = useQuery({
     queryKey: ["tender", id],
     queryFn: () => getTenderDetails(id),
   });
@@ -40,6 +42,15 @@ function TenderDetail() {
       toast.error("Please fill all fields.");
       return;
     }
+    if (proposal.length < 20) {
+      toast.error("Proposal is too short. Detail your approach and timeline.");
+      return;
+    }
+    if (Number(bidAmount) <= 0) {
+      toast.error("Bid amount must be greater than zero.");
+      return;
+    }
+    if (!window.confirm(`Submit sealed bid of ₹${Number(bidAmount).toLocaleString("en-IN")}? This action cannot be undone.`)) return;
     submitMutation.mutate();
   }
 
@@ -112,30 +123,33 @@ function TenderDetail() {
         return null;
       })()}
 
-      {(!tender.status || tender.status === 'OPEN') && (!tender.closed_at || new Date(tender.closed_at) > new Date()) && (
+      {(!tender.status || tender.status === 'OPEN' || tender.status === 'PUBLISHED') && (!tender.closed_at || new Date(tender.closed_at) > new Date()) && (
         <div className="rounded-xl border border-[var(--glass-border)] bg-[var(--surface)] p-6 md:p-8">
           <h2 className="text-xl font-semibold mb-6">{t('ui.submit_sealed_bid')}</h2>
           <form onSubmit={handleBid} className="space-y-5">
             <div>
-              <label className="block text-sm font-medium mb-2">{t('ui.quoted_amount')}</label>
-              <input
+              <label htmlFor="bid-amount" className="block text-sm font-medium mb-2">{t('ui.quoted_amount')}</label>
+              <GlassInput
+                id="bid-amount"
                 type="number"
                 required
                 min="0"
                 value={bidAmount}
-                onChange={e => setBidAmount(e.target.value)}
-                className="w-full bg-[var(--surface-elevated)] border border-[var(--glass-border)] rounded-md px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
-                placeholder={t('ui.e_g_500000')}
+                onChange={setBidAmount}
+                placeholder="e.g. ₹5,00,000"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-2">{t('ui.technical_proposal_notes')}</label>
-              <textarea
+              <label htmlFor="technical-proposal" className="block text-sm font-medium mb-2">
+                {t('ui.technical_proposal_notes')}
+                <span className="float-right text-xs text-[var(--muted-foreground)] font-normal">{proposal.length} chars</span>
+              </label>
+              <GlassTextarea
+                id="technical-proposal"
                 required
                 rows={5}
                 value={proposal}
-                onChange={e => setProposal(e.target.value)}
-                className="w-full bg-[var(--surface-elevated)] border border-[var(--glass-border)] rounded-md px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
+                onChange={setProposal}
                 placeholder={t('ui.detail_your_approach_timeline_')}
               />
             </div>

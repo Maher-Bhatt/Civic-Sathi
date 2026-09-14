@@ -1,5 +1,6 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { useAuth } from "@/lib/auth";
 import { GlassCard, SectionLabel } from "@/components/ui/glass-card";
 import { LoadingState, ErrorState } from "@/components/ui/states";
 import { listPublicContractors, submitPublicRating } from "@/services/api";
@@ -22,6 +23,8 @@ export const Route = createFileRoute("/contractors")({
 });
 
 function ContractorsPublicPage() {
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const [contractors, setContractors] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<Error | null>(null);
@@ -183,6 +186,11 @@ function ContractorsPublicPage() {
                 <button
                   type="button"
                   onClick={() => {
+                    if (!user) {
+                      toast.error("Please sign in to rate a contractor.");
+                      void navigate({ to: "/login", search: { redirect: "/contractors" } as any });
+                      return;
+                    }
                     setSelectedContractor(c);
                     setRatingVal(null);
                     setSelectedWorkOrderId("");

@@ -1,6 +1,6 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Bell, FileText, Home, Map, Menu, MoreHorizontal, PlusCircle, User, X, Globe } from "lucide-react";
+import { Bell, FileText, Home, Map, Menu, MoreHorizontal, PlusCircle, User, X, Globe, Star } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { GlassButton } from "@/components/ui/glass-button";
 import { useAuth } from "@/lib/auth";
@@ -15,6 +15,7 @@ const primaryLinks = [
   { to: "/map", tKey: "nav.map", defaultLabel: "Civic Map" },
   { to: "/report", tKey: "nav.report", defaultLabel: "Report Problem" },
   { to: "/complaints", tKey: "nav.complaints", defaultLabel: "My Complaints" },
+  { to: "/contractors", tKey: "nav.contractors", defaultLabel: "Rate Contractors" },
 ] as const;
 
 const secondaryLinks = [
@@ -27,6 +28,7 @@ const mobileTabs = [
   { to: "/hub", tKey: "nav.hub", defaultLabel: "Hub", icon: Globe },
   { to: "/map", tKey: "nav.map", defaultLabel: "Map", icon: Map },
   { to: "/report", tKey: "nav.report", defaultLabel: "Report", icon: PlusCircle },
+  { to: "/contractors", tKey: "nav.contractors", defaultLabel: "Rate", icon: Star },
   { to: "/profile", tKey: "nav.profile", defaultLabel: "Profile", icon: User },
 ] as const;
 
