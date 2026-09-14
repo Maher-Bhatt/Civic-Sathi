@@ -714,6 +714,8 @@ async def reset_demo_environment(db: Db):
         db.commit()
     except Exception as err:
         db.rollback()
+        import logging
+        logging.getLogger("civicsathi.demo").warning("reset_demo DB error: %s", err)
 
     # 4. Broadcast Reset Event
     await event_broadcaster.broadcast(

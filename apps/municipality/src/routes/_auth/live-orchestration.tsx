@@ -605,17 +605,21 @@ export function LiveOrchestrationPage() {
             </GlassButton>
 
             <GlassButton asChild size="sm" variant="glass">
-              <Link to="/integration-hub">
+              <Link to="/tenders">
                 <Server className="h-3.5 w-3.5 mr-1.5 text-orange-500" />
                 Integration Hub
               </Link>
             </GlassButton>
 
-            <GlassButton asChild size="sm" variant="glass">
-              <Link to={`/case/${caseNumber}`}>
-                <ExternalLink className="h-3.5 w-3.5 mr-1.5 text-orange-500" />
-                Passport #{caseNumber.slice(-6)}
-              </Link>
+            <GlassButton
+              type="button"
+              size="sm"
+              variant="glass"
+              onClick={() => navigator.clipboard?.writeText(caseNumber)}
+              title="Copy case number to clipboard"
+            >
+              <ExternalLink className="h-3.5 w-3.5 mr-1.5 text-orange-500" />
+              #{caseNumber.slice(-6)}
             </GlassButton>
           </div>
         </div>
@@ -1044,7 +1048,7 @@ export function LiveOrchestrationPage() {
                         type="button"
                         onClick={() => copyHash(digest)}
                         className="inline-flex items-center gap-1 text-[0.68rem] text-muted-foreground hover:text-foreground bg-surface/60 border border-border/40 px-2 py-0.5 rounded"
-                        title="Click to copy SHA-256 Audit Signature"
+                        title="Click to copy Audit Fingerprint (FNV-based)"
                       >
                         <Hash className="h-3 w-3 text-orange-500" />
                         <span>{digest}</span>

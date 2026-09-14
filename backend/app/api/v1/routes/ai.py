@@ -41,7 +41,7 @@ def _validate_image_data_url(data_url: str) -> None:
 @router.post("/analyze-complaint")
 async def analyze_complaint_text(
     request: ComplaintTextAnalysisRequest,
-    current_user=Depends(get_current_user),
+    current_user=Depends(get_optional_user),  # BUG-C5: allow anonymous pre-login users
 ):
     """Classify complaint text on the backend so the browser never owns the AI decision."""
     result = await ai_service.analyze_complaint(
@@ -50,13 +50,14 @@ async def analyze_complaint_text(
         request.category_hint,
         request.language,
     )
-    return {"source": "model" if ai_service.is_configured else "backend-heuristic", **result}
+    # BUG-L3: source goes LAST so it cannot be overwritten by LLM response key
+    return {**result, "source": "model" if ai_service.is_configured else "backend-heuristic"}
 
 
 @router.post("/analyze-image")
 async def analyze_complaint_image(
     request: ImageAnalysisRequest,
-    current_user=Depends(get_current_user),
+    current_user=Depends(get_optional_user),  # BUG-C6: allow anonymous pre-login users
 ):
     """Analyze actual image bytes with a vision-capable provider when configured."""
     _validate_image_data_url(request.data_url)

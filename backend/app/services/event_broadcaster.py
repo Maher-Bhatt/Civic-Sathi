@@ -77,6 +77,11 @@ class EventBroadcaster:
 
         for dead in dead_subscribers:
             self._subscribers.discard(dead)
+            # BUG-M7: cancel the backing asyncio task to prevent orphaned generators
+            try:
+                dead.put_nowait(None)  # sentinel to wake the generator so it can exit
+            except Exception:
+                pass
 
     def get_recent_events(self, limit: int = 25) -> list[LiveTransitMessage]:
         """Return snapshot of recent events from history ring buffer"""
@@ -97,6 +102,9 @@ class EventBroadcaster:
                 try:
                     # Wait for next event or yield keepalive heartbeat every 15s
                     msg: LiveTransitMessage = await asyncio.wait_for(queue.get(), timeout=15.0)
+                    if msg is None:
+                        # BUG-M7: None is a shutdown sentinel sent by broadcast cleanup
+                        return
                     data = msg.model_dump_json()
                     yield f"id: {msg.id}\nevent: message\ndata: {data}\n\n"
                 except asyncio.TimeoutError:

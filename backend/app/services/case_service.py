@@ -6,7 +6,7 @@ from datetime import datetime, timezone, timedelta
 from typing import Any
 from uuid import UUID, uuid4
 
-from sqlalchemy import select, or_, func
+from sqlalchemy import select, or_, func, false as sql_false
 from sqlalchemy.orm import Session, selectinload, joinedload
 
 from app.models.case import CivicCase, CaseDepartment
@@ -20,11 +20,15 @@ from app.schemas.integration import LiveTransitMessage
 
 
 def _safe_broadcast(msg: LiveTransitMessage):
+    """Fire-and-forget broadcast. Safe to call from sync context."""
     try:
         loop = asyncio.get_running_loop()
         loop.create_task(event_broadcaster.broadcast(msg))
-    except RuntimeError:
-        pass
+    except RuntimeError as exc:
+        # BUG-C2: only swallow "no running event loop" — log anything else
+        if "no running event loop" not in str(exc).lower() and "no current event loop" not in str(exc).lower():
+            import logging
+            logging.getLogger("civicsathi.cases").warning("broadcast failed: %s", exc)
 
 
 def generate_case_number(city_slug: str | None = None) -> str:
@@ -86,7 +90,7 @@ class CaseService:
             city_rec = self.db.execute(
                 select(City).where(
                     or_(
-                        City.id == case_data.city if self._is_valid_uuid(case_data.city) else False,
+                        City.id == case_data.city if self._is_valid_uuid(case_data.city) else sql_false(),  # BUG-H3
                         func.lower(City.name) == case_data.city.strip().lower(),
                     )
                 )
@@ -230,7 +234,16 @@ class CaseService:
                 self.db.add(current_child)
                 self.db.flush()
 
-        self.db.commit()
+        try:
+            self.db.commit()
+        except Exception as exc:
+            # BUG-L2: handle duplicate case_number collision (unlikely but possible)
+            if "unique" in str(exc).lower() or "duplicate" in str(exc).lower():
+                self.db.rollback()
+                master_case.case_number = generate_case_number(city_slug)
+                self.db.commit()
+            else:
+                raise
         self.db.expire_all()
 
         _safe_broadcast(
@@ -261,7 +274,7 @@ class CaseService:
             )
             .where(
                 or_(
-                    CivicCase.id == UUID(case_id_or_number) if self._is_valid_uuid(case_id_or_number) else False,
+                    CivicCase.id == UUID(case_id_or_number) if self._is_valid_uuid(case_id_or_number) else sql_false(),  # BUG-H3
                     CivicCase.case_number == case_id_or_number,
                 )
             )

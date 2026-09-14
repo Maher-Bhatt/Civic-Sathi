@@ -1112,23 +1112,42 @@ export async function createMdmDepartment(data: {
 export async function getSetuSystems(): Promise<Array<{
   key: string;
   name: string;
-  classification: string;
   status: string;
-  description: string;
-  last_sync: string;
+  classification?: string;
+  description?: string;
+  last_sync?: string;
 }>> {
+  // BUG-H4: Try Sathi Setu service first, fall back to Civic Sathi backend's integration registry
   const setuBaseUrl =
     (typeof import.meta !== "undefined" && import.meta.env && import.meta.env["VITE_SETU_API_BASE_URL"])
       ? String(import.meta.env["VITE_SETU_API_BASE_URL"])
-      : "http://localhost:8001";
+      : null;
 
-  const res = await fetch(`${setuBaseUrl}/v1/systems`, {
-    headers: { "Content-Type": "application/json" },
-  });
-  if (!res.ok) {
-    throw new Error(`Setu HTTP ${res.status}: ${res.statusText}`);
+  // Try Sathi Setu service if explicitly configured
+  if (setuBaseUrl) {
+    try {
+      const res = await fetch(`${setuBaseUrl}/v1/systems`, {
+        headers: { "Content-Type": "application/json" },
+      });
+      if (res.ok) {
+        const raw = await res.json();
+        return Array.isArray(raw) ? raw : raw.systems ?? [];
+      }
+    } catch {
+      // Fall through to Civic Sathi backend fallback
+    }
   }
-  return await res.json();
+
+  // Fallback: use Civic Sathi backend's own sovereign systems registry
+  const systems = await adminApiFetch<any[]>("/api/v1/integrations/systems");
+  return (Array.isArray(systems) ? systems : []).map((s: any) => ({
+    key: s.system_key ?? s.key ?? "",
+    name: s.name ?? "",
+    status: s.status ?? "ONLINE",
+    classification: "SOVEREIGN",
+    description: s.protocol ? `Protocol: ${s.protocol}` : undefined,
+    last_sync: s.last_sync_at ?? s.last_sync,
+  }));
 }
 
 // ================================================================ Global Complaints (Admin)

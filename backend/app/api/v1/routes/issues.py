@@ -8,7 +8,7 @@ from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
-from app.core.security import get_current_officer, require_officer_permission
+from app.core.security import get_current_officer, require_officer_permission, is_super_admin_user
 from app.models.complaint import Complaint
 from app.models.issue import IssueCluster, IssueComplaint
 from app.models.procurement import City
@@ -37,9 +37,9 @@ def list_issues(
 ):
     """List systemic issues (officer only)"""
     city_id = None
-    if current.get("role") != "admin":
-        user = db.get(User, UUID(current["sub"]))
-        if user and user.city:
+    user = db.get(User, UUID(current["sub"])) if current.get("sub") else None
+    if user and not is_super_admin_user(user):  # BUG-M5: only real super-admins see all cities
+        if user.city:
             city = db.query(City).filter(func.lower(City.name) == user.city.strip().lower()).first()
             city_id = city.id if city else None
     service = IssueService(db)
@@ -133,7 +133,7 @@ def materialize_complaint_issue(
         pass
 
     if existing_issue:
-        if officer.role != "admin" and officer.city:
+        if not is_super_admin_user(officer) and officer.city:  # BUG-M6
             city = db.query(City).filter(func.lower(City.name) == officer.city.strip().lower()).first()
             if not city or city.id != existing_issue.city_id:
                 raise HTTPException(status_code=403, detail="This account cannot materialize an issue in another city")
@@ -151,7 +151,7 @@ def materialize_complaint_issue(
     if not complaint:
         raise HTTPException(status_code=404, detail="Complaint not found")
 
-    if officer.role != "admin" and officer.city:
+    if not is_super_admin_user(officer) and officer.city:  # BUG-M6
         city = db.query(City).filter(func.lower(City.name) == officer.city.strip().lower()).first()
         if not city or city.id != complaint.city_id:
             raise HTTPException(status_code=403, detail="This account cannot materialize an issue in another city")

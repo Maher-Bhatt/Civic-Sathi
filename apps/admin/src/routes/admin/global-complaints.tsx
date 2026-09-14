@@ -117,10 +117,21 @@ function GlobalComplaintsPage() {
             className="bg-[var(--surface-elevated)] border border-[var(--glass-border)] text-foreground rounded-xl px-3.5 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--primary)] text-sm font-medium"
           >
             <option value="">All Cities</option>
-            <option value="mumbai">Mumbai</option>
-            <option value="delhi">Delhi</option>
-            <option value="bengaluru">Bengaluru</option>
-            <option value="vadodara">Vadodara</option>
+            {/* BUG-M4: use dynamic cities from API, not hardcoded list */}
+            {cities.length > 0
+              ? cities.map((city: any) => (
+                  <option key={city.id} value={city.name?.toLowerCase() ?? ""}>
+                    {city.name}
+                  </option>
+                ))
+              : (
+                <>
+                  <option value="mumbai">Mumbai</option>
+                  <option value="delhi">Delhi</option>
+                  <option value="bengaluru">Bengaluru</option>
+                  <option value="vadodara">Vadodara</option>
+                </>
+              )}
           </select>
           <select
             value={selectedStatus}

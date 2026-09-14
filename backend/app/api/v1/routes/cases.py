@@ -52,6 +52,8 @@ def _format_case_out(case) -> CivicCaseOut:
 
     timeline_items = []
     for item in (case.timeline_json or []):
+        if not isinstance(item, dict):
+            continue  # BUG-C1: skip malformed timeline entries
         timeline_items.append(
             TimelineEvent(
                 id=item.get("id", "event-0"),
@@ -142,8 +144,11 @@ def list_cases(
 ):
     """List Master Cases with optional filtering"""
     service = CaseService(db)
+    # BUG-M3: unauthenticated users must NOT see all cases
+    if current_user is None:
+        return []
     citizen_id = None
-    if current_user and getattr(current_user, "role", None) not in {"officer", "supervisor", "admin", "municipality"}:
+    if getattr(current_user, "role", None) not in {"officer", "supervisor", "admin", "municipality"}:
         citizen_id = current_user.id
 
     cases = service.list_cases(
