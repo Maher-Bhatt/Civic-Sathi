@@ -8,7 +8,7 @@ const area = (
   population: number,
   division?: string,
 ): CivicArea => ({
-  id: `pun-${id}`,
+  id: `vad-${id}`,
   city: "vadodara",
   name,
   center,

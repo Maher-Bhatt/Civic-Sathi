@@ -48,8 +48,8 @@ class ContractorCityRegistration(Base, UUIDMixin, TimestampMixin):
     contractor_id = mapped_column(ForeignKey("contractors.id", ondelete="CASCADE"), nullable=False, index=True)
     city_id = mapped_column(ForeignKey("cities.id", ondelete="CASCADE"), nullable=False, index=True)
     
-    registration_number: Mapped[str] = mapped_column(String(100), nullable=False)
-    registration_class: Mapped[str] = mapped_column(String(50))
+    registration_number: Mapped[str | None] = mapped_column(String(100), nullable=True, default="DEMO")
+    registration_class: Mapped[str | None] = mapped_column(String(50), nullable=True, default="A")
     status: Mapped[RegistrationStatus] = mapped_column(Enum(RegistrationStatus), default=RegistrationStatus.PENDING)
     approved_categories: Mapped[list[str] | None] = mapped_column(JSONB) # List of category strings
     

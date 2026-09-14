@@ -90,7 +90,7 @@ function TenderDetail() {
 
       {/* Lifecycle guard: only show bid form for open tenders with future deadline */}
       {(() => {
-        const isClosed = tender.status && tender.status !== 'OPEN';
+        const isClosed = tender.status && tender.status !== 'OPEN' && tender.status !== 'PUBLISHED';
         const isPastDeadline = tender.closed_at && new Date(tender.closed_at) <= new Date();
         if (isClosed || isPastDeadline) {
           return (

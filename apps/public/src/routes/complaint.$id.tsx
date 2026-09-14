@@ -53,7 +53,7 @@ function ComplaintDetail() {
   
 
   const isNotFound = (error as any)?.status === 404;
-  const location = data?.location ?? { lat: 18.5204, lng: 73.8567, ward: "Zone 1", area: "mumbai" };
+  const location = data?.location ?? { lat: 22.3072, lng: 73.1812, ward: "Zone 1", area: "Vadodara" };
   const city = data ? nearestCity(location.lat, location.lng) : null;
   const mapCityId = city?.id ?? "mumbai";
 

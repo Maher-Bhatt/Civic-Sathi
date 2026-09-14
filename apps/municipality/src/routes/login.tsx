@@ -134,7 +134,7 @@ function MuniLoginPage() {
               try {
                 await muniDemoLogin("vadodara");
                 toast.success("Demo session started — Welcome, Officer!");
-                void navigate({ to: "/dashboard" as any });
+                window.location.href = "/dashboard";
               } catch (err: any) {
                 setError(err?.message || "Demo login failed. The backend may be starting up — please retry in 30 seconds.");
               } finally {

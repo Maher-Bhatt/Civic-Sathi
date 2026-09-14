@@ -667,31 +667,43 @@ def demo_login(
         profile = DEMO_CONTRACTOR_PROFILES.get(city, DEMO_CONTRACTOR_PROFILES["vadodara"])
         email = profile["email"]
 
-        user = db.query(User).filter(User.email == email).first()
-        if not user:
-            user = User(
-                id=uuid4(),
-                name=profile["name"],
-                email=email,
-                role="contractor",
-                city=city.title(),
-                password_hash=hash_password("DemoLogin@2026"),
-            )
-            db.add(user)
-            db.flush()
+        try:
+            user = db.query(User).filter(User.email == email).first()
+            if not user:
+                user = User(
+                    id=uuid4(),
+                    name=profile["name"],
+                    email=email,
+                    role="contractor",
+                    city=city.title(),
+                    password_hash=hash_password("DemoLogin@2026"),
+                )
+                db.add(user)
+                db.flush()
 
-            # Create contractor company profile
-            contractor = Contractor(
-                id=uuid4(),
-                company_name=profile["company"],
-                email=email,
-                phone="+91-0000000000",
-                auth_user_id=str(user.id),
-            )
-            db.add(contractor)
-            db.flush()
+            # Find or create contractor company profile
+            contractor = db.query(Contractor).filter(Contractor.auth_user_id == str(user.id)).first()
+            if not contractor:
+                # Also check by email in case auth_user_id was not set
+                contractor = db.query(Contractor).filter(Contractor.email == email).first()
 
-            # Create APPROVED city registration for ALL 4 cities
+            if not contractor:
+                contractor = Contractor(
+                    id=uuid4(),
+                    company_name=profile["company"],
+                    contact_person=profile["name"],
+                    email=email,
+                    phone="+91-0000000000",
+                    auth_user_id=str(user.id),
+                )
+                db.add(contractor)
+                db.flush()
+            else:
+                # Ensure auth_user_id is set correctly
+                contractor.auth_user_id = str(user.id)
+                contractor.contact_person = contractor.contact_person or profile["name"]
+
+            # Ensure APPROVED city registrations exist for all 4 cities
             for city_name in ["Vadodara", "Mumbai", "Bengaluru", "Delhi"]:
                 city_obj = db.query(City).filter(func.lower(City.name) == city_name.lower()).first()
                 if city_obj:
@@ -704,33 +716,27 @@ def demo_login(
                             id=uuid4(),
                             contractor_id=contractor.id,
                             city_id=city_obj.id,
+                            registration_number=f"DEMO-{city_name.upper()[:3]}",
+                            registration_class="A",
                             status=RegistrationStatus.APPROVED,
                         ))
+
             db.commit()
             db.refresh(user)
-        else:
-            # Ensure contractor profile and registrations exist
-            contractor = db.query(Contractor).filter(Contractor.auth_user_id == str(user.id)).first()
-            if not contractor:
-                contractor = Contractor(
+        except Exception:
+            db.rollback()
+            # Last resort: just find or create the user and issue a token
+            user = db.query(User).filter(User.email == email).first()
+            if not user:
+                user = User(
                     id=uuid4(),
-                    company_name=profile["company"],
+                    name=profile["name"],
                     email=email,
-                    phone="+91-0000000000",
-                    auth_user_id=str(user.id),
+                    role="contractor",
+                    city=city.title(),
+                    password_hash=hash_password("DemoLogin@2026"),
                 )
-                db.add(contractor)
-                db.flush()
-
-                for city_name in ["Vadodara", "Mumbai", "Bengaluru", "Delhi"]:
-                    city_obj = db.query(City).filter(func.lower(City.name) == city_name.lower()).first()
-                    if city_obj:
-                        db.add(ContractorCityRegistration(
-                            id=uuid4(),
-                            contractor_id=contractor.id,
-                            city_id=city_obj.id,
-                            status=RegistrationStatus.APPROVED,
-                        ))
+                db.add(user)
                 db.commit()
                 db.refresh(user)
 

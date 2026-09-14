@@ -126,7 +126,7 @@ function ContractorLogin() {
               setError(null);
               try {
                 await contractorDemoLogin(city);
-                navigate({ to: "/contractor/dashboard" as any });
+                window.location.href = "/contractor/dashboard";
               } catch (err: any) {
                 setError(err?.message || "Demo login failed. The backend may be starting up — please retry in 30 seconds.");
               } finally {

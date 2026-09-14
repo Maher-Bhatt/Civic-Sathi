@@ -112,12 +112,12 @@ function AnalyzingPage() {
     setStage(STAGES.length - 1);
     const safeLocation = analysis.location ??
       draft.location ?? {
-        lat: 18.5204,
-        lng: 73.8567,
+        lat: 22.3072,
+        lng: 73.1812,
         ward: "Zone 1",
-        area: "Pune",
+        area: "Vadodara",
       };
-    const city = getCity(draft.city || "pune");
+    const city = getCity(draft.city || "vadodara");
     const wardNumberMatch = String(safeLocation.ward || "").match(/\d+/);
     const created = await createComplaint({
       title: `${analysis.category} at ${safeLocation.ward || city.name}`,

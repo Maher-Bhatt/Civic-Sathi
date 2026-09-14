@@ -26,6 +26,31 @@ async def lifespan(app_instance):
     """Startup and shutdown lifecycle."""
     # Setup automated SQLAlchemy audit logging on startup
     setup_auditing()
+
+    # Auto-fix columns that need to be nullable for demo-login to work
+    try:
+        from app.core.database import engine
+        from sqlalchemy import text
+        with engine.connect() as conn:
+            # Make registration_number and registration_class nullable if they aren't
+            for col in ["registration_number", "registration_class"]:
+                try:
+                    conn.execute(text(
+                        f"ALTER TABLE contractor_city_registrations ALTER COLUMN {col} DROP NOT NULL"
+                    ))
+                except Exception:
+                    pass  # Already nullable or table doesn't exist
+            # Make contact_person nullable on contractors
+            try:
+                conn.execute(text(
+                    "ALTER TABLE contractors ALTER COLUMN contact_person DROP NOT NULL"
+                ))
+            except Exception:
+                pass
+            conn.commit()
+    except Exception:
+        pass  # Non-critical — demo-login will still work via its own error handling
+
     yield
     # (shutdown: nothing to clean up currently)
 

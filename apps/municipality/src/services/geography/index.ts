@@ -30,7 +30,7 @@ const GEOGRAPHY: Record<CityId, CityGeography> = {
   mumbai: MUMBAI,
   bengaluru: BENGALURU,
   delhi: DELHI,
-  pune: MUMBAI,
+  pune: VADODARA,
 };
 
 export const cityGeography = (city: CityId): CityGeography => GEOGRAPHY[city] ?? VADODARA;

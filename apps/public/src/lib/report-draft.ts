@@ -21,7 +21,7 @@ export const emptyDraft: ReportDraft = {
   description: "",
   location: null,
   marker: null,
-  city: "mumbai",
+  city: "vadodara",
   language: "en",
   photo: null,
   category: null,
