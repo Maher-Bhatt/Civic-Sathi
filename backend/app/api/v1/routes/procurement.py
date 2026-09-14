@@ -395,8 +395,31 @@ def list_bids(
     if tender.status == TenderStatus.PUBLISHED:
         raise HTTPException(status_code=403, detail="Bids are sealed until tender is closed")
 
+    from app.models.procurement import Contractor
     bids = db.execute(select(Bid).where(Bid.tender_id == tender_id)).scalars().all()
-    return bids
+    
+    bid_responses = []
+    for bid in bids:
+        contractor = db.get(Contractor, bid.contractor_id)
+        bid_dict = {
+            'id': bid.id,
+            'tender_id': bid.tender_id,
+            'contractor_id': bid.contractor_id,
+            'quoted_amount': bid.quoted_amount,
+            'technical_proposal': bid.technical_proposal,
+            'status': bid.status,
+            'created_at': bid.created_at,
+            'contractor': {
+                'company_name': contractor.company_name if contractor else 'Unknown',
+                'composite_score': getattr(contractor, 'composite_score', None),
+                'public_rating': getattr(contractor, 'public_rating', None),
+                'ai_rating': getattr(contractor, 'ai_rating', None),
+                'officer_rating': getattr(contractor, 'officer_rating', None),
+            } if contractor else None
+        }
+        bid_responses.append(bid_dict)
+    
+    return bid_responses
 
 
 @router.post("/tenders/{tender_id}/bids/{bid_id}/award", response_model=WorkOrderResponse)

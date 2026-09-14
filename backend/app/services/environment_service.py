@@ -91,14 +91,12 @@ async def _fetch_weather(lat: float, lng: float) -> Dict[str, Any]:
     url = (
         f"https://api.open-meteo.com/v1/forecast"
         f"?latitude={lat}&longitude={lng}"
-        f"&current_weather=true"
-        f"&current=relative_humidity_2m,wind_speed_10m,apparent_temperature"
+        f"&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,weather_code,wind_speed_10m"
     )
     async with httpx.AsyncClient(timeout=8.0) as client:
         resp = await client.get(url)
         resp.raise_for_status()
         return resp.json()
-
 
 async def _fetch_air_quality(lat: float, lng: float) -> Dict[str, Any]:
     """Fetch current air quality from Open-Meteo Air Quality API (FREE, no API key)."""
@@ -112,12 +110,11 @@ async def _fetch_air_quality(lat: float, lng: float) -> Dict[str, Any]:
         resp.raise_for_status()
         return resp.json()
 
-
 async def get_city_environment(city_key: str) -> Dict[str, Any]:
     """
     Get real-time environment data for a city.
     Returns weather (temperature, humidity, wind, condition) and air quality (AQI, PM2.5, PM10).
-    All data from free public APIs — no API keys required.
+    All data from free public APIs - no API keys required.
     """
     city = city_key.lower().strip()
     coords = CITY_COORDS.get(city)
@@ -153,14 +150,13 @@ async def get_city_environment(city_key: str) -> Dict[str, Any]:
         logger.error(f"Environment fetch failed for {city}: {e}")
 
     # Parse weather
-    current_weather = weather_data.get("current_weather", {}) if weather_data else {}
-    current_extra = weather_data.get("current", {}) if weather_data else {}
-    temperature = current_weather.get("temperature")
-    wind_speed = current_weather.get("windspeed")
-    weather_code = current_weather.get("weathercode", 0)
+    current_weather = weather_data.get("current", {}) if weather_data else {}
+    temperature = current_weather.get("temperature_2m")
+    wind_speed = current_weather.get("wind_speed_10m")
+    weather_code = current_weather.get("weather_code", 0)
     condition = WMO_CODES.get(weather_code, "Unknown")
-    humidity = current_extra.get("relative_humidity_2m")
-    apparent_temp = current_extra.get("apparent_temperature")
+    humidity = current_weather.get("relative_humidity_2m")
+    apparent_temp = current_weather.get("apparent_temperature")
 
     # Parse air quality
     current_air = air_data.get("current", {}) if air_data else {}

@@ -43,6 +43,7 @@ class BidResponse(BaseModel):
     technical_proposal: Optional[str]
     status: BidStatus
     created_at: datetime
+    contractor: Optional[dict] = None
     
     class Config:
         from_attributes = True
