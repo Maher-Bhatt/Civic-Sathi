@@ -45,16 +45,36 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   const router = useRouter();
   useEffect(() => {
     console.error(error);
+    const msg = String(error?.message || "");
+    if (
+      msg.includes("Failed to fetch dynamically imported module") ||
+      msg.includes("Importing a module script failed") ||
+      msg.includes("error loading dynamically imported module")
+    ) {
+      const key = "last_chunk_reload";
+      const last = sessionStorage.getItem(key);
+      const now = Date.now();
+      if (!last || now - Number(last) > 8000) {
+        sessionStorage.setItem(key, String(now));
+        window.location.reload();
+      }
+    }
   }, [error]);
+
+  const isChunkError = 
+    String(error?.message || "").includes("Failed to fetch dynamically imported module") ||
+    String(error?.message || "").includes("Importing a module script failed");
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
         <h1 className="text-xl font-semibold tracking-tight text-foreground">
-          This page didn't load
+          {isChunkError ? "Updating Application..." : "This page didn't load"}
         </h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          Something went wrong. You can try refreshing or head back to the dashboard.
+          {isChunkError 
+            ? "A new version of Civic Sathi was just deployed. Refreshing your session with the latest update..."
+            : "Something went wrong. You can try refreshing or head back to the dashboard."}
         </p>
         <div className="mt-4 p-3 text-left bg-destructive/10 text-destructive border border-destructive/20 rounded-md text-xs font-mono overflow-auto max-h-56">
           <p className="font-bold">{error?.name || "Error"}: {error?.message}</p>
@@ -62,10 +82,10 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
         </div>
         <div className="mt-6 flex flex-wrap justify-center gap-2">
           <button
-            onClick={() => { router.invalidate(); reset(); }}
+            onClick={() => { window.location.reload(); }}
             className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
           >
-            Try again
+            Reload Page
           </button>
           <a
             href="/dashboard"
@@ -120,7 +140,30 @@ function RootShell({ children }: { children: ReactNode }) {
       <head>
         <HeadContent />
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
-        
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.addEventListener('vite:preloadError', function(event) {
+                console.warn('Vite preload error detected, reloading page...', event);
+                window.location.reload();
+              });
+              window.addEventListener('error', function(event) {
+                if (event.message && (
+                  event.message.includes('dynamically imported module') ||
+                  event.message.includes('Importing a module script failed') ||
+                  event.message.includes('error loading dynamically imported module')
+                )) {
+                  var last = sessionStorage.getItem('last_chunk_reload');
+                  var now = Date.now();
+                  if (!last || now - Number(last) > 8000) {
+                    sessionStorage.setItem('last_chunk_reload', String(now));
+                    window.location.reload();
+                  }
+                }
+              });
+            `,
+          }}
+        />
       </head>
             <body className="civic-heritage-shell">
         {children}
