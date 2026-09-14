@@ -835,3 +835,35 @@ def list_contractor_ratings(
     ).order_by(ContractorReview.created_at.desc()).all()
     return reviews
 
+
+# -- Phase 2: Billing ----------------------------------------------------------
+
+from app.models.procurement import Bill, BillStatus
+from app.schemas.procurement import BillCreate, BillResponse
+
+@router.post('/bills', response_model=BillResponse)
+def submit_bill(bill_in: BillCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    if current_user.role != 'contractor':
+        raise HTTPException(status_code=403, detail='Only contractors can submit bills')
+    contractor = resolve_contractor_for_user(db, current_user)
+    if not contractor:
+        raise HTTPException(status_code=403, detail='Contractor profile not found')
+    work_order = db.get(WorkOrder, bill_in.work_order_id)
+    if not work_order or work_order.contractor_id != contractor.id:
+        raise HTTPException(status_code=403, detail='Access denied')
+    bill = Bill(work_order_id=work_order.id, contractor_id=contractor.id, amount=bill_in.amount, milestones=bill_in.milestones, tax_details=bill_in.tax_details, invoice_url=bill_in.invoice_url, status=BillStatus.SUBMITTED)
+    db.add(bill)
+    db.commit()
+    db.refresh(bill)
+    return bill
+
+@router.get('/bills', response_model=List[BillResponse])
+def list_bills(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    if current_user.role != 'contractor':
+        raise HTTPException(status_code=403, detail='Access denied')
+    contractor = resolve_contractor_for_user(db, current_user)
+    if not contractor:
+        raise HTTPException(status_code=403, detail='Contractor profile not found')
+    bills = db.execute(select(Bill).where(Bill.contractor_id == contractor.id).order_by(Bill.created_at.desc())).scalars().all()
+    return bills
+

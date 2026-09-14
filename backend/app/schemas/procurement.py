@@ -173,3 +173,28 @@ class ContractorProfileResponse(BaseModel):
     
     class Config:
         from_attributes = True
+
+# --- Phase 2: Billing Schemas ---
+class BillCreate(BaseModel):
+    work_order_id: UUID
+    amount: float
+    milestones: Optional[List[str]] = None
+    tax_details: Optional[dict] = None
+    invoice_url: Optional[str] = None
+
+class BillResponse(BaseModel):
+    id: UUID
+    work_order_id: UUID
+    contractor_id: UUID
+    amount: float
+    status: str
+    milestones: Optional[List[str]] = None
+    tax_details: Optional[dict] = None
+    invoice_url: Optional[str] = None
+    payment_utr: Optional[str] = None
+    paid_at: Optional[datetime] = None
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
