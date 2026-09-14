@@ -2577,3 +2577,22 @@ body:has(.admin-app-shell) {
 }
 
 
+
+/* SIH DEMO NUKE-PROOF OVERRIDES */
+:root, :host, body, .civic-admin-command-center {
+  --primary: #7C1D2E !important;
+  --primary-foreground: #FFFFFF !important;
+  --secondary: #D4A017 !important;
+  --secondary-foreground: #FFFFFF !important;
+  --accent: #D4A017 !important;
+  --accent-foreground: #FFFFFF !important;
+}
+
+.dark, .dark .civic-admin-command-center, body.dark {
+  --primary: #A93B4E !important;
+  --primary-foreground: #0B1230 !important;
+  --secondary: #EFC849 !important;
+  --secondary-foreground: #0B1230 !important;
+  --accent: #EFC849 !important;
+  --accent-foreground: #0B1230 !important;
+}
