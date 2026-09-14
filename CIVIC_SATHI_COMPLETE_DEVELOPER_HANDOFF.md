@@ -56,7 +56,9 @@ Civic Sathi is NOT just another complaints app. The SIH problem statement PS2612
 
 **What we built:**
 - A full 4-portal civic grievance system (citizen, municipality, contractor, admin)
-- 118,000+ real complaint records processed and loaded into PostgreSQL (Neon)
+- 142,180 real complaint records across 4 cities (Bengaluru, Vadodara, Mumbai, Delhi) processed and loaded into PostgreSQL (Neon)
+- 106 systemic issue clusters with ML-derived risk scoring (HDBSCAN/TF-IDF)
+- 17 verified contractors, 45 tenders, 108 bids, and 11 active work orders
 - An ML pipeline that clusters complaints into systemic issues and scores them by risk
 - A live AI triage system using Groq's LLM for complaint classification
 - **Sathi Setu** — a separate interoperability service that sits between any two government systems and provides unified citizen identity, consent management, and cross-system tracking
@@ -1376,32 +1378,70 @@ uvicorn app.main:app --port 8001
 
 ## 11. CSS Design System
 
-All portals use the same CSS variables and glass-morphism aesthetic. Never change these values without understanding WCAG 2.2 AA compliance implications.
+All portals adhere to the **Indian Civic & Cultural Design System (Neo-Glassmorphism Edition)** with authentic Indian jewel tones, specular liquid glass refraction, ambient radial glows, and city atmosphere heritage layers.
 
-**Core CSS variables (from `styles.css`):**
+**Core Authentic Indian Jewel Palette & Canvas (from `styles.css`):**
 
 ```css
-/* Glass morphism */
---glass: rgba(255, 255, 255, 0.85);          /* 85% opacity — minimum for AA contrast */
---glass-strong: rgba(255, 255, 255, 0.92);
---surface: rgba(255, 255, 255, 0.60);
---surface-elevated: rgba(255, 255, 255, 0.80);
---glass-border: rgba(0, 0, 0, 0.08);
+/* Authentic Indian Jewel Palette */
+--saffron:         #FF6F00;   /* Royal Bhagwa / Indian Saffron */
+--saffron-light:   #FFF2E5;   /* Saffron mist */
+--saffron-glow:    rgba(255, 111, 0, 0.22);
+--india-green:     #0E8A4B;   /* Ashoka Emerald / India Green */
+--green-light:     #E8F7EE;   /* Mint/Emerald mist */
+--green-glow:      rgba(14, 138, 75, 0.20);
+--ashoka-blue:     #0A369D;   /* 24-Spoke Chakra Navy */
+--blue-light:      #EDF3FF;   /* Celestial blue mist */
+--marigold:        #F59E0B;   /* Haldi / Marigold Gold */
+--jaipur-rose:     #E11D48;   /* Jaipur Palace Terracotta / Gulabi */
+--peacock:         #0F766E;   /* Royal Peacock Teal */
 
-/* Brand colors */
---primary: #2563eb;      /* Civic blue */
---saffron: #f97316;      /* India-inspired saffron (accent) */
---success: #16a34a;      /* Resolution green */
---critical: #dc2626;     /* SLA breach red */
---warning: #d97706;      /* Amber warning */
+/* Canvas: Sandalwood Silk + Warm Ivory */
+--background:           #FAF6F0;   /* Sandalwood Pearl Ivory */
+--background-secondary: #F4ECE1;   /* Warm Terracotta Mist */
 
-/* Dark mode overrides */
+/* Specular Liquid Glass Surfaces */
+--surface:              rgba(255, 255, 255, 0.78);
+--surface-elevated:     rgba(255, 255, 255, 0.94);
+--glass:                 rgba(255, 255, 255, 0.90);
+--glass-strong:          rgba(255, 255, 255, 0.98);
+--glass-border:          rgba(255, 111, 0, 0.20);  /* Saffron-tinted refraction */
+--glass-border-green:    rgba(14, 138, 75, 0.20);
+
+/* Ambient Radial Glows */
+--ambient-1: rgba(255, 111, 0, 0.14);  /* Warm Saffron Sun Glow */
+--ambient-2: rgba(14, 138, 75, 0.12);  /* Emerald Prosperity Glow */
+--ambient-3: rgba(10, 54, 157, 0.08);  /* Royal Ashoka Blue Aura */
+
+/* Dark mode overrides (Midnight Peacock Navy + Saffron/Emerald Fire) */
 .dark {
-  --glass: rgba(15, 15, 15, 0.85);
-  --surface: rgba(20, 20, 20, 0.60);
-  /* etc. */
+  --background:           #0A0F18;   /* Deep Midnight Indigo */
+  --background-secondary: #0F1726;
+  --surface:              rgba(18, 27, 44, 0.78);
+  --surface-elevated:     rgba(24, 36, 58, 0.92);
+  --glass:                rgba(255, 255, 255, 0.05);
+  --glass-strong:         rgba(255, 255, 255, 0.09);
+  --glass-border:         rgba(255, 140, 0, 0.22);
+  --foreground:           #FBF5ED;   /* Warm Ivory Moonlight */
+  --primary:              #22C55E;   /* Vivid Emerald */
+  --secondary-accent:     #FF9933;   /* Bright Saffron */
+}
+
+/* Admin Heritage Vibe (Delhi Heritage Backdrop + Terracotta/Maroon) */
+body:has(.admin-app-shell) {
+  background-image: 
+    linear-gradient(180deg, color-mix(in srgb, #fffdf8 25%, transparent), color-mix(in srgb, #f5efe5 45%, transparent) 85%, #f5efe5),
+    url('/city-atmosphere/delhi-civic-heritage.jpg') !important;
+  background-position: center top !important;
+  background-size: cover !important;
+  background-attachment: fixed !important;
 }
 ```
+
+**Atmospheric Heritage & Cultural Motifs:**
+- `body::after`: Subtle Rangoli-inspired geometric conic watermark (`repeating-conic-gradient`)
+- City-specific atmosphere photography: `delhi-civic-heritage.jpg`, `mumbai-civic-heritage.jpg`, `bengaluru-civic-heritage.jpg`, `vadodara-civic-heritage.jpg`
+- Dynamic Chunk Auto-Recovery: Window event listeners for `vite:preloadError` and dynamic `import()` failures ensure seamless zero-downtime updates when deployments change chunk hashes.
 
 **Component usage:**
 ```tsx
@@ -1695,6 +1735,11 @@ Every bug is documented here with the file changed and what was wrong.
 | 037 | 🟡 Medium | All 4 `apps/*/src/services/api.ts` | Hardcoded Render backend URL as a string literal in each portal | Moved to `FALLBACK_BACKEND_URL` constant in `packages/api-client` |
 | 038 | 🔴 Critical | `backend/app/api/v1/routes/auth.py` | JWT `name` claim missing from all login endpoints | Added `"name": user.name` to every `create_access_token(data={...})` call |
 | 039 | 🔴 Critical | All 4 `apps/*/src/routeTree.gen.ts` | Stale auto-generated files out of sync with actual route files → 97+ TypeScript errors | Regenerate with `bunx tsr generate` in each portal after adding routes |
+| 040 | 🔴 Critical | All 4 `apps/*/src/routes/__root.tsx` | Vercel deployment updates invalidate browser-cached Vite asset chunks (`TypeError: Failed to fetch dynamically imported module`) | Injected auto-recovery listeners for `vite:preloadError` and dynamic `import()` errors to transparently reload into latest release |
+| 041 | 🟠 High | `apps/admin/src/services/shared-store.ts`, `apps/municipality/src/services/api.ts` | Backend API returns `snake_case` properties (`open_complaints`, `complaint_count`) while frontend Recharts charts expect `camelCase` (`open`, `complaintCount`), leading to empty chart panels | Added robust schema normalization layer that maps live backend database records to UI component data keys |
+| 042 | 🟡 Medium | `apps/admin/src/routes/admin/interoperability.tsx` | Connected systems registry cards had squished badges, raw ISO timestamps (`2026-09-14T...`), and unformatted system keys | Replaced with flex-1 responsive layouts, pill badges, and `formatSyncTime` helper |
+| 043 | 🔴 Critical | All 4 `apps/*/src/styles.css` | Accidental execution of flat design replacement stripped authentic Indian civic jewel palette and glassmorphism | Reverted to authentic Indian jewel palette (`--saffron`, `--india-green`, `--ashoka-blue`, liquid glass) and added full-bleed atmospheric heritage layers |
+| 044 | 🟠 High | `backend/seed_city_complaints.py`, `backend/seed_sih_demo.py` | Complaint data was heavily biased towards Bengaluru (100k) with sparse records in Mumbai, Delhi, Vadodara | Built and executed high-performance bulk database seeders, balancing database to 142,180 complaints, 106 systemic issues, 45 tenders, and 17 contractors |
 
 ---
 

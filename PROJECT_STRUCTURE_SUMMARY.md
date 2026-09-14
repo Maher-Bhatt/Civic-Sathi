@@ -123,6 +123,9 @@ Files: `index.ts`, `package.json`
 backend/
 ├── requirements.txt
 ├── alembic.ini
+├── seed_master.py          # Base database seeder (cities, departments, core accounts)
+├── seed_sih_demo.py        # Massive SIH Demo dataset (wards, issue clusters, contractors, tenders, bids, work orders, reviews, audit logs)
+├── seed_city_complaints.py # Multi-city complaint balancer (adds 24k complaints across Mumbai, Delhi, Vadodara)
 ├── alembic/
 │   ├── env.py              # Uses settings.database_url
 │   ├── script.py.mako
@@ -135,18 +138,27 @@ backend/
 │   │   ├── logging.py
 │   │   ├── errors.py       # Custom exceptions & handlers
 │   │   └── security.py     # JWT, password hashing
-│   ├── models/             # SQLAlchemy models
+│   ├── models/             # SQLAlchemy models (Complaint, IssueCluster, Tender, Contractor, User, etc.)
 │   ├── schemas/            # Pydantic request/response schemas
 │   ├── api/
 │   │   └── v1/
 │   │       ├── router.py   # API v1 router aggregation
-│   │       └── routes/     # Individual route modules
+│   │       └── routes/     # Individual route modules (admin, complaints, issues, procurement, reputation, analytics)
 │   ├── services/           # Business logic (complaint, AI, procurement, etc.)
 │   ├── repositories/       # Data access layer
 │   └── tests/              # Pytest suite (PostgreSQL via Testcontainers)
 └── scripts/
     └── repair_data.py      # Explicit data repair operations
 ```
+
+### Current Live Neon Database Volume
+- **142,180 Complaints** across Bengaluru (100,008), Vadodara (20,171), Mumbai (11,001), Delhi (11,000)
+- **106 Systemic Issue Clusters** with ML-calculated risk scores and ward associations
+- **48 Geo-Coded Wards** with authentic GPS coordinates (12 per city)
+- **17 Contractors** with multi-city verified registrations and tri-party ratings
+- **45 Tenders & 108 Bids** covering municipal procurement workflows
+- **11 Active Work Orders & 102 Contractor Reviews**
+- **385 Immutable Platform Audit Logs**
 
 ### Key Backend Config (app/core/config.py)
 

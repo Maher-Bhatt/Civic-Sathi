@@ -702,11 +702,16 @@ Shows all published and draft tenders. Button: "Publish Tender" → Goes to `/te
 
 ## 3.1 Admin Dashboard (`/admin/dashboard`)
 
-**What it does:** God-view aggregating metrics across ALL onboarded cities.
+**What it does:** God-view aggregating live metrics across ALL onboarded cities (Bengaluru, Vadodara, Mumbai, Delhi) with authentic Indian civic heritage glassmorphism and full-bleed Delhi architectural backdrop (`delhi-civic-heritage.jpg`).
 
-**Features:** CommandCenterDashboard with Recharts visualizations, real-time polling
+**Live Telemetry & Charts (142,180+ Records):**
+- **City-Wise Breakdown (Stacked BarChart)**: Visualizes complaint distribution across Bengaluru (100k), Vadodara (20k), Mumbai (11k), and Delhi (11k) categorized into Open, In Progress, and Resolved segments.
+- **Status Distribution (Donut PieChart)**: Real-time platform-wide breakdown of complaints across Assigned, In Progress, and Resolved states.
+- **Monthly Trends (Spline AreaChart)**: 6-month historical trajectory of citizen grievances filed vs resolved.
+- **Department-wise Load (Horizontal BarChart)**: Resource utilization across Electricity, Roads, Sanitation, Health, Water Supply, and Parks.
+- **City Health Lanes**: Real-time status cards for each municipality showing operational risk levels, active work orders, and critical issue clusters.
 
-**Backend:** `getCommandCenterSnapshot`, `getAuditLogs`
+**Backend Connections:** `getCommandCenterSnapshot` (`/api/v1/admin/command-center`), `getAuditLogs` (`/api/v1/admin/audit-logs`)
 
 ---
 
@@ -814,17 +819,17 @@ Shows all published and draft tenders. Button: "Publish Tender" → Goes to `/te
 
 ## 3.13 Interoperability Hub (`/admin/interoperability`)
 
-**What it does:** Sathi Setu gateway management.
+**What it does:** Sathi Setu interoperability gateway and registry management for cross-government grievance synchronization.
 
 **Features:**
-- Gateway Connection Banner
-- Connected Systems Registry
-- Open Data Export (CSV download of anonymized dataset)
-- API Key Management (view, copy, generate new key)
+- **Gateway Connection Banner**: Displays real-time operational status (Operational, Latency: ~34ms, Protocol: Sathi-Setu v1.2 / JSON-LD).
+- **Connected Systems Registry**: Responsive grid of external municipal adapters (BBMP Sahaaya, Maharashtra Aaple Sarkar, MCD Delhi 311, Vadodara VMC Grievance) with human-readable sync timestamps (e.g., `Sep 14, 06:45 PM`), uppercase pill tags, and live sync status badges.
+- **Open Data Export**: Instant CSV download of anonymized multi-city civic dataset for research and governance transparency.
+- **API Key Management**: Secure key rotation, one-click copy, and permissions control for external department integrations.
 
 **Buttons:** Check Connectivity, Export Anonymized Dataset, Copy API Key, Generate New Key
 
-**Backend:** `getSetuSystems`
+**Backend Connection:** `getSetuSystems` (`/api/v1/external/sathi-setu/systems`)
 
 ---
 
