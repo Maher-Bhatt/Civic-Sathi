@@ -63,9 +63,9 @@ function MuniLoginPage() {
   return (
     <div className="flex min-h-screen bg-slate-50 dark:bg-slate-950">
       {/* Left Panel: Brand */}
-      <div className="hidden lg:flex lg:w-[40%] bg-emerald-700 flex-col justify-center items-center p-12 text-white text-center">
+      <div className="hidden lg:flex lg:w-[40%] bg-[var(--primary)] flex-col justify-center items-center p-12 text-white text-center">
         <h1 className="text-4xl font-bold tracking-tight mb-4">{t("ui.civicsathi")}</h1>
-        <p className="text-emerald-100 text-lg max-w-md">
+        <p className="text-white/80 text-lg max-w-md">
           {t("ui.municipal_intelligence")}
         </p>
       </div>
@@ -92,7 +92,7 @@ function MuniLoginPage() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder={t("ui.officer_vmc_gov_in")}
                 autoComplete="username"
-                className="w-full min-h-[48px] px-4 py-2 rounded-lg border-[2px] border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-emerald-600 dark:focus:border-emerald-500 transition-colors"
+                className="w-full min-h-[48px] px-4 py-2 rounded-lg border-[2px] border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-[var(--primary)] dark:focus:border-emerald-500 transition-colors"
               />
             </div>
 
@@ -107,7 +107,7 @@ function MuniLoginPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
                 autoComplete="current-password"
-                className="w-full min-h-[48px] px-4 py-2 rounded-lg border-[2px] border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-emerald-600 dark:focus:border-emerald-500 transition-colors"
+                className="w-full min-h-[48px] px-4 py-2 rounded-lg border-[2px] border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-[var(--primary)] dark:focus:border-emerald-500 transition-colors"
               />
             </div>
 
@@ -142,7 +142,7 @@ function MuniLoginPage() {
             <button
               type="submit"
               disabled={busy}
-              className="w-full min-h-[48px] rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full min-h-[48px] rounded-lg bg-[var(--primary)] hover:bg-[var(--primary)] text-white font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {busy ? "Signing in..." : "Sign In"}
             </button>

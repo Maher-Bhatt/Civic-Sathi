@@ -197,9 +197,45 @@ function AdminSettings() {
           </div>
         </GlassCard>
 
-        {/* Platform Info */}
+        {/* Preferences & Settings */}
         <GlassCard className="p-6">
-          <SectionLabel>{t('ui.global_notification_settings')}</SectionLabel>
+          <SectionLabel className="mb-4">Preferences & Settings</SectionLabel>
+          <div className="space-y-4">
+            <div className="flex items-center justify-between p-4 bg-[var(--surface)] border border-[var(--glass-border)] rounded-lg">
+              <div>
+                <p className="font-medium text-[var(--foreground)]">Two-Factor Authentication (2FA)</p>
+                <p className="text-xs text-[var(--muted-foreground)] mt-1">Add an extra layer of security to your super-admin account.</p>
+              </div>
+              <button className="px-4 py-2 bg-[var(--surface-elevated)] border border-[var(--glass-border)] text-sm font-medium rounded-md hover:bg-[var(--glass)] transition-colors">
+                Enable 2FA
+              </button>
+            </div>
+  
+            <div className="flex items-center justify-between p-4 bg-[var(--surface)] border border-[var(--glass-border)] rounded-lg">
+              <div>
+                <p className="font-medium text-[var(--foreground)]">Global Notification Settings</p>
+                <p className="text-xs text-[var(--muted-foreground)] mt-1">Manage email and SMS alerts for platform-wide SLA breaches.</p>
+              </div>
+              <button className="px-4 py-2 bg-[var(--surface-elevated)] border border-[var(--glass-border)] text-sm font-medium rounded-md hover:bg-[var(--glass)] transition-colors">
+                Configure
+              </button>
+            </div>
+  
+            <div className="flex items-center justify-between p-4 bg-[var(--surface)] border border-[var(--glass-border)] rounded-lg">
+              <div>
+                <p className="font-medium text-[var(--foreground)]">Active Sessions</p>
+                <p className="text-xs text-[var(--muted-foreground)] mt-1">You are currently logged in on 1 device.</p>
+              </div>
+              <button className="px-4 py-2 text-[var(--critical)] bg-[var(--critical)]/10 hover:bg-[var(--critical)]/20 text-sm font-medium rounded-md transition-colors">
+                Log out all devices
+              </button>
+            </div>
+          </div>
+        </GlassCard>
+  
+          {/* Platform Info */}
+        <GlassCard className="p-6">
+          <SectionLabel>Platform Info</SectionLabel>
           <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="p-4 rounded-md bg-[var(--surface-elevated)] border border-[var(--glass-border)]">
               <p className="text-sm text-[var(--muted-foreground)] mb-1">{t('ui.platform_name')}</p>

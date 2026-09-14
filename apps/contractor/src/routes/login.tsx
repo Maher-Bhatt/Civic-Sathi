@@ -45,11 +45,11 @@ function ContractorLogin() {
   return (
     <div className="min-h-screen flex">
       {/* Left Panel */}
-      <div className="hidden lg:flex lg:w-[40%] bg-blue-600 flex-col items-center justify-center p-12 text-white">
+      <div className="hidden lg:flex lg:w-[40%] bg-[var(--primary)] flex-col items-center justify-center p-12 text-white">
         <div className="max-w-md text-center">
           <h1 className="text-4xl font-bold mb-6 tracking-tight">Civic Sathi</h1>
-          <p className="text-xl text-blue-100 font-medium mb-8">Contractor Portal</p>
-          <p className="text-blue-200 leading-relaxed">
+          <p className="text-xl text-[var(--primary-foreground)]/90 font-medium mb-8">Contractor Portal</p>
+          <p className="text-[var(--primary-foreground)]/70 leading-relaxed">
             Bid on municipal projects, manage contracts, and track progress all in one place.
           </p>
         </div>

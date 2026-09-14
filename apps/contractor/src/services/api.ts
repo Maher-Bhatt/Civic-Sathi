@@ -339,9 +339,10 @@ function normalizeContractorSpecializations(categories: unknown[]): ContractorSp
 }
 
 export async function getContractor(id: string): Promise<Contractor | null> {
+  let user: any = null;
   try {
+    user = await getContractorUser();
     const list = await api.contractors.list();
-    const user = await getContractorUser();
     const current = (list || []).find((item: any) => String(item?.id) === id)
       || (list || []).find((item: any) => item?.email === user?.email);
     

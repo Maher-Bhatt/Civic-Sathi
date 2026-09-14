@@ -55,9 +55,9 @@ function LoginPage() {
   return (
     <div className="flex min-h-screen w-full font-sans">
       {/* Left panel - Brand */}
-      <div className="hidden lg:flex lg:w-[40%] bg-orange-600 p-12 flex-col justify-center items-start text-white">
+      <div className="hidden lg:flex lg:w-[40%] bg-[var(--primary)] p-12 flex-col justify-center items-start text-white">
         <h1 className="text-4xl font-bold mb-4">Civic Sathi</h1>
-        <p className="text-lg text-orange-100">
+        <p className="text-lg text-[var(--primary-foreground)]/80">
           The smart way to report and track civic issues in your neighborhood.
         </p>
       </div>
@@ -65,7 +65,7 @@ function LoginPage() {
       {/* Right panel - Form */}
       <div className="flex flex-col flex-1 lg:w-[60%] bg-white dark:bg-slate-900 px-6 py-12 sm:px-12 justify-center">
         <div className="w-full max-w-md mx-auto">
-          <span className="text-sm font-medium text-orange-600 dark:text-orange-500 uppercase tracking-wider">
+          <span className="text-sm font-medium text-[var(--primary)] dark:text-[var(--primary)] uppercase tracking-wider">
             {t("login.access", "Citizen access")}
           </span>
           <h2 className="mt-3 text-3xl font-bold text-slate-900 dark:text-white">

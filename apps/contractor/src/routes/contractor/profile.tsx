@@ -5,7 +5,7 @@ import { getContractor, getMyCivicRolePerformance, client } from "@/services/api
 import { Contractor, CivicRolePerformance } from "@/services/types";
 import { GlassCard, SectionLabel } from "@/components/ui/glass-card";
 import { LoadingState, ErrorState } from "@/components/ui/states";
-import { Building, MapPin, Phone, Mail, FileText, CheckCircle2, Edit2, Save, X, Lock } from "lucide-react";
+import { Building, MapPin, Phone, Mail, FileText, CheckCircle2, Edit2, Save, X, Lock, Settings } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 import { toast } from "sonner";
 
@@ -378,6 +378,45 @@ function ContractorProfile() {
         ) : (
           <p className="text-sm text-[var(--muted-foreground)]">Use a strong, unique password. You can also reset it via the forgot password flow on the login page.</p>
         )}
+      </GlassCard>
+
+        {/* Preferences & Settings */}
+      <GlassCard className="p-6 glass-strong">
+        <SectionLabel className="mb-4 flex items-center gap-2">
+          <Settings size={18} /> Preferences & Settings
+        </SectionLabel>
+        
+        <div className="space-y-4">
+          <div className="flex items-center justify-between p-4 bg-[var(--surface)] border border-[var(--glass-border)] rounded-lg">
+            <div>
+              <p className="font-medium text-[var(--foreground)]">Two-Factor Authentication (2FA)</p>
+              <p className="text-xs text-[var(--muted-foreground)] mt-1">Add an extra layer of security to your account.</p>
+            </div>
+            <button className="px-4 py-2 bg-[var(--surface-elevated)] border border-[var(--glass-border)] text-sm font-medium rounded-md hover:bg-[var(--glass)] transition-colors">
+              Enable 2FA
+            </button>
+          </div>
+
+          <div className="flex items-center justify-between p-4 bg-[var(--surface)] border border-[var(--glass-border)] rounded-lg">
+            <div>
+              <p className="font-medium text-[var(--foreground)]">Notification Preferences</p>
+              <p className="text-xs text-[var(--muted-foreground)] mt-1">Manage email and SMS alerts for new work orders.</p>
+            </div>
+            <button className="px-4 py-2 bg-[var(--surface-elevated)] border border-[var(--glass-border)] text-sm font-medium rounded-md hover:bg-[var(--glass)] transition-colors">
+              Configure
+            </button>
+          </div>
+
+          <div className="flex items-center justify-between p-4 bg-[var(--surface)] border border-[var(--glass-border)] rounded-lg">
+            <div>
+              <p className="font-medium text-[var(--foreground)]">Active Sessions</p>
+              <p className="text-xs text-[var(--muted-foreground)] mt-1">You are currently logged in on 1 device.</p>
+            </div>
+            <button className="px-4 py-2 text-[var(--critical)] bg-[var(--critical)]/10 hover:bg-[var(--critical)]/20 text-sm font-medium rounded-md transition-colors">
+              Log out all devices
+            </button>
+          </div>
+        </div>
       </GlassCard>
 
       <GlassCard className="p-6 glass-strong space-y-5">

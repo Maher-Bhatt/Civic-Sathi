@@ -244,6 +244,42 @@ function ProfilePage() {
         )}
       </GlassCard>
 
+      {/* Preferences & Settings */}
+      <GlassCard elevation="raised" className="p-6">
+        <SectionLabel className="mb-4">Preferences & Settings</SectionLabel>
+        <div className="space-y-4">
+          <div className="flex items-center justify-between p-4 bg-background border border-border rounded-lg">
+            <div>
+              <p className="font-medium text-foreground">Two-Factor Authentication (2FA)</p>
+              <p className="text-xs text-muted-foreground mt-1">Add an extra layer of security to your officer account.</p>
+            </div>
+            <button className="px-4 py-2 bg-muted border border-border text-sm font-medium rounded-md hover:bg-muted/80 transition-colors">
+              Enable 2FA
+            </button>
+          </div>
+
+          <div className="flex items-center justify-between p-4 bg-background border border-border rounded-lg">
+            <div>
+              <p className="font-medium text-foreground">Notification Preferences</p>
+              <p className="text-xs text-muted-foreground mt-1">Manage email and SMS alerts for ward escalations.</p>
+            </div>
+            <button className="px-4 py-2 bg-muted border border-border text-sm font-medium rounded-md hover:bg-muted/80 transition-colors">
+              Configure
+            </button>
+          </div>
+
+          <div className="flex items-center justify-between p-4 bg-background border border-border rounded-lg">
+            <div>
+              <p className="font-medium text-foreground">Active Sessions</p>
+              <p className="text-xs text-muted-foreground mt-1">You are currently logged in on 1 device.</p>
+            </div>
+            <button className="px-4 py-2 text-destructive bg-destructive/10 hover:bg-destructive/20 text-sm font-medium rounded-md transition-colors">
+              Log out all devices
+            </button>
+          </div>
+        </div>
+      </GlassCard>
+
       {/* Theme Toggle */}
       <GlassCard elevation="raised" className="p-6">
         <SectionLabel>Appearance</SectionLabel>
