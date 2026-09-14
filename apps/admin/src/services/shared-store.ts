@@ -1103,10 +1103,34 @@ export async function listRealWorkOrders(): Promise<any[]> {
 /** Fetch the bounded live super-admin command-center snapshot. */
 export async function getCommandCenterSnapshot(): Promise<any> {
   try {
-    // FORCE MOCK DATA FOR SIH DEMO
-    // The live backend returns an empty or differently shaped response (e.g. strings instead of objects)
-    // which results in empty charts. We force the fallback to guarantee the video looks perfect.
-    throw new Error("Forcing rich mock data for SIH Demo video");
+    const data = await adminApiFetch<any>("/api/v1/admin/command-center");
+    
+    // Map backend snake_case fields to frontend chart expectations so real ML data renders properly
+    if (data?.cities && Array.isArray(data.cities)) {
+      data.cities = data.cities.map((city: any) => ({
+        ...city,
+        open: city.open_complaints || city.open || 0,
+        resolved: city.resolved_complaints || city.resolved || 0,
+        in_progress: Math.max(0, (city.complaints || 0) - ((city.open_complaints || 0) + (city.resolved_complaints || 0)))
+      }));
+    }
+
+    if (data?.monthly_trend && Array.isArray(data.monthly_trend)) {
+      data.monthly_trend = data.monthly_trend.map((m: any) => ({
+        ...m,
+        filed: m.filed || m.created || 0,
+        resolved: m.resolved || 0
+      }));
+    }
+
+    if (data?.department_load && Array.isArray(data.department_load)) {
+      data.department_load = data.department_load.map((d: any) => ({
+        ...d,
+        issues: d.issues || d.count || 0
+      }));
+    }
+
+    return data;
   } catch (error) {
     console.warn("Falling back to mock command center snapshot for SIH demo:", error);
     return {

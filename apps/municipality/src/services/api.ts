@@ -253,12 +253,24 @@ export async function getLiveActivity(): Promise<LiveActivity[]> {
 
 export async function getSystemicIssues(city?: CityId): Promise<SystemicIssue[]> {
   try {
-    const res = await client.get<SystemicIssue[] | { items?: SystemicIssue[] }>("/api/v1/issues" + (city ? `?city=${city}` : ""));
+    const res = await client.get<any>("/api/v1/issues" + (city ? `?city=${city}` : ""));
     const items = Array.isArray(res) ? res : (Array.isArray(res?.items) ? res.items : []);
-    if (!items || items.length === 0 || !('complaintCount' in (items[0] || {}))) {
+    
+    // Map backend snake_case to frontend UI expectations for real ML data
+    const mapped = items.map((item: any) => ({
+      ...item,
+      complaintCount: item.complaint_count || item.complaintCount || 0,
+      riskScore: item.risk_score || item.riskScore || 0,
+      areaName: item.area_name || item.areaName || (item.ward_number ? `Ward ${item.ward_number}` : 'City Center'),
+      trendPct: item.trend_pct || item.trendPct || 0,
+      priority: item.priority || (item.risk_level === 'CRITICAL' ? 'critical' : item.risk_level === 'HIGH' ? 'high' : 'medium'),
+      relatedComplaintsCount: item.complaint_count || item.complaintCount || 0
+    }));
+
+    if (!mapped || mapped.length === 0) {
       throw new Error("Missing or malformed systemic issues data");
     }
-    return items as SystemicIssue[];
+    return mapped as SystemicIssue[];
   } catch (error) {
     console.warn("Falling back to rich mock systemic issues:", error);
     return [
