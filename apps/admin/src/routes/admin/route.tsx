@@ -68,6 +68,8 @@ const navGroups = [
       { label: "Master Data (MDM)", icon: Map, to: "/admin/mdm" },
       { label: "AI Oversight", icon: Brain, to: "/admin/ai-oversight" },
       { label: "Trust & Safety", icon: ShieldAlert, to: "/admin/trust-safety" },
+      { label: "SLA Penalties", icon: Timer, to: "/admin/sla-penalties" },
+      { label: "Suspended Contractors", icon: Shield, to: "/admin/suspended-contractors" },
       { label: "Gamification", icon: Gamepad2, to: "/admin/gamification" },
       { label: "Interoperability", icon: Network, to: "/admin/interoperability" },
     ],
