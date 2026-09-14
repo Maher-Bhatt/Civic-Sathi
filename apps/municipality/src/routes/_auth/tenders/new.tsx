@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { GlassCard, SectionLabel } from "@/components/ui/glass-card";
 import { GlassInput } from "@/components/ui/glass-input";
-import { GlassTextarea } from "@/components/ui/glass-textarea";
+import { Textarea } from "@/components/ui/textarea";
 import { useMuniAuth } from "@/lib/muni-auth";
 import { createTender, publishTender } from "@/services/api";
 import { DEPARTMENTS, ISSUE_TYPES } from "@/services/types";
@@ -124,7 +124,7 @@ function NewTenderPage() {
           </div>
           <div className="space-y-1.5">
             <label className="label-xs" htmlFor="wp-desc">{t('ui.description')}</label>
-            <GlassTextarea id="wp-desc" value={form.description} onChange={set("description")} rows={3} placeholder={t('ui.describe_the_civic_issue_and_w')} />
+            <Textarea id="wp-desc" value={form.description} onChange={set("description")} rows={3} placeholder={t('ui.describe_the_civic_issue_and_w')} />
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-1.5">
@@ -160,7 +160,7 @@ function NewTenderPage() {
           </div>
           <div className="space-y-1.5">
             <label className="label-xs" htmlFor="wp-scope">{t('ui.scope_of_work')}</label>
-            <GlassTextarea id="wp-scope" value={form.scope} onChange={set("scope")} rows={5} placeholder={t('ui.1_pothole_patching_10_2_road_m')} />
+            <Textarea id="wp-scope" value={form.scope} onChange={set("scope")} rows={5} placeholder={t('ui.1_pothole_patching_10_2_road_m')} />
           </div>
           <div className="space-y-1.5">
             <label className="label-xs" htmlFor="wp-civic-issues">{t('ui.civic_issue_ids_comma_separate')}</label>

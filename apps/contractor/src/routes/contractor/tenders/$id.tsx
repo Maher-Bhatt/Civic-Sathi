@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useI18n } from "@/lib/i18n";
 import { GlassInput } from "@/components/ui/glass-input";
-import { GlassTextarea } from "@/components/ui/glass-textarea";
+import { Textarea } from "@/components/ui/textarea";
 
 export const Route = createFileRoute("/contractor/tenders/$id")({
   component: TenderDetail,
@@ -144,7 +144,7 @@ function TenderDetail() {
                 {t('ui.technical_proposal_notes')}
                 <span className="float-right text-xs text-[var(--muted-foreground)] font-normal">{proposal.length} chars</span>
               </label>
-              <GlassTextarea
+              <Textarea
                 id="technical-proposal"
                 required
                 rows={5}
