@@ -36,9 +36,9 @@ function NavLink({ link, pathname, onClick }: { link: (typeof primaryLinks)[numb
   const { t } = useI18n();
   const active = pathname === link.to || (link.to !== "/" && pathname.startsWith(link.to));
   if ("hash" in link && link.hash) {
-    return <a href="/#how-it-works" onClick={onClick} className="rounded-xl px-3 py-2.5 text-sm text-muted-foreground transition hover:bg-[var(--glass)] hover:text-foreground">{t(link.tKey, link.defaultLabel)}</a>;
+    return <a href="/#how-it-works" onClick={onClick} className="whitespace-nowrap rounded-lg px-2.5 py-2 text-[13px] font-medium text-muted-foreground transition hover:bg-[var(--glass)] hover:text-foreground">{t(link.tKey, link.defaultLabel)}</a>;
   }
-  return <Link to={link.to} onClick={onClick} className={cn("rounded-xl px-3 py-2.5 text-sm transition hover:bg-[var(--glass)] hover:text-foreground", active ? "bg-[var(--surface-elevated)] font-semibold text-foreground" : "text-muted-foreground")}>{t(link.tKey, link.defaultLabel)}</Link>;
+  return <Link to={link.to} onClick={onClick} className={cn("whitespace-nowrap rounded-lg px-2.5 py-2 text-[13px] font-medium transition hover:bg-[var(--glass)] hover:text-foreground", active ? "bg-[var(--surface-elevated)] font-semibold text-foreground" : "text-muted-foreground")}>{t(link.tKey, link.defaultLabel)}</Link>;
 }
 
 export function SiteNav() {
@@ -60,29 +60,29 @@ export function SiteNav() {
 
   return (
     <header className="fixed inset-x-0 top-0 z-50 px-3 pt-3 sm:px-5 sm:pt-4">
-      <nav aria-label={t("ui.primary")} className={cn("mx-auto flex max-w-6xl items-center gap-2 rounded-2xl border border-[var(--glass-border)] px-3 py-2.5 transition-all duration-300 sm:px-4", scrolled ? "bg-[var(--glass-strong)] shadow-[var(--shadow-lift)] backdrop-blur-2xl" : "bg-[var(--glass)] shadow-[var(--shadow-soft)] backdrop-blur-xl")}>
-        <Link to="/" className="group flex min-h-10 shrink-0 items-center gap-2.5 pr-2" aria-label={t("ui.civicsathi_home", "Civic Sathi home")}>
-          <span className="civic-brand-lockup" aria-hidden="true"><img src="/brand/civic-sathi-symbol.png" alt="" /></span>
-          <span className="civic-brand-wordmark"><span>Civic</span> <strong>Sathi</strong></span>
+      <nav aria-label={t("ui.primary")} className={cn("mx-auto flex max-w-6xl items-center gap-1.5 rounded-2xl border border-[var(--glass-border)] px-3 py-1.5 transition-all duration-300 sm:px-3", scrolled ? "bg-[var(--glass-strong)] shadow-[var(--shadow-lift)] backdrop-blur-2xl" : "bg-[var(--glass)] shadow-[var(--shadow-soft)] backdrop-blur-xl")}>
+        <Link to="/" className="group flex min-h-9 shrink-0 items-center gap-2 pr-1" aria-label={t("ui.civicsathi_home", "Civic Sathi home")}>
+          <span className="civic-brand-lockup scale-90 origin-left" aria-hidden="true"><img src="/brand/civic-sathi-symbol.png" alt="" /></span>
+          <span className="civic-brand-wordmark text-[17px]"><span>Civic</span> <strong>Sathi</strong></span>
         </Link>
 
-        <div className="ml-1 hidden items-center gap-0.5 lg:flex">
+        <div className="ml-1 hidden items-center lg:flex">
           {primaryLinks.map((link) => <NavLink key={link.tKey} link={link} pathname={pathname} />)}
           <div className="relative">
-            <button type="button" aria-expanded={moreOpen} onClick={() => setMoreOpen((value) => !value)} className={cn("press flex min-h-10 items-center gap-1 rounded-xl px-3 py-2.5 text-sm transition hover:bg-[var(--glass)]", moreOpen ? "bg-[var(--surface-elevated)] text-foreground" : "text-muted-foreground")}>
+            <button type="button" aria-expanded={moreOpen} onClick={() => setMoreOpen((value) => !value)} className={cn("press flex min-h-9 items-center gap-1 rounded-lg px-2.5 py-2 text-[13px] font-medium transition hover:bg-[var(--glass)]", moreOpen ? "bg-[var(--surface-elevated)] text-foreground" : "text-muted-foreground")}>
               {t("ui.more", "More")} <MoreHorizontal className="h-4 w-4" aria-hidden />
             </button>
-            {moreOpen && <div className="absolute left-0 top-full z-50 mt-2 grid min-w-52 gap-1 rounded-2xl border border-[var(--glass-border)] bg-[var(--glass-strong)] p-2 shadow-[var(--shadow-lift)] backdrop-blur-2xl">{secondaryLinks.map((link) => <NavLink key={link.tKey} link={link} pathname={pathname} onClick={() => setMoreOpen(false)} />)}</div>}
+            {moreOpen && <div className="absolute left-0 top-full z-50 mt-2 grid min-w-48 gap-1 rounded-2xl border border-[var(--glass-border)] bg-[var(--glass-strong)] p-1.5 shadow-[var(--shadow-lift)] backdrop-blur-2xl">{secondaryLinks.map((link) => <NavLink key={link.tKey} link={link} pathname={pathname} onClick={() => setMoreOpen(false)} />)}</div>}
           </div>
         </div>
 
-        <div className="ml-auto flex items-center gap-1.5 sm:gap-2">
-          <InstallPwaButton className="hidden xl:inline-flex" />
-          <LanguageToggle className="hidden md:inline-flex" />
-          <ThemeToggle className="hidden md:inline-flex" />
-          <Link to="/notifications" aria-label={t("ui.notifications")} className="press flex h-10 w-10 items-center justify-center rounded-full border border-[var(--glass-border)] bg-[var(--glass)] text-muted-foreground hover:text-foreground"><Bell className="h-4 w-4" aria-hidden /></Link>
-          {user ? <Link to="/profile" className="press hidden min-h-10 items-center gap-2 rounded-full border border-[var(--glass-border)] bg-[var(--glass)] pr-3 pl-1.5 text-sm text-foreground hover:bg-[var(--glass-strong)] sm:flex"><span className="flex h-7 w-7 items-center justify-center rounded-full bg-[color-mix(in_oklab,var(--primary)_22%,transparent)] text-xs font-semibold text-primary">{user.name.slice(0, 1).toUpperCase()}</span><span className="max-w-24 truncate">{user.name.split(" ")[0]}</span></Link> : <GlassButton asChild size="sm" variant="glass" className="hidden min-h-10 sm:inline-flex"><Link to="/login" search={{ redirect: undefined }}>{t("nav.signin", "Sign In")}</Link></GlassButton>}
-          <button type="button" aria-label={open ? t("ui.close_menu", "Close menu") : t("ui.open_menu", "Open menu")} aria-expanded={open} onClick={() => setOpen((value) => !value)} className="press flex h-10 w-10 items-center justify-center rounded-full border border-[var(--glass-border)] bg-[var(--glass)] text-foreground lg:hidden">{open ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}</button>
+        <div className="ml-auto flex items-center gap-1 sm:gap-1.5">
+          <InstallPwaButton className="hidden xl:inline-flex scale-90 origin-right" />
+          <LanguageToggle className="hidden md:inline-flex scale-90 origin-right" />
+          <ThemeToggle className="hidden md:inline-flex scale-90 origin-right" />
+          <Link to="/notifications" aria-label={t("ui.notifications")} className="press flex h-9 w-9 items-center justify-center rounded-full border border-[var(--glass-border)] bg-[var(--glass)] text-muted-foreground hover:text-foreground"><Bell className="h-4 w-4" aria-hidden /></Link>
+          {user ? <Link to="/profile" className="press hidden min-h-9 items-center gap-1.5 rounded-full border border-[var(--glass-border)] bg-[var(--glass)] pr-2 pl-1 text-[13px] font-medium text-foreground hover:bg-[var(--glass-strong)] sm:flex"><span className="flex h-7 w-7 items-center justify-center rounded-full bg-[color-mix(in_oklab,var(--primary)_22%,transparent)] text-xs font-semibold text-primary">{user.name.slice(0, 1).toUpperCase()}</span><span className="max-w-24 truncate">{user.name.split(" ")[0]}</span></Link> : <GlassButton asChild size="sm" variant="glass" className="hidden min-h-9 text-[13px] sm:inline-flex"><Link to="/login" search={{ redirect: undefined }}>{t("nav.signin", "Sign In")}</Link></GlassButton>}
+          <button type="button" aria-label={open ? t("ui.close_menu", "Close menu") : t("ui.open_menu", "Open menu")} aria-expanded={open} onClick={() => setOpen((value) => !value)} className="press flex h-9 w-9 items-center justify-center rounded-full border border-[var(--glass-border)] bg-[var(--glass)] text-foreground lg:hidden">{open ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}</button>
         </div>
       </nav>
 
