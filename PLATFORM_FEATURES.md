@@ -889,100 +889,150 @@ Identical to the Municipality versions but with global cross-city permissions fo
 # 4. CONTRACTOR PORTAL — Vendor Features
 
 **Who uses this:** Private contractors, field workers, vetted agencies
-**Purpose:** Bid on tenders, execute work orders, upload proof of work, track reputation
+**Purpose:** Bid on tenders, execute work orders, upload proof of work, track reputation, submit bills, and manage compliance.
 
 ---
 
 ## 4.1 Contractor Dashboard (`/contractor/`)
 
+**What it does:** The command center for the contractor, showing actionable alerts, active work, and financial summaries.
+
 **Sections:**
-- Operations Center (greeting, stats)
-- 4 KPI Cards: Active Work Orders, Urgent Deadlines, Success Rate, Reputation Score
-- Active Work Orders table
-- Operations Map
-- Delayed Work Orders alerts
-- Quick Actions panel
+- **Actionable Alerts Panel:** Highlights what needs immediate attention (e.g., "2 Work Orders Need Evidence Upload", "1 Inspection Result Available", "3 New Tenders Match Your Profile").
+- **KPI Overview:** Active Work Orders, Pending Bills Amount, Reputation Rating, and Urgent Deadlines.
+- **Operations Map:** Visualizing active sites and inspection statuses across the city.
 
-**Quick Action Buttons:** Browse New Tenders, Update Work Status, View Performance Profile
+**Quick Action Buttons:** Upload Evidence Now, View Defects & Resubmit, Browse New Tenders, View Performance Profile
 
-**Backend:** `getWorkOrders`, `getEligibleTenders`
+**Backend Connections:** `getWorkOrders`, `getEligibleTenders`, `getContractorKPIs`, `getPendingAlerts`
 
 ---
 
 ## 4.2 Tenders — Bidding Marketplace (`/contractor/tenders`)
 
+**What it does:** End-to-end tender discovery, evaluation, and secure bid submission.
+
 ### Tenders List (`/contractor/tenders/`)
-**Features:** Search/filter bar, List of available tenders (ID, department, location, value, deadline)
+**Features:** 
+- Advanced Search & Filtering: Category, Budget Range, Location, Deadline.
+- Tender Cards: Department, Value, Status, AI-matched suitability score.
 
 ### Tender Detail (`/contractor/tenders/$id`)
-**Features:** Full tender description, requirements
+**Features:** 
+- Full tender requirements, Site survey map, BOQ (Bill of Quantities) preview.
 
-**Bid Submission Form:**
-- Proposed Amount (number)
-- Estimated Days (number)
-- Technical Proposal (text)
+**Bid Submission Form (Multi-step):**
+- **Financial Proposal:** Itemized BOQ pricing, Total Quoted Amount, Estimated Days.
+- **Technical Proposal:** Methodology text, Compliance checklist.
+- **Document Uploads:** Earnest Money Deposit (EMD) proof, GST Certificate, PAN, Technical diagrams.
+- **Security:** Bank Guarantee Verification integration.
 
-**Button:** "Submit Bid"
+**Button:** "Submit Sealed Bid"
 
-**Backend:** `getTenderDetails(id)`, `submitBid(id, bidData)`
+**Backend Connections:** `getTenderDetails(id)`, `submitBid(id, bidData)`, `uploadBidDocuments(id, files)`
 
 ---
 
-## 4.3 Work Orders — Job Execution (`/contractor/work-orders`)
+## 4.3 Work Orders — Execution & Milestone Tracking (`/contractor/work-orders`)
+
+**What it does:** Comprehensive execution tracker with GPS-tagged evidence and milestone-based progress.
 
 ### Work Orders List (`/contractor/work-orders/`)
-**Status Tabs:** All, In Progress, Pending Inspection, Completed, Delayed
+**Status Tabs:** All, Issued, In Progress, Pending Inspection, Rework Required, Completed, Closed
+**Views:** Desktop (Table View for density), Mobile (Card View for field workers).
 
 ### Work Order Detail (`/contractor/work-orders/$id`)
+**Features:** 
+- Official Work Order contract details, Bill of Quantities (BOQ), Financial summary.
+- Milestone Timeline: Granular stage tracking (e.g., Foundation, Wiring, Finishing).
+- Inspection Requests & Results: Officer feedback and defect notes.
 
-**Features:** Work Order details, Execution updates log, Location map
+**Milestone Progress & Evidence Form (Mobile-Optimized):**
+- **Stage Selector:** Before / During / After.
+- **GPS-Tagged Photo Upload:** Captures camera image with EXIF coordinate extraction (e.g., `21.7644° N`). Compares to Work Order centroid to enforce on-site uploading.
+- **Timestamping:** Immutable timestamp (e.g., `15 Jan 2026, 10:45 AM`).
+- **Milestone Dropdown:** Which part of the BOQ this evidence covers.
+- **Remarks:** Optional text.
 
-**Progress Update Form:**
-- Progress Percentage (slider/number)
-- Status Dropdown
-- Remarks (text)
-- Image Upload (field evidence photos)
+**Buttons:** "Accept Work Order", "Reject Work Order", "Request Inspection", "View Defects & Resubmit"
 
-**Button:** "Update Progress"
+**Backend Connections:** `getWorkOrder(id)`, `acceptWorkOrder(id)`, `submitFieldEvidence(id, file, gps_data, milestone)`, `requestInspection(id)`
 
-**Backend:** `getWorkOrder(id)`, `updateWorkOrderStatus(id, data)`, `submitFieldEvidence(id, file)`
-
-**Connection:** When a contractor marks a job complete and uploads proof, this triggers the Municipality's inspection workflow at `/_auth/work-orders/$id`.
-
----
-
-## 4.4 Performance Profile (`/contractor/performance`)
-
-**What it does:** The Reputation Engine. Shows the contractor's trust scorecard.
-
-**5 KPIs:**
-1. On-Time Completion rate
-2. Quality Rating
-3. SLA Compliance rate
-4. Defect Rate
-5. XP Earned
-
-**Sections:** Tri-Party Governance & Trust Scorecard, Past Projects Evaluation
-
-**Backend:** `getContractorPerformance`
-
-**Connection:** This score is publicly visible on the Public portal's `/contractors` page.
+**Connection:** Submitting evidence triggers the Municipality's inspection workflow at `/_auth/work-orders/$id`.
 
 ---
 
-## 4.5 Contractor Profile (`/contractor/profile`)
+## 4.4 Bill Submission & Financial Tracking (`/contractor/bills`)
 
-**Sections:** Contractor details, Public Reputation score, Compliance & Certifications, Recent Badges, Contact Information
+**What it does:** Allows contractors to submit bills for approved milestones and track payment cycles.
 
-**Backend:** `getContractor`, `getMyCivicRolePerformance`, `/api/v1/auth/me`
+### Bills Dashboard (`/contractor/bills/`)
+**Features:** Outstanding Amount, Paid this Month, Invoices list (Draft, Submitted, Approved, Paid).
+
+### Submit Bill Form (`/contractor/bills/new`)
+**Form Fields:**
+- Select Work Order.
+- Select Approved Milestones (BOQ line items that passed inspection).
+- Claim Amount (Auto-calculated).
+- Tax Details (GST breakdown).
+- Attach Invoice PDF.
+
+**Timeline Tracking:**
+- Shows real-time status: Submitted → Municipal Engineer Verified → Accounts Approved → Treasury Processed → Paid.
+- UTR (Unique Transaction Reference) tracking once paid.
+
+**Backend Connections:** `submitBill(data)`, `getContractorBills()`, `getBillTimeline(id)`
 
 ---
 
-## 4.6 Contractor Navigation Sidebar
+## 4.5 Performance & Trust Scorecard (`/contractor/performance`)
 
-**Links:** Dashboard, Work Orders, Tenders, Performance Profile
+**What it does:** The Reputation Engine and Tri-Party Governance dashboard.
 
-**Actions:** Notifications bell, User profile button, Logout
+**6 Core Metrics:**
+1. **On-Time Completion Rate**
+2. **Quality Inspection Pass Rate**
+3. **SLA Compliance Rate**
+4. **Citizen Feedback Score** (from public portal)
+5. **AI Quality Assessment** (from analyzed evidence photos)
+6. **XP Earned**
+
+**Sections:** 
+- Tri-Party Radar Chart: Compares Officer Rating, Citizen Rating, and AI Rating.
+- Past Projects Evaluation: Breakdown of defect liability periods.
+- Dispute Resolution Tracker: Log of contested inspections or payments.
+
+**Backend Connections:** `getContractorPerformance`, `getDisputes`
+
+**Connection:** This score is publicly visible on the Public portal's `/contractors` page, influencing future bid win chances.
+
+---
+
+## 4.6 Compliance & Document Vault (`/contractor/documents`)
+
+**What it does:** Central repository for all legal and compliance documents required for municipal work.
+
+**Features:**
+- Grid of documents: Trade License, GST Registration, PAN Card, Company Incorporation, EPF Registration.
+- Expiry Alerts: Warns if a document expires in 30 days.
+- Upload/Renew buttons.
+
+**Backend Connections:** `getContractorDocuments`, `uploadContractorDocument`
+
+---
+
+## 4.7 Contractor Profile (`/contractor/profile`)
+
+**Sections:** Company details, Bank Details (Account, IFSC), Notification Preferences, Direct Messaging with Officers (opt-in).
+
+**Backend Connections:** `getContractor`, `updateContractorProfile`, `/api/v1/auth/me`
+
+---
+
+## 4.8 Contractor Navigation Sidebar
+
+**Links:** Dashboard, Work Orders, Tenders, Bills & Payments, Performance, Compliance Vault
+**Actions:** Notifications bell, Messages, User profile button, Logout
 
 ---
 ---

@@ -1240,14 +1240,24 @@ export const api = new Endpoints(client);
 **Location:** `apps/contractor/`  
 **Vercel URL:** `https://janmind-contractor.vercel.app`
 
+**Key Features (Based on Complete Feature Plan):**
+- **GPS-Tagged Evidence Upload:** Enforces photo evidence with geospatial boundaries matching the Work Order centroid.
+- **Milestone Tracking:** Granular Work Order tracking via BOQ milestones (e.g., Before/During/After states).
+- **Bill Submission & Finance:** End-to-end billing cycle (Draft → Submitted → Verified → Treasury → Paid) with UTR tracking.
+- **Tender Bidding Engine:** Multi-part bid submission (Financial BOQ pricing + Technical + Documents).
+- **Tri-Party Rating System:** Scorecard comparing Officer, Citizen, and AI ratings.
+- **Compliance Vault:** Document manager for GST, PAN, EMD, and Trade Licenses with expiry alerts.
+
 **Routes (all behind `/contractor/` layout):**
 ```
-/contractor/dashboard     → KPIs, active projects, eligible tenders
-/contractor/tenders       → Available tenders in contractor's city
-/contractor/work-orders   → Assigned work orders
-/contractor/work-orders/:id → Detail: submit evidence, track progress
-/contractor/performance   → Performance ratings, civic reputation
-/contractor/profile       → Company info, edit personal account, change password
+/contractor/dashboard       → Actionable alerts, KPIs, active projects
+/contractor/tenders         → Bidding marketplace, BOQ viewing, bid submission
+/contractor/work-orders     → Execution tracking
+/contractor/work-orders/:id → Submit GPS evidence, update milestones, request inspection
+/contractor/bills           → Submit invoices, track payment status, BOQ line-item claims
+/contractor/performance     → Tri-party trust scorecard, dispute tracking
+/contractor/documents       → Compliance vault (GST, PAN, EMD)
+/contractor/profile         → Company info, bank details, change password
 ```
 
 **Authentication gotcha:**
@@ -1261,8 +1271,10 @@ If a contractor gets "not approved for this municipality":
 
 **Key files:**
 - `lib/contractor-auth.tsx` — `ContractorAuthProvider` and `useContractorAuth()`
-- `services/api.ts` — `contractorLogin()`, `getWorkOrders()`, `submitFieldEvidence()`, `getContractorPerformance()`
-- `routes/contractor/profile.tsx` — Personal account edit, password change, civic reputation display
+- `services/api.ts` — `contractorLogin()`, `submitFieldEvidence()`, `submitBill()`, `submitBid()`, `getContractorPerformance()`
+- `routes/contractor/work-orders/$id.tsx` — Complex execution flow with GPS upload and BOQ tracking
+- `routes/contractor/bills/index.tsx` — Financial ledger and invoicing
+
 
 ---
 
