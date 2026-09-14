@@ -1,7 +1,7 @@
 import { createFileRoute, Outlet, Link, useLocation } from "@tanstack/react-router";
 import { ContractorAuthGate } from "@/lib/require-contractor-auth";
 import { useContractorAuth } from "@/lib/contractor-auth";
-import { LayoutDashboard, ClipboardList, TrendingUp, User, LogOut, FileText } from "lucide-react";
+import { LayoutDashboard, ClipboardList, TrendingUp, User, LogOut, FileText, IndianRupee } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/contractor")({
@@ -27,6 +27,7 @@ function ContractorLayout({ children }: { children: React.ReactNode }) {
     { label: "Dashboard", icon: LayoutDashboard, to: "/contractor/dashboard" },
     { label: "Tenders & Bids", icon: FileText, to: "/contractor/tenders" },
     { label: "Work Orders", icon: ClipboardList, to: "/contractor/work-orders" },
+    { label: "Bills & Payments", icon: IndianRupee, to: "/contractor/bills" },
     { label: "Performance", icon: TrendingUp, to: "/contractor/performance" },
     { label: "Profile", icon: User, to: "/contractor/profile" },
   ];
