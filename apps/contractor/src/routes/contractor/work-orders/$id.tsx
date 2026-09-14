@@ -419,7 +419,7 @@ function ContractorWorkOrderDetail() {
                   <GlassInput
                     id="evidence-desc"
                     value={evidenceDesc}
-                    onChange={setEvidenceDesc}
+                    onChange={(e) => setEvidenceDesc(e.target.value)}
                     placeholder={t('ui.brief_note_about_the_photo')}
                   />
                 </div>
@@ -428,7 +428,7 @@ function ContractorWorkOrderDetail() {
                   <GlassInput
                     id="material-logging"
                     value={materialLogging}
-                    onChange={setMaterialLogging}
+                    onChange={(e) => setMaterialLogging(e.target.value)}
                     placeholder="e.g., Foundation, Wiring, Concrete Pouring"
                   />
                   <p className="text-[10px] text-[var(--muted-foreground)] mt-1 ml-1">Must match an approved BOQ milestone for payment.</p>
