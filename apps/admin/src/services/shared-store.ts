@@ -956,25 +956,87 @@ function removeRetiredDemoContractors<T extends { company_name?: string; company
 }
 
 export async function listRealContractors(): Promise<any[]> {
+  const getDefaultMockContractor = () => ({
+    id: "mock-contractor-1",
+    company_name: "Demo Contractor (Vadodara)",
+    contact_person: "Demo User",
+    email: "demo.contractor@vadodara-infra.in",
+    phone: "+91 9876543210",
+    created_at: new Date(Date.now() - 365 * 86400000).toISOString(),
+    performance_score: 92,
+    sla_score: 95,
+    inspection_pass_rate: 98,
+    on_time_completion_rate: 90,
+    rework_rate: 2,
+    public_rating: 4.8,
+    active_work_count: 2,
+    total_completed: 14,
+    registrations: [
+      {
+        id: "reg-1",
+        city_name: "Vadodara",
+        status: "PENDING",
+        registration_number: "REG-2026-9912",
+        approved_categories: ["road_damage", "street_lighting"]
+      }
+    ]
+  });
+
+  const getMockList = () => {
+    if (typeof window !== "undefined") {
+      const existing = localStorage.getItem("civicsathi_demo_mock_contractors");
+      if (existing) {
+        try {
+          return JSON.parse(existing);
+        } catch {}
+      }
+    }
+    const newList = [
+      getDefaultMockContractor(),
+      {
+        id: "mock-contractor-2",
+        company_name: "Bharat Infra Ltd",
+        contact_person: "Ramesh Singh",
+        email: "operations@bharatinfra.in",
+        phone: "+91 9123456789",
+        created_at: new Date(Date.now() - 800 * 86400000).toISOString(),
+        performance_score: 95,
+        registrations: [
+          {
+            id: "reg-2",
+            city_name: "Mumbai",
+            status: "APPROVED",
+            registration_number: "MH-BIL-2023",
+            approved_categories: ["water_supply", "drainage"]
+          }
+        ]
+      }
+    ];
+    if (typeof window !== "undefined") {
+      localStorage.setItem("civicsathi_demo_mock_contractors", JSON.stringify(newList));
+    }
+    return newList;
+  };
+
   try {
     const res = await adminApiFetch<any[]>("/api/v1/admin/contractors");
     const live = removeRetiredDemoContractors(Array.isArray(res) ? res : []);
+    
+    // Always guarantee our SIH demo mock contractors are available
+    const mocks = getMockList();
+    for (const mock of mocks) {
+      if (!live.some(c => c.email === mock.email)) {
+        live.unshift(mock);
+      }
+    }
+    
     if (typeof window !== "undefined") {
       localStorage.setItem("civicsathi_admin_contractors", JSON.stringify(live));
     }
     return live;
   } catch (e) {
-    if (typeof window !== "undefined") {
-      const cached = localStorage.getItem("civicsathi_admin_contractors");
-      if (cached) {
-        try {
-          return removeRetiredDemoContractors(JSON.parse(cached));
-        } catch {
-          localStorage.removeItem("civicsathi_admin_contractors");
-        }
-      }
-    }
-    return [];
+    console.warn("Falling back to mock contractors list for SIH demo:", e);
+    return getMockList();
   }
 }
 
@@ -1000,10 +1062,29 @@ export async function updateContractorRegistration(
   status: "APPROVED" | "REJECTED" | "REVOKED" | "PENDING",
   categories?: string[],
 ): Promise<any> {
-  return adminApiFetch<any>(`/api/v1/admin/contractors/${contractorId}/registrations/${regId}`, {
-    method: "PATCH",
-    body: JSON.stringify({ status, approved_categories: categories }),
-  });
+  try {
+    return await adminApiFetch<any>(`/api/v1/admin/contractors/${contractorId}/registrations/${regId}`, {
+      method: "PATCH",
+      body: JSON.stringify({ status, approved_categories: categories }),
+    });
+  } catch (error) {
+    if (contractorId.includes("mock-contractor")) {
+      console.warn("Simulating contractor registration update for SIH demo:", { contractorId, status });
+      if (typeof window !== "undefined") {
+        const existing = localStorage.getItem("civicsathi_demo_mock_contractors");
+        if (existing) {
+          const list = JSON.parse(existing);
+          const updated = list.map((c: any) => c.id === contractorId ? {
+            ...c,
+            registrations: c.registrations.map((r: any) => r.id === regId ? { ...r, status, approved_categories: categories || r.approved_categories } : r)
+          } : c);
+          localStorage.setItem("civicsathi_demo_mock_contractors", JSON.stringify(updated));
+        }
+      }
+      return { status, id: regId }; // Silently succeed
+    }
+    throw error;
+  }
 }
 
 /** List all work orders across all cities (admin view). */

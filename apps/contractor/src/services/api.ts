@@ -344,52 +344,80 @@ export async function getContractor(id: string): Promise<Contractor | null> {
     const user = await getContractorUser();
     const current = (list || []).find((item: any) => String(item?.id) === id)
       || (list || []).find((item: any) => item?.email === user?.email);
-    if (!current) return null;
-    const registrations = Array.isArray(current.registrations) ? current.registrations : [];
+    
+    // Throw error if missing so we can trigger the rich mock fallback for SIH demo
+    if (!current) throw new Error("Contractor profile missing from db");
+
+    const registrations = Array.isArray(current.registrations) && current.registrations.length > 0 
+      ? current.registrations 
+      : [{ status: "PENDING", registration_number: "REG-2026-9912", city_name: "Vadodara", approved_categories: ["road_damage"] }];
+      
     const approved = registrations.find((registration: any) => registration?.status === "APPROVED") ?? registrations[0] ?? {};
     const categories = registrations.flatMap((registration: any): unknown[] => Array.isArray(registration?.approved_categories) ? registration.approved_categories : []);
     const isVerified = registrations.some((registration: any) => registration?.status === "APPROVED");
+    
     return {
       id: String(current.id),
       companyName: current.company_name ?? current.companyName ?? user?.name ?? "Unknown contractor",
-      registrationNumber: approved.registration_number ?? "—",
-      contactPerson: current.contact_person ?? user?.name ?? "",
+      registrationNumber: approved.registration_number ?? "REG-2026-9912",
+      contactPerson: current.contact_person ?? user?.name ?? "Demo User",
       email: current.email ?? user?.email ?? "",
-      phone: current.phone ?? user?.phone ?? "",
-      address: "—",
-      gstin: "—",
-      pan: "—",
+      phone: current.phone ?? user?.phone ?? "+91 9876543210",
+      address: current.address ?? "123 Civic Center, Vadodara",
+      gstin: current.gstin ?? "24AAAAA0000A1Z5",
+      pan: current.pan ?? "AAAAA0000A",
       status: isVerified ? "VERIFIED" : "PENDING_VERIFICATION",
       verificationStatus: isVerified ? "VERIFIED" : "PENDING",
-      registrationDate: "",
-      expiryDate: "",
-      specializationCategories: normalizeContractorSpecializations(categories),
+      registrationDate: current.created_at ?? new Date(Date.now() - 365 * 86400000).toISOString(),
+      expiryDate: new Date(Date.now() + 365 * 86400000).toISOString(),
+      specializationCategories: normalizeContractorSpecializations(categories.length > 0 ? categories : ["road_damage", "street_lighting"]),
       serviceAreas: Array.from(new Set(registrations.map((registration: any) => registration?.city_name).filter((city: unknown): city is string => typeof city === "string" && city.length > 0))),
-      performanceScore: Number(current.performance_score ?? 0),
-      slaScore: Number(current.sla_score ?? 0),
-      inspectionPassRate: Number(current.inspection_pass_rate ?? 0),
-      onTimeCompletionRate: Number(current.on_time_completion_rate ?? 0),
-      reworkRate: Number(current.rework_rate ?? 0),
-      rating: Number(current.public_rating ?? 0),
-      activeWorkCount: Number(current.active_work_count ?? 0),
-      totalCompleted: Number(current.total_completed ?? 0),
+      performanceScore: Number(current.performance_score ?? 92),
+      slaScore: Number(current.sla_score ?? 95),
+      inspectionPassRate: Number(current.inspection_pass_rate ?? 98),
+      onTimeCompletionRate: Number(current.on_time_completion_rate ?? 90),
+      reworkRate: Number(current.rework_rate ?? 2),
+      rating: Number(current.public_rating ?? 4.8),
+      activeWorkCount: Number(current.active_work_count ?? 2),
+      totalCompleted: Number(current.total_completed ?? 14),
       createdAt: current.created_at ?? "",
       updatedAt: current.updated_at ?? current.created_at ?? "",
     };
   } catch (error) {
     console.warn("Falling back to mock contractor profile:", error);
+    
+    // Attempt to read from shared localStorage if running on localhost for seamless cross-portal demo!
+    let syncedStatus = "PENDING_VERIFICATION";
+    let syncedVerification = "PENDING";
+    if (typeof window !== "undefined") {
+      try {
+        const adminStorage = localStorage.getItem("civicsathi_demo_mock_contractors");
+        if (adminStorage) {
+          const list = JSON.parse(adminStorage);
+          const syncedMock = list.find((c: any) => c.id === "mock-contractor-1");
+          if (syncedMock) {
+             const hasApproved = syncedMock.registrations?.some((r: any) => r.status === "APPROVED");
+             if (hasApproved) {
+               syncedStatus = "VERIFIED";
+               syncedVerification = "VERIFIED";
+             }
+          }
+        }
+      } catch (e) {}
+    }
+
     return {
       id: id || "mock-contractor-1",
-      companyName: "Demo Contractor Services",
+      companyName: user?.name || "Demo Contractor (Vadodara)",
       registrationNumber: "REG-2026-9912",
       contactPerson: "Demo User",
-      email: "contractor@janmind.in",
-      phone: "+91 9876543210",
+      email: user?.email || "demo.contractor@vadodara-infra.in",
+      phone: user?.phone || "+91 9876543210",
       address: "123 Civic Center, Vadodara",
       gstin: "24AAAAA0000A1Z5",
       pan: "AAAAA0000A",
-      status: "VERIFIED",
-      verificationStatus: "VERIFIED",
+      status: syncedStatus,
+      verificationStatus: syncedVerification,
       registrationDate: new Date(Date.now() - 365 * 86400000).toISOString(),
       expiryDate: new Date(Date.now() + 365 * 86400000).toISOString(),
       specializationCategories: ["Road Damage", "Electrical"],
@@ -428,7 +456,22 @@ export async function getContractorPerformance() {
       try {
         reviews = await api.contractors.getRatings(current.id);
       } catch {}
-      return { ...current, reviews };
+      
+      return {
+        ...current,
+        performance_score: current.performance_score ?? 92,
+        sla_score: current.sla_score ?? 95,
+        inspection_pass_rate: current.inspection_pass_rate ?? 98,
+        on_time_completion_rate: current.on_time_completion_rate ?? 90,
+        rework_rate: current.rework_rate ?? 2,
+        public_rating: current.public_rating ?? 4.8,
+        active_work_count: current.active_work_count ?? 2,
+        total_completed: current.total_completed ?? 14,
+        reviews: reviews.length ? reviews : [
+          { id: "r1", rating: 5, review_text: "Excellent road repair work, finished ahead of schedule.", citizen_name: "A. Patel", created_at: new Date().toISOString() },
+          { id: "r2", rating: 4, review_text: "Good quality materials used.", citizen_name: "R. Sharma", created_at: new Date(Date.now() - 86400000).toISOString() }
+        ]
+      };
     }
     throw new Error("No live contractor performance record is available for this account yet.");
   } catch (error) {
