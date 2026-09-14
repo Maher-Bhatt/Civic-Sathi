@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 
-export const Route = createFileRoute("/contractors")({
+export const Route = createFileRoute("/contractors/")({
   head: () => ({ meta: [{ title: "Contractor Transparency & Tri-Party Ratings — Civic Sathi" }] }),
   component: ContractorsPublicPage,
 });
@@ -183,145 +183,19 @@ function ContractorsPublicPage() {
                 <span className="text-xs text-[var(--muted-foreground)]">
                   {Number(c.total_reviews_count ?? 0)} verified reviews
                 </span>
-                <button
-                  type="button"
-                  onClick={() => {
-                    if (!user) {
-                      toast.error("Please sign in to rate a contractor.");
-                      void navigate({ to: "/login", search: { redirect: "/contractors" } as any });
-                      return;
-                    }
-                    setSelectedContractor(c);
-                    setRatingVal(null);
-                    setSelectedWorkOrderId("");
-                    setCommentVal("");
-                  }}
+                <Link
+                  to="/contractors/$id"
+                  params={{ id: c.id }}
                   className="px-4 py-1.5 rounded-lg bg-[var(--primary)] text-white text-xs font-semibold hover:opacity-90 transition"
                 >
-                  Rate This Contractor
-                </button>
+                  View & Rate Contractor
+                </Link>
               </div>
             </GlassCard>
           );
         })}
       </div>
 
-      {/* Citizen Review Modal */}
-      {selectedContractor && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-fade">
-          <GlassCard className="w-full max-w-lg p-6 glass-strong shadow-2xl relative">
-            <div className="flex items-start justify-between mb-4">
-              <div>
-                <SectionLabel>Public Citizen Feedback</SectionLabel>
-                <h3 className="text-xl font-bold text-[var(--foreground)] mt-1">
-                  Rate {selectedContractor.company_name}
-                </h3>
-              </div>
-              <button
-                type="button"
-                onClick={() => setSelectedContractor(null)}
-                className="text-sm text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
-              >
-                ✕
-              </button>
-            </div>
-
-            <form onSubmit={handleRateSubmit} className="space-y-4 text-xs">
-              <div>
-                <label className="block font-semibold mb-1">Your Rating (1 to 5 Stars)</label>
-                <div className="flex items-center gap-2">
-                  {[1, 2, 3, 4, 5].map((num) => (
-                    <button
-                      key={num}
-                      type="button"
-                      aria-label={`Rate ${num} out of 5`}
-                      aria-pressed={ratingVal === num}
-                      onClick={() => setRatingVal(num)}
-                      className="p-2 rounded-lg hover:bg-[var(--surface-elevated)]"
-                    >
-                      <Star
-                        className={`h-6 w-6 ${
-                          ratingVal !== null && num <= ratingVal ? "fill-amber-500 text-amber-500" : "text-gray-300 dark:text-gray-700"
-                        }`}
-                      />
-                    </button>
-                  ))}
-                  <span className="font-bold text-sm ml-2">{ratingVal === null ? "Choose a rating" : `${ratingVal}.0 / 5.0`}</span>
-                </div>
-              </div>
-
-              <div>
-                <label className="block font-semibold mb-1" htmlFor="rating-work-order">Verified Work Order</label>
-                {Array.isArray(selectedContractor.rating_work_orders) && selectedContractor.rating_work_orders.length > 0 ? (
-                  <select
-                    id="rating-work-order"
-                    required
-                    value={selectedWorkOrderId}
-                    onChange={(e) => setSelectedWorkOrderId(e.target.value)}
-                    className="w-full p-2.5 rounded-lg bg-[var(--surface)] border border-[var(--glass-border)] text-xs"
-                  >
-                    <option value="">Choose an inspected or completed work order</option>
-                    {selectedContractor.rating_work_orders.map((workOrder: any) => (
-                      <option key={workOrder.id} value={workOrder.id}>
-                        {workOrder.title} · {String(workOrder.status).replaceAll("_", " ")}
-                      </option>
-                    ))}
-                  </select>
-                ) : (
-                  <p className="rounded-lg border border-amber-500/25 bg-amber-500/10 p-3 text-xs text-amber-800 dark:text-amber-200">
-                    This contractor has no inspected or completed work order available for public verification yet.
-                  </p>
-                )}
-              </div>
-
-              <div>
-                <label className="block font-semibold mb-1" htmlFor="rating-category">Category of Work</label>
-                <select
-                  id="rating-category"
-                  value={categoryVal}
-                  onChange={(e) => setCategoryVal(e.target.value)}
-                  className="w-full p-2.5 rounded-lg bg-[var(--surface)] border border-[var(--glass-border)] text-xs"
-                >
-                  <option>Road Quality & Smoothness</option>
-                  <option>Drainage & Water Desilting</option>
-                  <option>Cleanliness & Waste Clearance</option>
-                  <option>Timeliness & Punctuality</option>
-                  <option>Overall Workmanship</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block font-semibold mb-1">Feedback / Public Comment</label>
-                <textarea
-                  required
-                  rows={3}
-                  value={commentVal}
-                  onChange={(e) => setCommentVal(e.target.value)}
-                  placeholder="Share details about the quality of work performed in your neighborhood..."
-                  className="w-full p-3 rounded-lg bg-[var(--surface)] border border-[var(--glass-border)] text-xs"
-                />
-              </div>
-
-              <div className="flex items-center justify-end gap-3 pt-4 border-t border-[var(--glass-border)]">
-                <button
-                  type="button"
-                  onClick={() => setSelectedContractor(null)}
-                  className="px-4 py-2 rounded-lg border border-[var(--glass-border)] text-xs"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={submitting || ratingVal === null || !selectedWorkOrderId || !commentVal.trim()}
-                  className="px-5 py-2 rounded-lg bg-emerald-600 text-white text-xs font-semibold hover:bg-emerald-700 disabled:opacity-50"
-                >
-                  {submitting ? "Submitting..." : "Submit Verified Rating"}
-                </button>
-              </div>
-            </form>
-          </GlassCard>
-        </div>
-      )}
-    </div>
+      </div>
   );
 }

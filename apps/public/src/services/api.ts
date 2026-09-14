@@ -798,3 +798,6 @@ export interface CityEnvironment {
 export async function getCityEnvironment(city: string): Promise<CityEnvironment> {
   return client.get<CityEnvironment>(`/api/v1/analytics/environment/${encodeURIComponent(city)}`);
 }
+export async function getPublicContractor(id: string) {
+  return await api.contractors.get(id);
+}
