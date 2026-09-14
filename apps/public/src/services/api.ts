@@ -32,18 +32,9 @@ import {
 
 export function getApiBaseUrl(): string {
   const envUrl = ((import.meta.env as any)?.VITE_API_BASE_URL as string | undefined)?.trim();
-  if (
-    !envUrl ||
-    envUrl.includes("civicsathi-backend.onrender.com") ||
-    envUrl.includes("civicsathi.onrender.com") ||
-    envUrl.includes("janmind.onrender.com") ||
-    (typeof window !== "undefined" &&
-      window.location.protocol === "https:" &&
-      envUrl.startsWith("http://"))
-  ) {
-    return "https://civic-sathi-f7ml.onrender.com";
-  }
-  return envUrl;
+  // Respect explicit deployment configuration; only use the fallback when no
+  // URL is configured at all.
+  return envUrl ? envUrl.replace(/\/+$/, "") : "https://civic-sathi-f7ml.onrender.com";
 }
 
 export const API_BASE_URL = getApiBaseUrl();
@@ -376,33 +367,6 @@ export async function createComplaint(input: any): Promise<Complaint> {
 export async function getMyComplaints(): Promise<Complaint[]> {
   const res = await api.complaints.list({ limit: 100 });
   let list = res?.items ?? res?.data ?? res;
-  
-  if (!list || (Array.isArray(list) && list.length === 0)) {
-    console.warn("Injecting mock complaints for SIH demo because backend returned empty list.");
-    list = [
-      {
-        id: "CMP-PUB-001",
-        category: "road_damage",
-        status: "PENDING",
-        severity: "HIGH",
-        description: "Massive pothole on MG Road causing traffic",
-        location: { address: "MG Road, Vadodara", lat: 22.3072, lng: 73.1812 },
-        created_at: new Date().toISOString(),
-        upvotes_count: 45
-      },
-      {
-        id: "CMP-PUB-002",
-        category: "water_supply",
-        status: "IN_PROGRESS",
-        severity: "CRITICAL",
-        description: "No water since yesterday morning",
-        location: { address: "Alkapuri, Vadodara", lat: 22.3105, lng: 73.1678 },
-        created_at: new Date(Date.now() - 86400000).toISOString(),
-        upvotes_count: 128
-      }
-    ];
-  }
-  
   return (Array.isArray(list) ? list : []).map((c) => normalizeComplaint(c)).filter((c): c is Complaint => c !== null);
 }
 

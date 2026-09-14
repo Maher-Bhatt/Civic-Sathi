@@ -1,7 +1,7 @@
 """Application configuration using pydantic-settings"""
 
 from typing import Literal
-from pydantic import Field, field_validator
+from pydantic import AliasChoices, Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -16,7 +16,10 @@ class Settings(BaseSettings):
     )
     
     # Environment
-    environment: Literal["local", "preview", "production"] = "local"
+    environment: Literal["local", "preview", "production"] = Field(
+        default="local",
+        validation_alias=AliasChoices("ENVIRONMENT", "IS_PRODUCTION"),
+    )
     
     # API
     api_v1_prefix: str = "/api/v1"
@@ -39,7 +42,11 @@ class Settings(BaseSettings):
     
     # Security
     officer_api_key: str = Field(..., description="API key for officer endpoints")
-    jwt_secret: str = Field(default="civicsathi_super_secret_dev_key_2026", description="Secret key for JWT generation")
+    jwt_secret: str = Field(
+        default="civicsathi_super_secret_dev_key_2026",
+        validation_alias=AliasChoices("JWT_SECRET", "SECRET_KEY"),
+        description="Secret key for JWT generation",
+    )
     super_admin_emails: str = Field(
         default="maherbhatt01@gmail.com",
         description="Comma-separated email allowlist for private super-admin operations",
