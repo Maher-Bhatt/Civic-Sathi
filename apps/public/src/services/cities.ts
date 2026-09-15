@@ -14,13 +14,15 @@ export interface City {
   state: string;
   center: [number, number];
   zoom: number;
+  /** Municipal boundary radius used for geo-fence validation */
+  radiusKm: number;
 }
 
 export const CITIES: City[] = [
-  { id: "vadodara", name: "Vadodara", state: "Gujarat", center: [22.3072, 73.1812], zoom: 13 },
-  { id: "mumbai", name: "Mumbai", state: "Maharashtra", center: [18.9388, 72.8354], zoom: 12 },
-  { id: "bengaluru", name: "Bengaluru", state: "Karnataka", center: [12.9716, 77.5946], zoom: 12 },
-  { id: "delhi", name: "Delhi", state: "NCT Delhi", center: [28.6139, 77.2090], zoom: 12 },
+  { id: "vadodara", name: "Vadodara", state: "Gujarat",     center: [22.3072, 73.1812], zoom: 13, radiusKm: 25 },
+  { id: "mumbai",   name: "Mumbai",   state: "Maharashtra", center: [18.9388, 72.8354], zoom: 12, radiusKm: 40 },
+  { id: "bengaluru",name: "Bengaluru",state: "Karnataka",   center: [12.9716, 77.5946], zoom: 12, radiusKm: 30 },
+  { id: "delhi",    name: "Delhi",    state: "NCT Delhi",   center: [28.6139, 77.2090], zoom: 12, radiusKm: 35 },
 ];
 
 export const getCity = (id: CityId): City => CITIES.find((c) => c.id === id) ?? CITIES[0]!;
@@ -317,6 +319,43 @@ export function nearestCity(lat: number, lng: number): City {
     }
   }
   return best;
+}
+
+/**
+ * Haversine great-circle distance between two WGS-84 coordinates.
+ * Returns the distance in kilometres.
+ */
+export function haversineKm(lat1: number, lng1: number, lat2: number, lng2: number): number {
+  const R = 6371; // Earth's mean radius in km
+  const toRad = (deg: number) => (deg * Math.PI) / 180;
+  const dLat = toRad(lat2 - lat1);
+  const dLng = toRad(lng2 - lng1);
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLng / 2) ** 2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
+/**
+ * Returns true if the given coordinates are within the city's `radiusKm`
+ * boundary (measured from its map centre using the Haversine formula).
+ */
+export function isWithinCityBounds(lat: number, lng: number, cityId: CityId): boolean {
+  const city = getCity(cityId);
+  return haversineKm(lat, lng, city.center[0], city.center[1]) <= city.radiusKm;
+}
+
+/**
+ * Checks all supported cities. Returns the first city whose radius contains
+ * the supplied coordinates, or `null` if the point is outside every city.
+ */
+export function detectCityFromCoords(lat: number, lng: number): City | null {
+  for (const city of CITIES) {
+    if (haversineKm(lat, lng, city.center[0], city.center[1]) <= city.radiusKm) {
+      return city;
+    }
+  }
+  return null;
 }
 
 /** Find the nearest mapped ward or area for a coordinate within a city */

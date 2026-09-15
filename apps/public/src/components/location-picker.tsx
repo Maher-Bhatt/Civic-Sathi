@@ -3,7 +3,7 @@ import { Crosshair, Loader2, MapPin, ShieldCheck } from "lucide-react";
 import { GlassCard, SectionLabel } from "@/components/ui/glass-card";
 import { GlassButton } from "@/components/ui/glass-button";
 import { CitySelector, ClientCityMap } from "@/components/city-map-panel";
-import { clustersForCity, getCity, nearestCity, nearestWardOrArea, type CityId } from "@/services/cities";
+import { clustersForCity, getCity, nearestCity, nearestWardOrArea, detectCityFromCoords, isWithinCityBounds, type CityId } from "@/services/cities";
 import type { LocationInfo } from "@/services/types";
 import { useI18n } from "@/lib/i18n";
 
@@ -30,6 +30,8 @@ export function LocationPicker({
     const { t } = useI18n();
   const [phase, setPhase] = useState<Phase>(marker ? "ready" : "idle");
   const [mapMode, setMapMode] = useState(!!marker);
+  const [outsideCity, setOutsideCity] = useState(false);
+  const [boundaryWarning, setBoundaryWarning] = useState(false);
 
   useEffect(() => {
     if (phase === "idle" && !marker) {
@@ -39,6 +41,8 @@ export function LocationPicker({
   }, []);
 
   const commit = (pos: { lat: number; lng: number }, cityId: CityId) => {
+    // Warn (but don't block) when the user manually moves the pin outside the city boundary
+    setBoundaryWarning(!isWithinCityBounds(pos.lat, pos.lng, cityId));
     const { ward, area } = nearestWardOrArea(cityId, pos.lat, pos.lng);
     onChange({
       location: {
@@ -54,6 +58,7 @@ export function LocationPicker({
 
   function detect() {
     setPhase("detecting");
+    setOutsideCity(false);
     const fallback = () => {
       const c = getCity(city);
       commit({ lat: c.center[0], lng: c.center[1] }, city);
@@ -66,7 +71,13 @@ export function LocationPicker({
     }
     navigator.geolocation.getCurrentPosition(
       (pos) => {
-        const found = nearestCity(pos.coords.latitude, pos.coords.longitude);
+        const found = detectCityFromCoords(pos.coords.latitude, pos.coords.longitude);
+        if (!found) {
+          // GPS succeeded but user is outside every supported city
+          setOutsideCity(true);
+          setPhase("error");
+          return;
+        }
         commit({ lat: pos.coords.latitude, lng: pos.coords.longitude }, found.id);
         setPhase("ready");
         setMapMode(true);
@@ -124,7 +135,13 @@ export function LocationPicker({
           {t('ui.waiting_for_your_device_locati')}</p>
       )}
 
-      {phase === "error" && (
+      {phase === "error" && outsideCity && (
+        <p className="text-sm font-medium text-destructive" role="alert">
+          Your location is outside supported city areas. Please choose a supported city from the list.
+        </p>
+      )}
+
+      {phase === "error" && !outsideCity && (
         <p className="text-sm text-muted-foreground" role="status">
           {t('ui.we_couldn_t_read_your_device_l')}</p>
       )}
@@ -142,6 +159,12 @@ export function LocationPicker({
             </p>
           </div>
         </GlassCard>
+      )}
+
+      {boundaryWarning && (
+        <p className="text-sm font-medium text-orange-500" role="alert">
+          This location appears to be outside the city boundary. Reports must be within the municipal area.
+        </p>
       )}
 
       {mapMode && (
