@@ -1,7 +1,8 @@
-import { APIClient } from '@civicsathi/api-client';
+import { APIClient, Endpoints } from '@civicsathi/api-client';
 import type { MultiDeptAnalysisResult, CivicCase, ConnectedSystem, IntegrationEventIn, IntegrationEventOut, LiveTransitMessage, StateCommandData, PredictiveRiskResult, DepaConsent, MdmException } from './types';
 export const API_BASE_URL = import.meta.env['VITE_API_URL'] || 'http://localhost:8000';
 export const client = new APIClient({ baseUrl: API_BASE_URL, getToken: () => typeof window !== 'undefined' ? window.localStorage.getItem('civicsathi_admin_token') || '' : '' });
+export const api = new Endpoints(client);
 
 // SIH26129 Macro Interoperability & Master Case Endpoints
 // ---------------------------------------------------------------------------
