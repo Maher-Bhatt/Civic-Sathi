@@ -20,3 +20,4 @@ httpx>=0.27,<1
 # BUG-015: spacy is optional — only include if NLP features are explicitly needed.
 # The application catches ImportError for spacy so it won't crash without it.
 spacy>=3.7,<4
+Pillow>=10.0.0

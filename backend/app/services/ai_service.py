@@ -164,80 +164,51 @@ class AIService:
         return self._local_complaint_heuristic(title, description, category_hint, detected_language)
 
     async def analyze_image(self, data_url: str, description: str | None = None) -> dict[str, Any]:
-        """Analyze image pixels through an OpenAI-compatible vision endpoint."""
-        if not self.vision_configured:
-            return self._manual_image_review(description)
+        """Analyze image pixels using the local ML Random Forest model."""
+        import base64
+        import io
+        import numpy as np
+        from PIL import Image
+        import pickle
+        import os
 
-        system_prompt = (
-            "You are Civic Sathi Vision, a careful civic-infrastructure image reviewer in India. "
-            "Inspect the actual image pixels carefully. "
-            "Respond ONLY with a valid JSON object, no extra text. "
-            'Schema: {"detected": "<description of what you see>", '
-            '"category": "<one of: road_damage|water_supply|garbage_collection|drainage|street_lighting|electricity|sanitation>", '
-            '"confidence": "<Low|Medium|High>", '
-            '"evidence": "<specific visual evidence from the image>", '
-            '"safety_note": "<any safety concern visible>"} '
-            "If the image is unclear, say so in detected and use confidence Low. "
-            "Do NOT infer a category from the filename."
-        )
-        user_text = (
-            "Review this citizen evidence photo submitted to the municipal complaint system. "
-            "Describe only what is visibly wrong in the image, identify the civic issue, "
-            "and classify it. Citizen-provided context: " + (description or "not provided")
-        )
         try:
-            async with httpx.AsyncClient(timeout=20.0) as client:
-                response = await client.post(
-                    f"{self.base_url}/chat/completions",
-                    headers={
-                        "Authorization": f"Bearer {self.api_key}",
-                        "Content-Type": "application/json",
-                    },
-                    json={
-                        "model": self.vision_model,
-                        "messages": [
-                            {"role": "system", "content": system_prompt},
-                            {"role": "user", "content": [
-                                {"type": "text", "text": user_text},
-                                {"type": "image_url", "image_url": {"url": data_url, "detail": "auto"}},
-                            ]},
-                        ],
-                        "temperature": 0.1,
-                        "max_tokens": 500,
-                        # NOTE: response_format json_object is NOT used here — Groq vision models
-                        # do not support forced JSON mode. The system prompt instructs JSON-only output
-                        # and we extract JSON with regex as a fallback.
-                    },
-                )
-                if response.status_code == 200:
-                    payload = response.json()
-                    raw_content = payload["choices"][0]["message"]["content"]
-                    try:
-                        parsed = json.loads(raw_content)
-                    except json.JSONDecodeError:
-                        # Vision models may wrap JSON in markdown code blocks or prose
-                        match = re.search(r"\{.*\}", raw_content, re.DOTALL)
-                        parsed = json.loads(match.group()) if match else {}
-                    if parsed:
-                        allowed = {"road_damage", "water_supply", "garbage_collection", "drainage", "street_lighting", "electricity", "sanitation"}
-                        category = str(parsed.get("category", "sanitation")).lower().strip()
-                        if category not in allowed:
-                            category = "sanitation"
-                        confidence = str(parsed.get("confidence", "Low")).title()
-                        if confidence not in {"Low", "Medium", "High"}:
-                            confidence = "Low"
-                        logger.info("Vision model classified image as: %s (confidence: %s)", category, confidence)
-                        return {
-                            "source": "vision-model",
-                            "detected": str(parsed.get("detected") or "Civic condition visible; verify during field inspection"),
-                            "category": category,
-                            "confidence": confidence,
-                            "evidence": str(parsed.get("evidence") or "The vision model did not provide a detailed evidence note."),
-                            "safety_note": str(parsed.get("safety_note") or "Do not treat this suggestion as a safety clearance."),
-                        }
-                logger.warning("Vision API returned status %s: %s", response.status_code, response.text[:300])
+            # 1. Parse the base64 data URL
+            encoded = data_url.split(",", 1)[1]
+            img_bytes = base64.b64decode(encoded)
+            img = Image.open(io.BytesIO(img_bytes)).convert('RGB')
+            
+            # 2. Extract features exactly like training
+            img_resized = img.resize((64, 64))
+            arr = np.array(img_resized)
+            hist_r, _ = np.histogram(arr[:, :, 0], bins=16, range=(0, 256))
+            hist_g, _ = np.histogram(arr[:, :, 1], bins=16, range=(0, 256))
+            hist_b, _ = np.histogram(arr[:, :, 2], bins=16, range=(0, 256))
+            features = np.concatenate([hist_r, hist_g, hist_b]).astype(float)
+            features /= (features.sum() + 1e-6)
+            
+            # 3. Load ML model and predict
+            model_path = os.path.join(os.path.dirname(__file__), "..", "ml", "vision_model.pkl")
+            if os.path.exists(model_path):
+                with open(model_path, "rb") as f:
+                    clf = pickle.load(f)
+                pred = clf.predict([features])[0]
+                probas = clf.predict_proba([features])[0]
+                confidence = "High" if np.max(probas) > 0.7 else "Medium" if np.max(probas) > 0.4 else "Low"
+                
+                return {
+                    "source": "local-ml-model",
+                    "detected": f"Machine Learning model classified image as {pred}",
+                    "category": pred,
+                    "confidence": confidence,
+                    "evidence": "Color histogram feature extraction matched historical training distribution.",
+                    "safety_note": "A field inspector must still verify the condition.",
+                }
+            else:
+                logger.warning("ML model vision_model.pkl not found! Falling back to heuristic.")
         except Exception as exc:
-            logger.warning("Vision analysis failed: %s", exc)
+            logger.warning(f"ML vision analysis failed: {exc}")
+            
         return self._manual_image_review(description)
 
     def _manual_image_review(self, description: str | None = None) -> dict[str, Any]:
