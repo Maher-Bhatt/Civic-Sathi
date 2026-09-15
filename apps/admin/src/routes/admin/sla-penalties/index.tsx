@@ -1,18 +1,18 @@
-﻿import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute } from '@tanstack/react-router';
 import { GlassCard, SectionLabel } from '@/components/ui/glass-card';
-import { AlertTriangle, TrendingDown, Clock, ShieldCheck, Filter, Receipt } from 'lucide-react';
-import { useState } from 'react';
+import { AlertTriangle, Clock, ShieldCheck, Receipt } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import { api } from '@/services/api';
 
 export const Route = createFileRoute('/admin/sla-penalties/')({
   component: SLAPenaltiesPage,
 });
 
 function SLAPenaltiesPage() {
-  const penalties = [
-    { id: 'PEN-001', contractor: 'Vibrant Construct', reason: 'Delayed Pothole Filling by 4 Days', amount: 45000, date: '2026-08-20', status: 'Deducted' },
-    { id: 'PEN-002', contractor: 'Apex Roads', reason: 'Failed Quality AI Audit (Asphalt Temp Low)', amount: 120000, date: '2026-08-22', status: 'Pending Review' },
-    { id: 'PEN-003', contractor: 'City Builders', reason: 'Missed Milestone 2 Deadline', amount: 30000, date: '2026-08-25', status: 'Deducted' },
-  ];
+  const { data: penalties = [], isLoading } = useQuery({
+    queryKey: ['sla-penalties'],
+    queryFn: () => api.admin.listSLAPenalties(),
+  });
 
   return (
     <div className="admin-page-enter space-y-6 pb-20">
@@ -24,83 +24,48 @@ function SLAPenaltiesPage() {
         </div>
       </header>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-        <GlassCard className="p-6">
-          <div className="flex items-center gap-2 mb-2 text-red-500">
-            <TrendingDown className="w-5 h-5" />
-            <h3 className="text-sm font-semibold">Total Penalties (YTD)</h3>
-          </div>
-          <p className="text-3xl font-bold">₹1.84 Crores</p>
-        </GlassCard>
-        
-        <GlassCard className="p-6">
-          <div className="flex items-center gap-2 mb-2 text-orange-500">
-            <AlertTriangle className="w-5 h-5" />
-            <h3 className="text-sm font-semibold">Active Deductions</h3>
-          </div>
-          <p className="text-3xl font-bold">142</p>
-        </GlassCard>
-
-        <GlassCard className="p-6">
-          <div className="flex items-center gap-2 mb-2 text-emerald-500">
-            <ShieldCheck className="w-5 h-5" />
-            <h3 className="text-sm font-semibold">Auto-Enforcement Rate</h3>
-          </div>
-          <p className="text-3xl font-bold">94.5%</p>
-        </GlassCard>
-      </div>
-
-      <GlassCard className="p-6">
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-2">
-            <Receipt className="w-5 h-5 text-[var(--primary)]" />
-            <h2 className="text-lg font-bold">Penalty Ledger</h2>
-          </div>
-          <button className="action-btn outline flex items-center gap-2 py-1.5">
-            <Filter className="w-4 h-4" /> Filter Records
-          </button>
-        </div>
-
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="border-b border-[var(--glass-border)] text-xs uppercase tracking-wider text-[var(--muted-foreground)]">
-                <th className="pb-3 font-semibold pl-2">ID / Date</th>
-                <th className="pb-3 font-semibold">Contractor</th>
-                <th className="pb-3 font-semibold">Infraction</th>
-                <th className="pb-3 font-semibold text-right">Amount Deducted</th>
-                <th className="pb-3 font-semibold text-center">Status</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-[var(--glass-border)]">
-              {penalties.map((pen) => (
-                <tr key={pen.id} className="hover:bg-[var(--surface-elevated)] transition-colors">
-                  <td className="py-4 pl-2">
-                    <p className="font-bold text-sm text-[var(--foreground)]">{pen.id}</p>
-                    <p className="text-[10px] text-[var(--muted-foreground)] mt-0.5">{pen.date}</p>
-                  </td>
-                  <td className="py-4">
-                    <p className="text-sm font-semibold">{pen.contractor}</p>
-                  </td>
-                  <td className="py-4">
-                    <p className="text-sm">{pen.reason}</p>
-                  </td>
-                  <td className="py-4 text-right font-bold text-red-500">
-                    -₹{pen.amount.toLocaleString()}
-                  </td>
-                  <td className="py-4 text-center">
-                    <span className={`text-[10px] uppercase font-bold px-2 py-1 rounded border ${
-                      pen.status === 'Deducted' ? 'bg-red-500/10 text-red-600 border-red-500/20' : 'bg-orange-500/10 text-orange-600 border-orange-500/20'
-                    }`}>
-                      {pen.status}
-                    </span>
-                  </td>
+      {isLoading ? (
+        <div className="p-8 text-center text-slate-400">Loading penalties...</div>
+      ) : penalties.length === 0 ? (
+        <div className="p-8 text-center text-slate-400">No SLA penalties found.</div>
+      ) : (
+        <GlassCard className="overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm text-left">
+              <thead className="text-[10px] uppercase font-bold text-[var(--muted-foreground)] bg-slate-900/50">
+                <tr>
+                  <th className="px-4 py-3">Penalty ID</th>
+                  <th className="px-4 py-3">Work Order</th>
+                  <th className="px-4 py-3">Delay (Days)</th>
+                  <th className="px-4 py-3">Rate</th>
+                  <th className="px-4 py-3">Amount</th>
+                  <th className="px-4 py-3">Status</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </GlassCard>
+              </thead>
+              <tbody>
+                {penalties.map((pen: any) => (
+                  <tr key={pen.id} className="border-t border-[var(--border)]/50 hover:bg-slate-800/30">
+                    <td className="px-4 py-4 font-mono text-xs">{pen.id}</td>
+                    <td className="px-4 py-4 font-medium">{pen.work_order_id}</td>
+                    <td className="px-4 py-4 text-rose-400 font-bold">{pen.delay_days}</td>
+                    <td className="px-4 py-4">{pen.penalty_rate_pct}%</td>
+                    <td className="px-4 py-4 font-bold">₹{pen.penalty_amount?.toLocaleString('en-IN')}</td>
+                    <td className="px-4 py-4">
+                      <span className={`px-2 py-1 rounded text-[10px] font-bold uppercase ${
+                        pen.status === 'PENDING' ? 'bg-amber-500/10 text-amber-500' : 
+                        pen.status === 'WAIVED' ? 'bg-slate-500/10 text-slate-500' : 
+                        'bg-rose-500/10 text-rose-500'
+                      }`}>
+                        {pen.status}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </GlassCard>
+      )}
     </div>
   );
 }

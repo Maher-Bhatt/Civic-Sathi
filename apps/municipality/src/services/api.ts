@@ -200,17 +200,14 @@ export async function getDashboardKPIs(): Promise<DashboardKPIs> {
     getHotspotRankings(),
   ]);
     const data = summaryResult.status === "fulfilled" && summaryResult.value ? summaryResult.value : {
-      total_complaints: 1420,
-      unresolved_complaints: 320,
-      status_distribution: { resolved: 1100, in_progress: 250, open: 70 }
+      total_complaints: 0,
+      unresolved_complaints: 0,
+      status_distribution: { resolved: 0, in_progress: 0, open: 0 }
     };
     
     let issues = issuesResult.status === "fulfilled" && Array.isArray(issuesResult.value) && issuesResult.value.length > 0
       ? issuesResult.value
-      : [
-          { id: "SYS-001", status: "open", category: "road_damage", areaName: "Alkapuri", priority: "high", relatedComplaintsCount: 45 },
-          { id: "SYS-002", status: "open", category: "water_supply", areaName: "Sayajigunj", priority: "critical", relatedComplaintsCount: 128 }
-        ];
+      : [];
   const hotspots = hotspotsResult.status === "fulfilled" && Array.isArray(hotspotsResult.value)
     ? hotspotsResult.value
     : [];
@@ -546,50 +543,8 @@ export async function getMuniComplaints(
   const res = await api.complaints.list(query);
   let items = res?.items ?? res?.data ?? res;
   
-  if (!items || (Array.isArray(items) && items.length === 0)) {
-    console.warn("Injecting mock complaints for SIH demo because backend returned empty list.");
-    items = [
-      {
-        id: "CMP-2026-001",
-        category: "ROAD",
-        status: "OPEN",
-        severity: "HIGH",
-        description: "Massive pothole on main street causing accidents",
-        location: { address: "MG Road, Vadodara", lat: 22.3072, lng: 73.1812 },
-        created_at: new Date().toISOString(),
-        upvotes_count: 45
-      },
-      {
-        id: "CMP-2026-002",
-        category: "WATER",
-        status: "IN_PROGRESS",
-        severity: "CRITICAL",
-        description: "Contaminated water supply in residential area",
-        location: { address: "Alkapuri, Vadodara", lat: 22.3105, lng: 73.1678 },
-        created_at: new Date(Date.now() - 86400000).toISOString(),
-        upvotes_count: 128
-      },
-      {
-        id: "CMP-2026-003",
-        category: "ELECTRICITY",
-        status: "RESOLVED",
-        severity: "MEDIUM",
-        description: "Streetlights not working for 3 days",
-        location: { address: "Sayajigunj, Vadodara", lat: 22.3039, lng: 73.1866 },
-        created_at: new Date(Date.now() - 3 * 86400000).toISOString(),
-        upvotes_count: 12
-      },
-      {
-        id: "CMP-2026-004",
-        category: "WASTE",
-        status: "OPEN",
-        severity: "LOW",
-        description: "Garbage not collected this week",
-        location: { address: "Akota, Vadodara", lat: 22.2882, lng: 73.1633 },
-        created_at: new Date(Date.now() - 10 * 86400000).toISOString(),
-        upvotes_count: 3
-      }
-    ];
+  if (!items) {
+    items = [];
   }
 
   // The backend applies authoritative city scoping from the authenticated

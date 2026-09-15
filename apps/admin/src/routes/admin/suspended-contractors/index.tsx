@@ -1,16 +1,18 @@
-﻿import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute } from '@tanstack/react-router';
 import { GlassCard, SectionLabel } from '@/components/ui/glass-card';
-import { Ban, ShieldAlert, AlertTriangle, Eye, ShieldCheck } from 'lucide-react';
+import { Ban, ShieldAlert, AlertTriangle } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import { api } from '@/services/api';
 
 export const Route = createFileRoute('/admin/suspended-contractors/')({
   component: SuspendedContractorsPage,
 });
 
 function SuspendedContractorsPage() {
-  const suspended = [
-    { id: 'CON-004', name: 'Vibrant Construct', score: 1.8, reason: 'Trust score fell below minimum threshold (2.0)', date: '2026-08-15', city: 'Mumbai' },
-    { id: 'CON-082', name: 'Global Infra Solutions', score: 1.4, reason: 'Multiple AI Quality Failures & Bribery Reports', date: '2026-07-22', city: 'Delhi' },
-  ];
+  const { data: suspended = [], isLoading } = useQuery({
+    queryKey: ['suspended-contractors'],
+    queryFn: () => api.admin.listSuspendedContractors(),
+  });
 
   return (
     <div className="admin-page-enter space-y-6 pb-20">
@@ -20,61 +22,41 @@ function SuspendedContractorsPage() {
           <h1 className="mt-2 text-2xl font-semibold tracking-tight">Suspended Contractors</h1>
           <p className="text-sm text-[var(--muted-foreground)] mt-1">Vendors automatically blacklisted from the Civic Sathi platform.</p>
         </div>
-        <button className="action-btn outline flex items-center gap-2">
-          <ShieldAlert className="w-4 h-4" /> Review Appeals
-        </button>
       </header>
 
-      <GlassCard className="p-6 border-red-500/20 bg-red-500/5 mb-6">
-        <div className="flex items-start gap-4">
-          <div className="p-3 bg-red-500/20 rounded-full text-red-600">
-            <Ban className="w-6 h-6" />
-          </div>
-          <div>
-            <h2 className="font-bold text-red-600 text-lg">Platform Blacklist Policy</h2>
-            <p className="text-sm text-red-600/80 mt-1">
-              Any contractor whose Composite Tri-Party Trust Score falls below 2.0 is automatically suspended. 
-              Suspended contractors cannot bid on new tenders across ANY city on the Civic Sathi network until an appeal is granted by the State Admin.
-            </p>
-          </div>
+      {isLoading ? (
+        <div className="p-8 text-center text-slate-400">Loading suspended contractors...</div>
+      ) : suspended.length === 0 ? (
+        <div className="p-8 text-center text-slate-400 flex flex-col items-center gap-3">
+          <ShieldAlert className="w-8 h-8 text-emerald-500/50" />
+          <p>No contractors are currently suspended.</p>
         </div>
-      </GlassCard>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {suspended.map(s => (
-          <GlassCard key={s.id} className="p-5 flex flex-col justify-between">
-            <div>
-              <div className="flex justify-between items-start mb-4">
-                <div>
-                  <h3 className="font-bold text-lg text-[var(--foreground)]">{s.name}</h3>
-                  <div className="flex items-center gap-2 mt-1">
-                    <span className="text-xs text-[var(--muted-foreground)]">ID: {s.id}</span>
-                    <span className="text-xs font-bold text-[var(--primary)]">{s.city}</span>
-                  </div>
-                </div>
-                <div className="flex flex-col items-end">
-                  <span className="text-2xl font-bold text-red-500">{s.score}</span>
-                  <span className="text-[10px] uppercase font-bold text-[var(--muted-foreground)]">Final Score</span>
-                </div>
+      ) : (
+        <div className="grid md:grid-cols-2 gap-4">
+          {suspended.map((con: any) => (
+            <GlassCard key={con.id} className="p-5 border-rose-500/20 bg-rose-500/5 flex flex-col gap-4 relative overflow-hidden">
+              <div className="absolute top-0 right-0 p-4 opacity-10">
+                <Ban className="w-24 h-24 text-rose-500" />
               </div>
               
-              <div className="mb-4">
-                <p className="text-xs font-semibold text-[var(--muted-foreground)] uppercase mb-1">Reason for Suspension</p>
-                <p className="text-sm text-[var(--foreground)]">{s.reason}</p>
+              <div className="relative z-10">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="px-2 py-0.5 rounded bg-rose-500/20 text-rose-500 text-[10px] font-bold uppercase border border-rose-500/20">Blacklisted</span>
+                  <span className="text-xs font-mono text-[var(--muted-foreground)]">{con.id}</span>
+                </div>
+                <h3 className="text-xl font-semibold">{con.company_name}</h3>
+                
+                <div className="mt-4 space-y-2">
+                  <div className="flex items-start gap-2 text-sm">
+                    <AlertTriangle className="w-4 h-4 text-rose-400 mt-0.5 shrink-0" />
+                    <span className="text-rose-200">Suspended due to critical violations or low trust score.</span>
+                  </div>
+                </div>
               </div>
-            </div>
-            
-            <div className="pt-4 border-t border-[var(--glass-border)] flex items-center justify-between">
-              <span className="text-[10px] uppercase font-bold px-2 py-1 bg-red-500/10 text-red-600 rounded border border-red-500/20 flex items-center gap-1">
-                <Ban className="w-3 h-3" /> Suspended on {s.date}
-              </span>
-              <button className="text-xs font-semibold text-[var(--primary)] hover:underline flex items-center gap-1">
-                <Eye className="w-3 h-3" /> View Full Audit
-              </button>
-            </div>
-          </GlassCard>
-        ))}
-      </div>
+            </GlassCard>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

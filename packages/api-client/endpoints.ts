@@ -84,4 +84,19 @@ export class Endpoints {
     getRatings: (id: string) => this.client.get<any[]>(`/api/v1/procurement/contractors/${id}/ratings`),
     submitRating: (id: string, data: any) => this.client.post<any>(`/api/v1/procurement/contractors/${id}/ratings`, data),
   };
+
+  bills = {
+    list: () => this.client.get<any[]>('/api/v1/procurement/bills'),
+    submit: (data: any) => this.client.post<any>('/api/v1/procurement/bills', data),
+  };
+
+  officer = {
+    listPendingBills: () => this.client.get<any[]>('/api/v1/officer/bills/pending-approval'),
+    approveBill: (id: string) => this.client.post<any>(`/api/v1/officer/bills/${id}/department-head-approve`, {}),
+  };
+
+  admin = {
+    listSLAPenalties: () => this.client.get<any[]>('/api/v1/admin/sla-penalties'),
+    listSuspendedContractors: () => this.client.get<any[]>('/api/v1/admin/suspended-contractors'),
+  };
 }
