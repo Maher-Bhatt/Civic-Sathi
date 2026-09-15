@@ -1,6 +1,7 @@
 """AI Service for civic intelligence, categorization, and copilot reasoning using Groq / Grok / OpenAI endpoints."""
 
 import os
+import re
 import json
 import logging
 import httpx
@@ -86,29 +87,40 @@ class AIService:
             return self._local_complaint_heuristic(title, description, category_hint, detected_language)
 
         system_prompt = (
-            "You are Civic Sathi Civic AI. Analyze municipal citizen complaints in India.\n"
-            "Respond ONLY with a JSON object strictly matching this schema:\n"
-            "{\n"
-            '  "category": "road_damage" | "water_supply" | "garbage_collection" | "drainage" | "street_lighting" | "electricity" | "sanitation" | "spam" | "invalid",\n'
-            '  "severity_score": <int 1-10>,\n'
-            '  "risk_score": <int 1-100>,\n'
-            '  "priority": "low" | "medium" | "high" | "urgent",\n'
-            '  "department_slug": "roads" | "water_supply" | "sanitation" | "drainage" | "electricity" | "public_works",\n'
-            '  "language": "en" | "hi" | "gu" | "kn",\n'
-            '  "interpreted_text": "<plain-English explanation of what the citizen is reporting>",\n'
-            '  "summary": "<short 1-sentence summary>",\n'
-            '  "suggested_action": "<operational recommendation for municipality/contractor>"\n'
-            "}"
+            "You are Civic Sathi AI — India's smartest municipal complaint triaging engine. "
+            "You work for Indian city municipalities (VMC Vadodara, BMC Mumbai, BBMP Bengaluru, MCD Delhi).\n\n"
+            "Your job: Read a citizen's complaint (in any Indian language: Hindi, Gujarati, English, Marathi, Kannada, Tamil etc.) "
+            "and classify it PRECISELY into the correct municipal department with actionable intelligence.\n\n"
+            "Be strict and precise:\n"
+            "- Road potholes, road damage, footpath damage → road_damage\n"
+            "- Water leaks, no water supply, pipe burst, dirty water → water_supply\n"
+            "- Garbage not collected, overflowing bins, illegal dumping → garbage_collection\n"
+            "- Drain blocked, waterlogging, sewage overflow → drainage\n"
+            "- Street light not working, dark road → street_lighting\n"
+            "- Power cut, electricity wire hanging → electricity\n"
+            "- Public toilet unclean, open defecation, hygiene → sanitation\n"
+            "- Unrelated to civic issues → spam\n\n"
+            "Severity rules:\n"
+            "- severity_score 1-3: Minor inconvenience (pothole, single street light)\n"
+            "- severity_score 4-6: Moderate (broken drain, garbage pile, water supply issue)\n"
+            "- severity_score 7-8: Serious (large pothole causing accidents, sewage overflow on road)\n"
+            "- severity_score 9-10: CRITICAL (bridge damage, main road completely blocked, health hazard)\n\n"
+            'Respond ONLY with valid JSON matching exactly:\n'
+            '{"category": "<category>", "severity_score": <1-10>, "risk_score": <1-100>, '
+            '"priority": "<low|medium|high|urgent>", "department_slug": "<slug>", '
+            '"language": "<en|hi|gu|kn|mr|ta>", '
+            '"interpreted_text": "<plain English explanation for officers>", '
+            '"summary": "<one sentence>", "suggested_action": "<specific actionable instruction>"}'
         )
 
         user_content = (
             f"Complaint Title: {title}\n"
             f"Complaint Description: {description}\n"
             f"Category Hint: {category_hint or 'None'}\n"
-            f"Requested/input language: {detected_language}. Detect the actual language. "
-            "Understand Hindi, Gujarati, Kannada, English, and mixed-language text. "
-            "Write interpreted_text, summary, and suggested_action in clear English for municipal officers, "
-            "while preserving the citizen's meaning and not inventing facts."
+            f"Detected input language: {detected_language}.\n"
+            "Understand Hindi, Gujarati, Marathi, Kannada, Tamil, English, and mixed-language text. "
+            "Translate and interpret the citizen's exact complaint for municipal officers. "
+            "Do NOT invent facts; base your analysis strictly on what the citizen wrote."
         )
 
         try:
@@ -135,9 +147,15 @@ class AIService:
                 if response.status_code == 200:
                     data = response.json()
                     content = data["choices"][0]["message"]["content"]
-                    parsed = json.loads(content)
-                    logger.info(f"AI ({self.model}) successfully analyzed complaint: {parsed.get('category')}")
-                    return parsed
+                    try:
+                        parsed = json.loads(content)
+                    except json.JSONDecodeError:
+                        # Extract JSON object from mixed text response
+                        match = re.search(r"\{.*\}", content, re.DOTALL)
+                        parsed = json.loads(match.group()) if match else {}
+                    if parsed:
+                        logger.info(f"AI ({self.model}) successfully analyzed complaint: {parsed.get('category')}")
+                        return parsed
                 else:
                     logger.warning(f"AI API returned status {response.status_code}: {response.text}")
         except Exception as e:
@@ -152,14 +170,20 @@ class AIService:
 
         system_prompt = (
             "You are Civic Sathi Vision, a careful civic-infrastructure image reviewer in India. "
-            "Inspect the actual image pixels and respond only with JSON. Do not infer a category from a filename. "
-            "If the image is unclear, say so and lower confidence. Use exactly one category from: "
-            "road_damage, water_supply, garbage_collection, drainage, street_lighting, electricity, sanitation. "
-            "Return {detected, category, confidence, evidence, safety_note}."
+            "Inspect the actual image pixels carefully. "
+            "Respond ONLY with a valid JSON object, no extra text. "
+            'Schema: {"detected": "<description of what you see>", '
+            '"category": "<one of: road_damage|water_supply|garbage_collection|drainage|street_lighting|electricity|sanitation>", '
+            '"confidence": "<Low|Medium|High>", '
+            '"evidence": "<specific visual evidence from the image>", '
+            '"safety_note": "<any safety concern visible>"} '
+            "If the image is unclear, say so in detected and use confidence Low. "
+            "Do NOT infer a category from the filename."
         )
         user_text = (
-            "Review this citizen evidence photo. Describe only visible civic conditions, explain the visual evidence, "
-            "and recommend a category. Citizen context: " + (description or "not provided")
+            "Review this citizen evidence photo submitted to the municipal complaint system. "
+            "Describe only what is visibly wrong in the image, identify the civic issue, "
+            "and classify it. Citizen-provided context: " + (description or "not provided")
         )
         try:
             async with httpx.AsyncClient(timeout=20.0) as client:
@@ -179,27 +203,38 @@ class AIService:
                             ]},
                         ],
                         "temperature": 0.1,
-                        "response_format": {"type": "json_object"},
+                        "max_tokens": 500,
+                        # NOTE: response_format json_object is NOT used here — Groq vision models
+                        # do not support forced JSON mode. The system prompt instructs JSON-only output
+                        # and we extract JSON with regex as a fallback.
                     },
                 )
                 if response.status_code == 200:
                     payload = response.json()
-                    parsed = json.loads(payload["choices"][0]["message"]["content"])
-                    allowed = {"road_damage", "water_supply", "garbage_collection", "drainage", "street_lighting", "electricity", "sanitation"}
-                    category = str(parsed.get("category", "sanitation")).lower().strip()
-                    if category not in allowed:
-                        category = "sanitation"
-                    confidence = str(parsed.get("confidence", "Low")).title()
-                    if confidence not in {"Low", "Medium", "High"}:
-                        confidence = "Low"
-                    return {
-                        "source": "vision-model",
-                        "detected": str(parsed.get("detected") or "Civic condition visible; verify during field inspection"),
-                        "category": category,
-                        "confidence": confidence,
-                        "evidence": str(parsed.get("evidence") or "The vision model did not provide a detailed evidence note."),
-                        "safety_note": str(parsed.get("safety_note") or "Do not treat this suggestion as a safety clearance."),
-                    }
+                    raw_content = payload["choices"][0]["message"]["content"]
+                    try:
+                        parsed = json.loads(raw_content)
+                    except json.JSONDecodeError:
+                        # Vision models may wrap JSON in markdown code blocks or prose
+                        match = re.search(r"\{.*\}", raw_content, re.DOTALL)
+                        parsed = json.loads(match.group()) if match else {}
+                    if parsed:
+                        allowed = {"road_damage", "water_supply", "garbage_collection", "drainage", "street_lighting", "electricity", "sanitation"}
+                        category = str(parsed.get("category", "sanitation")).lower().strip()
+                        if category not in allowed:
+                            category = "sanitation"
+                        confidence = str(parsed.get("confidence", "Low")).title()
+                        if confidence not in {"Low", "Medium", "High"}:
+                            confidence = "Low"
+                        logger.info("Vision model classified image as: %s (confidence: %s)", category, confidence)
+                        return {
+                            "source": "vision-model",
+                            "detected": str(parsed.get("detected") or "Civic condition visible; verify during field inspection"),
+                            "category": category,
+                            "confidence": confidence,
+                            "evidence": str(parsed.get("evidence") or "The vision model did not provide a detailed evidence note."),
+                            "safety_note": str(parsed.get("safety_note") or "Do not treat this suggestion as a safety clearance."),
+                        }
                 logger.warning("Vision API returned status %s: %s", response.status_code, response.text[:300])
         except Exception as exc:
             logger.warning("Vision analysis failed: %s", exc)
@@ -278,37 +313,157 @@ class AIService:
         """Deterministic multilingual fallback used only when the model provider is unavailable."""
         text = f"{title} {description} {hint or ''}".lower()
         detected_language = language or self._detect_language(text)
-        if any(w in text for w in ["pothole", "road", "tar", "asphalt", "crater", "footpath", "divider", "सड़क", "सड़क", "गड्ढा", "રસ્તો", "ખાડો", "ರಸ್ತೆ", "ಗುಂಡಿ"]):
+
+        # ── Road damage ────────────────────────────────────────────────────
+        if any(w in text for w in [
+            "pothole", "road", "tar", "asphalt", "crater", "footpath", "divider", "pavement",
+            "highway", "bridge", "flyover", "speed breaker",
+            # Hindi
+            "sadak", "gaddha", "khadda", "kharao", "dardar", "सड़क", "गड्ढा", "रास्ता", "खड्डा",
+            # Gujarati
+            "rasto", "gaddho", "khaado", "રસ્તો", "ખાડો", "સ્પીડ બ્રેકર",
+            # Marathi
+            "rasta", "khaDDa", "रस्ता",
+            # Kannada
+            "ರಸ್ತೆ", "ಗುಂಡಿ",
+        ]):
             category = "road_damage"
             dept = "roads"
-            priority = "high" if "pothole" in text or "accident" in text else "medium"
-        elif any(w in text for w in ["water", "leak", "pipeline", "tanker", "tap", "drinking", "sewage", "पानी", "जल", "नल", "लीक", "પાણી", "નળ", "લીક", "ನೀರು", "ನಳ", "ಸೋರಿಕೆ"]):
+            if any(w in text for w in ["accident", "injury", "crater", "sinkhole", "bridge", "flyover", "highway"]):
+                priority = "urgent"
+            elif any(w in text for w in ["pothole", "damage", "broken", "khadda", "gaddha", "ಗುಂಡಿ", "ખાడో", "गड्ढा"]):
+                priority = "high"
+            else:
+                priority = "medium"
+
+        # ── Water supply ───────────────────────────────────────────────────
+        elif any(w in text for w in [
+            "water", "leak", "pipeline", "pipe burst", "tanker", "tap", "drinking", "no water",
+            "water supply", "contaminated", "dirty water", "sewage", "nali",
+            # Hindi
+            "paani", "jal", "nal", "leek", "paip", "टंकी", "पाइप", "पानी", "जल", "नल", "लीक",
+            # Gujarati
+            "paani", "nadi", "pal", "jal", "tank", "પાણી", "નળ", "લીક", "ટેન્ક", "ટ્યુબ",
+            # Marathi
+            "pani", "gali", "नाली",
+            # Kannada
+            "ನೀರು", "ನಳ", "ಸೋರಿಕೆ",
+        ]):
             category = "water_supply"
             dept = "water_supply"
-            priority = "high" if "leak" in text or "no water" in text else "medium"
-        elif any(w in text for w in ["garbage", "trash", "waste", "dump", "bin", "litter", "debris", "कचरा", "कूड़ा", "कूड़ा", "गंदगी", "કચરો", "ગંદકી", "કચરાપેટી", "ಕಸ", "ತ್ಯಾಜ್ಯ"]):
+            if any(w in text for w in ["burst", "no water", "contaminated", "sewage", "health"]):
+                priority = "urgent"
+            elif any(w in text for w in ["leak", "pipe", "leek", "लीक", "લીક"]):
+                priority = "high"
+            else:
+                priority = "medium"
+
+        # ── Garbage collection ─────────────────────────────────────────────
+        elif any(w in text for w in [
+            "garbage", "trash", "waste", "dump", "bin", "litter", "debris", "refuse", "filth",
+            "overflowing", "open dump", "illegal dumping",
+            # Hindi
+            "kachra", "safai", "gandagi", "kuda", "कचरा", "कूड़ा", "गंदगी", "सफाई",
+            # Gujarati
+            "kachro", "gandagi", "dustbin", "safai", "કચરો", "ગંદકી", "કચરાપેટી",
+            # Marathi
+            "कचरा", "घाण",
+            # Kannada
+            "ಕಸ", "ತ್ಯಾಜ್ಯ",
+        ]):
             category = "garbage_collection"
             dept = "sanitation"
-            priority = "medium"
-        elif any(w in text for w in ["drain", "drainage", "waterlogging", "flood", "clog", "overflow", "gutter", "नाली", "जलभराव", "बाढ़", "ओवरफ्लो", "ગટર", "ડ્રેનેજ", "પાણી ભરાવું", "ಚರಂಡಿ", "ನೀರು ನಿಲ್ಲಿಕೆ"]):
+            if any(w in text for w in ["health", "disease", "smell", "stink", "rats", "mosquito"]):
+                priority = "high"
+            else:
+                priority = "medium"
+
+        # ── Drainage ───────────────────────────────────────────────────────
+        elif any(w in text for w in [
+            "drain", "drainage", "waterlogging", "flood", "clog", "overflow", "gutter", "sewer",
+            "sewage overflow", "blocked drain", "jal jama", "barsat", "waterlog",
+            # Hindi
+            "nali", "nala", "jalbhrav", "baadh", "overflो", "नाली", "नाला", "जलभराव", "बाढ़",
+            # Gujarati
+            "gatar", "nali", "paani bharavu", "ગટર", "ડ્રેનેજ", "પાણી ભરાવું", "નાળ",
+            # Marathi
+            "gutter", "नाली",
+            # Kannada
+            "ಚರಂಡಿ", "ನೀರು ನಿಲ್ಲಿಕೆ",
+        ]):
             category = "drainage"
             dept = "drainage"
-            priority = "urgent" if "flood" in text or "overflow" in text else "high"
-        elif any(w in text for w in ["light", "dark", "pole", "wire", "lamp", "blackout", "fixture", "बत्ती", "रोशनी", "खंभा", "બત્તી", "લાઇટ", "વીજળી", "ದೀಪ", "ಬೆಳಕು", "ವಿದ್ಯುತ್"]):
+            if any(w in text for w in ["flood", "baadh", "overflow", "health", "disease", "mosquito"]):
+                priority = "urgent"
+            elif any(w in text for w in ["blocked", "clog", "jalbhrav", "waterlogging"]):
+                priority = "high"
+            else:
+                priority = "medium"
+
+        # ── Street lighting ────────────────────────────────────────────────
+        elif any(w in text for w in [
+            "street light", "streetlight", "lamp", "dark road", "lighting", "pole", "fixture",
+            "light not working", "light band", "andhera",
+            # Hindi
+            "batti", "roshni", "khamba", "बत्ती", "रोशनी", "खंभा", "दिवा", "अंधेरा",
+            # Gujarati
+            "batti", "light", "laait", "diwo", "andharu", "બત્તી", "લાઇટ", "સ્ટ્રીટ લાઇટ", "દીવો", "રોશની",
+            # Marathi
+            "दिवा", "प्रकाश",
+            # Kannada
+            "ಬೀದಿ ದೀಪ", "ಬೆಳಕು", "ದೀಪ",
+        ]):
             category = "street_lighting"
             dept = "electricity"
-            priority = "medium"
-        elif any(w in text for w in ["power", "voltage", "electric", "transformer", "shock", "बिजली", "वोल्टेज", "ट्रांसफॉर्मर", "झटका", "વીજળી", "વોલ્ટેજ", "ટ્રાન્સફોર્મર", "વીજ શોક", "ವೋಲ್ಟೇಜ್", "ಟ್ರಾನ್ಸ್‌ಫಾರ್ಮರ್", "ವಿದ್ಯುತ್ ಆಘಾತ"]):
+            if any(w in text for w in ["accident", "crime", "unsafe", "dark", "andhera", "andharu"]):
+                priority = "high"
+            else:
+                priority = "medium"
+
+        # ── Electricity ────────────────────────────────────────────────────
+        elif any(w in text for w in [
+            "power", "voltage", "electric", "transformer", "shock", "power cut", "wire hanging",
+            "live wire", "current", "light gul", "bijli", "power failure",
+            # Hindi
+            "bijli", "current", "jhatka", "transformer", "बिजली", "वोल्टेज", "ट्रांसफॉर्मर", "झटका",
+            # Gujarati
+            "vijli", "current", "wire", "jhatko", "વીજળી", "વોલ્ટેજ", "ટ્રાન્સફોર્મર", "વીજ શોક",
+            # Kannada
+            "ವೋಲ್ಟೇಜ್", "ಟ್ರಾನ್ಸ್‌ಫಾರ್ಮರ್", "ವಿದ್ಯುತ್ ಆಘಾತ",
+        ]):
             category = "electricity"
             dept = "electricity"
-            priority = "urgent" if "shock" in text or "transformer" in text else "high"
+            if any(w in text for w in ["shock", "jhatka", "jhatko", "live wire", "fire", "death", "injury"]):
+                priority = "urgent"
+            elif any(w in text for w in ["transformer", "power cut", "bijli band", "vijli"]):
+                priority = "high"
+            else:
+                priority = "medium"
+
+        # ── Sanitation / default ───────────────────────────────────────────
         else:
             category = "sanitation"
             dept = "sanitation"
             priority = "medium"
 
-        severity = 8 if priority == "urgent" else 6 if priority == "high" else 4
-        risk = severity * 10 + 15
+        # Severity and risk scoring
+        if priority == "urgent":
+            severity = 9
+            risk = 85
+        elif priority == "high":
+            severity = 7
+            risk = 65
+        else:
+            severity = 4
+            risk = 35
+
+        # Boost severity for accident/injury keywords
+        if any(w in text for w in ["accident", "injury", "death", "hospital", "critical", "emergency"]):
+            severity = min(10, severity + 1)
+            risk = min(100, risk + 10)
+
+        dept_display = dept.replace("_", " ")
+        cat_display = category.replace("_", " ")
 
         return {
             "category": category,
@@ -317,9 +472,16 @@ class AIService:
             "priority": priority,
             "department_slug": dept,
             "language": detected_language,
-            "interpreted_text": f"Citizen reports a {category.replace('_', ' ')} issue: {description[:300]}",
-            "summary": f"Citizen reports a {category.replace('_', ' ')} issue.",
-            "suggested_action": f"Dispatch the {dept.replace('_', ' ')} inspection team to verify and route the {category.replace('_', ' ')} complaint."
+            "interpreted_text": (
+                f"Citizen reports a {cat_display} issue. "
+                f"Original complaint: {description[:300]}"
+            ),
+            "summary": f"Citizen reports a {cat_display} issue requiring {dept_display} department attention.",
+            "suggested_action": (
+                f"Dispatch {dept_display} inspection team immediately. "
+                f"Verify the {cat_display} complaint on-site and initiate repair workflow. "
+                f"Priority: {priority.upper()}."
+            ),
         }
 
     async def analyze_multi_dept_case(
