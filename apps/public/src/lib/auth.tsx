@@ -26,6 +26,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     getCurrentUser()
       .then(setUser)
       .finally(() => setReady(true));
+
+    const onLogout = () => {
+      setUser(null);
+      setReady(true);
+    };
+    window.addEventListener('civicsathi-logout', onLogout);
+    return () => window.removeEventListener('civicsathi-logout', onLogout);
   }, []);
 
   const signIn = useCallback(async (email: string, password: string) => {

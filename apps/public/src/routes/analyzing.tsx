@@ -49,11 +49,11 @@ function AnalyzingPage() {
   const [complaint, setComplaint] = useState<Complaint | null>(null);
   const [duplicates, setDuplicates] = useState<any[]>([]);
   const [draftData, setDraftData] = useState<any>(null);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const started = useRef(false);
 
   async function run() {
-    setError(false);
+    setError(null);
     setStage(0);
     const draft = loadDraft();
     if (!draft.description) {
@@ -104,7 +104,7 @@ function AnalyzingPage() {
     } catch (err: any) {
       console.error(err);
       window.clearInterval(timer);
-      setError(true);
+      setError(err.message || "An unexpected error occurred");
     }
   }
 
@@ -119,25 +119,30 @@ function AnalyzingPage() {
       };
     const city = getCity(draft.city || "vadodara");
     const wardNumberMatch = String(safeLocation.ward || "").match(/\d+/);
-    const created = await createComplaint({
-      title: `${analysis.category} at ${safeLocation.ward || city.name}`,
-      description: draft.description,
-      category: analysis.category,
-      category_hint: analysis.category,
-      severity: analysis.severity,
-      city: city.name,
-      lat: safeLocation.lat,
-      lng: safeLocation.lng,
-      ward_number: wardNumberMatch ? Number(wardNumberMatch[0]) : undefined,
-      address_text: safeLocation.area,
-      photo: draft.photo,
-      language: draft.language,
-      ai_interpreted_text: analysis.interpretedText || analysis.summary,
-      ai_suggested_action: analysis.recommendedAction,
-    });
+    try {
+      const created = await createComplaint({
+        title: `${analysis.category} at ${safeLocation.ward || city.name}`,
+        description: draft.description,
+        category: analysis.category,
+        category_hint: analysis.category,
+        severity: analysis.severity,
+        city: city.name,
+        lat: safeLocation.lat,
+        lng: safeLocation.lng,
+        ward_number: wardNumberMatch ? Number(wardNumberMatch[0]) : undefined,
+        address_text: safeLocation.area,
+        photo: draft.photo,
+        language: draft.language,
+        ai_interpreted_text: analysis.interpretedText || analysis.summary,
+        ai_suggested_action: analysis.recommendedAction,
+      });
 
-    setComplaint(created);
-    setStage(STAGES.length);
+      setComplaint(created);
+      setStage(STAGES.length);
+    } catch (err: any) {
+      console.error(err);
+      setError(err.message || "Failed to submit the complaint.");
+    }
     clearDraft();
   }
 
@@ -173,7 +178,7 @@ function AnalyzingPage() {
       <PageShell className="max-w-2xl">
         <ErrorState
           title={t("ui.we_couldn_t_analyze_your_repor")}
-          description="Your description is safe. Try again in a moment."
+          description={typeof error === 'string' ? error : "Your description is safe. Try again in a moment."}
           onRetry={() => void run()}
         />
       </PageShell>
