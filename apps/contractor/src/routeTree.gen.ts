@@ -16,6 +16,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as ContractorDashboardRouteImport } from './routes/contractor/dashboard'
 import { Route as ContractorPerformanceRouteImport } from './routes/contractor/performance'
 import { Route as ContractorProfileRouteImport } from './routes/contractor/profile'
+import { Route as ContractorBillsIndexRouteImport } from './routes/contractor/bills/index'
 import { Route as ContractorTendersIndexRouteImport } from './routes/contractor/tenders/index'
 import { Route as ContractorTendersIdRouteImport } from './routes/contractor/tenders/$id'
 import { Route as ContractorWorkOrdersIndexRouteImport } from './routes/contractor/work-orders/index'
@@ -56,6 +57,11 @@ const ContractorProfileRoute = ContractorProfileRouteImport.update({
   path: '/profile',
   getParentRoute: () => ContractorRouteRoute,
 } as any)
+const ContractorBillsIndexRoute = ContractorBillsIndexRouteImport.update({
+  id: '/bills/',
+  path: '/bills/',
+  getParentRoute: () => ContractorRouteRoute,
+} as any)
 const ContractorTendersIndexRoute = ContractorTendersIndexRouteImport.update({
   id: '/tenders/',
   path: '/tenders/',
@@ -88,6 +94,7 @@ export interface FileRoutesByFullPath {
   '/contractor/profile': typeof ContractorProfileRoute
   '/contractor/tenders/$id': typeof ContractorTendersIdRoute
   '/contractor/work-orders/$id': typeof ContractorWorkOrdersIdRoute
+  '/contractor/bills/': typeof ContractorBillsIndexRoute
   '/contractor/tenders/': typeof ContractorTendersIndexRoute
   '/contractor/work-orders/': typeof ContractorWorkOrdersIndexRoute
 }
@@ -101,6 +108,7 @@ export interface FileRoutesByTo {
   '/contractor/profile': typeof ContractorProfileRoute
   '/contractor/tenders/$id': typeof ContractorTendersIdRoute
   '/contractor/work-orders/$id': typeof ContractorWorkOrdersIdRoute
+  '/contractor/bills': typeof ContractorBillsIndexRoute
   '/contractor/tenders': typeof ContractorTendersIndexRoute
   '/contractor/work-orders': typeof ContractorWorkOrdersIndexRoute
 }
@@ -115,6 +123,7 @@ export interface FileRoutesById {
   '/contractor/profile': typeof ContractorProfileRoute
   '/contractor/tenders/$id': typeof ContractorTendersIdRoute
   '/contractor/work-orders/$id': typeof ContractorWorkOrdersIdRoute
+  '/contractor/bills/': typeof ContractorBillsIndexRoute
   '/contractor/tenders/': typeof ContractorTendersIndexRoute
   '/contractor/work-orders/': typeof ContractorWorkOrdersIndexRoute
 }
@@ -130,6 +139,7 @@ export interface FileRouteTypes {
     | '/contractor/profile'
     | '/contractor/tenders/$id'
     | '/contractor/work-orders/$id'
+    | '/contractor/bills/'
     | '/contractor/tenders/'
     | '/contractor/work-orders/'
   fileRoutesByTo: FileRoutesByTo
@@ -143,6 +153,7 @@ export interface FileRouteTypes {
     | '/contractor/profile'
     | '/contractor/tenders/$id'
     | '/contractor/work-orders/$id'
+    | '/contractor/bills'
     | '/contractor/tenders'
     | '/contractor/work-orders'
   id:
@@ -156,6 +167,7 @@ export interface FileRouteTypes {
     | '/contractor/profile'
     | '/contractor/tenders/$id'
     | '/contractor/work-orders/$id'
+    | '/contractor/bills/'
     | '/contractor/tenders/'
     | '/contractor/work-orders/'
   fileRoutesById: FileRoutesById
@@ -218,6 +230,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ContractorProfileRouteImport
       parentRoute: typeof ContractorRouteRoute
     }
+    '/contractor/bills/': {
+      id: '/contractor/bills/'
+      path: '/bills'
+      fullPath: '/contractor/bills/'
+      preLoaderRoute: typeof ContractorBillsIndexRouteImport
+      parentRoute: typeof ContractorRouteRoute
+    }
     '/contractor/tenders/': {
       id: '/contractor/tenders/'
       path: '/tenders'
@@ -255,6 +274,7 @@ interface ContractorRouteRouteChildren {
   ContractorProfileRoute: typeof ContractorProfileRoute
   ContractorTendersIdRoute: typeof ContractorTendersIdRoute
   ContractorWorkOrdersIdRoute: typeof ContractorWorkOrdersIdRoute
+  ContractorBillsIndexRoute: typeof ContractorBillsIndexRoute
   ContractorTendersIndexRoute: typeof ContractorTendersIndexRoute
   ContractorWorkOrdersIndexRoute: typeof ContractorWorkOrdersIndexRoute
 }
@@ -265,6 +285,7 @@ const ContractorRouteRouteChildren: ContractorRouteRouteChildren = {
   ContractorProfileRoute: ContractorProfileRoute,
   ContractorTendersIdRoute: ContractorTendersIdRoute,
   ContractorWorkOrdersIdRoute: ContractorWorkOrdersIdRoute,
+  ContractorBillsIndexRoute: ContractorBillsIndexRoute,
   ContractorTendersIndexRoute: ContractorTendersIndexRoute,
   ContractorWorkOrdersIndexRoute: ContractorWorkOrdersIndexRoute,
 }

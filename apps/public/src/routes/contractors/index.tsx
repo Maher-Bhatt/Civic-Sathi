@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+﻿import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth";
 import { GlassCard, SectionLabel } from "@/components/ui/glass-card";
@@ -18,7 +18,7 @@ import {
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/contractors/")({
-  head: () => ({ meta: [{ title: "Contractor Transparency & Tri-Party Ratings — Civic Sathi" }] }),
+  head: () => ({ meta: [{ title: "Contractor Transparency & Tri-Party Ratings â€” Civic Sathi" }] }),
   component: ContractorsPublicPage,
 });
 
@@ -116,7 +116,7 @@ function ContractorsPublicPage() {
                   <div>
                     <h3 className="text-xl font-bold text-[var(--foreground)]">{c.company_name}</h3>
                     <p className="text-xs text-[var(--muted-foreground)] mt-0.5">
-                      Contact: {c.contact_person} • {c.email}
+                      Contact: {c.contact_person} â€¢ {c.email}
                     </p>
                   </div>
                   <div className="text-right shrink-0">
@@ -134,7 +134,7 @@ function ContractorsPublicPage() {
                       <span className="text-[10px] font-bold uppercase">Public</span>
                     </div>
                     <span className="text-lg font-black text-amber-600 dark:text-amber-400">
-                      {pub === null ? "—" : pub.toFixed(1)} {pub !== null && <span className="text-[10px] font-normal">/ 5</span>}
+                      {pub === null ? "â€”" : pub.toFixed(1)} {pub !== null && <span className="text-[10px] font-normal">/ 5</span>}
                     </span>
                     <span className="block text-[9px] text-[var(--muted-foreground)] mt-0.5">Citizen Votes</span>
                   </div>
@@ -146,7 +146,7 @@ function ContractorsPublicPage() {
                       <span className="text-[10px] font-bold uppercase">AI Quality</span>
                     </div>
                     <span className="text-lg font-black text-orange-700 dark:text-orange-300">
-                      {ai === null ? "—" : ai.toFixed(1)} {ai !== null && <span className="text-[10px] font-normal">/ 5</span>}
+                      {ai === null ? "â€”" : ai.toFixed(1)} {ai !== null && <span className="text-[10px] font-normal">/ 5</span>}
                     </span>
                     <span className="block text-[9px] text-[var(--muted-foreground)] mt-0.5">SLA & Evidence</span>
                   </div>
@@ -158,7 +158,7 @@ function ContractorsPublicPage() {
                       <span className="text-[10px] font-bold uppercase">Officer</span>
                     </div>
                     <span className="text-lg font-black text-emerald-600 dark:text-emerald-400">
-                      {off === null ? "—" : off.toFixed(1)} {off !== null && <span className="text-[10px] font-normal">/ 5</span>}
+                      {off === null ? "â€”" : off.toFixed(1)} {off !== null && <span className="text-[10px] font-normal">/ 5</span>}
                     </span>
                     <span className="block text-[9px] text-[var(--muted-foreground)] mt-0.5">Govt Inspection</span>
                   </div>

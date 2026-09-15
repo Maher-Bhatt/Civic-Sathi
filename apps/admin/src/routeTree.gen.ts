@@ -32,6 +32,8 @@ import { Route as AdminWorkOrdersOverviewRouteImport } from './routes/admin/work
 import { Route as AdminCaseIdRouteImport } from './routes/admin/case.$id'
 import { Route as AdminContractorsIndexRouteImport } from './routes/admin/contractors/index'
 import { Route as AdminContractorsIdRouteImport } from './routes/admin/contractors/$id'
+import { Route as AdminSlaPenaltiesIndexRouteImport } from './routes/admin/sla-penalties/index'
+import { Route as AdminSuspendedContractorsIndexRouteImport } from './routes/admin/suspended-contractors/index'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -148,6 +150,17 @@ const AdminContractorsIdRoute = AdminContractorsIdRouteImport.update({
   path: '/contractors/$id',
   getParentRoute: () => AdminRouteRoute,
 } as any)
+const AdminSlaPenaltiesIndexRoute = AdminSlaPenaltiesIndexRouteImport.update({
+  id: '/sla-penalties/',
+  path: '/sla-penalties/',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminSuspendedContractorsIndexRoute =
+  AdminSuspendedContractorsIndexRouteImport.update({
+    id: '/suspended-contractors/',
+    path: '/suspended-contractors/',
+    getParentRoute: () => AdminRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -173,6 +186,8 @@ export interface FileRoutesByFullPath {
   '/admin/case/$id': typeof AdminCaseIdRoute
   '/admin/contractors/$id': typeof AdminContractorsIdRoute
   '/admin/contractors/': typeof AdminContractorsIndexRoute
+  '/admin/sla-penalties/': typeof AdminSlaPenaltiesIndexRoute
+  '/admin/suspended-contractors/': typeof AdminSuspendedContractorsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -198,6 +213,8 @@ export interface FileRoutesByTo {
   '/admin/case/$id': typeof AdminCaseIdRoute
   '/admin/contractors/$id': typeof AdminContractorsIdRoute
   '/admin/contractors': typeof AdminContractorsIndexRoute
+  '/admin/sla-penalties': typeof AdminSlaPenaltiesIndexRoute
+  '/admin/suspended-contractors': typeof AdminSuspendedContractorsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -224,6 +241,8 @@ export interface FileRoutesById {
   '/admin/case/$id': typeof AdminCaseIdRoute
   '/admin/contractors/$id': typeof AdminContractorsIdRoute
   '/admin/contractors/': typeof AdminContractorsIndexRoute
+  '/admin/sla-penalties/': typeof AdminSlaPenaltiesIndexRoute
+  '/admin/suspended-contractors/': typeof AdminSuspendedContractorsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -251,6 +270,8 @@ export interface FileRouteTypes {
     | '/admin/case/$id'
     | '/admin/contractors/$id'
     | '/admin/contractors/'
+    | '/admin/sla-penalties/'
+    | '/admin/suspended-contractors/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -276,6 +297,8 @@ export interface FileRouteTypes {
     | '/admin/case/$id'
     | '/admin/contractors/$id'
     | '/admin/contractors'
+    | '/admin/sla-penalties'
+    | '/admin/suspended-contractors'
   id:
     | '__root__'
     | '/'
@@ -301,6 +324,8 @@ export interface FileRouteTypes {
     | '/admin/case/$id'
     | '/admin/contractors/$id'
     | '/admin/contractors/'
+    | '/admin/sla-penalties/'
+    | '/admin/suspended-contractors/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -473,6 +498,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminContractorsIdRouteImport
       parentRoute: typeof AdminRouteRoute
     }
+    '/admin/sla-penalties/': {
+      id: '/admin/sla-penalties/'
+      path: '/sla-penalties'
+      fullPath: '/admin/sla-penalties/'
+      preLoaderRoute: typeof AdminSlaPenaltiesIndexRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/suspended-contractors/': {
+      id: '/admin/suspended-contractors/'
+      path: '/suspended-contractors'
+      fullPath: '/admin/suspended-contractors/'
+      preLoaderRoute: typeof AdminSuspendedContractorsIndexRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
   }
 }
 
@@ -496,6 +535,8 @@ interface AdminRouteRouteChildren {
   AdminCaseIdRoute: typeof AdminCaseIdRoute
   AdminContractorsIdRoute: typeof AdminContractorsIdRoute
   AdminContractorsIndexRoute: typeof AdminContractorsIndexRoute
+  AdminSlaPenaltiesIndexRoute: typeof AdminSlaPenaltiesIndexRoute
+  AdminSuspendedContractorsIndexRoute: typeof AdminSuspendedContractorsIndexRoute
 }
 
 const AdminRouteRouteChildren: AdminRouteRouteChildren = {
@@ -518,6 +559,8 @@ const AdminRouteRouteChildren: AdminRouteRouteChildren = {
   AdminCaseIdRoute: AdminCaseIdRoute,
   AdminContractorsIdRoute: AdminContractorsIdRoute,
   AdminContractorsIndexRoute: AdminContractorsIndexRoute,
+  AdminSlaPenaltiesIndexRoute: AdminSlaPenaltiesIndexRoute,
+  AdminSuspendedContractorsIndexRoute: AdminSuspendedContractorsIndexRoute,
 }
 
 const AdminRouteRouteWithChildren = AdminRouteRoute._addFileChildren(

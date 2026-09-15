@@ -28,13 +28,17 @@ import { Route as MunicipalityCitizenFeedbackRouteImport } from './routes/munici
 import { Route as MunicipalityContractorInvoicesRouteImport } from './routes/municipality/contractor-invoices'
 import { Route as MunicipalitySlaBreachRouteImport } from './routes/municipality/sla-breach'
 import { Route as AuthAreasIndexRouteImport } from './routes/_auth/areas/index'
+import { Route as AuthBillsIndexRouteImport } from './routes/_auth/bills/index'
 import { Route as AuthCaseIdRouteImport } from './routes/_auth/case.$id'
+import { Route as AuthCivicHubIndexRouteImport } from './routes/_auth/civic-hub/index'
 import { Route as AuthCivicIssuesIndexRouteImport } from './routes/_auth/civic-issues/index'
 import { Route as AuthCivicIssuesIdRouteImport } from './routes/_auth/civic-issues/$id'
 import { Route as AuthComplaintsIndexRouteImport } from './routes/_auth/complaints/index'
 import { Route as AuthComplaintsIdRouteImport } from './routes/_auth/complaints/$id'
+import { Route as AuthContractorsIndexRouteImport } from './routes/_auth/contractors/index'
 import { Route as AuthDepartmentsIndexRouteImport } from './routes/_auth/departments/index'
 import { Route as AuthDepartmentsIdRouteImport } from './routes/_auth/departments/$id'
+import { Route as AuthDisputesIndexRouteImport } from './routes/_auth/disputes/index'
 import { Route as AuthIssuesIndexRouteImport } from './routes/_auth/issues/index'
 import { Route as AuthIssuesIdRouteImport } from './routes/_auth/issues/$id'
 import { Route as AuthTendersIndexRouteImport } from './routes/_auth/tenders/index'
@@ -139,9 +143,19 @@ const AuthAreasIndexRoute = AuthAreasIndexRouteImport.update({
   path: '/areas/',
   getParentRoute: () => AuthRouteRoute,
 } as any)
+const AuthBillsIndexRoute = AuthBillsIndexRouteImport.update({
+  id: '/bills/',
+  path: '/bills/',
+  getParentRoute: () => AuthRouteRoute,
+} as any)
 const AuthCaseIdRoute = AuthCaseIdRouteImport.update({
   id: '/case/$id',
   path: '/case/$id',
+  getParentRoute: () => AuthRouteRoute,
+} as any)
+const AuthCivicHubIndexRoute = AuthCivicHubIndexRouteImport.update({
+  id: '/civic-hub/',
+  path: '/civic-hub/',
   getParentRoute: () => AuthRouteRoute,
 } as any)
 const AuthCivicIssuesIndexRoute = AuthCivicIssuesIndexRouteImport.update({
@@ -164,6 +178,11 @@ const AuthComplaintsIdRoute = AuthComplaintsIdRouteImport.update({
   path: '/complaints/$id',
   getParentRoute: () => AuthRouteRoute,
 } as any)
+const AuthContractorsIndexRoute = AuthContractorsIndexRouteImport.update({
+  id: '/contractors/',
+  path: '/contractors/',
+  getParentRoute: () => AuthRouteRoute,
+} as any)
 const AuthDepartmentsIndexRoute = AuthDepartmentsIndexRouteImport.update({
   id: '/departments/',
   path: '/departments/',
@@ -172,6 +191,11 @@ const AuthDepartmentsIndexRoute = AuthDepartmentsIndexRouteImport.update({
 const AuthDepartmentsIdRoute = AuthDepartmentsIdRouteImport.update({
   id: '/departments/$id',
   path: '/departments/$id',
+  getParentRoute: () => AuthRouteRoute,
+} as any)
+const AuthDisputesIndexRoute = AuthDisputesIndexRouteImport.update({
+  id: '/disputes/',
+  path: '/disputes/',
   getParentRoute: () => AuthRouteRoute,
 } as any)
 const AuthIssuesIndexRoute = AuthIssuesIndexRouteImport.update({
@@ -237,9 +261,13 @@ export interface FileRoutesByFullPath {
   '/tenders/new': typeof AuthTendersNewRoute
   '/work-orders/$id': typeof AuthWorkOrdersIdRoute
   '/areas/': typeof AuthAreasIndexRoute
+  '/bills/': typeof AuthBillsIndexRoute
+  '/civic-hub/': typeof AuthCivicHubIndexRoute
   '/civic-issues/': typeof AuthCivicIssuesIndexRoute
   '/complaints/': typeof AuthComplaintsIndexRoute
+  '/contractors/': typeof AuthContractorsIndexRoute
   '/departments/': typeof AuthDepartmentsIndexRoute
+  '/disputes/': typeof AuthDisputesIndexRoute
   '/issues/': typeof AuthIssuesIndexRoute
   '/tenders/': typeof AuthTendersIndexRoute
   '/work-orders/': typeof AuthWorkOrdersIndexRoute
@@ -271,9 +299,13 @@ export interface FileRoutesByTo {
   '/tenders/new': typeof AuthTendersNewRoute
   '/work-orders/$id': typeof AuthWorkOrdersIdRoute
   '/areas': typeof AuthAreasIndexRoute
+  '/bills': typeof AuthBillsIndexRoute
+  '/civic-hub': typeof AuthCivicHubIndexRoute
   '/civic-issues': typeof AuthCivicIssuesIndexRoute
   '/complaints': typeof AuthComplaintsIndexRoute
+  '/contractors': typeof AuthContractorsIndexRoute
   '/departments': typeof AuthDepartmentsIndexRoute
+  '/disputes': typeof AuthDisputesIndexRoute
   '/issues': typeof AuthIssuesIndexRoute
   '/tenders': typeof AuthTendersIndexRoute
   '/work-orders': typeof AuthWorkOrdersIndexRoute
@@ -307,9 +339,13 @@ export interface FileRoutesById {
   '/_auth/tenders/new': typeof AuthTendersNewRoute
   '/_auth/work-orders/$id': typeof AuthWorkOrdersIdRoute
   '/_auth/areas/': typeof AuthAreasIndexRoute
+  '/_auth/bills/': typeof AuthBillsIndexRoute
+  '/_auth/civic-hub/': typeof AuthCivicHubIndexRoute
   '/_auth/civic-issues/': typeof AuthCivicIssuesIndexRoute
   '/_auth/complaints/': typeof AuthComplaintsIndexRoute
+  '/_auth/contractors/': typeof AuthContractorsIndexRoute
   '/_auth/departments/': typeof AuthDepartmentsIndexRoute
+  '/_auth/disputes/': typeof AuthDisputesIndexRoute
   '/_auth/issues/': typeof AuthIssuesIndexRoute
   '/_auth/tenders/': typeof AuthTendersIndexRoute
   '/_auth/work-orders/': typeof AuthWorkOrdersIndexRoute
@@ -343,9 +379,13 @@ export interface FileRouteTypes {
     | '/tenders/new'
     | '/work-orders/$id'
     | '/areas/'
+    | '/bills/'
+    | '/civic-hub/'
     | '/civic-issues/'
     | '/complaints/'
+    | '/contractors/'
     | '/departments/'
+    | '/disputes/'
     | '/issues/'
     | '/tenders/'
     | '/work-orders/'
@@ -377,9 +417,13 @@ export interface FileRouteTypes {
     | '/tenders/new'
     | '/work-orders/$id'
     | '/areas'
+    | '/bills'
+    | '/civic-hub'
     | '/civic-issues'
     | '/complaints'
+    | '/contractors'
     | '/departments'
+    | '/disputes'
     | '/issues'
     | '/tenders'
     | '/work-orders'
@@ -412,9 +456,13 @@ export interface FileRouteTypes {
     | '/_auth/tenders/new'
     | '/_auth/work-orders/$id'
     | '/_auth/areas/'
+    | '/_auth/bills/'
+    | '/_auth/civic-hub/'
     | '/_auth/civic-issues/'
     | '/_auth/complaints/'
+    | '/_auth/contractors/'
     | '/_auth/departments/'
+    | '/_auth/disputes/'
     | '/_auth/issues/'
     | '/_auth/tenders/'
     | '/_auth/work-orders/'
@@ -565,11 +613,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthAreasIndexRouteImport
       parentRoute: typeof AuthRouteRoute
     }
+    '/_auth/bills/': {
+      id: '/_auth/bills/'
+      path: '/bills'
+      fullPath: '/bills/'
+      preLoaderRoute: typeof AuthBillsIndexRouteImport
+      parentRoute: typeof AuthRouteRoute
+    }
     '/_auth/case/$id': {
       id: '/_auth/case/$id'
       path: '/case/$id'
       fullPath: '/case/$id'
       preLoaderRoute: typeof AuthCaseIdRouteImport
+      parentRoute: typeof AuthRouteRoute
+    }
+    '/_auth/civic-hub/': {
+      id: '/_auth/civic-hub/'
+      path: '/civic-hub'
+      fullPath: '/civic-hub/'
+      preLoaderRoute: typeof AuthCivicHubIndexRouteImport
       parentRoute: typeof AuthRouteRoute
     }
     '/_auth/civic-issues/': {
@@ -600,6 +662,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthComplaintsIdRouteImport
       parentRoute: typeof AuthRouteRoute
     }
+    '/_auth/contractors/': {
+      id: '/_auth/contractors/'
+      path: '/contractors'
+      fullPath: '/contractors/'
+      preLoaderRoute: typeof AuthContractorsIndexRouteImport
+      parentRoute: typeof AuthRouteRoute
+    }
     '/_auth/departments/': {
       id: '/_auth/departments/'
       path: '/departments'
@@ -612,6 +681,13 @@ declare module '@tanstack/react-router' {
       path: '/departments/$id'
       fullPath: '/departments/$id'
       preLoaderRoute: typeof AuthDepartmentsIdRouteImport
+      parentRoute: typeof AuthRouteRoute
+    }
+    '/_auth/disputes/': {
+      id: '/_auth/disputes/'
+      path: '/disputes'
+      fullPath: '/disputes/'
+      preLoaderRoute: typeof AuthDisputesIndexRouteImport
       parentRoute: typeof AuthRouteRoute
     }
     '/_auth/issues/': {
@@ -687,9 +763,13 @@ interface AuthRouteRouteChildren {
   AuthTendersNewRoute: typeof AuthTendersNewRoute
   AuthWorkOrdersIdRoute: typeof AuthWorkOrdersIdRoute
   AuthAreasIndexRoute: typeof AuthAreasIndexRoute
+  AuthBillsIndexRoute: typeof AuthBillsIndexRoute
+  AuthCivicHubIndexRoute: typeof AuthCivicHubIndexRoute
   AuthCivicIssuesIndexRoute: typeof AuthCivicIssuesIndexRoute
   AuthComplaintsIndexRoute: typeof AuthComplaintsIndexRoute
+  AuthContractorsIndexRoute: typeof AuthContractorsIndexRoute
   AuthDepartmentsIndexRoute: typeof AuthDepartmentsIndexRoute
+  AuthDisputesIndexRoute: typeof AuthDisputesIndexRoute
   AuthIssuesIndexRoute: typeof AuthIssuesIndexRoute
   AuthTendersIndexRoute: typeof AuthTendersIndexRoute
   AuthWorkOrdersIndexRoute: typeof AuthWorkOrdersIndexRoute
@@ -716,9 +796,13 @@ const AuthRouteRouteChildren: AuthRouteRouteChildren = {
   AuthTendersNewRoute: AuthTendersNewRoute,
   AuthWorkOrdersIdRoute: AuthWorkOrdersIdRoute,
   AuthAreasIndexRoute: AuthAreasIndexRoute,
+  AuthBillsIndexRoute: AuthBillsIndexRoute,
+  AuthCivicHubIndexRoute: AuthCivicHubIndexRoute,
   AuthCivicIssuesIndexRoute: AuthCivicIssuesIndexRoute,
   AuthComplaintsIndexRoute: AuthComplaintsIndexRoute,
+  AuthContractorsIndexRoute: AuthContractorsIndexRoute,
   AuthDepartmentsIndexRoute: AuthDepartmentsIndexRoute,
+  AuthDisputesIndexRoute: AuthDisputesIndexRoute,
   AuthIssuesIndexRoute: AuthIssuesIndexRoute,
   AuthTendersIndexRoute: AuthTendersIndexRoute,
   AuthWorkOrdersIndexRoute: AuthWorkOrdersIndexRoute,

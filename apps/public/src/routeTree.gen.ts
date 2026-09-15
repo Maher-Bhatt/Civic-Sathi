@@ -13,7 +13,6 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AnalyzingRouteImport } from './routes/analyzing'
 import { Route as ComplaintsRouteImport } from './routes/complaints'
 import { Route as ConsentRouteImport } from './routes/consent'
-import { Route as ContractorsRouteImport } from './routes/contractors'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as HubRouteImport } from './routes/hub'
 import { Route as LoginRouteImport } from './routes/login'
@@ -24,6 +23,8 @@ import { Route as ProjectsRouteImport } from './routes/projects'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as ReportRouteImport } from './routes/report'
 import { Route as ComplaintIdRouteImport } from './routes/complaint.$id'
+import { Route as ContractorsIndexRouteImport } from './routes/contractors/index'
+import { Route as ContractorsIdRouteImport } from './routes/contractors/$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -43,11 +44,6 @@ const ComplaintsRoute = ComplaintsRouteImport.update({
 const ConsentRoute = ConsentRouteImport.update({
   id: '/consent',
   path: '/consent',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ContractorsRoute = ContractorsRouteImport.update({
-  id: '/contractors',
-  path: '/contractors',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
@@ -100,13 +96,22 @@ const ComplaintIdRoute = ComplaintIdRouteImport.update({
   path: '/complaint/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ContractorsIndexRoute = ContractorsIndexRouteImport.update({
+  id: '/contractors/',
+  path: '/contractors/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContractorsIdRoute = ContractorsIdRouteImport.update({
+  id: '/contractors/$id',
+  path: '/contractors/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/analyzing': typeof AnalyzingRoute
   '/complaints': typeof ComplaintsRoute
   '/consent': typeof ConsentRoute
-  '/contractors': typeof ContractorsRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/hub': typeof HubRoute
   '/login': typeof LoginRoute
@@ -117,13 +122,14 @@ export interface FileRoutesByFullPath {
   '/register': typeof RegisterRoute
   '/report': typeof ReportRoute
   '/complaint/$id': typeof ComplaintIdRoute
+  '/contractors/$id': typeof ContractorsIdRoute
+  '/contractors/': typeof ContractorsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/analyzing': typeof AnalyzingRoute
   '/complaints': typeof ComplaintsRoute
   '/consent': typeof ConsentRoute
-  '/contractors': typeof ContractorsRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/hub': typeof HubRoute
   '/login': typeof LoginRoute
@@ -134,6 +140,8 @@ export interface FileRoutesByTo {
   '/register': typeof RegisterRoute
   '/report': typeof ReportRoute
   '/complaint/$id': typeof ComplaintIdRoute
+  '/contractors/$id': typeof ContractorsIdRoute
+  '/contractors': typeof ContractorsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -141,7 +149,6 @@ export interface FileRoutesById {
   '/analyzing': typeof AnalyzingRoute
   '/complaints': typeof ComplaintsRoute
   '/consent': typeof ConsentRoute
-  '/contractors': typeof ContractorsRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/hub': typeof HubRoute
   '/login': typeof LoginRoute
@@ -152,6 +159,8 @@ export interface FileRoutesById {
   '/register': typeof RegisterRoute
   '/report': typeof ReportRoute
   '/complaint/$id': typeof ComplaintIdRoute
+  '/contractors/$id': typeof ContractorsIdRoute
+  '/contractors/': typeof ContractorsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -160,7 +169,6 @@ export interface FileRouteTypes {
     | '/analyzing'
     | '/complaints'
     | '/consent'
-    | '/contractors'
     | '/forgot-password'
     | '/hub'
     | '/login'
@@ -171,13 +179,14 @@ export interface FileRouteTypes {
     | '/register'
     | '/report'
     | '/complaint/$id'
+    | '/contractors/$id'
+    | '/contractors/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/analyzing'
     | '/complaints'
     | '/consent'
-    | '/contractors'
     | '/forgot-password'
     | '/hub'
     | '/login'
@@ -188,13 +197,14 @@ export interface FileRouteTypes {
     | '/register'
     | '/report'
     | '/complaint/$id'
+    | '/contractors/$id'
+    | '/contractors'
   id:
     | '__root__'
     | '/'
     | '/analyzing'
     | '/complaints'
     | '/consent'
-    | '/contractors'
     | '/forgot-password'
     | '/hub'
     | '/login'
@@ -205,6 +215,8 @@ export interface FileRouteTypes {
     | '/register'
     | '/report'
     | '/complaint/$id'
+    | '/contractors/$id'
+    | '/contractors/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -212,7 +224,6 @@ export interface RootRouteChildren {
   AnalyzingRoute: typeof AnalyzingRoute
   ComplaintsRoute: typeof ComplaintsRoute
   ConsentRoute: typeof ConsentRoute
-  ContractorsRoute: typeof ContractorsRoute
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   HubRoute: typeof HubRoute
   LoginRoute: typeof LoginRoute
@@ -223,6 +234,8 @@ export interface RootRouteChildren {
   RegisterRoute: typeof RegisterRoute
   ReportRoute: typeof ReportRoute
   ComplaintIdRoute: typeof ComplaintIdRoute
+  ContractorsIdRoute: typeof ContractorsIdRoute
+  ContractorsIndexRoute: typeof ContractorsIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -253,13 +266,6 @@ declare module '@tanstack/react-router' {
       path: '/consent'
       fullPath: '/consent'
       preLoaderRoute: typeof ConsentRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/contractors': {
-      id: '/contractors'
-      path: '/contractors'
-      fullPath: '/contractors'
-      preLoaderRoute: typeof ContractorsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/forgot-password': {
@@ -332,6 +338,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ComplaintIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/contractors/': {
+      id: '/contractors/'
+      path: '/contractors'
+      fullPath: '/contractors/'
+      preLoaderRoute: typeof ContractorsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contractors/$id': {
+      id: '/contractors/$id'
+      path: '/contractors/$id'
+      fullPath: '/contractors/$id'
+      preLoaderRoute: typeof ContractorsIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -340,7 +360,6 @@ const rootRouteChildren: RootRouteChildren = {
   AnalyzingRoute: AnalyzingRoute,
   ComplaintsRoute: ComplaintsRoute,
   ConsentRoute: ConsentRoute,
-  ContractorsRoute: ContractorsRoute,
   ForgotPasswordRoute: ForgotPasswordRoute,
   HubRoute: HubRoute,
   LoginRoute: LoginRoute,
@@ -351,6 +370,8 @@ const rootRouteChildren: RootRouteChildren = {
   RegisterRoute: RegisterRoute,
   ReportRoute: ReportRoute,
   ComplaintIdRoute: ComplaintIdRoute,
+  ContractorsIdRoute: ContractorsIdRoute,
+  ContractorsIndexRoute: ContractorsIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

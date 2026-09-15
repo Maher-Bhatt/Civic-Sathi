@@ -6,7 +6,7 @@ import { Star, Building2, MapPin, ChevronLeft, Calendar, FileText, CheckCircle2 
 import { toast } from "sonner";
 import { LoadingState } from "@/components/ui/states";
 
-export const Route = createFileRoute("/contractors/\")({
+export const Route = createFileRoute("/contractors/$id")({
   component: ContractorProfileRoute,
 });
 
@@ -135,7 +135,7 @@ function ContractorProfileRoute() {
                         className="p-2 rounded-lg hover:bg-[var(--surface-elevated)] transition"
                       >
                         <Star
-                          className={h-8 w-8 }
+                          className={`h-8 w-8 ${ratingVal && ratingVal >= num ? "fill-orange-400 text-orange-400" : "text-[var(--muted-foreground)]"}`}
                         />
                       </button>
                     ))}
