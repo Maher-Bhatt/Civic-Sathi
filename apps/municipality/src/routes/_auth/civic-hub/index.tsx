@@ -1,19 +1,55 @@
 ﻿import { createFileRoute } from "@tanstack/react-router";
 import { GlassCard, SectionLabel } from "@/components/ui/glass-card";
-import { Network, ArrowRightLeft, ShieldCheck, Settings2, Key, Globe2, Activity } from "lucide-react";
+import { Network, ArrowRightLeft, ShieldCheck, Settings2, Key, Globe2, Activity, Megaphone, Send } from "lucide-react";
+import { useState, useEffect } from "react";
+import { toast } from "sonner";
+import { useMuniAuth } from "@/lib/muni-auth";
 
 export const Route = createFileRoute("/_auth/civic-hub/")({
   component: CivicHubControlPage,
 });
 
 function CivicHubControlPage() {
+  const { officer } = useMuniAuth();
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+  const [announcements, setAnnouncements] = useState<any[]>([]);
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem("civic_hub_announcements");
+      if (stored) setAnnouncements(JSON.parse(stored));
+    } catch {}
+  }, []);
+
+  const handlePublish = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!title || !content) return toast.error("Please fill all fields");
+    
+    const newAnn = {
+      id: Math.random().toString(36).substr(2, 9),
+      title,
+      content,
+      city: officer?.city || "Vadodara",
+      date: new Date().toISOString(),
+      author: officer?.name || "Municipal Officer"
+    };
+
+    const updated = [newAnn, ...announcements].slice(0, 5); // Keep last 5
+    localStorage.setItem("civic_hub_announcements", JSON.stringify(updated));
+    setAnnouncements(updated);
+    setTitle("");
+    setContent("");
+    toast.success("Announcement published to public Civic Hub!");
+  };
+
   return (
-    <div className="muni-page-enter space-y-6">
+    <div className="muni-page-enter space-y-6 pb-20">
       <header className="flex items-center justify-between">
         <div>
           <SectionLabel>Integration & Interoperability</SectionLabel>
           <h1 className="mt-2 text-2xl font-semibold tracking-tight">Civic Hub Control</h1>
-          <p className="text-sm text-[var(--muted-foreground)] mt-1">Manage local city API integrations and Sathi Setu endpoints.</p>
+          <p className="text-sm text-[var(--muted-foreground)] mt-1">Manage local city API integrations, endpoints, and public broadcasts.</p>
         </div>
         <button className="action-btn primary flex items-center gap-2">
           <Key className="w-4 h-4" /> Generate API Key
@@ -21,60 +57,99 @@ function CivicHubControlPage() {
       </header>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <GlassCard className="p-6 col-span-1 md:col-span-2">
-           <div className="flex items-center gap-2 mb-6">
-             <Network className="w-5 h-5 text-[var(--primary)]" />
-             <h2 className="text-lg font-bold">Active Local Integrations</h2>
+        <GlassCard className="p-6 col-span-1 md:col-span-2 space-y-6">
+           <div className="flex items-center justify-between mb-2">
+             <div className="flex items-center gap-2">
+               <Megaphone className="w-5 h-5 text-orange-500" />
+               <h2 className="text-lg font-bold">Public Civic Hub Broadcast</h2>
+             </div>
+             <span className="text-[10px] uppercase font-bold px-2 py-1 bg-orange-500/10 text-orange-600 rounded">Live Update</span>
            </div>
            
-           <div className="space-y-4">
-             {/* Sathi Setu */}
-             <div className="p-4 rounded-xl border border-[var(--glass-border)] bg-[var(--surface-elevated)] flex items-center justify-between">
-               <div className="flex items-center gap-4">
-                 <div className="w-10 h-10 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-500">
-                   <ArrowRightLeft className="w-5 h-5" />
-                 </div>
-                 <div>
-                   <h3 className="font-semibold text-[var(--foreground)]">Sathi Setu Interoperability</h3>
-                   <p className="text-xs text-[var(--muted-foreground)]">Connecting local PWD and Water Board systems.</p>
-                 </div>
-               </div>
-               <div className="flex items-center gap-4">
-                 <div className="text-right">
-                   <span className="block text-xs font-bold text-emerald-500">Connected</span>
-                   <span className="block text-[10px] text-[var(--muted-foreground)]">Last sync: 2 mins ago</span>
-                 </div>
-                 <button className="p-2 rounded-lg hover:bg-[var(--surface)] text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition">
-                   <Settings2 className="w-5 h-5" />
-                 </button>
-               </div>
-             </div>
+           <form onSubmit={handlePublish} className="space-y-4">
+              <div>
+                <label className="block text-xs font-semibold mb-1 text-[var(--muted-foreground)]">Announcement Title</label>
+                <input 
+                  type="text" 
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  className="w-full bg-[var(--surface)] border border-[var(--glass-border)] rounded-lg p-2.5 text-sm focus:outline-none focus:border-[var(--primary)]"
+                  placeholder="e.g. Heavy Rain Alert for Vadodara"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold mb-1 text-[var(--muted-foreground)]">Message Content</label>
+                <textarea 
+                  value={content}
+                  onChange={(e) => setContent(e.target.value)}
+                  rows={3}
+                  className="w-full bg-[var(--surface)] border border-[var(--glass-border)] rounded-lg p-2.5 text-sm focus:outline-none focus:border-[var(--primary)] resize-none"
+                  placeholder="Provide detailed instructions or updates for citizens..."
+                />
+              </div>
+              <button type="submit" className="action-btn primary w-full flex items-center justify-center gap-2">
+                <Send className="w-4 h-4" /> Publish Broadcast to Citizens
+              </button>
+           </form>
 
-             {/* Smart City Cameras */}
-             <div className="p-4 rounded-xl border border-[var(--glass-border)] bg-[var(--surface-elevated)] flex items-center justify-between">
-               <div className="flex items-center gap-4">
-                 <div className="w-10 h-10 rounded-full bg-purple-500/10 flex items-center justify-center text-purple-500">
-                   <Globe2 className="w-5 h-5" />
+           {announcements.length > 0 && (
+             <div className="pt-4 border-t border-[var(--glass-border)] space-y-3">
+               <h3 className="text-xs font-bold uppercase text-[var(--muted-foreground)]">Recent Broadcasts</h3>
+               {announcements.map(ann => (
+                 <div key={ann.id} className="p-3 rounded-lg bg-[var(--surface-elevated)] border border-[var(--glass-border)]">
+                   <div className="flex justify-between items-start">
+                     <p className="font-semibold text-sm">{ann.title}</p>
+                     <span className="text-[10px] text-[var(--muted-foreground)]">{new Date(ann.date).toLocaleDateString()}</span>
+                   </div>
+                   <p className="text-xs text-[var(--muted-foreground)] mt-1">{ann.content}</p>
                  </div>
-                 <div>
-                   <h3 className="font-semibold text-[var(--foreground)]">Smart City Surveillance Feed</h3>
-                   <p className="text-xs text-[var(--muted-foreground)]">AI Triage CCTV analysis endpoint.</p>
-                 </div>
-               </div>
-               <div className="flex items-center gap-4">
-                 <div className="text-right">
-                   <span className="block text-xs font-bold text-emerald-500">Connected</span>
-                   <span className="block text-[10px] text-[var(--muted-foreground)]">Last sync: 10 secs ago</span>
-                 </div>
-                 <button className="p-2 rounded-lg hover:bg-[var(--surface)] text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition">
-                   <Settings2 className="w-5 h-5" />
-                 </button>
-               </div>
+               ))}
              </div>
-           </div>
+           )}
         </GlassCard>
 
         <div className="space-y-6">
+          <GlassCard className="p-6">
+             <div className="flex items-center gap-2 mb-6">
+               <Network className="w-5 h-5 text-[var(--primary)]" />
+               <h2 className="text-lg font-bold">Local Integrations</h2>
+             </div>
+             
+             <div className="space-y-4">
+               {/* Sathi Setu */}
+               <div className="p-3 rounded-xl border border-[var(--glass-border)] bg-[var(--surface-elevated)] flex items-center justify-between">
+                 <div className="flex items-center gap-3">
+                   <div className="w-8 h-8 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-500">
+                     <ArrowRightLeft className="w-4 h-4" />
+                   </div>
+                   <div>
+                     <h3 className="font-semibold text-sm text-[var(--foreground)]">Sathi Setu</h3>
+                     <p className="text-[10px] text-[var(--muted-foreground)]">PWD & Water Board</p>
+                   </div>
+                 </div>
+                 <div className="text-right">
+                   <span className="block text-[10px] font-bold text-emerald-500">Connected</span>
+                 </div>
+               </div>
+
+               {/* Smart City Cameras */}
+               <div className="p-3 rounded-xl border border-[var(--glass-border)] bg-[var(--surface-elevated)] flex items-center justify-between">
+                 <div className="flex items-center gap-3">
+                   <div className="w-8 h-8 rounded-full bg-purple-500/10 flex items-center justify-center text-purple-500">
+                     <Globe2 className="w-4 h-4" />
+                   </div>
+                   <div>
+                     <h3 className="font-semibold text-sm text-[var(--foreground)]">Smart CCTV</h3>
+                     <p className="text-[10px] text-[var(--muted-foreground)]">AI Triage Stream</p>
+                   </div>
+                 </div>
+                 <div className="text-right">
+                   <span className="block text-[10px] font-bold text-emerald-500">Connected</span>
+                 </div>
+               </div>
+             </div>
+          </GlassCard>
+
           <GlassCard className="p-6">
             <h2 className="text-sm font-bold uppercase text-[var(--muted-foreground)] tracking-wider mb-4">Traffic & Sync</h2>
             <div className="space-y-4">
