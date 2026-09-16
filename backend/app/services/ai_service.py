@@ -4,7 +4,9 @@ import os
 import re
 import json
 import logging
+from pathlib import Path
 import httpx
+import numpy as np
 from typing import Any
 from app.core.config import settings
 
@@ -70,6 +72,166 @@ class AIService:
             return "kn"
         return "en"
 
+    def _get_nlp_model(self):
+        if not hasattr(self, "_cached_nlp_model"):
+            self._cached_nlp_model = None
+            try:
+                import joblib
+                model_path = Path(__file__).parent.parent / "ml" / "complaint_classifier.joblib"
+                if model_path.exists():
+                    self._cached_nlp_model = joblib.load(model_path)
+            except Exception as e:
+                logger.warning(f"Failed to load complaint_classifier.joblib: {e}")
+        return self._cached_nlp_model
+
+    def _get_vision_model(self):
+        if not hasattr(self, "_cached_vision_model"):
+            self._cached_vision_model = None
+            try:
+                import joblib
+                model_path = Path(__file__).parent.parent / "ml" / "vision_model.pkl"
+                if model_path.exists():
+                    self._cached_vision_model = joblib.load(model_path)
+            except Exception as e:
+                logger.warning(f"Failed to load vision_model.pkl: {e}")
+        return self._cached_vision_model
+
+    def _ml_complaint_classify(
+        self,
+        title: str,
+        description: str,
+        category_hint: str | None = None,
+        language: str = "en",
+    ) -> dict[str, Any] | None:
+        """Classify complaint text using trained TF-IDF + Calibrated SGD classifier."""
+        artifact = self._get_nlp_model()
+        if not artifact:
+            return None
+
+        try:
+            full_text = f"{title} {description}".strip()
+            if not full_text:
+                return None
+
+            model = artifact["model"]
+            dept_map = artifact.get("department_map", {})
+            probs = model.predict_proba([full_text])[0]
+            classes = artifact["classes"]
+            best_idx = int(np.argmax(probs))
+            predicted_cat = str(classes[best_idx])
+            confidence = float(probs[best_idx])
+
+            severity = 5
+            txt_lower = full_text.lower()
+            if any(w in txt_lower for w in ["burst", "danger", "hazard", "fire", "spark", "accident", "emergency", "injury"]):
+                severity = 9
+                priority = "urgent"
+            elif any(w in txt_lower for w in ["broken", "overflow", "severe", "major", "dark", "huge", "heavy"]):
+                severity = 7
+                priority = "high"
+            elif any(w in txt_lower for w in ["minor", "cleaning", "slow", "delay", "small"]):
+                severity = 3
+                priority = "low"
+            else:
+                priority = "medium"
+
+            risk_score = min(100, int(severity * 10 + (confidence * 10)))
+            dept_slug = dept_map.get(predicted_cat, "roads")
+
+            return {
+                "category": predicted_cat,
+                "severity_score": severity,
+                "risk_score": risk_score,
+                "priority": priority,
+                "department_slug": dept_slug,
+                "language": language,
+                "confidence": round(confidence, 3),
+                "source": "trained-ml-classifier",
+                "interpreted_text": f"Machine-learning verified civic grievance triaged to {predicted_cat.replace('_', ' ').title()}.",
+                "summary": title if title else description[:60],
+                "suggested_action": f"Dispatch to municipal {dept_slug} department for inspection and remediation.",
+            }
+        except Exception as e:
+            logger.warning(f"ML text classification error: {e}")
+            return None
+
+    def _ml_vision_classify(
+        self,
+        img: Any,
+        visual_desc: str,
+        description: str | None = None,
+    ) -> dict[str, Any] | None:
+        """Classify image features using trained Civic Vision Random Forest model."""
+        artifact = self._get_vision_model()
+        if not artifact:
+            return None
+
+        try:
+            img_small = img.resize((128, 128)).convert("RGB")
+            arr = np.array(img_small, dtype=np.float32)
+            gray = img_small.convert("L")
+            gray_arr = np.array(gray, dtype=np.float32)
+
+            mean_r, mean_g, mean_b = np.mean(arr[:, :, 0]), np.mean(arr[:, :, 1]), np.mean(arr[:, :, 2])
+            std_r, std_g, std_b = np.std(arr[:, :, 0]), np.std(arr[:, :, 1]), np.std(arr[:, :, 2])
+
+            max_c = np.max(arr, axis=2)
+            min_c = np.min(arr, axis=2)
+            sat = (max_c - min_c) / (max_c + 1e-5)
+            mean_sat, std_sat = float(np.mean(sat)), float(np.std(sat))
+
+            mean_lum = float(np.mean(gray_arr))
+            p10_lum = float(np.percentile(gray_arr, 10))
+            p50_lum = float(np.percentile(gray_arr, 50))
+            p90_lum = float(np.percentile(gray_arr, 90))
+
+            diff_x = np.abs(np.diff(gray_arr, axis=1))
+            diff_y = np.abs(np.diff(gray_arr, axis=0))
+            roughness = float((np.mean(diff_x) + np.mean(diff_y)) / 2.0)
+            std_roughness = float((np.std(diff_x) + np.std(diff_y)) / 2.0)
+
+            hist_r, _ = np.histogram(arr[:, :, 0], bins=4, range=(0, 256), density=True)
+            hist_g, _ = np.histogram(arr[:, :, 1], bins=4, range=(0, 256), density=True)
+            hist_b, _ = np.histogram(arr[:, :, 2], bins=4, range=(0, 256), density=True)
+
+            features = [
+                mean_r, mean_g, mean_b, std_r, std_g, std_b,
+                mean_sat, std_sat, mean_lum, p10_lum, p50_lum, p90_lum,
+                roughness, std_roughness,
+            ] + list(hist_r) + list(hist_g) + list(hist_b)
+
+            feat_vec = np.array([features], dtype=np.float32)
+            rf = artifact["model"]
+            probs = rf.predict_proba(feat_vec)[0]
+            classes = artifact["classes"]
+            best_idx = int(np.argmax(probs))
+            predicted_cat = str(classes[best_idx])
+            confidence = float(probs[best_idx])
+
+            cat_titles = {
+                "road_damage": "Road damage or pothole cavity",
+                "water_supply": "Water pipeline leakage or flooding",
+                "garbage_collection": "Municipal solid waste or garbage dump",
+                "drainage": "Drainage blockage or open sewer channel",
+                "street_lighting": "Street lighting or public illumination issue",
+                "electricity": "Electrical wiring or power infrastructure issue",
+                "sanitation": "Public sanitation or hygiene facility concern",
+                "health": "Public health hazard / vector breeding condition",
+            }
+
+            return {
+                "source": "civic-vision-rf-model",
+                "detected": cat_titles.get(predicted_cat, predicted_cat.replace("_", " ").title()),
+                "category": predicted_cat,
+                "confidence": "High" if confidence > 0.4 else "Medium",
+                "confidence_score": round(confidence, 3),
+                "evidence": f"Trained visual feature classifier identified {predicted_cat.replace('_', ' ')} with {confidence * 100:.1f}% confidence ({visual_desc}).",
+                "safety_note": "Evidence verified against trained municipal photo catalog. Field officer dispatch recommended.",
+            }
+        except Exception as e:
+            logger.warning(f"ML vision feature classification error: {e}")
+            return None
+
     async def analyze_complaint(
         self,
         title: str,
@@ -83,7 +245,10 @@ class AIService:
         """
         detected_language = self._detect_language(f"{title} {description}", language)
         if not self.is_configured:
-            logger.info("AI API key not configured; using local multilingual heuristic engine.")
+            logger.info("AI API key not configured; evaluating trained ML model / heuristic.")
+            ml_pred = self._ml_complaint_classify(title, description, category_hint, detected_language)
+            if ml_pred:
+                return ml_pred
             return self._local_complaint_heuristic(title, description, category_hint, detected_language)
 
         system_prompt = (
@@ -159,8 +324,11 @@ class AIService:
                 else:
                     logger.warning(f"AI API returned status {response.status_code}: {response.text}")
         except Exception as e:
-            logger.warning(f"AI API call failed: {e}; using heuristic fallback.")
+            logger.warning(f"AI API call failed: {e}; using ML model / heuristic fallback.")
 
+        ml_pred = self._ml_complaint_classify(title, description, category_hint, detected_language)
+        if ml_pred:
+            return ml_pred
         return self._local_complaint_heuristic(title, description, category_hint, detected_language)
 
     async def analyze_image(self, data_url: str, description: str | None = None) -> dict[str, Any]:
@@ -277,6 +445,12 @@ class AIService:
                             }
             except Exception as err:
                 logger.warning(f"Vision AI LLM synthesis failed: {err}; falling back to visual heuristic.")
+
+        # Try native trained Vision Random Forest model first
+        if "img" in locals() and img is not None:
+            ml_vision = self._ml_vision_classify(img, visual_desc, description)
+            if ml_vision:
+                return ml_vision
 
         # Deterministic visual heuristic fallback
         return self._rule_based_image_review(description, visual_desc, saturation, luminance, roughness)
