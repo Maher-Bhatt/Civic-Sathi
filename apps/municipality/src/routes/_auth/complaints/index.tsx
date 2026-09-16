@@ -294,6 +294,9 @@ function ComplaintsPage() {
                   ...(v.filters["severity"]
                     ? { severity: v.filters["severity"] as ComplaintFilters["severity"] }
                     : {}),
+                  ...(v.filters["status"]
+                    ? { status: v.filters["status"] as ComplaintFilters["status"] }
+                    : {}),
                   ...(v.filters["ward"] ? { ward: v.filters["ward"] as string } : {}),
                 }))
               }

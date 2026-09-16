@@ -1278,7 +1278,28 @@ export async function saveMuniSettings(patch: Partial<MuniSettings>): Promise<Mu
 }
 
 export async function getSavedViews(): Promise<SavedView[]> {
-  return [];
+  return [
+    {
+      id: "v-new",
+      name: "New Reports",
+      filters: { status: "Received" },
+    },
+    {
+      id: "v-active",
+      name: "Active & In Progress",
+      filters: { status: "In Progress" },
+    },
+    {
+      id: "v-review",
+      name: "Under Review",
+      filters: { status: "Under Review" },
+    },
+    {
+      id: "v-resolved",
+      name: "Completed",
+      filters: { status: "Resolved" },
+    },
+  ];
 }
 export async function officerSearch(query: string) {
   const term = query.trim();
