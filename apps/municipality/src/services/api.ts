@@ -642,7 +642,7 @@ function normalizeMuniComplaint(raw: any, fallbackCity: CityId): MuniComplaint {
   const severityValue = String(raw?.severity ?? "").toLowerCase();
   const severity = (severityValue === "critical" || severityValue === "high" || severityValue === "moderate" || severityValue === "low")
     ? severityValue[0]!.toUpperCase() + severityValue.slice(1)
-    : score >= 80 ? "Critical" : score >= 60 ? "High" : score >= 35 ? "Moderate" : "Low";
+    : score >= 90 ? "Critical" : score >= 70 ? "High" : score >= 50 ? "Moderate" : "Low";
   const statusMap: Record<string, ComplaintStatus> = {
     received: "Received",
     in_review: "Under Review",

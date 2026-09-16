@@ -292,7 +292,7 @@ function normalizeComplaint(raw: any, fallbackInput?: any): Complaint | null {
   const score = Number(source.severity_score ?? 0);
   const severity: Severity =
     source.severity ||
-    (score >= 80 ? "Critical" : score >= 60 ? "High" : score >= 35 ? "Moderate" : "Low");
+    (score >= 90 ? "Critical" : score >= 70 ? "High" : score >= 50 ? "Moderate" : "Low");
   const createdAt = source.createdAt || source.created_at || new Date().toISOString();
   const complaintId = source.public_id || source.id || `CMP-${Date.now()}`;
   const timeline =
