@@ -135,7 +135,7 @@ function TenderDetail() {
                 required
                 min="0"
                 value={bidAmount}
-                onChange={setBidAmount}
+                onChange={(e) => setBidAmount(e.target.value)}
                 placeholder="e.g. ₹5,00,000"
               />
             </div>
@@ -149,7 +149,7 @@ function TenderDetail() {
                 required
                 rows={5}
                 value={proposal}
-                onChange={setProposal}
+                onChange={(e) => setProposal(e.target.value)}
                 placeholder={t('ui.detail_your_approach_timeline_')}
               />
             </div>
