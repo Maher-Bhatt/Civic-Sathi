@@ -355,8 +355,7 @@ def citizen_login(
     email = login_data.email.strip().lower()
 
     user = db.query(User).filter(
-        User.email == email,
-        User.role.in_(["citizen", "contractor"])
+        User.email == email
     ).first()
 
     if not user or not user.password_hash:

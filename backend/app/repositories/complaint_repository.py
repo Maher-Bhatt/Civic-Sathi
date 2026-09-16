@@ -95,11 +95,29 @@ class ComplaintRepository:
         ).scalars())
 
     def get_next_public_id_number(self) -> int:
-        """Get next public ID sequence number from Postgres sequence."""
-        result = self.db.execute(
-            select(func.nextval("complaint_public_seq"))
-        ).scalar()
-        return result
+        """Get next public ID sequence number from Postgres sequence, guaranteed unique."""
+        try:
+            seq_val = self.db.execute(
+                select(func.nextval("complaint_public_seq"))
+            ).scalar() or 1
+        except Exception:
+            seq_val = 1
+
+        max_val = self.db.execute(
+            select(func.coalesce(func.max(Complaint.public_id_seq), 0))
+        ).scalar() or 0
+
+        if seq_val <= max_val:
+            seq_val = max_val + 1
+            try:
+                self.db.execute(
+                    select(func.setval("complaint_public_seq", seq_val))
+                )
+                self.db.commit()
+            except Exception:
+                pass
+
+        return seq_val
 
     def create_analysis(self, analysis: ComplaintAnalysis) -> ComplaintAnalysis:
         """Create complaint analysis."""

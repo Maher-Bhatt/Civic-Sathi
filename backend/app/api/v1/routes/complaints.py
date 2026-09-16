@@ -7,7 +7,7 @@ from sqlalchemy import func as sqlfunc
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
-from app.core.security import get_current_user, require_officer_permission
+from app.core.security import get_current_user, get_optional_user, require_officer_permission
 from app.models.procurement import City
 from app.models.user import User
 from app.schemas.complaint import (
@@ -44,14 +44,14 @@ def resolve_city_id(db: Session, city_value: str | None) -> str | None:
 def create_complaint(
     complaint_data: ComplaintCreate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User | None = Depends(get_optional_user),
 ):
-    """Create a complaint owned by the authenticated citizen."""
+    """Create a complaint owned by the authenticated citizen or guest reporter."""
     service = ComplaintService(db)
     return service.create_complaint(
         complaint_data,
-        submitted_by_id=current_user.id,
-        submitted_by_name=current_user.name,
+        submitted_by_id=current_user.id if current_user else None,
+        submitted_by_name=current_user.name if current_user else (complaint_data.submitted_by_name or "Citizen"),
     )
 
 
