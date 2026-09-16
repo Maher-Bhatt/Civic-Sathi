@@ -124,7 +124,7 @@ function ComplaintsPage() {
       const response = await proposeAiMergeGroups(backendIds);
       setMergeProposal(response);
       if (response.proposals.length === 0) {
-        toast.info("No same-area, same-issue group was found in the selected complaints.");
+        toast.info("No groups could be formed from the selected complaints.");
       } else {
         toast.success(`${response.proposals.length} reviewable AI group${response.proposals.length === 1 ? "" : "s"} found.`);
       }
@@ -348,7 +348,7 @@ function ComplaintsPage() {
           {mergeProposal.proposals.length === 0 ? (
             <div className="flex items-center justify-center rounded-xl border border-slate-200 bg-white p-8 text-center shadow-sm dark:border-slate-800 dark:bg-slate-900">
               <p className="text-sm font-medium text-slate-500">
-                No selected complaints meet the same-city, same-category, same-area, and text-similarity rules.
+                No groups could be formed. For manual grouping, select up to 15 complaints of the same category to bypass geography rules.
               </p>
             </div>
           ) : (

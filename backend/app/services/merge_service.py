@@ -51,15 +51,21 @@ def city_for_officer(db: Session, officer: User) -> City:
 
 
 def _complaint_query(db: Session, city: City, complaint_ids: list[UUID] | None = None) -> list[Complaint]:
-    query = select(Complaint).where(
-        and_(
-            Complaint.city_id == city.id,
-            Complaint.status.in_(ACTIVE_STATUSES),
-            Complaint.status != "rejected",
-        )
-    )
     if complaint_ids:
-        query = query.where(Complaint.id.in_(complaint_ids))
+        query = select(Complaint).where(
+            and_(
+                Complaint.city_id == city.id,
+                Complaint.id.in_(complaint_ids)
+            )
+        )
+    else:
+        query = select(Complaint).where(
+            and_(
+                Complaint.city_id == city.id,
+                Complaint.status.in_(ACTIVE_STATUSES),
+                Complaint.status != "rejected",
+            )
+        )
     query = query.order_by(Complaint.created_at.asc(), Complaint.id.asc()).limit(1000)
     return list(db.execute(query).scalars().unique())
 
@@ -113,7 +119,7 @@ def _member_response(complaint: Complaint) -> MergeMemberResponse:
     )
 
 
-def _proposal_components(complaints: list[Complaint]) -> tuple[list[list[Complaint]], dict[tuple[UUID, UUID], tuple[float, float | None]]]:
+def _proposal_components(complaints: list[Complaint], explicit_selection: bool = False) -> tuple[list[list[Complaint]], dict[tuple[UUID, UUID], tuple[float, float | None]]]:
     parent = list(range(len(complaints)))
     edges: dict[tuple[UUID, UUID], tuple[float, float | None]] = {}
     threshold = float(settings.canonical_group_similarity_threshold)
@@ -122,10 +128,10 @@ def _proposal_components(complaints: list[Complaint]) -> tuple[list[list[Complai
             right = complaints[right_index]
             if normalize_category(left.category) != normalize_category(right.category):
                 continue
-            if not same_area(left, right):
+            if not explicit_selection and not same_area(left, right):
                 continue
             score = _text_score(left, right, None)
-            if score < threshold:
+            if not explicit_selection and score < threshold:
                 continue
             distance = _distance_meters(left, right)
             key = tuple(sorted((left.id, right.id), key=str))
@@ -146,7 +152,7 @@ def build_merge_proposals(
 ) -> MergeProposalResponse:
     city = city_for_officer(db, officer)
     complaints = _complaint_query(db, city, complaint_ids)
-    groups, edges = _proposal_components(complaints)
+    groups, edges = _proposal_components(complaints, explicit_selection=bool(complaint_ids and len(complaint_ids) <= 15))
     proposals: list[MergeProposal] = []
 
     for members in sorted(groups, key=lambda group: (-len(group), str(group[0].id))):
