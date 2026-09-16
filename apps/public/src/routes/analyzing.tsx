@@ -119,7 +119,7 @@ function AnalyzingPage() {
       };
     const city = getCity(draft.city || "vadodara");
     const wardNumberMatch = String(safeLocation.ward || "").match(/\d+/);
-    const safePhoto = typeof draft.photo === "string" && draft.photo.length < 200_000 ? draft.photo : undefined;
+    const safePhoto = typeof draft.photo === "string" && draft.photo.length < 2_000_000 ? draft.photo : undefined;
     try {
       const created = await createComplaint({
         title: `${analysis.category} at ${safeLocation.ward || city.name}`,

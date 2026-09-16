@@ -340,8 +340,8 @@ function normalizeComplaint(raw: any, fallbackInput?: any): Complaint | null {
 export async function createComplaint(input: any): Promise<Complaint> {
   try {
     const payload = { ...input };
-    // Safety guard: if photo is over 150KB, strip it from DB creation payload to avoid network timeouts
-    if (typeof payload.photo === "string" && payload.photo.length > 150_000) {
+    // Safety guard: if photo is over 2MB, strip it from DB creation payload to avoid network timeouts
+    if (typeof payload.photo === "string" && payload.photo.length > 2_000_000) {
       payload.photo = undefined;
     }
     const res = await api.complaints.create(payload);

@@ -121,6 +121,22 @@ class AIService:
             predicted_cat = str(classes[best_idx])
             confidence = float(probs[best_idx])
 
+            # Trust the vision model's hint if the text model is very uncertain
+            if category_hint and confidence < 0.6:
+                category_hint_slug = category_hint.strip().lower().replace(" ", "_").replace("-", "_")
+                category_aliases = {
+                    "roads": "road_damage",
+                    "road": "road_damage",
+                    "water": "water_supply",
+                    "garbage": "garbage_collection",
+                    "streetlight": "street_lighting",
+                    "street_lights": "street_lighting",
+                }
+                category_hint_slug = category_aliases.get(category_hint_slug, category_hint_slug)
+                if category_hint_slug in classes:
+                    predicted_cat = category_hint_slug
+                    confidence = 0.8  # boosted confidence from vision model
+
             severity = 5
             txt_lower = full_text.lower()
             if any(w in txt_lower for w in ["burst", "danger", "hazard", "fire", "spark", "accident", "emergency", "injury"]):
