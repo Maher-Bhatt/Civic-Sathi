@@ -53,6 +53,7 @@ class Complaint(Base, UUIDMixin, TimestampMixin):
     submitted_by_phone: Mapped[str | None] = mapped_column(String(20))
     
     source: Mapped[str] = mapped_column(String(20), default="web", nullable=False)
+    photo_url: Mapped[str | None] = mapped_column(Text, nullable=True)
     
     # Relationships
     department: Mapped["Department"] = relationship("Department", lazy="joined")

@@ -127,6 +127,8 @@ class ComplaintResponse(BaseModel):
     address_text: str | None = None
     submitted_by_name: str | None = None
     submitted_by_phone: str | None = None
+    photo_url: str | None = None
+    photo: str | None = None
     privacy_status: str = "Protected (Anti-Retaliation)"
     created_at: datetime
     updated_at: datetime
@@ -167,6 +169,8 @@ class ComplaintListItem(BaseModel):
     lat: float | None = None
     lng: float | None = None
     address_text: str | None = None
+    photo_url: str | None = None
+    photo: str | None = None
     created_at: datetime
     updated_at: datetime | None = None
     language: str | None = None

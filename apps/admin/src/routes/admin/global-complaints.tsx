@@ -180,10 +180,22 @@ function GlobalComplaintsPage() {
                       {complaint.public_id || String(complaint.id).slice(0, 8)}
                     </td>
                     <td className="px-6 py-4">
-                      <div className="font-semibold text-foreground truncate max-w-xs" title={complaint.title}>
-                        {complaint.title || 'Untitled grievance'}
+                      <div className="flex items-center gap-3">
+                        {(complaint.photo_url || complaint.photo) && (
+                          <img
+                            src={complaint.photo_url || complaint.photo}
+                            alt=""
+                            className="w-10 h-10 rounded-lg object-cover border border-[var(--glass-border)] shrink-0"
+                            loading="lazy"
+                          />
+                        )}
+                        <div className="min-w-0">
+                          <div className="font-semibold text-foreground truncate max-w-xs" title={complaint.title}>
+                            {complaint.title || 'Untitled grievance'}
+                          </div>
+                          <div className="text-xs text-muted-foreground mt-0.5">{complaint.category || 'General'}</div>
+                        </div>
                       </div>
-                      <div className="text-xs text-muted-foreground mt-0.5">{complaint.category || 'General'}</div>
                     </td>
                     <td className="px-6 py-4 font-medium text-foreground">{getCityLabel(complaint)}</td>
                     <td className="px-6 py-4 text-muted-foreground text-xs">{getWardLabel(complaint)}</td>

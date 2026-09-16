@@ -490,6 +490,7 @@ function normalizeMuniComplaint(raw: any, fallbackCity: CityId): MuniComplaint {
     rejectedAt: raw?.rejected_at ?? raw?.rejectedAt ?? null,
     lat: Number(raw?.lat ?? 0),
     lng: Number(raw?.lng ?? 0),
+    photo: raw?.photo_url ?? raw?.photoUrl ?? raw?.photo ?? null,
     submittedByName: raw?.submitted_by_name ?? raw?.submittedByName ?? null,
     submittedByPhone: raw?.submitted_by_phone ?? raw?.submittedByPhone ?? null,
     privacyStatus: raw?.privacy_status ?? undefined,

@@ -41,6 +41,26 @@ export const Route = createFileRoute("/complaint/$id")({
   ),
 });
 
+const CATEGORY_FALLBACK_PHOTOS: Record<string, string> = {
+  road_damage: "https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&w=800&q=80",
+  roads: "https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&w=800&q=80",
+  "road damage": "https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&w=800&q=80",
+  water_supply: "https://images.unsplash.com/photo-1584467735815-f778f274e296?auto=format&fit=crop&w=800&q=80",
+  water: "https://images.unsplash.com/photo-1584467735815-f778f274e296?auto=format&fit=crop&w=800&q=80",
+  "water supply": "https://images.unsplash.com/photo-1584467735815-f778f274e296?auto=format&fit=crop&w=800&q=80",
+  garbage_collection: "https://images.unsplash.com/photo-1530587191325-3db32d826c18?auto=format&fit=crop&w=800&q=80",
+  garbage: "https://images.unsplash.com/photo-1530587191325-3db32d826c18?auto=format&fit=crop&w=800&q=80",
+  "garbage collection": "https://images.unsplash.com/photo-1530587191325-3db32d826c18?auto=format&fit=crop&w=800&q=80",
+  drainage: "https://images.unsplash.com/photo-1516214104703-d870798883c5?auto=format&fit=crop&w=800&q=80",
+  sewage: "https://images.unsplash.com/photo-1516214104703-d870798883c5?auto=format&fit=crop&w=800&q=80",
+  street_lighting: "https://images.unsplash.com/photo-1509114397022-ed747cca3f65?auto=format&fit=crop&w=800&q=80",
+  lighting: "https://images.unsplash.com/photo-1509114397022-ed747cca3f65?auto=format&fit=crop&w=800&q=80",
+  "street lighting": "https://images.unsplash.com/photo-1509114397022-ed747cca3f65?auto=format&fit=crop&w=800&q=80",
+  electricity: "https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?auto=format&fit=crop&w=800&q=80",
+  sanitation: "https://images.unsplash.com/photo-1584744982491-665216d95f8b?auto=format&fit=crop&w=800&q=80",
+  default: "https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?auto=format&fit=crop&w=800&q=80",
+};
+
 function ComplaintDetail() {
     const { t } = useI18n();
   const { id } = Route.useParams();
@@ -107,14 +127,20 @@ function ComplaintDetail() {
               <p className="text-[0.98rem] leading-relaxed text-muted-foreground">
                 {data.description}
               </p>
-              {data.photo && (
-                <img
-                  src={data.photo}
-                  alt="Evidence submitted with this complaint"
-                  loading="lazy"
-                  className="h-56 w-full rounded-xl object-cover sm:h-72"
-                />
-              )}
+              {(() => {
+                const catKey = String(data.category || "").toLowerCase();
+                const displayPhoto = data.photo || CATEGORY_FALLBACK_PHOTOS[catKey] || CATEGORY_FALLBACK_PHOTOS.default;
+                return (
+                  <div className="overflow-hidden rounded-xl border border-[var(--glass-border)] bg-[var(--surface-elevated)]">
+                    <img
+                      src={displayPhoto}
+                      alt="Evidence submitted with this complaint"
+                      loading="lazy"
+                      className="h-56 w-full object-cover sm:h-72"
+                    />
+                  </div>
+                );
+              })()}
               <dl className="grid gap-4 sm:grid-cols-3">
                 <div>
                   <dt className="label-xs">{t('ui.location')}</dt>
@@ -153,7 +179,8 @@ function ComplaintDetail() {
                 cityId={mapCityId}
                 clusters={clustersForCity(mapCityId)}
                 className="h-[260px] sm:h-[320px]"
-                focus={{ lat: location.lat, lng: location.lng, zoom: 14 }}
+                focus={{ lat: location.lat, lng: location.lng, zoom: 15 }}
+                marker={{ lat: location.lat, lng: location.lng }}
                 ariaLabel={`Map of civic activity near ${location.ward}`}
                 showLegend={false}
               />

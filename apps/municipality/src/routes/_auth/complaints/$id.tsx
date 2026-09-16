@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { safeFormat } from "@/lib/safe-format";
 import { ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
-import { CivicMap } from "@/components/civic-map";
+import { ClientCivicMap } from "@/components/civic-map-panel";
 import { InvestigationTimeline } from "@/components/municipality/investigation-timeline";
 import { SeverityBadge, StatusBadge } from "@/components/municipality/status-badge";
 import { GlassCard, SectionLabel } from "@/components/ui/glass-card";
@@ -20,6 +20,22 @@ export const Route = createFileRoute("/_auth/complaints/$id")({
   }),
   component: ComplaintDetailPage,
 });
+
+const CATEGORY_FALLBACK_PHOTOS: Record<string, string> = {
+  road_damage: "https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&w=800&q=80",
+  roads: "https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&w=800&q=80",
+  water_supply: "https://images.unsplash.com/photo-1584467735815-f778f274e296?auto=format&fit=crop&w=800&q=80",
+  water: "https://images.unsplash.com/photo-1584467735815-f778f274e296?auto=format&fit=crop&w=800&q=80",
+  garbage_collection: "https://images.unsplash.com/photo-1530587191325-3db32d826c18?auto=format&fit=crop&w=800&q=80",
+  garbage: "https://images.unsplash.com/photo-1530587191325-3db32d826c18?auto=format&fit=crop&w=800&q=80",
+  drainage: "https://images.unsplash.com/photo-1516214104703-d870798883c5?auto=format&fit=crop&w=800&q=80",
+  sewage: "https://images.unsplash.com/photo-1516214104703-d870798883c5?auto=format&fit=crop&w=800&q=80",
+  street_lighting: "https://images.unsplash.com/photo-1509114397022-ed747cca3f65?auto=format&fit=crop&w=800&q=80",
+  lighting: "https://images.unsplash.com/photo-1509114397022-ed747cca3f65?auto=format&fit=crop&w=800&q=80",
+  electricity: "https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?auto=format&fit=crop&w=800&q=80",
+  sanitation: "https://images.unsplash.com/photo-1584744982491-665216d95f8b?auto=format&fit=crop&w=800&q=80",
+  default: "https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?auto=format&fit=crop&w=800&q=80",
+};
 
 function ComplaintDetailPage() {
     const { t } = useI18n();
@@ -175,6 +191,8 @@ function ComplaintDetailPage() {
     areaId: complaint.area,
   };
 
+  const displayPhoto = complaint.photo || CATEGORY_FALLBACK_PHOTOS[categoryKey] || CATEGORY_FALLBACK_PHOTOS.default;
+
   return (
     <div className="muni-page-enter space-y-6">
       <Link
@@ -204,6 +222,22 @@ function ComplaintDetailPage() {
             <p className="mt-4 text-sm leading-relaxed text-foreground">
               {complaint.description || "No description was supplied in the backend record."}
             </p>
+            {displayPhoto && (
+              <div className="mt-4 overflow-hidden rounded-2xl border border-[var(--glass-border)] bg-[var(--surface-elevated)] shadow-sm">
+                <div className="relative group">
+                  <img
+                    src={displayPhoto}
+                    alt={complaint.title}
+                    loading="lazy"
+                    className="h-64 sm:h-80 w-full object-cover transition-transform duration-300 group-hover:scale-[1.01]"
+                  />
+                  <div className="absolute top-3 left-3 flex items-center gap-1.5 rounded-full bg-black/60 px-3 py-1 text-xs font-medium text-white backdrop-blur-md">
+                    <span>📷</span>
+                    <span>Field Evidence Photo</span>
+                  </div>
+                </div>
+              </div>
+            )}
             <dl className="mt-6 grid gap-x-5 gap-y-4 sm:grid-cols-2 lg:grid-cols-3">
               <div><dt className="label-xs">{t('ui.area')}</dt><dd className="mt-1 text-sm font-medium">{complaint.area}</dd></div>
               <div><dt className="label-xs">{t('ui.ward')}</dt><dd className="mt-1 text-sm font-medium">{complaint.ward}</dd></div>
@@ -285,18 +319,29 @@ function ComplaintDetailPage() {
           )}
 
           <GlassCard elevation="raised" className="overflow-hidden">
-            <div className="border-b border-[var(--glass-border)] p-4">
+            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[var(--glass-border)] p-4">
               <SectionLabel>{t('ui.location')}</SectionLabel>
+              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                <span className="font-medium text-foreground">{complaint.area}</span>
+                {complaint.lat && complaint.lng ? (
+                  <span className="font-mono text-[11px] opacity-80">
+                    ({complaint.lat.toFixed(4)}°N, {complaint.lng.toFixed(4)}°E)
+                  </span>
+                ) : null}
+              </div>
             </div>
-            <div className="jm-map h-[240px]">
-              <CivicMap
-                cityId={city}
+            <div className="jm-map-frame h-[280px] w-full">
+              <ClientCivicMap
+                cityId={complaint.city || city}
                 mode="activity"
                 activities={[]}
                 points={[...allPoints, point]}
                 selectedAreaId={null}
                 onSelectArea={() => {}}
                 compact
+                focus={complaint.lat && complaint.lng ? { lat: complaint.lat, lng: complaint.lng, zoom: 15 } : null}
+                marker={complaint.lat && complaint.lng ? { lat: complaint.lat, lng: complaint.lng, label: `${complaint.title} (${complaint.area})` } : null}
+                className="h-[280px] w-full"
               />
             </div>
           </GlassCard>

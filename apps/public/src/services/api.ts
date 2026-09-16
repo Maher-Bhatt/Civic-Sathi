@@ -314,6 +314,7 @@ function normalizeComplaint(raw: any, fallbackInput?: any): Complaint | null {
     description: source.description || fallbackInput?.description || "",
     category: source.category || fallbackInput?.category || "Water Supply",
     severity,
+    photo: source.photo || source.photo_url || source.photoUrl || null,
     location: {
       lat,
       lng,

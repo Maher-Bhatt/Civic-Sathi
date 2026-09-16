@@ -26,6 +26,7 @@ export interface CivicMapProps {
   onSelectArea: (areaId: string | null) => void;
   /** Recentre request, e.g. from search or Near me. */
   focus?: { lat: number; lng: number; zoom?: number } | null;
+  marker?: { lat: number; lng: number; label?: string } | null;
   onResetView?: (() => void) | undefined;
   onNearMe?: (() => void) | undefined;
   locating?: boolean | undefined;
@@ -48,6 +49,7 @@ export function CivicMap({
   selectedAreaId,
   onSelectArea,
   focus = null,
+  marker = null,
   onResetView,
   onNearMe,
   locating = false,
@@ -63,6 +65,7 @@ export function CivicMap({
   const areaLayer = useRef<Leaflet.GeoJSON | null>(null);
   const pointLayer = useRef<Leaflet.LayerGroup | null>(null);
   const hotspotLayer = useRef<Leaflet.LayerGroup | null>(null);
+  const markerRef = useRef<Leaflet.Marker | null>(null);
 
   const { resolved } = useTheme();
   const [ready, setReady] = useState(false);
@@ -137,6 +140,7 @@ export function CivicMap({
       areaLayer.current = null;
       pointLayer.current = null;
       hotspotLayer.current = null;
+      markerRef.current = null;
       baseRef.current = null;
       labelRef.current = null;
       setReady(false);
@@ -211,7 +215,7 @@ export function CivicMap({
     try {
       if (!compact) {
         map.fitBounds(layer.getBounds(), { padding: [24, 24] });
-      } else {
+      } else if (!focus) {
         const city = getCity(cityId);
         map.setView(city.center, city.zoom);
       }
@@ -313,8 +317,47 @@ export function CivicMap({
   useEffect(() => {
     const map = mapRef.current;
     if (!map || !ready || !focus) return;
-    map.flyTo([focus.lat, focus.lng], focus.zoom ?? 14, { duration: 0.8 });
+    map.flyTo([focus.lat, focus.lng], focus.zoom ?? 15, { duration: 0.8 });
   }, [focus?.lat, focus?.lng, focus?.zoom, ready]);
+
+  /* -------------------------------------------------------------- marker */
+  useEffect(() => {
+    const L = LRef.current;
+    const map = mapRef.current;
+    if (!L || !map || !ready) return;
+    if (!marker || !marker.lat || !marker.lng) {
+      markerRef.current?.remove();
+      markerRef.current = null;
+      return;
+    }
+    if (!markerRef.current) {
+      const icon = L.divIcon({
+        className: "jm-pin-icon",
+        iconSize: [32, 32],
+        iconAnchor: [16, 16],
+        html: `<span class="jm-pin" style="display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;background:rgba(239,68,68,0.25);"><span style="width:14px;height:14px;border-radius:50%;background:#ef4444;box-shadow:0 0 12px #ef4444, 0 0 0 2px #ffffff;"></span></span>`,
+      });
+      markerRef.current = L.marker([marker.lat, marker.lng], {
+        icon,
+        keyboard: true,
+        title: marker.label || "Complaint Location",
+        alt: marker.label || "Complaint Location",
+      }).addTo(map);
+      if (marker.label) {
+        markerRef.current.bindTooltip(
+          `<span class="jm-ward-tip"><strong>${escapeHtml(marker.label)}</strong><br/><span class="jm-tip-sub">Complaint Location</span></span>`,
+          { permanent: false, direction: "top", opacity: 1, className: "jm-ward-tooltip" }
+        );
+      }
+    } else {
+      markerRef.current.setLatLng([marker.lat, marker.lng]);
+      if (marker.label) {
+        markerRef.current.setTooltipContent(
+          `<span class="jm-ward-tip"><strong>${escapeHtml(marker.label)}</strong><br/><span class="jm-tip-sub">Complaint Location</span></span>`
+        );
+      }
+    }
+  }, [marker?.lat, marker?.lng, marker?.label, ready]);
 
   const resetView = () => {
     const map = mapRef.current;
@@ -332,7 +375,7 @@ export function CivicMap({
   return (
     <div
       className={cn(
-        "jm-map-shell glass relative overflow-hidden rounded-2xl",
+        "jm-map-shell glass relative min-h-[220px] w-full overflow-hidden rounded-2xl",
         !ready && "jm-map-loading",
         className,
       )}

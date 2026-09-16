@@ -163,6 +163,7 @@ class ComplaintService:
                 else complaint_data.submitted_by_phone
             ),
             source="web",
+            photo_url=complaint_data.photo or None,
             timeline_json=[{"label": "Report Received", "at": datetime.now(timezone.utc).isoformat()}],
         )
 
@@ -586,6 +587,8 @@ class ComplaintService:
             lat=complaint.lat,
             lng=complaint.lng,
             address_text=complaint.address_text,
+            photo_url=complaint.photo_url,
+            photo=complaint.photo_url,
             submitted_by_name=citizen_name if include_private else None,
             submitted_by_phone=masked_phone if include_private else None,
             privacy_status="Protected (Anti-Retaliation)",
@@ -650,6 +653,8 @@ class ComplaintService:
             lat=complaint.lat,
             lng=complaint.lng,
             address_text=complaint.address_text,
+            photo_url=complaint.photo_url,
+            photo=complaint.photo_url,
             created_at=complaint.created_at,
             updated_at=complaint.updated_at,
             language=complaint.analysis.language if complaint.analysis else None,
