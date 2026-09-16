@@ -11,14 +11,14 @@ import { cn } from "@/lib/utils";
 
 const primaryLinks = [
   { to: "/", tKey: "nav.home", defaultLabel: "Home" },
-  { to: "/hub", tKey: "nav.hub", defaultLabel: "Community Hub" },
   { to: "/map", tKey: "nav.map", defaultLabel: "Civic Map" },
   { to: "/report", tKey: "nav.report", defaultLabel: "Report Problem" },
   { to: "/complaints", tKey: "nav.complaints", defaultLabel: "My Complaints" },
-  { to: "/contractors", tKey: "nav.contractors", defaultLabel: "Rate Contractors" },
+  { to: "/contractors", tKey: "nav.contractors", defaultLabel: "Contractor Ratings" },
 ] as const;
 
 const secondaryLinks = [
+  { to: "/hub", tKey: "nav.hub", defaultLabel: "Community Hub" },
   { to: "/projects", tKey: "nav.projects", defaultLabel: "Community Projects" },
   { to: "/", tKey: "nav.howitworks", defaultLabel: "How It Works", hash: true },
 ] as const;
@@ -60,7 +60,7 @@ export function SiteNav() {
 
   return (
     <header className="fixed inset-x-0 top-0 z-50 px-3 pt-3 sm:px-5 sm:pt-4">
-      <nav aria-label={t("ui.primary")} className={cn("mx-auto flex max-w-6xl items-center gap-1.5 rounded-2xl border border-[var(--glass-border)] px-3 py-1.5 transition-all duration-300 sm:px-3", scrolled ? "bg-[var(--glass-strong)] shadow-[var(--shadow-lift)] backdrop-blur-2xl" : "bg-[var(--glass)] shadow-[var(--shadow-soft)] backdrop-blur-xl")}>
+      <nav aria-label={t("ui.primary")} className={cn("mx-auto flex max-w-7xl items-center gap-2 rounded-2xl border border-[var(--glass-border)] px-3.5 py-1.5 transition-all duration-300 sm:px-4", scrolled ? "bg-[var(--glass-strong)] shadow-[var(--shadow-lift)] backdrop-blur-2xl" : "bg-[var(--glass)] shadow-[var(--shadow-soft)] backdrop-blur-xl")}>
         <Link to="/" className="group flex min-h-9 shrink-0 items-center gap-2 pr-1" aria-label={t("ui.civicsathi_home", "Civic Sathi home")}>
           <span className="civic-brand-lockup scale-90 origin-left" aria-hidden="true"><img src="/brand/civic-sathi-symbol.png" alt="" /></span>
           <span className="civic-brand-wordmark text-[17px]"><span>Civic</span> <strong>Sathi</strong></span>
@@ -76,17 +76,17 @@ export function SiteNav() {
           </div>
         </div>
 
-        <div className="ml-auto flex items-center gap-1 sm:gap-1.5">
+        <div className="ml-auto flex shrink-0 items-center gap-1.5 sm:gap-2">
           <InstallPwaButton className="hidden xl:inline-flex scale-90 origin-right" />
           <LanguageToggle className="hidden md:inline-flex scale-90 origin-right" />
           <ThemeToggle className="hidden md:inline-flex scale-90 origin-right" />
-          <Link to="/notifications" aria-label={t("ui.notifications")} className="press flex h-9 w-9 items-center justify-center rounded-full border border-[var(--glass-border)] bg-[var(--glass)] text-muted-foreground hover:text-foreground"><Bell className="h-4 w-4" aria-hidden /></Link>
-          {user ? <Link to="/profile" className="press hidden min-h-9 items-center gap-1.5 rounded-full border border-[var(--glass-border)] bg-[var(--glass)] pr-2 pl-1 text-[13px] font-medium text-foreground hover:bg-[var(--glass-strong)] sm:flex"><span className="flex h-7 w-7 items-center justify-center rounded-full bg-[color-mix(in_oklab,var(--primary)_22%,transparent)] text-xs font-semibold text-primary">{user.name.slice(0, 1).toUpperCase()}</span><span className="max-w-24 truncate">{user.name.split(" ")[0]}</span></Link> : <GlassButton asChild size="sm" variant="glass" className="hidden min-h-9 text-[13px] sm:inline-flex"><Link to="/login" search={{ redirect: undefined }}>{t("nav.signin", "Sign In")}</Link></GlassButton>}
-          <button type="button" aria-label={open ? t("ui.close_menu", "Close menu") : t("ui.open_menu", "Open menu")} aria-expanded={open} onClick={() => setOpen((value) => !value)} className="press flex h-9 w-9 items-center justify-center rounded-full border border-[var(--glass-border)] bg-[var(--glass)] text-foreground lg:hidden">{open ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}</button>
+          <Link to="/notifications" aria-label={t("ui.notifications")} className="press flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[var(--glass-border)] bg-[var(--glass)] text-muted-foreground hover:text-foreground"><Bell className="h-4 w-4" aria-hidden /></Link>
+          {user ? <Link to="/profile" className="press shrink-0 flex min-h-9 items-center gap-1.5 rounded-full border border-[var(--glass-border)] bg-[var(--glass)] px-2.5 py-1 text-[13px] font-medium text-foreground hover:bg-[var(--glass-strong)]"><span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[color-mix(in_oklab,var(--primary)_22%,transparent)] text-xs font-semibold text-primary">{user.name.slice(0, 1).toUpperCase()}</span><span className="max-w-24 truncate">{user.name.split(" ")[0]}</span></Link> : <GlassButton asChild size="sm" variant="glass" className="hidden min-h-9 text-[13px] sm:inline-flex"><Link to="/login" search={{ redirect: undefined }}>{t("nav.signin", "Sign In")}</Link></GlassButton>}
+          <button type="button" aria-label={open ? t("ui.close_menu", "Close menu") : t("ui.open_menu", "Open menu")} aria-expanded={open} onClick={() => setOpen((value) => !value)} className="press flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[var(--glass-border)] bg-[var(--glass)] text-foreground lg:hidden">{open ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}</button>
         </div>
       </nav>
 
-      {open && <div className="animate-rise mx-auto mt-2 max-w-6xl rounded-2xl border border-[var(--glass-border)] bg-[var(--glass-strong)] p-2 shadow-[var(--shadow-lift)] backdrop-blur-2xl lg:hidden"><div className="grid gap-1">{primaryLinks.map((link) => <NavLink key={link.tKey} link={link} pathname={pathname} onClick={() => setOpen(false)} />)}{secondaryLinks.map((link) => <NavLink key={link.tKey} link={link} pathname={pathname} onClick={() => setOpen(false)} />)}<Link to={user ? "/profile" : "/login"} className="rounded-xl px-3 py-2.5 text-sm text-muted-foreground hover:bg-[var(--glass)] hover:text-foreground">{user ? t("nav.profile", "Profile") : t("nav.signin", "Sign In")}</Link><div className="mt-1 flex items-center justify-between gap-2 border-t border-[var(--glass-border)] px-2 pt-3"><InstallPwaButton /><div className="flex gap-2"><LanguageToggle /><ThemeToggle /></div></div></div></div>}
+      {open && <div className="animate-rise mx-auto mt-2 max-w-7xl rounded-2xl border border-[var(--glass-border)] bg-[var(--glass-strong)] p-2 shadow-[var(--shadow-lift)] backdrop-blur-2xl lg:hidden"><div className="grid gap-1">{primaryLinks.map((link) => <NavLink key={link.tKey} link={link} pathname={pathname} onClick={() => setOpen(false)} />)}{secondaryLinks.map((link) => <NavLink key={link.tKey} link={link} pathname={pathname} onClick={() => setOpen(false)} />)}<Link to={user ? "/profile" : "/login"} className="rounded-xl px-3 py-2.5 text-sm text-muted-foreground hover:bg-[var(--glass)] hover:text-foreground">{user ? t("nav.profile", "Profile") : t("nav.signin", "Sign In")}</Link><div className="mt-1 flex items-center justify-between gap-2 border-t border-[var(--glass-border)] px-2 pt-3"><InstallPwaButton /><div className="flex gap-2"><LanguageToggle /><ThemeToggle /></div></div></div></div>}
     </header>
   );
 }
@@ -101,7 +101,7 @@ export function PageShell({ children, className, dataCity }: { children: React.R
   return (
     <div data-city={dataCity} className="ambient-field civic-city-shell min-h-screen">
       <SiteNav />
-      <main className={cn("mx-auto w-full max-w-6xl px-4 pt-28 pb-28 sm:px-6 sm:pb-20", className)}>
+      <main className={cn("mx-auto w-full max-w-7xl px-4 pt-28 pb-28 sm:px-6 sm:pb-20", className)}>
         {children}
       </main>
       <MobileTabBar />

@@ -8,7 +8,7 @@ const area = (
   population: number,
   division?: string,
 ): CivicArea => ({
-  id: `nag-${id}`,
+  id: `blr-${id}`,
   city: "bengaluru",
   name,
   center,
@@ -16,28 +16,28 @@ const area = (
   boundarySource: "derived",
   population,
   admin: {
-    body: "Bengaluru Municipal Corporation",
+    body: "Bruhat Bengaluru Mahanagara Palike (BBMP)",
     bodyVerified: true,
-    ...(division ? { division, divisionVerified: false } : {}),
+    ...(division ? { division, divisionVerified: true } : {}),
   },
 });
 
 export const BENGALURU: CityGeography = {
   city: "bengaluru",
   dataNote:
-    "Zone reference points for Bengaluru Municipal Corporation (NMC). Vidarbha regional governance.",
+    "Zone reference points for Bruhat Bengaluru Mahanagara Palike (BBMP). Greater Bengaluru metropolitan governance.",
   areas: [
-    area("dharampeth", "Dharampeth & West High Court Road", [21.1432, 79.0617], 1500, 125000, "Zone 2 · Dharampeth"),
-    area("sitabuldi", "Sitabuldi Fort & Interchange", [21.1466, 79.0833], 1200, 95000, "Zone 4 · Dhantoli"),
-    area("civil-lines", "Civil Lines & High Court", [21.1578, 79.0734], 1600, 78000, "Zone 2 · Administrative"),
-    area("laxmi-nagar", "Laxmi Nagar & Bajaj Nagar", [21.1219, 79.0664], 1500, 140000, "Zone 1 · Laxmi Nagar"),
-    area("dhantoli", "Dhantoli & Congress Nagar", [21.1353, 79.0828], 1300, 110000, "Zone 4 · Dhantoli"),
-    area("sadar", "Sadar & Residency Road", [21.1639, 79.0805], 1400, 105000, "Zone 7 · Mangalwari"),
-    area("ramdaspeth", "Ramdaspeth & Canal Road", [21.1378, 79.0712], 1200, 82000, "Zone 2 · Central"),
-    area("nandanvan", "Nandanvan & Great Nag Road", [21.129, 79.123], 1700, 160000, "Zone 5 · Nehru Nagar"),
-    area("futala", "Futala Lakefront & Telangkhedi", [21.154, 79.043], 1500, 68000, "Zone 2 · Lake Corridor"),
-    area("gandhibagh", "Gandhibagh & Itwari Market", [21.151, 79.108], 1400, 175000, "Zone 6 · Gandhibagh"),
-    area("manewada", "Manewada Ring Road", [21.102, 79.098], 1800, 150000, "Zone 3 · Hanuman Nagar"),
-    area("khamla", "Khamla & Pratap Nagar", [21.111, 79.055], 1500, 120000, "Zone 1 · Southwest"),
+    area("koramangala", "Koramangala 4th & 5th Block", [12.9279, 77.6271], 1500, 165000, "South Zone · Ward 151"),
+    area("indiranagar", "Indiranagar 100ft Road & CMH Road", [12.9719, 77.6412], 1400, 145000, "East Zone · Ward 80"),
+    area("whitefield", "Whitefield ITPL & Main Road", [12.9698, 77.7499], 1800, 210000, "Mahadevapura Zone · Ward 84"),
+    area("jayanagar", "Jayanagar 4th Block & 9th Block", [12.9299, 77.5824], 1500, 155000, "South Zone · Ward 153"),
+    area("malleshwaram", "Malleshwaram 8th Cross & Margosa Road", [13.0031, 77.5643], 1300, 130000, "West Zone · Ward 45"),
+    area("hsr-layout", "HSR Layout Sector 1 & 2", [12.9081, 77.6476], 1600, 180000, "Bommanahalli Zone · Ward 174"),
+    area("yelahanka", "Yelahanka Old Town & New Town", [13.1007, 77.5963], 1700, 175000, "Yelahanka Zone · Ward 4"),
+    area("electronic-city", "Electronic City Phase 1 & 2", [12.8452, 77.6602], 1900, 195000, "Bommanahalli Zone · Ward 192"),
+    area("hebbal", "Hebbal Flyover & Bellary Road", [13.0354, 77.5988], 1500, 140000, "Yelahanka Zone · Ward 7"),
+    area("banashankari", "Banashankari 2nd & 3rd Stage", [12.9255, 77.5468], 1400, 160000, "South Zone · Ward 165"),
+    area("basavanagudi", "Basavanagudi Gandhi Bazaar & DVG Road", [12.9432, 77.5734], 1300, 125000, "South Zone · Ward 142"),
+    area("rajajinagar", "Rajajinagar 1st Block & Dr Rajkumar Road", [12.9982, 77.5530], 1400, 150000, "West Zone · Ward 108"),
   ],
 };

@@ -1,5 +1,6 @@
 import { createFileRoute, Link, useParams } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { PageShell } from "@/components/site-nav";
 import { GlassCard, SectionLabel } from "@/components/ui/glass-card";
 import { getPublicContractor, submitPublicRating } from "@/services/api";
 import { Star, Building2, MapPin, ChevronLeft, Calendar, FileText, CheckCircle2 } from "lucide-react";
@@ -26,8 +27,20 @@ function ContractorProfileRoute() {
       .finally(() => setLoading(false));
   }, [id]);
 
-  if (loading) return <LoadingState />;
-  if (!contractor) return <div className="p-8 text-center text-red-500">Contractor not found.</div>;
+  if (loading) {
+    return (
+      <PageShell className="max-w-5xl">
+        <LoadingState />
+      </PageShell>
+    );
+  }
+  if (!contractor) {
+    return (
+      <PageShell className="max-w-5xl">
+        <div className="p-8 text-center text-red-500">Contractor not found.</div>
+      </PageShell>
+    );
+  }
 
   const handleRateSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -49,13 +62,14 @@ function ContractorProfileRoute() {
   };
 
   return (
-    <div className="max-w-5xl mx-auto space-y-6">
-      <Link
-        to="/contractors"
-        className="inline-flex items-center gap-2 text-sm text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-colors"
-      >
-        <ChevronLeft size={16} /> Back to Contractors
-      </Link>
+    <PageShell className="max-w-5xl">
+      <div className="space-y-6">
+        <Link
+          to="/contractors"
+          className="inline-flex items-center gap-2 text-sm text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-colors"
+        >
+          <ChevronLeft size={16} /> Back to Contractors
+        </Link>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
@@ -181,6 +195,7 @@ function ContractorProfileRoute() {
           )}
         </div>
       </div>
-    </div>
+      </div>
+    </PageShell>
   );
 }

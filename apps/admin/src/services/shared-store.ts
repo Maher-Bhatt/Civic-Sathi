@@ -1134,13 +1134,13 @@ export async function getCommandCenterSnapshot(): Promise<any> {
   } catch (error) {
     console.warn("Falling back to mock command center snapshot for SIH demo:", error);
     return {
-      platform: { total_complaints: 118180, resolved_complaints: 53771, total_cities: 4 },
-      complaint_status: { assigned: 24936, resolved: 53771, in_progress: 39473 },
+      platform: { total_complaints: 248000, resolved_complaints: 136400, total_cities: 4 },
+      complaint_status: { assigned: 49600, resolved: 136400, in_progress: 62000 },
       cities: [
-        { name: "Mumbai", open: 1420, in_progress: 890, resolved: 3100 },
-        { name: "Delhi", open: 1250, in_progress: 740, resolved: 2800 },
-        { name: "Bengaluru", open: 980, in_progress: 650, resolved: 2100 },
-        { name: "Vadodara", open: 450, in_progress: 320, resolved: 1200 },
+        { name: "Bengaluru", open: 15200, in_progress: 29800, resolved: 55000, complaints: 100000 },
+        { name: "Delhi", open: 9100, in_progress: 17900, resolved: 33000, complaints: 60000 },
+        { name: "Mumbai", open: 8800, in_progress: 17300, resolved: 31900, complaints: 58000 },
+        { name: "Vadodara", open: 4500, in_progress: 9000, resolved: 16500, complaints: 30000 },
       ],
       subsystem_health: {
         municipal: { status: "online", ping: 42, uptime: "99.9%" },

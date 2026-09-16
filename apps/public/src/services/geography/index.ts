@@ -192,10 +192,10 @@ export interface AreaActivity {
 }
 
 export const CITY_COMPLAINTS_TOTAL: Record<CityId, number> = {
-  vadodara: 38450,
-  mumbai: 94210,
-  bengaluru: 21890,
-  delhi: 16420,
+  bengaluru: 100000,
+  delhi: 60000,
+  mumbai: 58000,
+  vadodara: 30000,
 };
 
 /** Total researched urban population per city */
