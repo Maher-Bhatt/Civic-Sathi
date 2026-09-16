@@ -107,18 +107,19 @@
 - "Use the example" button that auto-fills: "There has been no water supply in our area for three days"
 
 **Step 2 — Location Picker:**
-- Interactive map for pinpointing the exact location
-- Device geolocation integration
+- Interactive map for pinpointing the exact location with device GPS integration.
+- **Municipal Geo-Fencing**: Validates coordinates using Haversine distance calculations against city radii (Vadodara: 25km, Mumbai: 40km, Bengaluru: 30km, Delhi: 35km). Blocks GPS reports outside authorized metropolitan zones and provides visual warnings for manually dragged out-of-bounds pins.
 
-**Step 3 — Photo Evidence:**
-- Camera/file upload for attaching photographic proof
+**Step 3 — Photo Evidence & Multi-Signal Vision AI:**
+- Camera/file upload for attaching photographic proof.
+- **Real-Time Visual Diagnostics**: Calls `analyzeComplaintPhoto` on upload. The backend visual engine measures luminance, saturation, and texture roughness and synthesizes them with Groq LLM intelligence (`allam-2-7b`) to suggest categories with high confidence and evidence notes.
 
 **Step 4 — Review & Submit:**
-- Shows: Description, AI-Suggested Category, AI-Suggested Severity, Municipal Interpretation, Location pin, Uploaded photo
-- "Edit" buttons to go back and modify any section
-- "Submit report" button → Saves the draft and navigates to `/analyzing`
+- Shows: Description, AI-Suggested Category, AI-Suggested Severity, Municipal Interpretation, Location pin, Uploaded photo.
+- "Edit" buttons to go back and modify any section.
+- "Submit report" button → Saves the draft and navigates to `/analyzing`.
 
-**Backend Connection:** Automatically calls `analyzeComplaint` in the background during Step 3 to pre-categorize using NLP.
+**Backend Connection:** Calls `POST /api/v1/ai/analyze-image` for evidence photo triage and `POST /api/v1/ai/analyze-complaint` in the background during Step 3 to pre-categorize using NLP.
 
 ---
 

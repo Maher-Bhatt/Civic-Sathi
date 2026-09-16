@@ -1,173 +1,87 @@
-# Civic Sathi Backend
+﻿# Civic Sathi — Backend API Engine
 
-Civic complaint intelligence platform backend built with FastAPI, PostgreSQL, and AI/ML.
+Core intelligence and API services engine for **Civic Sathi** (SIH 2026 Problem Statement PS26129).
 
-## Tech Stack
+- **Production API URL**: [https://civic-sathi-f7ml.onrender.com](https://civic-sathi-f7ml.onrender.com)
+- **Framework**: FastAPI (Python 3.11+), Uvicorn ASGI
+- **Database**: Neon Serverless PostgreSQL with SQLAlchemy 2.x & Alembic
+- **AI Diagnostics**: Groq LLM (`allam-2-7b`), Sentence Transformers, Pillow, NumPy
 
-- **Framework**: FastAPI
-- **Database**: Neon PostgreSQL with SQLAlchemy 2.x
-- **Validation**: Pydantic v2
-- **ML/AI**: spaCy, Sentence Transformers, FAISS, scikit-learn
-- **Analytics**: Pandas, NumPy
+---
+
+## Core Systems & Architecture
+
+### 1. Multi-Signal Vision Diagnostic Engine (`app/services/ai_service.py`)
+- **Direct Image Signal Extraction**: Analyzes decoded image bytes to measure mean luminance, color saturation in HSV space, and Sobel gradient texture roughness.
+- **Asphalt Road Surface Detection**: Identifies low-saturation monochrome gray distributions and surface depression boundaries typical of potholes and road cracks.
+- **Night Lighting & High Contrast Detection**: Detects low ambient illumination with focused high-intensity light points.
+- **Groq LLM Synthesis**: Combines visual signals and citizen context via Groq `allam-2-7b` for structured JSON output (`category`, `detected`, `confidence`, `evidence`, `safety_note`).
+- **Deterministic Rule-Based Fallback**: Provides instant, reliable fallback classification if external network APIs are ever unreachable.
+
+### 2. Self-Healing Sequence & Collision Prevention (`app/repositories/complaint_repository.py`)
+- `get_next_public_id_number`: Checks PostgreSQL `complaint_public_seq` against `MAX(public_id_seq)` in the complaints table.
+- If the sequence ever lags behind seeded or manually inserted records, it automatically advances to `max + 1` and calls `setval`, preventing `UniqueViolation` on `ix_complaints_public_id`.
+
+### 3. Open Intake & Unified Authentication
+- `POST /api/v1/complaints`: Utilizes `Depends(get_optional_user)` to allow both authenticated citizens and guest reporters to submit complaints without 401/403 errors.
+- `POST /api/v1/auth/login`: Unified citizen login accepting all registered user roles.
+- `POST /api/v1/auth/officer-login`: Dedicated administrative authentication for officers and commissioners.
+
+### 4. Canonical Grouping & Deduplication (`app/services/canonical_grouping.py`)
+- Automatically links complaints within a 500m radius and matching categories to canonical problem groups using cosine similarity over `sentence-transformers` embeddings.
+
+---
+
+## Live Database Statistics (Neon PostgreSQL)
+
+| Entity | Record Count | Description |
+|---|---|---|
+| **Complaints** | **142,180+** | Multi-city complaint distribution (Bengaluru, Vadodara, Mumbai, Delhi) |
+| **Wards** | **48** | Authentic geo-coded wards across 4 municipal corporations |
+| **Systemic Issues** | **106** | Machine-learned recurring problem clusters |
+| **Contractors** | **17** | Infrastructure vendors with tri-party performance scorecards |
+| **Tenders** | **45** | Municipal tenders across draft, published, and awarded states |
+| **Work Orders** | **11+** | Live execution contracts with GPS evidence and SLA monitoring |
+| **Audit Logs** | **400+** | Immutable operational audit trails |
+
+---
 
 ## Local Setup
 
-### Prerequisites
-
-- Python 3.11+
-- Neon PostgreSQL account
-- pip and virtualenv
-
-### Installation Steps
-
-1. **Clone and navigate to backend**
-   ```bash
-   cd backend
-   ```
-
-2. **Create virtual environment**
-   ```bash
-   python -m venv .venv
-   .venv\Scripts\activate
-   ```
-
-3. **Install dependencies**
-   ```bash
-   pip install -r requirements.txt
-   python -m spacy download en_core_web_sm
-   ```
-
-4. **Configure environment**
-   ```bash
-   copy .env.example .env
-   ```
-   Edit `.env` and set your Neon DATABASE_URL and OFFICER_API_KEY.
-
-5. **Run database migrations**
-   ```bash
-   alembic upgrade head
-   ```
-
-6. **Run optional data repairs**
-   ```bash
-   python scripts/repair_data.py --city-separation
-   # Or, only when the documented contractor account needs repair:
-   python scripts/repair_data.py --contractor-access
-   ```
-   Repairs are never run automatically when the API starts. See
-   [`../docs/operations/backend-operations.md`](../docs/operations/backend-operations.md)
-   for the production sequence.
-
-7. **Seed production & SIH demo data**
-   ```bash
-   # Base seeder (cities, departments, core accounts)
-   python seed_master.py
-
-   # Massive SIH Demo dataset (wards, issue clusters, contractors, tenders, bids, work orders, reviews, audit logs)
-   python seed_sih_demo.py
-
-   # Multi-city complaint balancer (adds 24,000 complaints across Mumbai, Delhi, Vadodara)
-   python seed_city_complaints.py
-   ```
-
-8. **Start development server**
-   ```bash
-   uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
-   ```
-
-9. **Access Swagger docs**
-   Open http://localhost:8000/docs
-
-## Current Live Database Statistics (Neon PostgreSQL)
-
-As of September 2026, the live production database contains:
-
-| Category | Record Count | Details |
-|---|---|---|
-| **Total Complaints** | **142,180** | Bengaluru (100,008), Vadodara (20,171), Mumbai (11,001), Delhi (11,000) |
-| **Wards** | **48** | 12 geo-coded wards per city with authentic coordinates |
-| **Systemic Issue Clusters** | **106** | Machine-learned clusters across 8 categories with risk scores (20–95) |
-| **Contractors** | **17** | Major infrastructure companies with tri-party ratings |
-| **Contractor Registrations** | **43** | City-specific verified licenses (Class A/B/C, APPROVED) |
-| **Tenders** | **45** | Distributed across DRAFT, PUBLISHED, EVALUATING, AWARDED |
-| **Bids** | **108** | Multi-vendor competitive quotes with technical proposals |
-| **Work Orders** | **11** | Live execution contracts with SLA tracking and defect liability |
-| **Contractor Reviews** | **102** | Tri-party performance ratings (Public Citizen, AI Audit, Municipal Officer) |
-| **Platform Audit Logs** | **385** | Immutable compliance trails across administrative actions |
-| **Cities** | **4** | Bengaluru (KA), Vadodara (GJ), Mumbai (MH), Delhi (DL) |
-| **Departments** | **15** | Roads, Sanitation, Electricity, Water Supply, Health, etc. |
-
-## Testing
-
+### 1. Environment Configuration
 ```bash
-pytest
-pytest tests/test_complaints_api.py -v
-pytest tests/test_ml_pipeline.py -v
+cd backend
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1    # Linux/macOS: source .venv/bin/activate
+pip install -r requirements.txt
+Copy-Item .env.example .env
 ```
 
-## Deployment
-
-See `render.yaml` for Render deployment configuration.
-
-Run `alembic upgrade head` as an explicit deploy step before starting an API
-process. Do not rely on application startup to create or modify the schema.
-
-### Environment Variables for Production
-
-- `DATABASE_URL`: Neon pooled connection string with `sslmode=require`
-- `ENVIRONMENT`: `production`
-- `CORS_ORIGINS`: `https://janmind-public.vercel.app,https://janmind-municipality.vercel.app,https://janmind-admin.vercel.app,https://janmind-contractor.vercel.app`
-- `OFFICER_API_KEY`: Strong random key
-- `ENABLE_SEED_ENDPOINT`: `false`
-
-### Health Check
-
-GET `/api/v1/health`
-
-## API Documentation
-
-API is versioned at `/api/v1`. Full interactive OpenAPI documentation available at `/docs`.
-
-### Key Endpoints
-
-- `POST /api/v1/complaints` - Submit citizen complaint (auto-assigned public ID)
-- `GET /api/v1/complaints` - List complaints with city, department, and status filters
-- `GET /api/v1/complaints/{id}/similar` - Find vector-similar duplicate complaints
-- `GET /api/v1/admin/command-center` - Super-admin cross-city telemetry snapshot
-- `GET /api/v1/issues` - List systemic ML-clustered civic issues
-- `POST /api/v1/issues/rebuild` - Trigger ML systemic issue clustering pipeline
-- `GET /api/v1/procurement/tenders` - List municipal procurement tenders
-- `GET /api/v1/procurement/work-orders` - List active contractor work orders
-- `GET /api/v1/procurement/contractors` - List registered contractors with tri-party scores
-- `GET /api/v1/analytics/summary` - Multi-city aggregated analytics summary
-- `GET /api/v1/analytics/map` - Geospatial GeoJSON map layer for Leaflet basemaps
-
-## Architecture
-
-```
-FastAPI Backend
-├── API Layer (app/api/v1/routes/)
-│   ├── admin.py (Command center, user management, audit logs)
-│   ├── complaints.py (Ingestion, assignment, tracking)
-│   ├── issues.py (Systemic ML issue clusters)
-│   ├── procurement.py (Tenders, bids, work orders, inspections)
-│   ├── reputation.py (Gamification, XP, citizen badges)
-│   └── analytics.py (Cross-city aggregate telemetry)
-├── Service Layer (app/services/)
-│   ├── complaint_service.py
-│   ├── issue_service.py (HDBSCAN / TF-IDF clustering)
-│   ├── reputation_service.py
-│   └── procurement_service.py
-├── Data Models (app/models/)
-│   ├── complaint.py (Complaint, ComplaintAnalysis)
-│   ├── issue.py (IssueCluster, IssueComplaint, RootCause)
-│   ├── procurement.py (Tender, Bid, WorkOrder, Contractor, Review)
-│   ├── user.py (User, Ward, Zone, Department)
-│   └── audit.py (ModelRun, AuditLog)
-└── Database
-    └── Neon Serverless PostgreSQL (142k+ records)
+### 2. Database Migrations
+```bash
+alembic upgrade head
 ```
 
-## License
+### 3. Run Development Server
+```bash
+uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+```
+Interactive documentation available at `http://localhost:8000/docs`.
 
-MIT
+---
+
+## Key API Endpoints
+
+| Method | Path | Description |
+|---|---|---|
+| `GET` | `/api/v1/health` | Service and database health check |
+| `POST` | `/api/v1/auth/login` | Unified citizen login |
+| `POST` | `/api/v1/auth/officer-login` | Administrative officer login |
+| `GET` | `/api/v1/auth/me` | Current authenticated user profile |
+| `POST` | `/api/v1/complaints` | Public complaint submission |
+| `GET` | `/api/v1/complaints` | Paginated complaint listing |
+| `GET` | `/api/v1/complaints/{id}` | Detailed complaint record with timeline |
+| `POST` | `/api/v1/ai/analyze-complaint` | Text AI categorization and triage |
+| `POST` | `/api/v1/ai/analyze-image` | Multi-signal visual image analysis |
+| `GET` | `/api/v1/analytics/public-map` | City-level aggregate map telemetry |
+| `GET` | `/api/v1/analytics/environment/{city}` | Live weather and AQI metrics |
