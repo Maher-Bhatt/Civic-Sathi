@@ -34,12 +34,13 @@ export function PhotoUploader({
     setError(null);
     setAnalysis(null);
     setUploading(true);
-    setProgress(8);
-    const tick = setInterval(() => setProgress((p) => Math.min(92, p + 11)), 90);
+    setProgress(15);
+    const tick = setInterval(() => setProgress((p) => Math.min(95, p + 15)), 60);
     try {
       const dataUrl = await uploadComplaintPhoto(file);
       onPhoto(dataUrl);
       setProgress(100);
+      setUploading(false);
       setAnalyzing(true);
       const result = await analyzeComplaintPhoto(dataUrl, description);
       setAnalysis(result);
@@ -130,7 +131,7 @@ export function PhotoUploader({
               <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-[color-mix(in_oklab,var(--background)_72%,transparent)] backdrop-blur-sm">
                 <Sparkles className="h-5 w-5 animate-pulse text-primary" aria-hidden />
                 <p className="text-xs tracking-[0.14em] text-muted-foreground uppercase">
-                  {uploading ? "Uploading image" : "Analyzing image"}
+                  {uploading ? "Compressing image..." : "AI analyzing image..."}
                 </p>
               </div>
             )}

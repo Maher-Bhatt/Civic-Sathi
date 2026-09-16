@@ -119,6 +119,7 @@ function AnalyzingPage() {
       };
     const city = getCity(draft.city || "vadodara");
     const wardNumberMatch = String(safeLocation.ward || "").match(/\d+/);
+    const safePhoto = typeof draft.photo === "string" && draft.photo.length < 200_000 ? draft.photo : undefined;
     try {
       const created = await createComplaint({
         title: `${analysis.category} at ${safeLocation.ward || city.name}`,
@@ -131,7 +132,7 @@ function AnalyzingPage() {
         lng: safeLocation.lng,
         ward_number: wardNumberMatch ? Number(wardNumberMatch[0]) : undefined,
         address_text: safeLocation.area,
-        photo: draft.photo,
+        photo: safePhoto,
         language: draft.language,
         ai_interpreted_text: analysis.interpretedText || analysis.summary,
         ai_suggested_action: analysis.recommendedAction,
