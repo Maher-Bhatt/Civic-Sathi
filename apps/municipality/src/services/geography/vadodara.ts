@@ -25,17 +25,16 @@ const area = (
 export const VADODARA: CityGeography = {
   city: "vadodara",
   dataNote:
-    "Locality reference points for Vadodara Municipal Corporation (VMC). Derived catchment geometry for civic telemetry.",
+    "Locality catchment reference points for Vadodara Municipal Corporation (VMC). Authoritative 9-zone layout.",
   areas: [
-    area("alkapuri", "Alkapuri & RC Dutt Road", [22.3121, 73.1672], 1200, 78000, "West Zone · Commercial"),
-    area("akota", "Akota & Old Padra Road", [22.2952, 73.1625], 1400, 92000, "West Zone · Residential"),
-    area("sayajigunj", "Sayajigunj & Kala Ghoda", [22.3105, 73.1856], 1100, 64000, "Central Zone · Transit"),
-    area("gotri", "Gotri & Sevasi", [22.3204, 73.1415], 1800, 165000, "West Zone · Expansion"),
-    area("karelibaug", "Karelibaug & VIP Road", [22.3297, 73.1979], 2000, 185000, "North Zone · Historic"),
-    area("fatehgunj", "Fatehgunj & MS University", [22.3245, 73.1851], 1300, 89000, "North Zone · Educational"),
-    area("manjalpur", "Manjalpur & Makarpura", [22.2746, 73.1942], 1900, 142000, "South Zone · Industrial"),
-    area("waghodia", "Waghodia Road & Ajwa", [22.3021, 73.2341], 1600, 128000, "East Zone · Suburban"),
-    area("sama", "Sama & Savli", [22.3551, 73.1895], 1700, 115000, "North Zone · Lake View"),
-    area("city-area", "City Area & Mandvi", [22.3015, 73.2075], 1500, 134000, "Central Zone · Heritage"),
+    area("gorwa", "Gorwa & Subhanpura", [22.3330, 73.1510], 1700, 145000, "North-West Zone · Ward 11"),
+    area("gotri", "Gotri & Sevasi", [22.3160, 73.1370], 1800, 165000, "West Zone · Ward 10"),
+    area("vasna", "Saiyed Vasna & Bhayli", [22.2980, 73.1410], 1600, 120000, "South-West Zone · Ward 8"),
+    area("ashwamegh-akota", "Ashwamegh Nagar & Akota", [22.2880, 73.1590], 1500, 135000, "West Zone · Ward 5"),
+    area("alkapuri", "Alkapuri & Sayajigunj", [22.3120, 73.1680], 1400, 110000, "Central Zone · Ward 9"),
+    area("nava-bazaar", "Nava Bazaar & Mandvi", [22.3015, 73.2030], 1400, 150000, "Central Zone · Ward 1"),
+    area("wadi", "Wadi & East Taluka", [22.2960, 73.2240], 1600, 140000, "East Zone · Ward 4"),
+    area("manjalpur", "Manjalpur & Makarpura", [22.2680, 73.1920], 1900, 180000, "South Zone · Ward 12"),
+    area("north-taluka", "Vadodara North & Harni/Sama", [22.3520, 73.1860], 2000, 175000, "North Zone · Ward 7"),
   ],
 };

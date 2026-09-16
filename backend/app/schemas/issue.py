@@ -47,6 +47,11 @@ class IssueListItem(BaseModel):
     root_cause_summary: str | None = None
     top_recommendation: str | None = None
     centroid: Coordinates | None = None
+    area_name: str | None = None
+    ward: str | None = None
+    trend_pct: int | None = 0
+    dominant_issue: str | None = None
+    possible_cause: str | None = None
     first_seen_at: datetime
     last_seen_at: datetime
     

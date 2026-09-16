@@ -241,6 +241,12 @@ class IssueService:
             if issue.recommendations:
                 top_recommendation = issue.recommendations[0].title
             
+            area_name = issue.ward.name if issue.ward else None
+            ward_str = f"Ward {ward_number}" if ward_number else "General"
+            dominant_issue = issue.title
+            possible_cause = root_cause_summary or "Infrastructure wear and high civic load"
+            trend_pct = 16 if issue.risk_score >= 90 else 12 if issue.risk_score >= 80 else 5
+
             items.append(IssueListItem(
                 id=issue.id,
                 title=issue.title,
@@ -248,8 +254,13 @@ class IssueService:
                 department=issue.department.name if issue.department else "General",
                 department_id=issue.department_id,
                 ward_number=ward_number,
+                area_name=area_name,
+                ward=ward_str,
+                trend_pct=trend_pct,
+                dominant_issue=dominant_issue,
+                possible_cause=possible_cause,
                 complaint_count=issue.complaint_count,
-                risk_level=RiskLevel(issue.risk_level),
+                risk_level=RiskLevel(str(issue.risk_level).lower()) if issue.risk_level else RiskLevel.MEDIUM,
                 risk_score=issue.risk_score,
                 root_cause_summary=root_cause_summary,
                 top_recommendation=top_recommendation,

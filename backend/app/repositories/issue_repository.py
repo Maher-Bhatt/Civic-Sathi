@@ -42,14 +42,16 @@ class IssueRepository:
         city_id: UUID | None = None,
     ) -> list[IssueCluster]:
         """List issues with filters"""
-        query = select(IssueCluster)
+        query = select(IssueCluster).options(
+            joinedload(IssueCluster.root_causes),
+            joinedload(IssueCluster.recommendations),
+            joinedload(IssueCluster.ward),
+            joinedload(IssueCluster.department),
+        )
         
         filters = []
         if city_id:
-            query = query.join(IssueComplaint, IssueCluster.id == IssueComplaint.issue_id).join(
-                Complaint, IssueComplaint.complaint_id == Complaint.id
-            )
-            filters.append(Complaint.city_id == city_id)
+            filters.append(IssueCluster.city_id == city_id)
         if risk:
             filters.append(IssueCluster.risk_level == risk.value)
         if status:
@@ -65,8 +67,8 @@ class IssueRepository:
         
         query = query.distinct().order_by(IssueCluster.risk_score.desc(), IssueCluster.created_at.desc())
         
-        return list(self.db.execute(query).scalars())
-    
+        return list(self.db.execute(query).unique().scalars())
+
     def add_complaint_to_issue(self, issue_complaint: IssueComplaint):
         """Add complaint to issue cluster"""
         self.db.add(issue_complaint)

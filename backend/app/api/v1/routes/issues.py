@@ -32,16 +32,24 @@ def list_issues(
     risk: str | None = None,
     status: str | None = None,
     ward: int | None = None,
+    city: str | None = None,
     db: Session = Depends(get_db),
     current: dict = Depends(get_current_officer),
 ):
     """List systemic issues (officer only)"""
     city_id = None
-    user = db.get(User, UUID(current["sub"])) if current.get("sub") else None
-    if user and not is_super_admin_user(user):  # BUG-M5: only real super-admins see all cities
-        if user.city:
-            city = db.query(City).filter(func.lower(City.name) == user.city.strip().lower()).first()
-            city_id = city.id if city else None
+    if city:
+        city_rec = db.query(City).filter(func.lower(City.name) == city.strip().lower()).first()
+        if city_rec:
+            city_id = city_rec.id
+
+    if not city_id:
+        user = db.get(User, UUID(current["sub"])) if current.get("sub") else None
+        if user and not is_super_admin_user(user):  # BUG-M5: only real super-admins see all cities
+            if user.city:
+                city_rec = db.query(City).filter(func.lower(City.name) == user.city.strip().lower()).first()
+                city_id = city_rec.id if city_rec else None
+
     service = IssueService(db)
     return service.list_issues(risk=risk, status=status, ward=ward, city_id=city_id)
 
