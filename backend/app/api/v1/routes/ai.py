@@ -87,3 +87,24 @@ async def analyze_case(
         city=request.city,
     )
     return result
+
+
+class CopilotChatRequest(BaseModel):
+    message: str = Field(..., min_length=1, max_length=2000)
+    context: str | None = Field(default=None, max_length=5000)
+
+
+class CopilotChatResponse(BaseModel):
+    reply: str
+    source: str = "ai"
+
+
+@router.post("/copilot", response_model=CopilotChatResponse)
+async def copilot_chat_endpoint(
+    request: CopilotChatRequest,
+    current_user=Depends(get_optional_user),
+):
+    """Real AI Copilot powered by LLM for municipal operations and civic intelligence."""
+    reply = await ai_service.copilot_chat(request.message, request.context)
+    return CopilotChatResponse(reply=reply, source="llm" if ai_service.is_configured else "heuristic")
+

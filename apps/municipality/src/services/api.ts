@@ -1333,6 +1333,19 @@ export async function getMyCivicRolePerformance() {
   return client.get<import("./types").CivicRolePerformance>("/api/v1/reputation/performance/me");
 }
 
+export async function askCopilot(message: string, context?: string): Promise<string> {
+  try {
+    const res = await client.post<{ reply: string; source: string }>("/api/v1/ai/copilot", {
+      message,
+      context,
+    });
+    return res.reply;
+  } catch (error: any) {
+    console.warn("Copilot API request failed", error);
+    throw error;
+  }
+}
+
 
 /* -------------------------------- collector administration */
 export interface MunicipalityOfficerRecord {

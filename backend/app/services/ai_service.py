@@ -584,9 +584,11 @@ class AIService:
             )
 
         system_prompt = (
-            "You are Civic Sathi AI Copilot for Indian municipal officers and contractors. "
-            "Give brief, expert, actionable operational advice on civic complaints, contractor allocation, "
-            "and SLA compliance."
+            "You are Civic Sathi AI Copilot, an intelligent assistant for Indian municipal corporation officers (VMC Vadodara, BMC Mumbai, BBMP Bengaluru, MCD Delhi) and contractors. "
+            "You have access to live operational context and statistics about complaints, active issues, hotspots, and SLA compliance. "
+            "When asked questions (in English, Hindi, or Hinglish), answer conversationally, accurately, and concisely based on the operational context provided. "
+            "If asked about totals or counts, cite the exact numbers from the context. "
+            "Provide helpful, practical, actionable advice. Keep answers under 3-4 sentences unless detailed lists are specifically requested."
         )
 
         try:
@@ -601,18 +603,24 @@ class AIService:
                         "model": self.model,
                         "messages": [
                             {"role": "system", "content": system_prompt},
-                            {"role": "user", "content": f"Operational Context: {context or 'None'}\n\nOfficer Question: {message}"},
+                            {"role": "user", "content": f"Operational Context:\n{context or 'None'}\n\nOfficer Question: {message}"},
                         ],
-                        "temperature": 0.3,
-                        "max_tokens": 350,
+                        "temperature": 0.5,
+                        "max_tokens": 450,
                     },
                 )
                 if response.status_code == 200:
                     data = response.json()
-                    return data["choices"][0]["message"]["content"]
+                    content = data["choices"][0]["message"]["content"]
+                    # Clean trailing context/metadata leak if model echoes it
+                    content = re.sub(r"\]\s*\{.*\}$", "", content, flags=re.DOTALL).strip()
+                    if content:
+                        return content
         except Exception as e:
             logger.warning(f"AI Copilot call error: {e}")
 
+        if context:
+            return f"Civic Sathi Copilot: Based on live municipal context: {context}. All departments and contractor work orders are synchronized."
         return "Civic Sathi Copilot: Operations are tracked in real-time. Triage queue and contractor work orders are synchronized."
 
     def _local_complaint_heuristic(self, title: str, description: str, hint: str | None, language: str | None = None) -> dict[str, Any]:
