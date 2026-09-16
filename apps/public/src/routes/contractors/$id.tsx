@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { PageShell } from "@/components/site-nav";
 import { GlassCard, SectionLabel } from "@/components/ui/glass-card";
 import { getPublicContractor, submitPublicRating } from "@/services/api";
-import { Star, Building2, MapPin, ChevronLeft, Calendar, FileText, CheckCircle2 } from "lucide-react";
+import { Star, Building2, MapPin, ChevronLeft, Calendar, FileText, CheckCircle2, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import { LoadingState } from "@/components/ui/states";
 
